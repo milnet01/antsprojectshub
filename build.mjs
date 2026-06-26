@@ -109,29 +109,39 @@ function demoteHeadings(html) {
   return html;
 }
 
-function sanitizeReadme(html, { rawBase, blobBase }) {
-  const absolutize = (url, base) => {
-    if (!url || /^(https?:|mailto:|#|data:)/i.test(url)) return url;
-    try {
-      return new URL(url, base).href;
-    } catch {
-      return url;
-    }
-  };
-  return sanitizeHtml(html, {
-    allowedTags: [
-      "h1", "h2", "h3", "h4", "h5", "h6", "p", "a", "ul", "ol", "li",
-      "blockquote", "pre", "code", "em", "strong", "del", "hr", "br",
-      "img", "table", "thead", "tbody", "tr", "th", "td", "details",
-      "summary", "span", "div", "kbd", "sub", "sup",
-    ],
-    allowedAttributes: {
-      a: ["href", "name", "title"],
-      img: ["src", "alt", "title", "width", "height"],
-      "*": ["align"],
-    },
+// One sanitiser config shared by the README and release-note paths, so the allowlist
+// can never drift between them. README content is UNTRUSTED (third-party fork READMEs
+// included), so the allowlist is tight: no script/style/iframe, no event handlers, no
+// javascript:/data: URLs, no protocol-relative links.
+const ALLOWED_TAGS = [
+  "h1", "h2", "h3", "h4", "h5", "h6", "p", "a", "ul", "ol", "li",
+  "blockquote", "pre", "code", "em", "strong", "del", "hr", "br",
+  "img", "table", "thead", "tbody", "tr", "th", "td", "details",
+  "summary", "span", "div", "kbd", "sub", "sup",
+];
+const ALLOWED_ATTR = {
+  a: ["href", "title"],
+  img: ["src", "alt", "title", "width", "height"],
+  "*": ["align"],
+};
+
+// Resolve a relative URL against a base; pass through anything already absolute/anchor.
+function absolutize(url, base) {
+  if (!base || !url || /^(https?:|mailto:|#|\/\/)/i.test(url)) return url;
+  try {
+    return new URL(url, base).href;
+  } catch {
+    return url;
+  }
+}
+
+function sanitizeOptions({ rawBase, blobBase } = {}) {
+  return {
+    allowedTags: ALLOWED_TAGS,
+    allowedAttributes: ALLOWED_ATTR,
     allowedSchemes: ["http", "https", "mailto"],
-    allowedSchemesByTag: { img: ["http", "https", "data"] },
+    allowedSchemesByTag: { img: ["http", "https"] }, // images must be real fetched URLs
+    allowProtocolRelative: false,
     transformTags: {
       a: (tag, attribs) => {
         if (attribs.href) attribs.href = absolutize(attribs.href, blobBase);
@@ -145,7 +155,7 @@ function sanitizeReadme(html, { rawBase, blobBase }) {
         return { tagName: "img", attribs };
       },
     },
-  });
+  };
 }
 
 async function fetchReadmeHtml(repo) {
@@ -165,7 +175,7 @@ async function fetchReadmeHtml(repo) {
   );
   if (m) blobBase = `https://github.com/${m[1]}/${m[2]}/blob/${m[3]}/`;
   const rendered = marked.parse(md, { gfm: true });
-  return demoteHeadings(sanitizeReadme(rendered, { rawBase, blobBase }));
+  return demoteHeadings(sanitizeHtml(rendered, sanitizeOptions({ rawBase, blobBase })));
 }
 
 async function fetchRelease(repo) {
@@ -174,15 +184,7 @@ async function fetchRelease(repo) {
   const data = Array.isArray(list) ? list[0] : null;
   if (!data || !data.tag_name) return null;
   const notesHtml = data.body
-    ? sanitizeHtml(marked.parse(data.body, { gfm: true }), {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["h2", "h3"]),
-        transformTags: {
-          a: (t, a) => ({
-            tagName: "a",
-            attribs: { ...a, target: "_blank", rel: "noopener noreferrer nofollow" },
-          }),
-        },
-      })
+    ? sanitizeHtml(marked.parse(data.body, { gfm: true }), sanitizeOptions())
     : "";
   return { version: data.tag_name, notesHtml };
 }
