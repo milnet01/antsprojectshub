@@ -125,15 +125,23 @@ Action's `GITHUB_TOKEN`** (5000 req/hr — the 60/hr unauthenticated limit does 
   - **Precondition/Fallback:** repo without a committed README → `/readme` 404s → bake
     the `blurb` from `projects.json` + a "Read more on GitHub →" link instead. A fetch
     error fails that project *soft* (use the fallback; never abort the whole build).
-- **Changelog/version:** when `repo` is set, fetch `…/repos/<repo>/releases/latest`; bake
-  the tag (version) + rendered release notes. No releases (e.g. DOOM Ants) or error →
-  bake a "Latest release on GitHub →" link to `…/releases/latest` instead.
-- **Downloads:** per-platform buttons → the repo's `…/releases/latest`. Edge cases:
+- **Changelog/version:** when `repo` is set, fetch `…/repos/<repo>/releases?per_page=5`
+  and take the newest **non-draft** release (this includes pre-releases, which
+  `/releases/latest` excludes; drafts are skipped because they're only visible to tokens
+  with push access). Bake the tag (version) + rendered release notes. No releases (e.g.
+  a brand-new repo) or error → bake a "Latest release on GitHub →" link instead.
+- **Downloads:** **direct per-OS links to the latest release's actual asset files**, so
+  the daily rebuild keeps each link pointing at the newest version's file. `build.mjs`
+  matches a release asset to each platform by filename (`.exe`/`.msi`/"windows"→win,
+  `.dmg`/"macos"→mac, `.AppImage`/`.deb`/`.rpm`/"linux"→linux — deliberately not bare
+  `.tar.gz`, so a source sdist isn't mistaken for a Linux binary). Edge cases:
   - `status: "soon"` (no repo) → buttons disabled with a "Coming soon" label.
-  - **Repo with no own releases** (DOOM Ants; a fork like RetroArch carrying no own
-    releases) → `…/releases/latest` would 404, so the button targets the repo home (or,
-    for a fork, the `upstream` releases), labelled "Get it on GitHub" / "Upstream
-    releases". The release fetch already detected the no-release case — reuse it.
+  - **No matching asset for a platform** (source-only release like MAME Curator, or a
+    platform with no build) → a single fallback button to the project's `homepage` if set
+    (e.g. Perch → Flathub) else its Releases page (`…/releases`), labelled "Download" /
+    "Get it on GitHub".
+  - **No releases at all** → one "Get it on GitHub" button → repo home.
+  - **`web`** platform → treated as a self-hosted download ("Download · Self-host").
   - Forks link to the owner's fork repo; `upstream` is credited on the page.
 - **Issue reporting:** when `repo` is set, a "Report an issue" link → `github.com/<repo>/
   issues`. `soon` (no repo) → omitted. **Fork** (`isFork`): link the fork's own `…/issues`
