@@ -11,7 +11,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "marked": "^16.4.0",
+    "marked": "^18.0.5",
     "sanitize-html": "^2.17.0"
   }
 }
