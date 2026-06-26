@@ -180,13 +180,30 @@ async function fetchReadmeHtml(repo) {
 
 async function fetchRelease(repo) {
   // The list endpoint includes pre-releases (newest first); /releases/latest does not.
-  const list = await ghJson(`/repos/${repo}/releases?per_page=1`);
-  const data = Array.isArray(list) ? list[0] : null;
+  // Skip drafts (only visible to tokens with push access — never show them publicly).
+  const list = await ghJson(`/repos/${repo}/releases?per_page=5`);
+  const data = Array.isArray(list) ? list.find((r) => !r.draft) : null;
   if (!data || !data.tag_name) return null;
   const notesHtml = data.body
     ? sanitizeHtml(marked.parse(data.body, { gfm: true }), sanitizeOptions())
     : "";
-  return { version: data.tag_name, notesHtml };
+  const assets = Array.isArray(data.assets)
+    ? data.assets.map((a) => ({ name: a.name, url: a.browser_download_url }))
+    : [];
+  return { version: data.tag_name, notesHtml, assets };
+}
+
+// Match a release asset to a platform by filename. Deliberately conservative: a Linux
+// match needs an AppImage/deb/rpm/flatpak extension or the word "linux" — so a plain
+// source `*.tar.gz` (e.g. a Python sdist) is NOT mistaken for a Linux binary.
+const ASSET_PAT = {
+  win: /\.(exe|msi)$|windows|win-?(64|32)|[-_]win[-_.]/i,
+  mac: /\.(dmg|pkg)$|macos|mac[-_.]|osx|darwin/i,
+  linux: /\.(appimage|deb|rpm|flatpak)$|linux/i,
+};
+function pickAsset(assets, pl) {
+  const pat = ASSET_PAT[pl];
+  return (assets || []).find((a) => pat && pat.test(a.name)) || null;
 }
 
 // No-release repos always fall back to the repo home (never a guessed upstream
@@ -229,7 +246,7 @@ function ext(url, label, cls = "btn") {
   )}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`;
 }
 
-function actionButtons(p, hasRelease) {
+function actionButtons(p, release) {
   if (p.status === "soon") {
     return `<div class="actions">${p.platforms
       .map(
@@ -240,31 +257,34 @@ function actionButtons(p, hasRelease) {
       )
       .join("")}</div>`;
   }
-  const buttons = [];
+  const hasRelease = Boolean(release);
+  const hasWeb = p.platforms.includes("web");
   const desktop = p.platforms.filter((pl) => pl !== "web");
-  if (p.platforms.includes("web")) {
-    // A "web app" here means self-hosted: you download it and run it locally.
-    const webUrl = hasRelease ? releasesUrl(p.repo) : p.homepage || repoUrl(p.repo);
-    buttons.push(
-      ext(webUrl, hasRelease ? "Download · Self-host" : "Get it on GitHub", "btn btn--primary")
-    );
+  // Fallback when there's no matching binary: the project's homepage (e.g. Flathub) if
+  // set, else its Releases page (or repo home if there's no release at all).
+  const fallback = p.homepage || (hasRelease ? releasesUrl(p.repo) : repoUrl(p.repo));
+  const fallbackLabel = p.homepage || hasRelease ? "Download" : "Get it on GitHub";
+  const buttons = [];
+
+  if (hasWeb) {
+    // Self-hosted web app — download & run it yourself.
+    buttons.push(ext(fallback, hasRelease ? "Download · Self-host" : "Get it on GitHub", "btn btn--primary"));
   }
-  if (hasRelease && desktop.length) {
-    desktop.forEach((pl, i) =>
-      buttons.push(
-        ext(
-          releasesUrl(p.repo),
-          `Download · ${PLATFORM[pl] || pl}`,
-          `btn ${i === 0 && !p.platforms.includes("web") ? "btn--primary" : ""}`
-        )
-      )
-    );
-  } else if (desktop.length) {
-    // No published release yet — one honest link to the repo.
+
+  // Direct per-OS download to the latest release's matching file (auto-updates each
+  // build); platforms without a matching file share one fallback button.
+  const matched = desktop.map((pl) => ({ pl, asset: hasRelease ? pickAsset(release.assets, pl) : null }));
+  const direct = matched.filter((m) => m.asset);
+  direct.forEach((m, i) =>
     buttons.push(
-      ext(repoUrl(p.repo), "Get it on GitHub", p.platforms.includes("web") ? "btn" : "btn btn--primary")
-    );
+      ext(m.asset.url, `Download · ${PLATFORM[m.pl] || m.pl}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`)
+    )
+  );
+  if (matched.some((m) => !m.asset)) {
+    const primary = direct.length === 0 && !hasWeb ? "btn--primary" : "";
+    buttons.push(ext(fallback, fallbackLabel, `btn ${primary}`));
   }
+
   buttons.push(ext(issuesUrl(p.repo), "Report an issue", "btn btn--ghost"));
   return `<div class="actions">${buttons.join("")}</div>`;
 }
@@ -315,7 +335,7 @@ function projectPage(p, { readmeHtml, release }) {
   }</p>
       <h1>${esc(p.name)}</h1>
       <div class="detail-sub">${statusPill(p)}${platformTags(p)}${version}</div>
-      ${actionButtons(p, hasRelease)}
+      ${actionButtons(p, release)}
     </section>
     ${body}`;
 

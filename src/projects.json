@@ -31,7 +31,7 @@
       "blurb": "A web-based collection manager for retro games across 150+ platforms: hybrid metadata scraping, achievements and trophy integration, ROM tools (CHD conversion, duplicate finding, multi-disc handling), an analytics dashboard, multiple themes and role-based multi-user access.",
       "status": "live",
       "repo": "milnet01/RetroDB",
-      "platforms": ["web"],
+      "platforms": ["win", "mac", "linux"],
       "isFork": false,
       "upstream": null,
       "homepage": null
