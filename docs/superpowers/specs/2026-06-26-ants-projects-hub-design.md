@@ -2,7 +2,8 @@
 
 **Date:** 2026-06-26
 **Owner:** Anthony Schemel (GitHub: `milnet01`)
-**Status:** Draft → cold-eyes → user review → implementation
+**Status:** ✅ Shipped 2026-06-26 — live at https://antsprojectshub.co.za
+(repo: github.com/milnet01/antsprojectshub; cold-eyes ×5 clean + security review)
 
 ## 1. Purpose
 
