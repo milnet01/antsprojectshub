@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "marked": "^16.4.0",
-    "sanitize-html": "^2.17.0"
+    "sanitize-html": "^2.17.5"
   }
 }
