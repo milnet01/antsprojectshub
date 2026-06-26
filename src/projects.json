@@ -1,0 +1,165 @@
+{
+  "projects": [
+    {
+      "slug": "vestige-engine",
+      "name": "Vestige Engine",
+      "tagline": "A 3D game engine built from scratch.",
+      "blurb": "A modern 3D game engine written in C++ from the ground up — ray-traced rendering, dynamic lighting, physics, animation, audio and scripting, all driven by a modular engine loop. Built-in profiling and editor tools round it out.",
+      "status": "beta",
+      "repo": "milnet01/Vestige",
+      "platforms": ["win", "linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "ants-terminal",
+      "name": "Ants Terminal",
+      "tagline": "A fast, modern terminal tuned for smoother coding sessions.",
+      "blurb": "A lightweight Qt6 terminal for Linux, built from scratch. Its standout feature is deep, fully-local integration with Claude Code to make AI-assisted development sessions faster and leaner — nothing is sent anywhere it doesn't need to be.",
+      "status": "beta",
+      "repo": "milnet01/ants-terminal",
+      "platforms": ["linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "retrodb",
+      "name": "RetroDB",
+      "tagline": "A ROM library manager for 150+ retro gaming systems.",
+      "blurb": "A web-based collection manager for retro games across 150+ platforms: hybrid metadata scraping, achievements and trophy integration, ROM tools (CHD conversion, duplicate finding, multi-disc handling), an analytics dashboard, multiple themes and role-based multi-user access.",
+      "status": "live",
+      "repo": "milnet01/RetroDB",
+      "platforms": ["web"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "mame-curator",
+      "name": "MAME Curator",
+      "tagline": "Picks the best playable arcade games from a MAME set.",
+      "blurb": "Turns a 40,000-machine MAME set into a human-sized arcade library. It intelligently chooses the best version of each game, lets you override picks in a browser UI, copies the chosen ROMs plus required BIOSes, and writes a ready-to-use RetroArch playlist.",
+      "status": "live",
+      "repo": "milnet01/mame-curator",
+      "platforms": ["win", "mac", "linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "perch",
+      "name": "Perch",
+      "tagline": "Remembers every window's size and spot, with snap layouts.",
+      "blurb": "A system-tray window manager that remembers where each window lives — position, size, monitor and virtual desktop — and restores it on reopen. Snap presets, named layouts, per-monitor profiles, a rules engine and global hotkeys, with backends for X11 and KWin/Wayland.",
+      "status": "live",
+      "repo": "milnet01/perch",
+      "platforms": ["linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": "https://flathub.org/apps/details/io.github.milnet01.perch"
+    },
+    {
+      "slug": "retroarch",
+      "name": "RetroArch",
+      "tagline": "My fork of the reference frontend for 100+ emulator cores.",
+      "blurb": "RetroArch is the de-facto frontend for the libretro API, supporting 100+ emulator and game-engine cores across a huge range of platforms. This is my personal fork tracking the upstream libretro/RetroArch project with my own changes on top.",
+      "status": "live",
+      "repo": "milnet01/RetroArch",
+      "platforms": ["win", "mac", "linux"],
+      "isFork": true,
+      "upstream": "libretro/RetroArch",
+      "homepage": null
+    },
+    {
+      "slug": "album-builder",
+      "name": "Album Builder",
+      "tagline": "Curate albums from recordings, with lyric-sync and reports.",
+      "blurb": "A desktop tool for shaping albums out of a folder of recordings: per-track curation, drag-to-reorder, live preview with optional lyric syncing, cross-album reuse tracking, and export to M3U playlists, numbered folders and polished PDF/HTML reports.",
+      "status": "beta",
+      "repo": "milnet01/album-builder",
+      "platforms": ["linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "snatch",
+      "name": "Snatch",
+      "tagline": "A friendly desktop frontend for yt-dlp.",
+      "blurb": "A graphical front-end for yt-dlp with four tabs: download (paste or drag a URL, queue many), search (with preview), media info (inspect local files), and history. Cookie import for age-gated videos, SponsorBlock, subtitles, audio merging and one-click self-update.",
+      "status": "live",
+      "repo": "milnet01/ytdlp-gui",
+      "platforms": ["win", "mac", "linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "doom-ants",
+      "name": "DOOM Ants",
+      "tagline": "A ray-traced reimagining of id's DOOM on modern Linux.",
+      "blurb": "A two-stage modernisation of the 1997 DOOM source: first bringing the ancient code to SDL2 on 64-bit Linux, then evolving the renderer toward true 3D with hardware ray tracing, dynamic lighting and volumetric effects — while keeping the original's feel. Early days.",
+      "status": "wip",
+      "repo": "milnet01/DOOM_Ants",
+      "platforms": ["linux"],
+      "isFork": true,
+      "upstream": "id-Software/DOOM",
+      "homepage": null
+    },
+    {
+      "slug": "slipcase",
+      "name": "Slipcase",
+      "tagline": "Turns flat 2D game covers into realistic 3D box renders.",
+      "blurb": "A desktop tool that generates photorealistic 3D box-art renders from flat 2D cover images — multiple case types, configurable sizes, cover-art sourcing, and clean anti-aliased PNG output sized for RetroArch or LaunchBox.",
+      "status": "soon",
+      "repo": null,
+      "platforms": ["linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "contact-list",
+      "name": "Contact List",
+      "tagline": "A secure contact manager with Google Contacts sync.",
+      "blurb": "A desktop contact manager for people and companies: search, custom fields, and two-way sync with Google Contacts, built with a security-first design.",
+      "status": "soon",
+      "repo": null,
+      "platforms": ["linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "rolodex",
+      "name": "Rolodex",
+      "tagline": "An encrypted credential vault with auto-masking.",
+      "blurb": "A GTK4 credential manager that keeps your logins in an encrypted vault (Fernet + PBKDF2), with automatic masking of sensitive fields and a fast, low-friction search.",
+      "status": "soon",
+      "repo": null,
+      "platforms": ["linux"],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null
+    },
+    {
+      "slug": "rusty-psn",
+      "name": "Rusty PSN",
+      "tagline": "Download PS3 & PS4 game updates straight from Sony.",
+      "blurb": "A Rust tool that fetches PS3 and PS4 game updates directly from Sony's servers, with both a graphical app and a command-line interface. My fork of RainbowCookie32's rusty-psn.",
+      "status": "soon",
+      "repo": null,
+      "platforms": ["win", "mac", "linux"],
+      "isFork": true,
+      "upstream": "RainbowCookie32/rusty-psn",
+      "homepage": null
+    }
+  ],
+  "support": [
+    { "label": "GitHub Sponsors", "url": "https://github.com/sponsors/milnet01" },
+    { "label": "Patreon", "url": null },
+    { "label": "Buy Me a Coffee", "url": null }
+  ]
+}

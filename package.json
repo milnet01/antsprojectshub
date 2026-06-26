@@ -1,0 +1,17 @@
+{
+  "name": "ants-projects-hub",
+  "version": "1.0.0",
+  "description": "Static showcase site for Anthony Schemel's projects — built from src/projects.json into dist/.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "marked": "^16.4.0",
+    "sanitize-html": "^2.17.0"
+  }
+}

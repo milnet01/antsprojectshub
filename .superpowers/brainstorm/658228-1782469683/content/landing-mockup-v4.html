@@ -1,0 +1,96 @@
+<style>
+  @keyframes lpHue { to { filter: hue-rotate(360deg) } }
+  @keyframes roamA { 0%{transform:translate(0,0)} 18%{transform:translate(560px,210px)} 36%{transform:translate(900px,60px)} 54%{transform:translate(430px,310px)} 72%{transform:translate(140px,160px)} 100%{transform:translate(0,0)} }
+  @keyframes roamB { 0%{transform:translate(0,0)} 20%{transform:translate(-490px,250px)} 42%{transform:translate(-840px,90px)} 64%{transform:translate(-360px,320px)} 84%{transform:translate(-180px,120px)} 100%{transform:translate(0,0)} }
+  @keyframes roamC { 0%{transform:translate(0,0)} 22%{transform:translate(-430px,-190px)} 44%{transform:translate(370px,-90px)} 66%{transform:translate(620px,210px)} 84%{transform:translate(220px,90px)} 100%{transform:translate(0,0)} }
+  .lp { position:relative; border-radius:16px; overflow:hidden; background:#08080c; border:1px solid rgba(255,255,255,.07); color:#e8e8ef; }
+  .lp-blobs { position:absolute; inset:-30%; z-index:0; animation:lpHue 18s linear infinite; }
+  .lp-blob { position:absolute; border-radius:50%; filter:blur(64px); opacity:.55; will-change:transform; }
+  .lp-inner { position:relative; z-index:1; }
+
+  .lp-hero { padding:46px 34px 30px; text-align:center; }
+  .lp-kicker { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#5eead4; opacity:.9; }
+  .lp-h1 { font-size:46px; font-weight:900; margin:10px 0 10px; letter-spacing:.4px;
+           background:linear-gradient(120deg,#99f6e4,#ffffff 46%,#fbcfe8); -webkit-background-clip:text; background-clip:text; color:transparent;
+           filter:drop-shadow(0 2px 20px rgba(94,234,212,.5)); }
+  .lp-tag { color:rgba(232,232,239,.74); font-size:15px; max-width:520px; margin:0 auto; }
+  .lp-stats { display:flex; gap:26px; justify-content:center; margin-top:22px; }
+  .lp-stat b { display:block; font-size:22px; font-weight:800; color:#fff; }
+  .lp-stat span { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(232,232,239,.5); }
+
+  .lp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:14px 28px 30px; }
+  .lp-card { position:relative; border-radius:14px; padding:16px; text-align:left;
+             background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.11);
+             backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); transition:transform .15s, border-color .15s; }
+  .lp-card:hover { transform:translateY(-4px); border-color:rgba(94,234,212,.5); }
+  .lp-card.soon { opacity:.62; }
+  .lp-name { font-size:15px; font-weight:750; color:#fff; margin:0 0 4px; }
+  .lp-desc { font-size:11.5px; line-height:1.45; color:rgba(232,232,239,.66); margin:0 0 12px; min-height:33px; }
+  .lp-meta { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .lp-plats { display:flex; gap:4px; }
+  .lp-pl { font-size:8.5px; letter-spacing:.5px; font-weight:700; padding:2px 6px; border-radius:5px;
+           background:rgba(255,255,255,.07); color:rgba(232,232,239,.8); border:1px solid rgba(255,255,255,.09); }
+  .lp-pill { font-size:9px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; padding:3px 8px; border-radius:20px; }
+  .pill-live { background:rgba(94,234,212,.16); color:#5eead4; border:1px solid rgba(94,234,212,.35); }
+  .pill-beta { background:rgba(251,191,36,.15); color:#fbbf24; border:1px solid rgba(251,191,36,.32); }
+  .pill-wip  { background:rgba(196,181,253,.15); color:#c4b5fd; border:1px solid rgba(196,181,253,.32); }
+  .pill-soon { background:rgba(255,255,255,.07); color:rgba(232,232,239,.55); border:1px solid rgba(255,255,255,.12); }
+  .lp-fork { font-size:8px; color:rgba(232,232,239,.45); margin-left:6px; }
+
+  .lp-support { text-align:center; padding:8px 28px 34px; }
+  .lp-support h4 { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:rgba(232,232,239,.5); margin:0 0 14px; }
+  .lp-supb { display:inline-flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .lp-sup { font-size:12px; font-weight:700; padding:9px 16px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05); color:#e8e8ef; }
+  .lp-sup.primary { background:linear-gradient(120deg,rgba(94,234,212,.22),rgba(196,181,253,.22)); border-color:rgba(94,234,212,.4); }
+</style>
+
+<h2>Wider, slower drift</h2>
+<p class="subtitle">The glows now roam further across the page and move noticeably slower — a calm, lazy drift. Watch for a bit. Want them even slower/wider, or is this the sweet spot?</p>
+
+<div class="lp">
+  <div class="lp-blobs">
+    <div class="lp-blob" style="width:380px;height:380px;left:4%;top:0%;background:#2dd4bf;animation:roamA 50s ease-in-out infinite;"></div>
+    <div class="lp-blob" style="width:420px;height:420px;right:2%;top:2%;background:#a855f7;animation:roamB 62s ease-in-out infinite;"></div>
+    <div class="lp-blob" style="width:340px;height:340px;left:38%;top:44%;background:#f43f5e;animation:roamC 56s ease-in-out infinite;"></div>
+  </div>
+
+  <div class="lp-inner">
+    <div class="lp-hero">
+      <div class="lp-kicker">Anthony Schemel · Open Source</div>
+      <div class="lp-h1">Ants Projects Hub</div>
+      <p class="lp-tag">A home for the things I build — engines, emulation tools, utilities and more. Free, open, and downloadable.</p>
+      <div class="lp-stats">
+        <div class="lp-stat"><b>13</b><span>Projects</span></div>
+        <div class="lp-stat"><b>5</b><span>Live now</span></div>
+        <div class="lp-stat"><b>3</b><span>Platforms</span></div>
+      </div>
+    </div>
+
+    <div class="lp-grid">
+      <div class="lp-card"><p class="lp-name">Vestige Engine</p><p class="lp-desc">A 3D game engine built from scratch — ray-traced rendering, physics & scripting.</p><div class="lp-meta"><span class="lp-pill pill-beta">Beta</span><div class="lp-plats"><span class="lp-pl">WIN</span><span class="lp-pl">LNX</span></div></div></div>
+      <div class="lp-card"><p class="lp-name">Ants Terminal</p><p class="lp-desc">A fast, modern Linux terminal tuned for smoother Claude Code sessions.</p><div class="lp-meta"><span class="lp-pill pill-beta">Beta</span><div class="lp-plats"><span class="lp-pl">LNX</span></div></div></div>
+      <div class="lp-card"><p class="lp-name">RetroDB</p><p class="lp-desc">A web-based ROM library manager for 150+ retro systems with rich metadata.</p><div class="lp-meta"><span class="lp-pill pill-live">Live</span><div class="lp-plats"><span class="lp-pl">WEB</span></div></div></div>
+
+      <div class="lp-card"><p class="lp-name">MAME Curator</p><p class="lp-desc">Picks the best playable arcade games from a MAME set and syncs to RetroArch.</p><div class="lp-meta"><span class="lp-pill pill-live">Live</span><div class="lp-plats"><span class="lp-pl">WIN</span><span class="lp-pl">MAC</span><span class="lp-pl">LNX</span></div></div></div>
+      <div class="lp-card"><p class="lp-name">Perch</p><p class="lp-desc">Remembers every window's size & spot, with snap presets and named layouts.</p><div class="lp-meta"><span class="lp-pill pill-live">Live</span><div class="lp-plats"><span class="lp-pl">LNX</span></div></div></div>
+      <div class="lp-card"><p class="lp-name">RetroArch <span class="lp-fork">· fork</span></p><p class="lp-desc">My fork of the reference libretro frontend for 100+ emulator cores.</p><div class="lp-meta"><span class="lp-pill pill-live">Live</span><div class="lp-plats"><span class="lp-pl">WIN</span><span class="lp-pl">MAC</span><span class="lp-pl">LNX</span></div></div></div>
+
+      <div class="lp-card"><p class="lp-name">Album Builder</p><p class="lp-desc">Curate albums from recordings with lyric-sync and PDF/HTML reports.</p><div class="lp-meta"><span class="lp-pill pill-beta">Beta</span><div class="lp-plats"><span class="lp-pl">LNX</span></div></div></div>
+      <div class="lp-card"><p class="lp-name">Snatch</p><p class="lp-desc">A friendly desktop frontend for yt-dlp — search, queue, grab, inspect.</p><div class="lp-meta"><span class="lp-pill pill-live">Live</span><div class="lp-plats"><span class="lp-pl">WIN</span><span class="lp-pl">LNX</span><span class="lp-pl">MAC</span></div></div></div>
+      <div class="lp-card"><p class="lp-name">DOOM Ants</p><p class="lp-desc">A ray-traced reimagining of id's DOOM on modern 64-bit Linux.</p><div class="lp-meta"><span class="lp-pill pill-wip">Early WIP</span><div class="lp-plats"><span class="lp-pl">LNX</span></div></div></div>
+
+      <div class="lp-card soon"><p class="lp-name">Slipcase</p><p class="lp-desc">Turns flat 2D game covers into realistic 3D box renders.</p><div class="lp-meta"><span class="lp-pill pill-soon">Coming soon</span><div class="lp-plats"><span class="lp-pl">LNX</span></div></div></div>
+      <div class="lp-card soon"><p class="lp-name">Contact List</p><p class="lp-desc">A secure contact manager with Google Contacts sync.</p><div class="lp-meta"><span class="lp-pill pill-soon">Coming soon</span><div class="lp-plats"><span class="lp-pl">LNX</span></div></div></div>
+      <div class="lp-card soon"><p class="lp-name">Rolodex</p><p class="lp-desc">An encrypted GTK4 credential vault with auto-masking.</p><div class="lp-meta"><span class="lp-pill pill-soon">Coming soon</span><div class="lp-plats"><span class="lp-pl">LNX</span></div></div></div>
+    </div>
+
+    <div class="lp-support">
+      <h4>Support the work</h4>
+      <div class="lp-supb">
+        <span class="lp-sup primary">♥ GitHub Sponsors</span>
+        <span class="lp-sup">Patreon <em style="opacity:.5;font-style:normal;">· soon</em></span>
+        <span class="lp-sup">Buy Me a Coffee <em style="opacity:.5;font-style:normal;">· soon</em></span>
+      </div>
+    </div>
+  </div>
+</div>

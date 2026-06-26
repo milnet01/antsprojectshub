@@ -1,0 +1,106 @@
+<style>
+  @keyframes flow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes hueShift { to { filter: hue-rotate(360deg) } }
+  .mk { border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.08); box-shadow:0 10px 30px rgba(0,0,0,.45); }
+  .mk-hero { height:96px; display:flex; flex-direction:column; justify-content:center; padding:0 16px; }
+  .mk-title { font-weight:800; font-size:15px; color:#fff; letter-spacing:.3px; text-shadow:0 1px 6px rgba(0,0,0,.4); }
+  .mk-sub { font-size:9px; color:rgba(255,255,255,.82); margin-top:2px; }
+  .mk-grid { display:flex; gap:7px; padding:11px; }
+  .mk-card { flex:1; height:46px; border-radius:7px; padding:7px; }
+  .ln { border-radius:3px; height:4px; margin-top:5px; background:rgba(255,255,255,.16); }
+  .ln.short{ width:55%; height:5px; margin-top:0; }
+  .ln.med{ width:85%; } .ln.sm{ width:68%; background:rgba(255,255,255,.10); }
+  .style-name { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; opacity:.6; }
+</style>
+
+<h2>Pick a visual direction</h2>
+<p class="subtitle">All four are dark with "flowing" animated colour — the gradients gently shift on their own. They differ in mood and palette. Watch them move for a moment, then click the one that feels most "you". You can also tell me to mix ideas (e.g. "Aurora colours but Mesh's frosted cards").</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="aurora" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:14px;background:transparent;">
+      <div class="mk" style="background:#0b1020;">
+        <div class="mk-hero" style="background:linear-gradient(120deg,#06b6d4,#6366f1,#d946ef,#06b6d4);background-size:300% 300%;animation:flow 9s ease infinite;">
+          <div class="mk-title">Ants Projects Hub</div>
+          <div class="mk-sub">13 projects · one home</div>
+        </div>
+        <div class="mk-grid">
+          <div class="mk-card" style="background:rgba(255,255,255,.04);border:1px solid rgba(34,211,238,.30);"><div class="ln short" style="background:#22d3ee;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+          <div class="mk-card" style="background:rgba(255,255,255,.04);border:1px solid rgba(99,102,241,.30);"><div class="ln short" style="background:#818cf8;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+          <div class="mk-card" style="background:rgba(255,255,255,.04);border:1px solid rgba(217,70,239,.30);"><div class="ln short" style="background:#e879f9;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <span class="style-name">Option A</span>
+      <h3>Aurora</h3>
+      <p>Deep navy-slate with a cyan → indigo → magenta northern-lights glow. Cool, calm, techy. Reads as polished and modern.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="ember" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:14px;background:transparent;">
+      <div class="mk" style="background:#15100f;">
+        <div class="mk-hero" style="background:linear-gradient(120deg,#db2777,#f97316,#f59e0b,#db2777);background-size:300% 300%;animation:flow 9s ease infinite;">
+          <div class="mk-title">Ants Projects Hub</div>
+          <div class="mk-sub">13 projects · one home</div>
+        </div>
+        <div class="mk-grid">
+          <div class="mk-card" style="background:rgba(255,255,255,.04);border:1px solid rgba(251,146,60,.30);"><div class="ln short" style="background:#fb923c;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+          <div class="mk-card" style="background:rgba(255,255,255,.04);border:1px solid rgba(244,63,94,.30);"><div class="ln short" style="background:#fb7185;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+          <div class="mk-card" style="background:rgba(255,255,255,.04);border:1px solid rgba(245,158,11,.30);"><div class="ln short" style="background:#fbbf24;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <span class="style-name">Option B</span>
+      <h3>Sunset Ember</h3>
+      <p>Warm charcoal with a magenta → orange → amber flow. Energetic and bold — feels lively and inviting rather than corporate.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="arcade" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:14px;background:transparent;">
+      <div class="mk" style="background:#0d0717;">
+        <div class="mk-hero" style="position:relative;background:linear-gradient(120deg,#ec4899,#8b5cf6,#22d3ee,#ec4899);background-size:300% 300%;animation:flow 8s ease infinite;">
+          <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.10) 0 1px,transparent 1px 22px),repeating-linear-gradient(0deg,rgba(255,255,255,.10) 0 1px,transparent 1px 22px);"></div>
+          <div class="mk-title" style="position:relative;">Ants Projects Hub</div>
+          <div class="mk-sub" style="position:relative;">13 projects · one home</div>
+        </div>
+        <div class="mk-grid">
+          <div class="mk-card" style="background:rgba(236,72,153,.06);border:1px solid rgba(236,72,153,.35);"><div class="ln short" style="background:#f472b6;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+          <div class="mk-card" style="background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.35);"><div class="ln short" style="background:#a78bfa;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+          <div class="mk-card" style="background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.35);"><div class="ln short" style="background:#22d3ee;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <span class="style-name">Option C</span>
+      <h3>Neon Arcade</h3>
+      <p>Purple-black with hot-pink &amp; electric-cyan neon and a faint grid. Retro-futuristic — nods to the emulation/retro-gaming projects (RetroArch, DOOM, MAME).</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="mesh" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:14px;background:transparent;">
+      <div class="mk" style="background:#08080c;">
+        <div class="mk-hero" style="animation:hueShift 14s linear infinite;background:radial-gradient(circle at 22% 35%,#2dd4bf,transparent 45%),radial-gradient(circle at 78% 22%,#a855f7,transparent 46%),radial-gradient(circle at 55% 85%,#f43f5e,transparent 45%),#0c0c16;">
+          <div class="mk-title">Ants Projects Hub</div>
+          <div class="mk-sub">13 projects · one home</div>
+        </div>
+        <div class="mk-grid">
+          <div class="mk-card" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);"><div class="ln short" style="background:#5eead4;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+          <div class="mk-card" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);"><div class="ln short" style="background:#c4b5fd;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+          <div class="mk-card" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);"><div class="ln short" style="background:#fda4af;"></div><div class="ln med"></div><div class="ln sm"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <span class="style-name">Option D</span>
+      <h3>Mesh Glow</h3>
+      <p>Near-black with soft blurred colour "blobs" that slowly shift hue, and frosted-glass cards. The clean, premium look you see on modern app landing pages.</p>
+    </div>
+  </div>
+
+</div>
