@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ants Projects Hub">
+  <defs>
+    <linearGradient id="ant" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5eead4"/>
+      <stop offset="0.55" stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="15" fill="#0b0b14"/>
+  <rect width="64" height="64" rx="15" fill="url(#glow)"/>
+
+  <!-- legs + antennae -->
+  <g fill="none" stroke="#5eead4" stroke-width="2.4" stroke-linecap="round" opacity="0.95">
+    <path d="M30 14 C 25 7, 21 7, 18 10"/>
+    <path d="M34 14 C 39 7, 43 7, 46 10"/>
+    <path d="M27 27 C 18 23, 14 21, 9 23"/>
+    <path d="M27 31 C 17 31, 13 32, 8 35"/>
+    <path d="M27 35 C 18 39, 14 42, 10 46"/>
+    <path d="M37 27 C 46 23, 50 21, 55 23"/>
+    <path d="M37 31 C 47 31, 51 32, 56 35"/>
+    <path d="M37 35 C 46 39, 50 42, 54 46"/>
+  </g>
+
+  <!-- body: head, thorax, abdomen -->
+  <g fill="url(#ant)">
+    <circle cx="32" cy="18" r="6.6"/>
+    <ellipse cx="32" cy="30" rx="5.6" ry="6.6"/>
+    <ellipse cx="32" cy="45" rx="10.5" ry="13"/>
+  </g>
+  <!-- eye glints -->
+  <circle cx="30" cy="17" r="1.1" fill="#0b0b14" opacity="0.55"/>
+  <circle cx="34" cy="17" r="1.1" fill="#0b0b14" opacity="0.55"/>
+</svg>
