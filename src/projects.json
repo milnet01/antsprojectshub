@@ -159,7 +159,6 @@
   ],
   "support": [
     { "label": "GitHub Sponsors", "url": "https://github.com/sponsors/milnet01" },
-    { "label": "Patreon", "url": null },
-    { "label": "Buy Me a Coffee", "url": null }
+    { "label": "Patreon", "url": null }
   ]
 }
