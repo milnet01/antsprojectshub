@@ -243,7 +243,11 @@ function actionButtons(p, hasRelease) {
   const buttons = [];
   const desktop = p.platforms.filter((pl) => pl !== "web");
   if (p.platforms.includes("web")) {
-    buttons.push(ext(p.homepage || repoUrl(p.repo), `Open ${p.name}`, "btn btn--primary"));
+    // A "web app" here means self-hosted: you download it and run it locally.
+    const webUrl = hasRelease ? releasesUrl(p.repo) : p.homepage || repoUrl(p.repo);
+    buttons.push(
+      ext(webUrl, hasRelease ? "Download · Self-host" : "Get it on GitHub", "btn btn--primary")
+    );
   }
   if (hasRelease && desktop.length) {
     desktop.forEach((pl, i) =>

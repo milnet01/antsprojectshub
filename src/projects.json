@@ -103,7 +103,7 @@
       "blurb": "A two-stage modernisation of the 1997 DOOM source: first bringing the ancient code to SDL2 on 64-bit Linux, then evolving the renderer toward true 3D with hardware ray tracing, dynamic lighting and volumetric effects — while keeping the original's feel. Early days.",
       "status": "wip",
       "repo": "milnet01/DOOM_Ants",
-      "platforms": ["linux"],
+      "platforms": ["win", "linux"],
       "isFork": true,
       "upstream": "id-Software/DOOM",
       "homepage": null
