@@ -22,9 +22,9 @@
   --rose: #fda4af;
 
   /* Blob colours */
-  --blob-1: #2dd4bf;
-  --blob-2: #a855f7;
-  --blob-3: #f43f5e;
+  --blob-1: #0f766e;
+  --blob-2: #6d28d9;
+  --blob-3: #9f1239;
 
   /* Status colours */
   --live: #5eead4;
@@ -321,9 +321,9 @@ main {
 a.card:hover {
   text-decoration: none;
   transform: translateY(-6px) scale(1.015);
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(8, 8, 12, 0.62);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
   border-color: var(--teal);
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(94, 234, 212, 0.55), 0 10px 46px rgba(94, 234, 212, 0.28);
