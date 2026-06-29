@@ -157,6 +157,29 @@ main {
   mix-blend-mode: overlay;
 }
 
+/* Readability scrim: a dark wash over the blobs so roaming colour can't
+   wash out the copy. A flat base darkens the whole field (protects text at
+   any width / scroll position) with an extra boost down the centre column
+   where the content lives, while the far edges keep more of the glow.
+   Sits above .bg-blobs (z-index 0, later in DOM) but below all content
+   (header/main/footer are position:relative with z-index >= 1). */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 8, 12, 0) 0%,
+      rgba(8, 8, 12, 0.34) 30%,
+      rgba(8, 8, 12, 0.34) 70%,
+      rgba(8, 8, 12, 0) 100%
+    ),
+    rgba(8, 8, 12, 0.46);
+}
+
 @keyframes roam-a {
   0% { transform: translate(0, 0); }
   18% { transform: translate(34vw, 18vh); }
