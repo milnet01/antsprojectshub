@@ -259,10 +259,24 @@ body::after {
 }
 .hero h1 {
   margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.55rem, 2vw, 1rem);
+  flex-wrap: wrap;
   font-size: clamp(2.3rem, 7vw, 3.4rem);
   font-weight: 900;
   letter-spacing: 0.4px;
   line-height: 1.05;
+}
+.hero__logo {
+  flex: none;
+  width: clamp(46px, 9vw, 72px);
+  height: auto;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.55));
+}
+/* Gradient + flow live on the text span so they don't clip/recolour the logo */
+.hero__brand {
   background: linear-gradient(
     90deg,
     #ccfbf1,
@@ -764,7 +778,7 @@ a.card:hover .card__name {
 @media (prefers-reduced-motion: reduce) {
   .blob,
   .bg-blobs::after,
-  .hero h1 {
+  .hero__brand {
     animation: none !important;
   }
   * {

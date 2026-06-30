@@ -248,7 +248,7 @@ ${cards}
   const content = `
     <section class="hero">
       <p class="kicker">Anthony Schemel · Open Source</p>
-      <h1>Ants Projects Hub</h1>
+      <h1><img class="hero__logo" src="/assets/img/favicon.svg" alt="" width="64" height="64"><span class="hero__brand">Ants Projects Hub</span></h1>
       <p class="tagline">A home for the things I build — engines, emulation tools,
         utilities and more. Free, open, and downloadable.</p>
       <div class="stats">
