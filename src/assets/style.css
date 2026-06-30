@@ -567,6 +567,173 @@ a.card:hover .card__name {
   color: var(--text-muted);
 }
 
+/* ---- Jump nav (anchor links) ---- */
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.75rem;
+}
+.jump a {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text-muted);
+}
+.jump a:hover {
+  text-decoration: none;
+  border-color: var(--teal);
+  color: var(--text);
+}
+/* Anchored sections shouldn't butt against the very top when jumped to */
+.theme,
+.support,
+.shots-sec,
+.panel {
+  scroll-margin-top: 1.25rem;
+}
+
+/* ---- Landing theme groups ---- */
+.theme .grid {
+  margin-bottom: 1.5rem;
+}
+
+/* ---- Screenshots: pure-CSS swipe strip (no JS) ---- */
+.shots {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(82%, 440px);
+  gap: var(--gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.6rem;
+  scrollbar-width: thin;
+}
+.shot {
+  scroll-snap-align: start;
+  display: block;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+}
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.shot:hover {
+  border-color: var(--teal);
+}
+
+/* ---- Mirrored fading brackets on the README / changelog panels ----
+   Each panel drops its uniform border for an L-shaped accent that fades out:
+   README anchors top-LEFT (teal), changelog mirrors it top-RIGHT (violet).
+   The frosted fill still bounds the panel; the bracket is pure decoration. */
+.panel--readme,
+.panel--changelog {
+  position: relative;
+  border: none;
+}
+.panel--readme::before,
+.panel--readme::after,
+.panel--changelog::before,
+.panel--changelog::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.panel--readme::before {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), transparent 72%);
+}
+.panel--readme::after {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--teal), transparent 72%);
+}
+.panel--changelog::before {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(270deg, var(--violet), transparent 72%);
+}
+.panel--changelog::after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--violet), transparent 72%);
+}
+/* Heading mirrors the bracket side; body prose stays left-aligned for legibility */
+.panel--changelog .section-label {
+  text-align: right;
+}
+
+/* ---- "Read the full guide" reveal (no-JS <details>) ---- */
+.reveal__lede {
+  position: relative;
+}
+.reveal__lede::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4.5rem;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
+}
+/* Expanded: drop the fade so the lede flows into the rest. :has() unsupported →
+   the fade simply stays (cosmetic only; all text remains readable). */
+.panel--readme:has(.reveal[open]) .reveal__lede::after {
+  opacity: 0;
+}
+.reveal {
+  margin-top: 0.25rem;
+}
+.reveal__btn {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  font-weight: 700;
+  color: var(--teal);
+  list-style: none;
+}
+.reveal__btn::-webkit-details-marker {
+  display: none;
+}
+.reveal__btn::after {
+  content: "▾";
+  font-size: 0.85em;
+  transition: transform 0.2s var(--ease);
+}
+.reveal[open] .reveal__btn::after {
+  transform: rotate(180deg);
+}
+.reveal__less {
+  display: none;
+}
+.reveal[open] .reveal__more {
+  display: none;
+}
+.reveal[open] .reveal__less {
+  display: inline;
+}
+
 /* ---- 404 ---- */
 .notfound {
   text-align: center;

@@ -10,7 +10,9 @@
       "platforms": ["win", "linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "engines",
+      "screenshots": []
     },
     {
       "slug": "ants-terminal",
@@ -22,7 +24,9 @@
       "platforms": ["linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "utilities",
+      "screenshots": []
     },
     {
       "slug": "retrodb",
@@ -34,7 +38,9 @@
       "platforms": ["win", "mac", "linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "emulation",
+      "screenshots": []
     },
     {
       "slug": "mame-curator",
@@ -46,7 +52,9 @@
       "platforms": ["win", "mac", "linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "emulation",
+      "screenshots": []
     },
     {
       "slug": "perch",
@@ -58,7 +66,9 @@
       "platforms": ["linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": "https://flathub.org/apps/details/io.github.milnet01.perch"
+      "homepage": "https://flathub.org/apps/details/io.github.milnet01.perch",
+      "category": "utilities",
+      "screenshots": []
     },
     {
       "slug": "retroarch",
@@ -70,7 +80,9 @@
       "platforms": ["win", "mac", "linux"],
       "isFork": true,
       "upstream": "libretro/RetroArch",
-      "homepage": null
+      "homepage": null,
+      "category": "emulation",
+      "screenshots": []
     },
     {
       "slug": "album-builder",
@@ -82,7 +94,9 @@
       "platforms": ["linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "media",
+      "screenshots": []
     },
     {
       "slug": "snatch",
@@ -94,7 +108,9 @@
       "platforms": ["win", "mac", "linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "media",
+      "screenshots": []
     },
     {
       "slug": "doom-ants",
@@ -106,7 +122,9 @@
       "platforms": ["win", "linux"],
       "isFork": true,
       "upstream": "id-Software/DOOM",
-      "homepage": null
+      "homepage": null,
+      "category": "engines",
+      "screenshots": []
     },
     {
       "slug": "slipcase",
@@ -118,7 +136,9 @@
       "platforms": ["linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "emulation",
+      "screenshots": []
     },
     {
       "slug": "contact-list",
@@ -130,7 +150,9 @@
       "platforms": ["linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "utilities",
+      "screenshots": []
     },
     {
       "slug": "rolodex",
@@ -142,7 +164,9 @@
       "platforms": ["linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": null
+      "homepage": null,
+      "category": "utilities",
+      "screenshots": []
     },
     {
       "slug": "rusty-psn",
@@ -154,7 +178,9 @@
       "platforms": ["win", "mac", "linux"],
       "isFork": true,
       "upstream": "RainbowCookie32/rusty-psn",
-      "homepage": null
+      "homepage": null,
+      "category": "emulation",
+      "screenshots": []
     }
   ],
   "support": [

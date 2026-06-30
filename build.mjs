@@ -25,6 +25,17 @@ const STATUS = {
 const PLATFORM = { win: "Windows", mac: "macOS", linux: "Linux", web: "Web" };
 const PLAT_SHORT = { win: "WIN", mac: "MAC", linux: "LNX", web: "WEB" };
 
+// Landing-page grouping: projects are split into themed sections (the jump-nav
+// anchors), and sorted by status within each theme so finished work leads.
+const CATEGORY = {
+  engines: { label: "Engines & Graphics", id: "engines" },
+  emulation: { label: "Emulation & Retro", id: "emulation" },
+  media: { label: "Media", id: "media" },
+  utilities: { label: "Desktop Utilities", id: "utilities" },
+};
+const CATEGORY_ORDER = ["engines", "emulation", "media", "utilities"];
+const STATUS_ORDER = { live: 0, beta: 1, wip: 2, soon: 3 };
+
 const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
 // Releases LIST page — always valid and shows pre-releases too (unlike /releases/latest,
 // whose web page 404s for a repo that only has pre-releases).
@@ -74,7 +85,7 @@ function renderSupport(support) {
       )} <span class="note">· soon</span></span>`;
     })
     .join("");
-  return `<section class="support" aria-labelledby="support-h">
+  return `<section class="support" id="support" aria-labelledby="support-h">
       <h2 class="section-label" id="support-h">Support the work</h2>
       <div class="support__row">${btns}</div>
     </section>`;
@@ -212,7 +223,28 @@ function pickAsset(assets, pl) {
 // --------------------------------------------------------------- page builders
 function landingPage(projects, support) {
   const stats = computeStats(projects);
-  const cards = projects.map(renderCard).join("\n");
+  const present = CATEGORY_ORDER.filter((c) => projects.some((p) => p.category === c));
+  const jump = `<nav class="jump" aria-label="Jump to a section">
+${present
+    .map((c) => `      <a href="#${CATEGORY[c].id}">${esc(CATEGORY[c].label)}</a>`)
+    .join("\n")}
+      <a href="#support">Support</a>
+    </nav>`;
+  const groups = present
+    .map((c) => {
+      const cards = projects
+        .filter((p) => p.category === c)
+        .sort((a, b) => (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9))
+        .map(renderCard)
+        .join("\n");
+      return `    <section class="theme" id="${CATEGORY[c].id}" aria-labelledby="${CATEGORY[c].id}-h">
+      <h2 class="section-label" id="${CATEGORY[c].id}-h">${esc(CATEGORY[c].label)}</h2>
+      <div class="grid">
+${cards}
+      </div>
+    </section>`;
+    })
+    .join("\n");
   const content = `
     <section class="hero">
       <p class="kicker">Anthony Schemel · Open Source</p>
@@ -225,10 +257,8 @@ function landingPage(projects, support) {
         <div class="stat"><b>3</b><span>Desktop OSes</span></div>
       </div>
     </section>
-    <h2 class="section-label">Projects</h2>
-    <section class="grid" aria-label="Projects">
-${cards}
-    </section>
+    ${jump}
+${groups}
     ${renderSupport(support)}`;
   return basePage({
     title: "Ants Projects Hub",
@@ -289,6 +319,65 @@ function actionButtons(p, release) {
   return `<div class="actions">${buttons.join("")}</div>`;
 }
 
+// Curated screenshot gallery (pure-CSS swipe strip — no JS ships). Each entry is
+// { src, alt }: src is relative to assets/img/, alt is required for accessibility.
+// Clicking a shot opens the full-size image in a new tab. Empty/absent → no section.
+function renderScreenshots(p) {
+  const shots = Array.isArray(p.screenshots) ? p.screenshots : [];
+  if (!shots.length) return "";
+  const items = shots
+    .map((s) => {
+      const src = `/assets/img/${esc(s.src)}`;
+      return `<a class="shot" href="${src}" target="_blank" rel="noopener noreferrer"><img src="${src}" alt="${esc(
+        s.alt || `${p.name} screenshot`
+      )}" loading="lazy"></a>`;
+    })
+    .join("");
+  return `<section class="shots-sec" id="screenshots" aria-labelledby="shots-h">
+      <h2 class="section-label" id="shots-h">Screenshots</h2>
+      <div class="shots">${items}</div>
+    </section>`;
+}
+
+// Split the rendered README into an always-visible lede (title + intro, up to the
+// first section heading) and the remainder, tucked behind a no-JS <details> reveal.
+// Headings are demoted one level, so a README's `# Title` is an <h2> and its first
+// `## Section` is an <h3>: we split on the SECOND heading of any level (the first real
+// section). Falls back to "show everything, no reveal" when there's only one heading.
+function splitReadme(html) {
+  const re = /<h[2-6][\s>]/gi;
+  const at = [];
+  let m;
+  while ((m = re.exec(html)) && at.length < 2) at.push(m.index);
+  if (at.length < 2) return { lede: html, rest: "" };
+  return { lede: html.slice(0, at[1]), rest: html.slice(at[1]) };
+}
+
+function readmePanel(p, readmeHtml) {
+  const { lede, rest } = splitReadme(readmeHtml);
+  const inner = rest
+    ? `<div class="prose reveal__lede">${lede}</div>
+        <details class="reveal">
+          <summary class="reveal__btn"><span class="reveal__more">Read the full guide</span><span class="reveal__less">Show less</span></summary>
+          <div class="prose">${rest}</div>
+        </details>`
+    : `<div class="prose">${lede}</div>`;
+  return `<section class="panel panel--readme" id="about" aria-labelledby="readme-h">
+        <h2 class="section-label" id="readme-h">About ${esc(p.name)}</h2>
+        ${inner}
+      </section>`;
+}
+
+function changelogPanel(p, release) {
+  return `<section class="panel panel--changelog" id="whatsnew" aria-labelledby="cl-h">
+        <h2 class="section-label" id="cl-h">What's new · ${esc(release.version)}</h2>
+        <div class="prose">${release.notesHtml || "<p>See the release on GitHub.</p>"}</div>
+        <p><a href="${esc(
+          releasesUrl(p.repo)
+        )}" target="_blank" rel="noopener noreferrer">All releases on GitHub →</a></p>
+      </section>`;
+}
+
 function projectPage(p, { readmeHtml, release }) {
   const published = isPublished(p);
   const hasRelease = Boolean(release);
@@ -308,25 +397,36 @@ function projectPage(p, { readmeHtml, release }) {
       p.blurb
     )} This project isn't published yet — check back, or follow along on GitHub.</div>`;
   } else if (readmeHtml) {
-    const changelog = hasRelease
-      ? `<section class="panel" aria-labelledby="cl-h">
-          <h2 class="section-label" id="cl-h">What's new · ${esc(release.version)}</h2>
-          <div class="prose">${release.notesHtml || "<p>See the release on GitHub.</p>"}</div>
-          <p><a href="${esc(releasesUrl(p.repo))}" target="_blank" rel="noopener noreferrer">All releases on GitHub →</a></p>
-        </section>`
+    // README ("About") first, then the changelog ("What's new") — newcomers read what
+    // the project is before what changed last release.
+    const whatsNew = hasRelease
+      ? changelogPanel(p, release)
       : `<p><a class="btn btn--ghost" href="${esc(
           releasesUrl(p.repo)
         )}" target="_blank" rel="noopener noreferrer">Latest release on GitHub →</a></p>`;
-    body = `${changelog}
-      <section class="panel" aria-labelledby="readme-h">
-        <h2 class="section-label" id="readme-h">About ${esc(p.name)}</h2>
-        <div class="prose">${readmeHtml}</div>
-      </section>`;
+    body = `${readmePanel(p, readmeHtml)}
+      ${whatsNew}`;
   } else {
     body = `<div class="callout">${esc(
       p.blurb
     )} <a href="${esc(repoUrl(p.repo))}" target="_blank" rel="noopener noreferrer">Read more on GitHub →</a></div>`;
   }
+
+  // Screenshots lead the page (the hook), then the body. Jump nav only links to
+  // sections that actually exist on this page.
+  const shotsHtml = renderScreenshots(p);
+  const navTargets = [];
+  if (shotsHtml) navTargets.push(["screenshots", "Screenshots"]);
+  if (published && readmeHtml) {
+    navTargets.push(["about", "About"]);
+    if (hasRelease) navTargets.push(["whatsnew", "What's new"]);
+  }
+  const jump =
+    navTargets.length >= 2
+      ? `<nav class="jump" aria-label="Jump to a section">${navTargets
+          .map(([id, label]) => `<a href="#${id}">${esc(label)}</a>`)
+          .join("")}</nav>`
+      : "";
 
   const content = `
     <section class="detail-head">
@@ -337,6 +437,8 @@ function projectPage(p, { readmeHtml, release }) {
       <div class="detail-sub">${statusPill(p)}${platformTags(p)}${version}</div>
       ${actionButtons(p, release)}
     </section>
+    ${jump}
+    ${shotsHtml}
     ${body}`;
 
   return basePage({
