@@ -146,7 +146,7 @@
       "tagline": "A secure contact manager with Google Contacts sync.",
       "blurb": "A desktop contact manager for people and companies: search, custom fields, and two-way sync with Google Contacts, built with a security-first design.",
       "status": "soon",
-      "repo": null,
+      "repo": "milnet01/contact-list",
       "platforms": ["linux"],
       "isFork": false,
       "upstream": null,
