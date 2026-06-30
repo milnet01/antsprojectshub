@@ -393,9 +393,16 @@ function projectPage(p, { readmeHtml, release }) {
 
   let body;
   if (!published) {
+    // Most "soon" projects have no repo yet; Fin Break and any future ones with a public
+    // repo get a real "follow development" link instead of a dead GitHub mention.
+    const follow = p.repo
+      ? ` <a href="${esc(
+          repoUrl(p.repo)
+        )}" target="_blank" rel="noopener noreferrer">Follow development on GitHub →</a>`
+      : "";
     body = `<div class="callout"><strong>Coming soon.</strong> ${esc(
       p.blurb
-    )} This project isn't published yet — check back, or follow along on GitHub.</div>`;
+    )} This project isn't published for download yet — check back soon.${follow}</div>`;
   } else if (readmeHtml) {
     // README ("About") first, then the changelog ("What's new") — newcomers read what
     // the project is before what changed last release.
