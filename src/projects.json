@@ -124,7 +124,11 @@
       "upstream": "id-Software/DOOM",
       "homepage": null,
       "category": "engines",
-      "screenshots": []
+      "screenshots": [
+        { "src": "shots/doom-ants-title.png", "alt": "The classic DOOM title screen with the New Game menu, rendered by DOOM Ants" },
+        { "src": "shots/doom-ants-classic-widescreen.png", "alt": "Classic DOOM gameplay in a widescreen view — a marine facing a computer-room level over a blue floor" },
+        { "src": "shots/doom-ants-raytraced.png", "alt": "The same DOOM level with hardware ray tracing — realistic shadows and dynamic lighting darkening the room" }
+      ]
     },
     {
       "slug": "slipcase",
