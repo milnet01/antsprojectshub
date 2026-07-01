@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Source for **[antsprojectshub.co.za](https://antsprojectshub.co.za)** — a static showcase
 site for Anthony Schemel's projects. It is a small Node build-time static-site generator:
-no client-side JavaScript ships, and `dist/` is generated, never hand-edited (it is
+the only client-side JavaScript is one tiny progressive-enhancement script
+(`assets/lightbox.js`, keyboard shortcuts for the screenshot lightbox — see below),
+loaded only on pages that have a gallery. `dist/` is generated, never hand-edited (it is
 `.gitignore`d and rebuilt in CI).
 
 ## Build & preview
@@ -59,11 +61,16 @@ The whole pipeline is three files. Data flows: `projects.json` → `build.mjs` �
   shared by both the README and release-note paths so they can't drift). Links get
   `rel="noopener noreferrer nofollow"` + `target="_blank"`; relative URLs are absolutized
   against the source repo. Do not loosen the allowlist or skip sanitisation.
-- **`marked` and `sanitize-html` are build-time only** — never ship them or any JS to
-  visitors. The output is pure static HTML/CSS.
+- **`marked` and `sanitize-html` are build-time only** — never ship them to visitors. The
+  output is static HTML/CSS plus a single hand-written progressive-enhancement script
+  (`src/assets/lightbox.js`, ~1 KB): keyboard shortcuts (Esc / ← / →) for the screenshot
+  lightbox, since CSS alone can't listen for key presses. The lightbox works fully without
+  it (✕, click-outside, Back) — keep it that way, and don't add further client JS lightly.
+  It's loaded only on gallery pages, via `basePage({ lightbox: true })`.
 - **Security headers ship via `<meta>`** (GitHub Pages can't set HTTP headers): a strict CSP
-  (no inline scripts/styles), `referrer: no-referrer`, `nosniff`. The emitter must not
-  introduce inline `<script>`/`<style>` or the CSP breaks.
+  (`script-src 'self'`, no inline scripts/styles), `referrer: no-referrer`, `nosniff`. The
+  self-hosted `lightbox.js` is allowed by `script-src 'self'`; **inline** `<script>`/`<style>`
+  still break the CSP — never introduce them.
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative so a source tarball isn't mistaken for a Linux binary), falling
   back to `homepage` → Releases page → repo home.

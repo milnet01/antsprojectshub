@@ -484,6 +484,7 @@ function projectPage(p, { readmeHtml, release }) {
     canonical: published ? `${ORIGIN}/p/${p.slug}.html` : undefined,
     content,
     back: true,
+    lightbox: Boolean(shotsHtml),
   });
 }
 
