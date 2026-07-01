@@ -319,23 +319,53 @@ function actionButtons(p, release) {
   return `<div class="actions">${buttons.join("")}</div>`;
 }
 
-// Curated screenshot gallery (pure-CSS swipe strip — no JS ships). Each entry is
-// { src, alt }: src is relative to assets/img/, alt is required for accessibility.
-// Clicking a shot opens the full-size image in a new tab. Empty/absent → no section.
+// Curated screenshot gallery (pure-CSS, no JS ships). Each entry is { src, alt }:
+// src is relative to assets/img/, alt is required for accessibility. Thumbnails sit
+// in a responsive grid (all visible — scales from 2 to 20+ shots); clicking one opens
+// a full-screen :target lightbox with a ✕ close, backdrop-click close, and ‹ / › prev-
+// next (wrap-around). No JS, so ESC can't close it — the visible controls and the
+// browser Back button do. Empty/absent screenshots → no section at all.
 function renderScreenshots(p) {
   const shots = Array.isArray(p.screenshots) ? p.screenshots : [];
   if (!shots.length) return "";
-  const items = shots
-    .map((s) => {
+  const n = shots.length;
+  const lbId = (i) => `lb-${p.slug}-${i + 1}`;
+
+  const thumbs = shots
+    .map((s, i) => {
       const src = `/assets/img/${esc(s.src)}`;
-      return `<a class="shot" href="${src}" target="_blank" rel="noopener noreferrer"><img src="${src}" alt="${esc(
-        s.alt || `${p.name} screenshot`
-      )}" loading="lazy"></a>`;
+      const alt = esc(s.alt || `${p.name} screenshot`);
+      return `<a class="shot" href="#${lbId(i)}" aria-label="Enlarge screenshot ${i + 1} of ${n}: ${alt}"><img src="${src}" alt="${alt}" loading="lazy"></a>`;
     })
     .join("");
+
+  // One lightbox panel per shot. Prev/next wrap around, so navigation always works
+  // (even with 2 shots); with a single shot the arrows are omitted.
+  const boxes = shots
+    .map((s, i) => {
+      const src = `/assets/img/${esc(s.src)}`;
+      const alt = esc(s.alt || `${p.name} screenshot`);
+      const nav =
+        n > 1
+          ? `<a class="lightbox__nav lightbox__prev" href="#${lbId((i - 1 + n) % n)}" aria-label="Previous screenshot">‹</a>` +
+            `<a class="lightbox__nav lightbox__next" href="#${lbId((i + 1) % n)}" aria-label="Next screenshot">›</a>`
+          : "";
+      return `<div class="lightbox" id="${lbId(i)}" role="dialog" aria-label="Screenshot ${i + 1} of ${n}: ${alt}">
+          <a class="lightbox__backdrop" href="#screenshots" aria-label="Close screenshot viewer" tabindex="-1"></a>
+          <figure class="lightbox__inner">
+            <img class="lightbox__img" src="${src}" alt="${alt}">
+            <figcaption class="lightbox__cap"><span class="lightbox__count">${i + 1} / ${n}</span>${alt}</figcaption>
+          </figure>
+          <a class="lightbox__close" href="#screenshots" aria-label="Close screenshot viewer">✕</a>
+          ${nav}
+        </div>`;
+    })
+    .join("");
+
   return `<section class="shots-sec" id="screenshots" aria-labelledby="shots-h">
       <h2 class="section-label" id="shots-h">Screenshots</h2>
-      <div class="shots">${items}</div>
+      <div class="shots">${thumbs}</div>
+      <div class="lightboxes">${boxes}</div>
     </section>`;
 }
 

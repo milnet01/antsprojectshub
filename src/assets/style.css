@@ -616,32 +616,129 @@ a.card:hover .card__name {
   margin-bottom: 1.5rem;
 }
 
-/* ---- Screenshots: pure-CSS swipe strip (no JS) ---- */
+/* ---- Screenshots: responsive thumbnail grid (no JS) ----
+   auto-fill keeps tiles a consistent size whatever the count — 2 shots or 20 — so
+   nothing hides off-screen and there's no strip to scroll. Each tile opens a
+   :target lightbox (below). */
 .shots {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: min(82%, 440px);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--gap);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 0.6rem;
-  scrollbar-width: thin;
 }
 .shot {
-  scroll-snap-align: start;
   display: block;
+  aspect-ratio: 16 / 9;
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--surface-border);
   background: var(--surface);
+  cursor: zoom-in;
 }
 .shot img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
 }
 .shot:hover {
   border-color: var(--teal);
+}
+
+/* ---- Screenshot lightbox: pure-CSS :target overlay (no JS) ----
+   Hidden until its id is the URL fragment. visibility:hidden keeps the off-state
+   non-interactive and out of the tab order; only the open panel's controls focus.
+   Close / backdrop / arrows are plain links — close & backdrop point back at
+   #screenshots, arrows point at the neighbouring panel's id. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(4, 5, 9, 0.93);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s var(--ease), visibility 0.2s var(--ease);
+}
+.lightbox:target {
+  opacity: 1;
+  visibility: visible;
+}
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  display: block;
+  cursor: zoom-out;
+}
+.lightbox__inner {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  max-width: min(100%, 1400px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.lightbox__img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+}
+.lightbox__cap {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.lightbox__count {
+  font-weight: 700;
+  color: var(--teal);
+  margin-right: 0.5rem;
+}
+.lightbox__close,
+.lightbox__nav {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: rgba(20, 24, 32, 0.9);
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+  font-size: 1.7rem;
+  line-height: 1;
+  text-decoration: none;
+}
+.lightbox__close:hover,
+.lightbox__nav:hover {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--bg);
+  text-decoration: none;
+}
+.lightbox__close {
+  top: clamp(0.75rem, 2.5vw, 1.75rem);
+  right: clamp(0.75rem, 2.5vw, 1.75rem);
+}
+.lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.2rem;
+}
+.lightbox__prev {
+  left: clamp(0.5rem, 2.5vw, 1.75rem);
+}
+.lightbox__next {
+  right: clamp(0.5rem, 2.5vw, 1.75rem);
 }
 
 /* ---- Mirrored fading brackets on the README / changelog panels ----
