@@ -85,8 +85,17 @@ The whole pipeline is three files. Data flows: `projects.json` → `build.mjs` �
 
 `.github/workflows/deploy.yml` runs the build and publishes `dist/` to GitHub Pages on every
 push to `main`, daily at ~05:00 UTC (to refresh READMEs/releases), and on manual dispatch.
-The repo is public, so pushing is the normal way to ship. Action SHAs are pinned — bump them
-deliberately, not casually.
+The repo is public, so pushing is the normal way to ship. Action SHAs are pinned (with the
+version in a trailing comment) — bump them deliberately, not casually.
+
+## Dependencies
+
+**All dependencies are kept at their latest stable version** (npm packages, pinned GitHub
+Actions, and the Node runtime) — for security as much as features. The only time a dep may
+be held back is when a newer version explicitly breaks a feature, and then it **must** be
+documented in [`docs/DEPENDENCY_POLICY.md`](docs/DEPENDENCY_POLICY.md) — including the exact
+version that broke us, so a later release can be re-tested and the pin lifted. Read that file
+before bumping or pinning anything.
 
 ## Accessibility is a hard requirement
 

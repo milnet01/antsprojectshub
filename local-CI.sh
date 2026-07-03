@@ -4,7 +4,7 @@
 # so you can catch failures before pushing to main.
 #
 # It mirrors the build steps in .github/workflows/deploy.yml exactly:
-#     Set up Node 20  ->  npm ci  ->  node build.mjs   (env: GITHUB_TOKEN)
+#     Set up Node 24  ->  npm ci  ->  node build.mjs   (env: GITHUB_TOKEN)
 #
 # The workflow's deploy steps (configure-pages / upload-pages-artifact /
 # deploy-pages) are GitHub Pages infrastructure and cannot run locally, so they
@@ -23,7 +23,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 # The Node major version pinned in the workflow. Keep in lockstep with
 # .github/workflows/deploy.yml's `node-version:`.
-readonly CI_NODE_MAJOR=20
+readonly CI_NODE_MAJOR=24
 
 step() { printf '\n\033[1;34m==> %s\033[0m\n' "$1"; }
 ok()   { printf '\033[1;32m%s\033[0m\n' "$1"; }
