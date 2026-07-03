@@ -17,7 +17,13 @@ loaded only on pages that have a gallery. `dist/` is generated, never hand-edite
 npm ci                  # install locked deps (Node >= 20)
 node build.mjs          # build → dist/  (or: npm run build)
 npx serve dist          # preview at http://localhost:3000
+./local-CI.sh           # reproduce the CI build job locally before pushing
 ```
+
+`local-CI.sh` mirrors the `build` job in `.github/workflows/deploy.yml` step-for-step
+(`npm ci` → `node build.mjs`); if you change the workflow's build steps or its pinned Node
+version, update the script to match. The deploy steps are GitHub Pages infra and can't run
+locally.
 
 Set `GITHUB_TOKEN` before `node build.mjs` to avoid GitHub API rate limits (CI passes the
 Actions token automatically). With no token / offline, the build still succeeds — each
