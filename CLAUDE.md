@@ -88,6 +88,12 @@ push to `main`, daily at ~05:00 UTC (to refresh READMEs/releases), and on manual
 The repo is public, so pushing is the normal way to ship. Action SHAs are pinned (with the
 version in a trailing comment) — bump them deliberately, not casually.
 
+The `deploy` job runs only on GitHub Pages infrastructure, so it can't be reproduced locally.
+If it fails with **`Deployment failed, try again later`** while the `build` job is green, that
+is a transient Pages backend hiccup — **re-run the deploy job** (`gh run rerun <id> --failed`),
+don't hunt for a code cause. `local-CI.sh` checks deploy *readiness* (dist/ has `index.html`,
+`CNAME`, no stray symlinks) so the failures that *are* our fault are caught before pushing.
+
 ## Dependencies
 
 **All dependencies are kept at their latest stable version** (npm packages, pinned GitHub
