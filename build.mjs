@@ -60,14 +60,20 @@ function platformTags(p) {
     .join("")}</span>`;
 }
 
-function renderCard(p) {
+function renderCard(p, release) {
   const fork = p.isFork ? `<span class="card__fork">· fork</span>` : "";
+  // Latest release version (stable-preferred, from fetchRelease) shown beside the status
+  // pill — matches what the project page's download button offers. Absent for unpublished
+  // or unreleased projects, so the card simply omits it.
+  const version = release && release.version
+    ? `<span class="card__version">${esc(release.version)}</span>`
+    : "";
   return `<a class="card ${p.status === "soon" ? "card--soon" : ""}" href="/p/${esc(
     p.slug
   )}.html">
       <h2 class="card__name">${esc(p.name)}${fork}</h2>
       <p class="card__desc">${esc(p.tagline)}</p>
-      <span class="card__meta">${statusPill(p)}${platformTags(p)}</span>
+      <span class="card__meta"><span class="card__status">${statusPill(p)}${version}</span>${platformTags(p)}</span>
     </a>`;
 }
 
@@ -226,7 +232,7 @@ function pickAsset(assets, pl) {
 // releases URL that might 404). The upstream is still credited in the header.
 
 // --------------------------------------------------------------- page builders
-function landingPage(projects, support) {
+function landingPage(projects, support, releases) {
   const stats = computeStats(projects);
   const present = CATEGORY_ORDER.filter((c) => projects.some((p) => p.category === c));
   const jump = `<nav class="jump" aria-label="Jump to a section">
@@ -240,7 +246,7 @@ ${present
       const cards = projects
         .filter((p) => p.category === c)
         .sort((a, b) => (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9))
-        .map(renderCard)
+        .map((p) => renderCard(p, releases.get(p.slug)))
         .join("\n");
       return `    <section class="theme" id="${CATEGORY[c].id}" aria-labelledby="${CATEGORY[c].id}-h">
       <h2 class="section-label" id="${CATEGORY[c].id}-h">${esc(CATEGORY[c].label)}</h2>
@@ -514,11 +520,10 @@ async function main() {
   await mkdir(join(DIST, "p"), { recursive: true });
   await cp(join(ROOT, "src/assets"), join(DIST, "assets"), { recursive: true });
 
-  // Landing
-  await writeFile(join(DIST, "index.html"), landingPage(projects, support));
-
-  // Project pages (enrich published ones; fallbacks never abort the build)
+  // Project pages (enrich published ones; fallbacks never abort the build). Collect each
+  // project's release so the landing cards below can show the latest version.
   let enriched = 0;
+  const releases = new Map();
   for (const p of projects) {
     let readmeHtml = null;
     let release = null;
@@ -533,8 +538,12 @@ async function main() {
         console.warn(`! ${p.slug}: enrichment failed (${err.message}) — using fallback`);
       }
     }
+    releases.set(p.slug, release);
     await writeFile(join(DIST, "p", `${p.slug}.html`), projectPage(p, { readmeHtml, release }));
   }
+
+  // Landing (built after enrichment so each card can show its latest release version)
+  await writeFile(join(DIST, "index.html"), landingPage(projects, support, releases));
 
   // 404, CNAME, robots, sitemap
   await writeFile(join(DIST, "404.html"), notFoundPage());

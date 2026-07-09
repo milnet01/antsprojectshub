@@ -398,6 +398,19 @@ a.card:hover .card__name {
   justify-content: space-between;
   gap: 0.5rem;
 }
+.card__status {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.card__version {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 
 /* ---- Status pill + platform tags ---- */
 .pill {
