@@ -190,10 +190,15 @@ async function fetchReadmeHtml(repo) {
 }
 
 async function fetchRelease(repo) {
-  // The list endpoint includes pre-releases (newest first); /releases/latest does not.
-  // Skip drafts (only visible to tokens with push access — never show them publicly).
-  const list = await ghJson(`/repos/${repo}/releases?per_page=5`);
-  const data = Array.isArray(list) ? list.find((r) => !r.draft) : null;
+  // Prefer the newest *stable* release — never hand visitors a release-candidate/preview
+  // download. RCs are transient: GitHub deletes them when the final ships, leaving a dead
+  // 404 link (the exact symptom that motivated this). The list endpoint (newest first,
+  // pre-releases included) lets us fall back to a prerelease only for projects that have
+  // *only ever* shipped prereleases, so they still get a download rather than none. Skip
+  // drafts entirely — they're visible only to push-access tokens, never to the public.
+  const list = await ghJson(`/repos/${repo}/releases?per_page=10`);
+  const nonDraft = Array.isArray(list) ? list.filter((r) => !r.draft) : [];
+  const data = nonDraft.find((r) => !r.prerelease) || nonDraft[0] || null;
   if (!data || !data.tag_name) return null;
   const notesHtml = data.body
     ? sanitizeHtml(marked.parse(data.body, { gfm: true }), sanitizeOptions())
