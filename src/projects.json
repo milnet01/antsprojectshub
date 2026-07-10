@@ -66,7 +66,7 @@
       "platforms": ["linux"],
       "isFork": false,
       "upstream": null,
-      "homepage": "https://flathub.org/apps/details/io.github.milnet01.perch",
+      "homepage": null,
       "category": "utilities",
       "screenshots": []
     },
