@@ -237,7 +237,7 @@
     },
     {
       "slug": "fin-break",
-      "name": "Fin Break",
+      "name": "finbreak",
       "tagline": "Breaks your finances into categories — private and offline.",
       "blurb": "A private, offline desktop app that breaks personal finances down into income and expenditure categories across multiple accounts — with charts, trends, automatic transfer detection, and password-protected PDF reports. Your data never leaves your machine.",
       "status": "beta",

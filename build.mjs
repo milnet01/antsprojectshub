@@ -434,7 +434,7 @@ function projectPage(p, { readmeHtml, release }) {
 
   let body;
   if (!published) {
-    // Most "soon" projects have no repo yet; Fin Break and any future ones with a public
+    // Most "soon" projects have no repo yet; finbreak and any future ones with a public
     // repo get a real "follow development" link instead of a dead GitHub mention.
     const follow = p.repo
       ? ` <a href="${esc(
