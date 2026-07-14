@@ -548,6 +548,13 @@ async function main() {
   // 404, CNAME, robots, sitemap
   await writeFile(join(DIST, "404.html"), notFoundPage());
   await writeFile(join(DIST, "CNAME"), "antsprojectshub.co.za\n");
+  // Google Search Console site-ownership token — served at the domain root so
+  // the "HTML file" verification method resolves. Written by the build because
+  // dist/ is wiped and regenerated on every deploy.
+  await writeFile(
+    join(DIST, "google26e8bc6a1b61c6cf.html"),
+    "google-site-verification: google26e8bc6a1b61c6cf.html"
+  );
   await writeFile(
     join(DIST, "robots.txt"),
     `User-agent: *\nAllow: /\nSitemap: ${ORIGIN}/sitemap.xml\n`
