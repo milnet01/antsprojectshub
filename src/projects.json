@@ -7,7 +7,10 @@
       "blurb": "A modern 3D game engine written in C++ from the ground up — ray-traced rendering, dynamic lighting, physics, animation, audio and scripting, all driven by a modular engine loop. Built-in profiling and editor tools round it out.",
       "status": "beta",
       "repo": "milnet01/Vestige",
-      "platforms": ["win", "linux"],
+      "platforms": [
+        "win",
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -21,7 +24,9 @@
       "blurb": "A lightweight Qt6 terminal for Linux, built from scratch. Its standout feature is deep, fully-local integration with Claude Code to make AI-assisted development sessions faster and leaner — nothing is sent anywhere it doesn't need to be.",
       "status": "beta",
       "repo": "milnet01/ants-terminal",
-      "platforms": ["linux"],
+      "platforms": [
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -35,7 +40,11 @@
       "blurb": "A web-based collection manager for retro games across 150+ platforms: hybrid metadata scraping, achievements and trophy integration, ROM tools (CHD conversion, duplicate finding, multi-disc handling), an analytics dashboard, multiple themes and role-based multi-user access.",
       "status": "live",
       "repo": "milnet01/RetroDB",
-      "platforms": ["win", "mac", "linux"],
+      "platforms": [
+        "win",
+        "mac",
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -49,7 +58,11 @@
       "blurb": "Turns a 40,000-machine MAME set into a human-sized arcade library. It intelligently chooses the best version of each game, lets you override picks in a browser UI, copies the chosen ROMs plus required BIOSes, and writes a ready-to-use RetroArch playlist.",
       "status": "live",
       "repo": "milnet01/mame-curator",
-      "platforms": ["win", "mac", "linux"],
+      "platforms": [
+        "win",
+        "mac",
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -63,7 +76,9 @@
       "blurb": "A system-tray window manager that remembers where each window lives — position, size, monitor and virtual desktop — and restores it on reopen. Snap presets, named layouts, per-monitor profiles, a rules engine and global hotkeys, with backends for X11 and KWin/Wayland.",
       "status": "live",
       "repo": "milnet01/perch",
-      "platforms": ["linux"],
+      "platforms": [
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -77,7 +92,11 @@
       "blurb": "RetroArch is the de-facto frontend for the libretro API, supporting 100+ emulator and game-engine cores across a huge range of platforms. This is my personal fork tracking the upstream libretro/RetroArch project with my own changes on top.",
       "status": "live",
       "repo": "milnet01/RetroArch",
-      "platforms": ["win", "mac", "linux"],
+      "platforms": [
+        "win",
+        "mac",
+        "linux"
+      ],
       "isFork": true,
       "upstream": "libretro/RetroArch",
       "homepage": null,
@@ -91,7 +110,9 @@
       "blurb": "A desktop tool for shaping albums out of a folder of recordings: per-track curation, drag-to-reorder, live preview with optional lyric syncing, cross-album reuse tracking, and export to M3U playlists, numbered folders and polished PDF/HTML reports.",
       "status": "beta",
       "repo": "milnet01/album-builder",
-      "platforms": ["linux"],
+      "platforms": [
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -105,7 +126,11 @@
       "blurb": "A graphical front-end for yt-dlp with four tabs: download (paste or drag a URL, queue many), search (with preview), media info (inspect local files), and history. Cookie import for age-gated videos, SponsorBlock, subtitles, audio merging and one-click self-update.",
       "status": "live",
       "repo": "milnet01/ytdlp-gui",
-      "platforms": ["win", "mac", "linux"],
+      "platforms": [
+        "win",
+        "mac",
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -119,15 +144,27 @@
       "blurb": "A two-stage modernisation of the 1997 DOOM source: first bringing the ancient code to SDL2 on 64-bit Linux, then evolving the renderer toward true 3D with hardware ray tracing, dynamic lighting and volumetric effects — while keeping the original's feel. Early days.",
       "status": "wip",
       "repo": "milnet01/DOOM_Ants",
-      "platforms": ["win", "linux"],
+      "platforms": [
+        "win",
+        "linux"
+      ],
       "isFork": true,
       "upstream": "id-Software/DOOM",
       "homepage": null,
       "category": "engines",
       "screenshots": [
-        { "src": "shots/doom-ants-title.png", "alt": "The classic DOOM title screen with the New Game menu, rendered by DOOM Ants" },
-        { "src": "shots/doom-ants-classic-widescreen.png", "alt": "Classic DOOM gameplay in a widescreen view — a marine facing a computer-room level over a blue floor" },
-        { "src": "shots/doom-ants-raytraced.png", "alt": "The same DOOM level with hardware ray tracing — realistic shadows and dynamic lighting darkening the room" }
+        {
+          "src": "shots/doom-ants-title.png",
+          "alt": "The classic DOOM title screen with the New Game menu, rendered by DOOM Ants"
+        },
+        {
+          "src": "shots/doom-ants-classic-widescreen.png",
+          "alt": "Classic DOOM gameplay in a widescreen view — a marine facing a computer-room level over a blue floor"
+        },
+        {
+          "src": "shots/doom-ants-raytraced.png",
+          "alt": "The same DOOM level with hardware ray tracing — realistic shadows and dynamic lighting darkening the room"
+        }
       ]
     },
     {
@@ -137,7 +174,9 @@
       "blurb": "A desktop tool that generates photorealistic 3D box-art renders from flat 2D cover images — multiple case types, configurable sizes, cover-art sourcing, and clean anti-aliased PNG output sized for RetroArch or LaunchBox.",
       "status": "soon",
       "repo": null,
-      "platforms": ["linux"],
+      "platforms": [
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -151,7 +190,11 @@
       "blurb": "A desktop contact manager for people and companies: search, custom fields, and two-way sync with Google Contacts, built with a security-first design.",
       "status": "live",
       "repo": "milnet01/contact-list",
-      "platforms": ["win", "mac", "linux"],
+      "platforms": [
+        "win",
+        "mac",
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -165,7 +208,9 @@
       "blurb": "A GTK4 credential manager that keeps your logins in an encrypted vault (Fernet + PBKDF2), with automatic masking of sensitive fields and a fast, low-friction search.",
       "status": "soon",
       "repo": null,
-      "platforms": ["linux"],
+      "platforms": [
+        "linux"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -179,7 +224,11 @@
       "blurb": "A Rust tool that fetches PS3 and PS4 game updates directly from Sony's servers, with both a graphical app and a command-line interface. My fork of RainbowCookie32's rusty-psn.",
       "status": "soon",
       "repo": null,
-      "platforms": ["win", "mac", "linux"],
+      "platforms": [
+        "win",
+        "mac",
+        "linux"
+      ],
       "isFork": true,
       "upstream": "RainbowCookie32/rusty-psn",
       "homepage": null,
@@ -192,8 +241,11 @@
       "tagline": "Breaks your finances into categories — private and offline.",
       "blurb": "A private, offline desktop app that breaks personal finances down into income and expenditure categories across multiple accounts — with charts, trends, automatic transfer detection, and password-protected PDF reports. Your data never leaves your machine.",
       "status": "beta",
-      "repo": "milnet01/Fin_Break",
-      "platforms": ["linux", "win"],
+      "repo": "milnet01/finbreak",
+      "platforms": [
+        "linux",
+        "win"
+      ],
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -202,8 +254,17 @@
     }
   ],
   "support": [
-    { "label": "GitHub Sponsors", "url": "https://github.com/sponsors/milnet01" },
-    { "label": "Patreon", "url": "https://www.patreon.com/c/AntsProjectsHub" },
-    { "label": "Paybru", "url": "https://paybru.co.za/tip/ants-projects-hub" }
+    {
+      "label": "GitHub Sponsors",
+      "url": "https://github.com/sponsors/milnet01"
+    },
+    {
+      "label": "Patreon",
+      "url": "https://www.patreon.com/c/AntsProjectsHub"
+    },
+    {
+      "label": "Paybru",
+      "url": "https://paybru.co.za/tip/ants-projects-hub"
+    }
   ]
 }
