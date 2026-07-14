@@ -193,7 +193,7 @@
       "blurb": "A private, offline desktop app that breaks personal finances down into income and expenditure categories across multiple accounts — with charts, trends, automatic transfer detection, and password-protected PDF reports. Your data never leaves your machine.",
       "status": "beta",
       "repo": "milnet01/Fin_Break",
-      "platforms": ["linux"],
+      "platforms": ["linux", "win"],
       "isFork": false,
       "upstream": null,
       "homepage": null,
