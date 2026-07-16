@@ -209,6 +209,7 @@
       "status": "live",
       "repo": "milnet01/rolodex",
       "platforms": [
+        "win",
         "mac",
         "linux"
       ],
