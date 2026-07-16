@@ -206,9 +206,10 @@
       "name": "Rolodex",
       "tagline": "An encrypted credential vault with auto-masking.",
       "blurb": "A GTK4 credential manager that keeps your logins in an encrypted vault (Fernet + PBKDF2), with automatic masking of sensitive fields and a fast, low-friction search.",
-      "status": "soon",
-      "repo": null,
+      "status": "live",
+      "repo": "milnet01/rolodex",
       "platforms": [
+        "mac",
         "linux"
       ],
       "isFork": false,
