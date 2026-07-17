@@ -31,7 +31,24 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/ants-terminal-claude-session.png",
+          "alt": "Ants Terminal running a live Claude Code session over a dark theme, with a row of per-project tabs and an assistant working through a task"
+        },
+        {
+          "src": "shots/ants-terminal-roadmap.png",
+          "alt": "The built-in Roadmap dialog for a project — filterable, card-based roadmap items grouped by status, with search and kind filters"
+        },
+        {
+          "src": "shots/ants-terminal-review-changes.png",
+          "alt": "The Review Changes dialog showing a project's git status and unpushed commits, with Refresh and Copy Diff buttons"
+        },
+        {
+          "src": "shots/ants-terminal-theme.png",
+          "alt": "Ants Terminal in a different colour theme, displaying a detailed multi-thread stack trace from a crash report"
+        }
+      ]
     },
     {
       "slug": "retrodb",
