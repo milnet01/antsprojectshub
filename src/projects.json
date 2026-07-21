@@ -285,7 +285,16 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/oneup-dark.png",
+          "alt": "The OneUp dashboard in dark theme: five toggle cards — System packages (12 available), Flatpak apps (3 available), Firmware (up to date), Leftover packages and Package cache — each with a green on-switch, above Check for updates and Run selected updates buttons and a live log reading '15 update(s) available'"
+        },
+        {
+          "src": "shots/oneup-light.png",
+          "alt": "The same OneUp update dashboard in light theme, showing it follows the desktop's light/dark setting — identical toggle cards, buttons and read-only check log on a white background"
+        }
+      ]
     }
   ],
   "support": [
