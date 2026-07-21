@@ -508,8 +508,20 @@ a.card:hover .card__name {
 .actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 0.6rem;
   margin-top: 1.25rem;
+}
+/* A download button stacked over its all-time download count. */
+.dl {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+.dl__count {
+  font-size: 0.8rem;
+  color: var(--text-dim);
 }
 .btn {
   display: inline-flex;

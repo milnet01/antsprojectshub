@@ -202,7 +202,9 @@ async function fetchRelease(repo) {
   // pre-releases included) lets us fall back to a prerelease only for projects that have
   // *only ever* shipped prereleases, so they still get a download rather than none. Skip
   // drafts entirely — they're visible only to push-access tokens, never to the public.
-  const list = await ghJson(`/repos/${repo}/releases?per_page=10`);
+  // per_page=100 (not 10) so the cumulative download tally below sees every release, not
+  // just the most recent handful — the counts are meant to be all-time totals.
+  const list = await ghJson(`/repos/${repo}/releases?per_page=100`);
   const nonDraft = Array.isArray(list) ? list.filter((r) => !r.draft) : [];
   const data = nonDraft.find((r) => !r.prerelease) || nonDraft[0] || null;
   if (!data || !data.tag_name) return null;
@@ -212,7 +214,17 @@ async function fetchRelease(repo) {
   const assets = Array.isArray(data.assets)
     ? data.assets.map((a) => ({ name: a.name, url: a.browser_download_url }))
     : [];
-  return { version: data.tag_name, notesHtml, assets };
+  // All-time downloads per OS: sum download_count across every non-draft release, assigning
+  // each asset to at most one OS via the same conservative matcher the buttons use (first
+  // match wins, so a file is never double-counted across two platforms).
+  const downloads = { win: 0, mac: 0, linux: 0 };
+  for (const r of nonDraft) {
+    for (const a of Array.isArray(r.assets) ? r.assets : []) {
+      const pl = Object.keys(ASSET_PAT).find((k) => ASSET_PAT[k].test(a.name));
+      if (pl) downloads[pl] += a.download_count || 0;
+    }
+  }
+  return { version: data.tag_name, notesHtml, assets, downloads };
 }
 
 // Match a release asset to a platform by filename. Deliberately conservative: a Linux
@@ -287,6 +299,9 @@ function ext(url, label, cls = "btn") {
   )}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`;
 }
 
+// All-time GitHub download count for one OS's binaries, shown under its download button.
+const dlCountLabel = (n) => `${n.toLocaleString("en-US")} download${n === 1 ? "" : "s"}`;
+
 function actionButtons(p, release) {
   if (p.status === "soon") {
     return `<div class="actions">${p.platforms
@@ -316,11 +331,12 @@ function actionButtons(p, release) {
   // build); platforms without a matching file share one fallback button.
   const matched = desktop.map((pl) => ({ pl, asset: hasRelease ? pickAsset(release.assets, pl) : null }));
   const direct = matched.filter((m) => m.asset);
-  direct.forEach((m, i) =>
-    buttons.push(
-      ext(m.asset.url, `Download · ${PLATFORM[m.pl] || m.pl}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`)
-    )
-  );
+  direct.forEach((m, i) => {
+    const btn = ext(m.asset.url, `Download · ${PLATFORM[m.pl] || m.pl}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`);
+    // Cumulative all-time downloads for this OS (0 shown for a just-released project).
+    const count = `<span class="dl__count">${esc(dlCountLabel(release.downloads?.[m.pl] ?? 0))}</span>`;
+    buttons.push(`<span class="dl">${btn}${count}</span>`);
+  });
   if (matched.some((m) => !m.asset)) {
     const primary = direct.length === 0 && !hasWeb ? "btn--primary" : "";
     buttons.push(ext(fallback, fallbackLabel, `btn ${primary}`));
