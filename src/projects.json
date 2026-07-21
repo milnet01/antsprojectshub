@@ -270,6 +270,22 @@
       "homepage": null,
       "category": "utilities",
       "screenshots": []
+    },
+    {
+      "slug": "oneup",
+      "name": "OneUp",
+      "tagline": "One-click openSUSE updates from a single window.",
+      "blurb": "A no-nonsense update dashboard for openSUSE (Tumbleweed and Leap) that runs the four updates you actually need — system packages, Flatpaks, firmware and leftover-package cleanup — the correct way, from one window. Each task is a toggle; check for updates read-only, roll back to a pre-update snapshot in one click, and let it check weekly in the background. It never runs as root — privileged work goes through your desktop's standard password prompt.",
+      "status": "live",
+      "repo": "milnet01/OneUp",
+      "platforms": [
+        "linux"
+      ],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null,
+      "category": "utilities",
+      "screenshots": []
     }
   ],
   "support": [
