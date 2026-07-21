@@ -5,11 +5,12 @@
 // (unauthenticated; offline → fallbacks).
 
 import { readFile, writeFile, mkdir, rm, cp } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
-import { basePage, esc, ORIGIN } from "./lib/templates.mjs";
+import { basePage, esc, ORIGIN, setAssetVersion } from "./lib/templates.mjs";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
@@ -535,6 +536,11 @@ async function main() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(join(DIST, "p"), { recursive: true });
   await cp(join(ROOT, "src/assets"), join(DIST, "assets"), { recursive: true });
+
+  // Fingerprint the stylesheet so every page's <link> carries ?v=<hash>; browsers then
+  // re-fetch the CSS the moment its contents change, rather than serving a stale cache.
+  const cssBytes = await readFile(join(ROOT, "src/assets/style.css"));
+  setAssetVersion(createHash("sha256").update(cssBytes).digest("hex").slice(0, 8));
 
   // Project pages (enrich published ones; fallbacks never abort the build). Collect each
   // project's release so the landing cards below can show the latest version.
