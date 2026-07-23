@@ -269,7 +269,32 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/finbreak-dashboard.png",
+          "alt": "The finbreak dashboard in dark theme with 'Previous month' selected and a net of R 10,533.21. Three donut charts across the top break down spending by category, income by source (Salary, Interest) and transfers (Cheque account to Savings). Below, panels list Spending R 21,551.79 (Rent/Mortgage R 9,500, Groceries R 3,524.50, Transport R 3,012.45 and more), Income R 32,085.00 and Transfers R 3,000.00, with a monthly recurring summary and an income-versus-spending bar chart along the bottom."
+        },
+        {
+          "src": "shots/finbreak-transactions.png",
+          "alt": "The Transactions view in light theme: a searchable, sortable table of 306 transactions with Date, Amount, Currency, Description, Account and Category columns. Rows show South African merchants such as Shell, Pick n Pay, Ocean Basket, Bolt, KFC and Checkers automatically sorted into categories like Fuel, Groceries, Dining out and Ride-hailing, with income amounts in green and expenses in red."
+        },
+        {
+          "src": "shots/finbreak-categories.png",
+          "alt": "The Categories screen in dark theme showing the category tree. Expenditure branches into Bills & utilities (Electricity, Internet, Mobile), Entertainment (Dining out, Streaming), Groceries, Transport (Fuel, Ride-hailing) and more; Income branches into Gifts, Interest, Salary and Sales. Fields at the bottom let you add a category, move it under a parent, or delete the selected one."
+        },
+        {
+          "src": "shots/finbreak-recurring.png",
+          "alt": "The Recurring view in light theme with two tables. 'Suggested recurring items' lists payments finbreak has auto-detected — Outsurance, FNB Credit, Dis-Chem and City of Cape Town — awaiting Confirm or Dismiss. 'Confirmed recurring items' lists Vodacom, Spotify, Netflix, DStv, Afrihost Fibre and an Acme salary, each with its direction, monthly cadence, amount and next due date."
+        },
+        {
+          "src": "shots/finbreak-rules.png",
+          "alt": "The Rules screen in light theme: a table of auto-categorisation rules mapping a text pattern to a category — nando to Fast food, vodacom to Mobile, netflix to Streaming, uber to Ride-hailing, engen to Fuel, and checkers and woolworths to Groceries. Buttons let you Add, Edit, Delete or reorder rules and apply them to existing transactions."
+        },
+        {
+          "src": "shots/finbreak-transfers.png",
+          "alt": "The Transfers view in dark theme showing automatic transfer detection. An empty 'Suggested transfers' pane sits above 'Confirmed transfers', a list of monthly R 3,000 movements from the Cheque account to Savings dating back through 2025, each with a date, amount and description. finbreak pairs these so a transfer is not double-counted as both income and expense."
+        }
+      ]
     },
     {
       "slug": "oneup",
