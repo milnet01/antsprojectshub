@@ -37,6 +37,18 @@ const OS_KEYS = ["win", "mac", "linux"];
 const OS_LABEL = { win: "Windows", mac: "macOS", linux: "Linux" };
 const DAY = 86400000;
 
+// The sticky nav, and the accent each section wears. [key, heading id, nav label] — the key
+// ties a nav link to its section so CSS can give both the same --accent (see the CSS block),
+// and the scroll-spy can light the right link. Order is the page order.
+const NAV = [
+  ["att", "h-att", "Attention"],
+  ["dl", "h-dl", "Downloads"],
+  ["tr", "h-tr", "Traffic"],
+  ["act", "h-act", "Audience"],
+  ["rel", "h-rel", "Releases"],
+  ["cnt", "h-cnt", "Content"],
+];
+
 // Release files that legitimately aren't OS downloads, so listing them as "a missing
 // download button" would nag about files the site is right to exclude. Two groups: the
 // companion files the matcher itself skips (signatures, checksums, SBOMs — shared with
@@ -299,10 +311,9 @@ function downloadsTable(rows, history, base) {
       const b = base?.projects[r.slug];
       const cells = OS_KEYS.map(
         (k) =>
-          `<td class="n" data-sort="${r.downloads[k]}">${num(r.downloads[k])}<br>${delta(
-            r.downloads[k],
-            b?.[k]
-          )}</td>`
+          `<td class="n os os--${k}" data-sort="${r.downloads[k]}">${num(
+            r.downloads[k]
+          )}<br>${delta(r.downloads[k], b?.[k])}</td>`
       ).join("");
       // Amber only when something is genuinely unexplained — signatures and source
       // archives land here too and are perfectly normal.
@@ -325,7 +336,8 @@ function downloadsTable(rows, history, base) {
 
   const ok = rows.filter((r) => r.ok);
   const totals = OS_KEYS.map(
-    (k) => `<td class="n">${num(ok.reduce((s, r) => s + r.downloads[k], 0))}</td>`
+    (k) =>
+      `<td class="n os os--${k}">${num(ok.reduce((s, r) => s + r.downloads[k], 0))}</td>`
   ).join("");
   const grand = ok.reduce((s, r) => s + r.total, 0);
 
@@ -334,7 +346,7 @@ function downloadsTable(rows, history, base) {
       aren't an OS download — signatures, checksums, updater metadata, source archives.
       That's normal; it only turns amber when something there is unexplained.</caption>
     <thead><tr><th scope="col">Project</th>${OS_KEYS.map(
-      (k) => `<th scope="col" class="n">${OS_LABEL[k]}</th>`
+      (k) => `<th scope="col" class="n os os--${k}">${OS_LABEL[k]}</th>`
     ).join("")}<th scope="col" class="n">Other</th>
     <th scope="col" class="n" aria-sort="descending">Total</th>
     <th scope="col" class="n" data-nosort>Trend</th></tr></thead>
@@ -501,7 +513,16 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
 <link rel="stylesheet" href="dashboard.css">
 <script src="dashboard.js" defer></script>
 </head>
-<body class="admin">
+<body class="admin" id="top">
+<nav class="topnav" aria-label="Sections">
+  <a class="topnav__brand" href="#top">Private stats</a>
+  <ul class="topnav__list">${NAV.map(
+    ([sec, id, label]) =>
+      `<li><a href="#${id}" data-sec="${sec}">${label}</a></li>`
+  ).join("")}</ul>
+  <button type="button" id="refresh" class="btn-refresh" hidden>Refresh now</button>
+  <span id="refresh-msg" class="refresh-msg" role="status"></span>
+</nav>
 <main class="wrap">
   <header class="head">
     <h1>Private stats</h1>
@@ -514,8 +535,6 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
         baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
       }</p>
     <p class="sub">Click a column heading to sort by it; click it again to reverse.</p>
-    <p class="refresh-row"><button type="button" id="refresh" class="btn-refresh" hidden>
-      Refresh now</button><span id="refresh-msg" class="refresh-msg" role="status"></span></p>
   </header>
 
   ${gapBanner(history, now)}
@@ -524,22 +543,22 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
   <section aria-labelledby="h-sum"><h2 id="h-sum" class="sr-only">Summary</h2>
     <div class="tiles">${tiles}</div></section>
 
-  <section aria-labelledby="h-att"><h2 id="h-att">Needs attention</h2>
+  <section class="sec" data-sec="att" aria-labelledby="h-att"><h2 id="h-att">Needs attention</h2>
     ${issuesSection(ok, health)}</section>
 
-  <section aria-labelledby="h-dl"><h2 id="h-dl">Downloads per OS</h2>
+  <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads per OS</h2>
     ${downloadsTable(rows, history, base)}</section>
 
-  <section aria-labelledby="h-tr"><h2 id="h-tr">Repo traffic</h2>
+  <section class="sec" data-sec="tr" aria-labelledby="h-tr"><h2 id="h-tr">Repo traffic</h2>
     ${trafficSection(ok)}</section>
 
-  <section aria-labelledby="h-act"><h2 id="h-act">Audience &amp; activity</h2>
+  <section class="sec" data-sec="act" aria-labelledby="h-act"><h2 id="h-act">Audience &amp; activity</h2>
     ${activityTable(ok, now)}</section>
 
-  <section aria-labelledby="h-rel"><h2 id="h-rel">Recent releases</h2>
+  <section class="sec" data-sec="rel" aria-labelledby="h-rel"><h2 id="h-rel">Recent releases</h2>
     ${releasesTable(ok)}</section>
 
-  <section aria-labelledby="h-cnt"><h2 id="h-cnt">Site content</h2>
+  <section class="sec" data-sec="cnt" aria-labelledby="h-cnt"><h2 id="h-cnt">Site content</h2>
     <p class="chips">${tallyList(health.byStatus)}</p>
     <p class="chips">${tallyList(health.byCategory)}</p>
     ${
@@ -694,6 +713,33 @@ const JS = `(function () {
     });
   }
 
+  // Light up the nav link for whatever section you're looking at. Pure enhancement — the
+  // links are ordinary anchors and jump to the right place with or without this.
+  var links = Array.prototype.slice.call(document.querySelectorAll(".topnav__list a[data-sec]"));
+  if (links.length && window.IntersectionObserver) {
+    var byKey = {};
+    links.forEach(function (a) { byKey[a.getAttribute("data-sec")] = a; });
+    var seen = {};
+    // Top margin clears the sticky bar; the -55% bottom means a section counts as "current"
+    // once it reaches the upper part of the viewport, rather than the moment it peeks in.
+    var obs = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) { seen[e.target.getAttribute("data-sec")] = e.isIntersecting; });
+        var current = null;
+        links.forEach(function (a) {
+          var k = a.getAttribute("data-sec");
+          if (seen[k] && !current) current = k;
+          a.classList.remove("is-current");
+        });
+        if (current) byKey[current].classList.add("is-current");
+      },
+      { rootMargin: "-62px 0px -55% 0px" }
+    );
+    Array.prototype.forEach.call(document.querySelectorAll("section[data-sec]"), function (s) {
+      obs.observe(s);
+    });
+  }
+
   Array.prototype.forEach.call(document.querySelectorAll("table.sortable"), function (table) {
     var heads = Array.prototype.slice.call(table.tHead.rows[0].cells);
     heads.forEach(function (th, i) {
@@ -719,14 +765,48 @@ const JS = `(function () {
 
 // --------------------------------------------------------------------- the CSS
 
-const CSS = `/* Private dashboard — layers on the site's tokens (already WCAG AA on --bg). */
+const CSS = `/* Private dashboard — layers on the site's tokens.
+   Colour here is wayfinding, not data: each section owns an --accent, and its nav link
+   wears the same one. The status language is left alone — amber still means "look at
+   this", teal "up", rose "down" — so the accents deliberately avoid carrying meaning.
+   Accents run teal → violet down the page, so scroll position has a colour. */
 body.admin { background: var(--bg); color: var(--text); font-family: var(--font); }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 60px; }
 .head h1 { margin: 0 0 4px; font-size: 1.6rem; }
 .sub { color: var(--text-muted); margin: 0 0 6px; font-size: .85rem; }
-.refresh-row { display: flex; align-items: center; gap: 12px; margin: 14px 0 26px; }
-.btn-refresh { font: inherit; font-size: .85rem; color: var(--bg); background: var(--teal);
-  border: 0; border-radius: 999px; padding: 7px 16px; cursor: pointer; font-weight: 600; }
+
+/* One accent per section, shared by the section and its nav link. */
+[data-sec="att"] { --accent: var(--amber); }
+[data-sec="dl"]  { --accent: #5eead4; }
+[data-sec="tr"]  { --accent: #7dd3fc; }
+[data-sec="act"] { --accent: #93c5fd; }
+[data-sec="rel"] { --accent: #a5b4fc; }
+[data-sec="cnt"] { --accent: #c4b5fd; }
+
+/* Sticky bar. Stays put while the page scrolls under it; the tint is a translucent
+   wash over --bg so the tables read through it while scrolling past. */
+.topnav { position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
+  flex-wrap: wrap; gap: 6px 18px; padding: 9px 20px;
+  background: linear-gradient(180deg, rgba(94,234,212,.10), rgba(196,181,253,.06)), var(--bg);
+  border-bottom: 1px solid var(--surface-border);
+  backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); }
+.topnav__brand { font-weight: 700; font-size: .9rem; color: var(--text); text-decoration: none;
+  padding-right: 18px; border-right: 1px solid var(--surface-border); }
+.topnav__list { display: flex; flex-wrap: wrap; gap: 4px 6px; list-style: none; margin: 0;
+  padding: 0; flex: 1; }
+.topnav__list a { display: block; font-size: .82rem; color: var(--text-muted);
+  text-decoration: none; padding: 5px 10px; border-radius: 999px;
+  border: 1px solid transparent; }
+.topnav__list a:hover { color: var(--text); background: var(--surface); }
+.topnav__list a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* Current section: its own accent, plus a filled pill so it reads without the colour. */
+.topnav__list a.is-current { color: var(--accent); border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent); font-weight: 600; }
+/* Anchor jumps must clear the sticky bar. */
+.sec h2 { scroll-margin-top: 62px; }
+
+.btn-refresh { font: inherit; font-size: .82rem; color: var(--bg); background: var(--teal);
+  border: 0; border-radius: 999px; padding: 6px 15px; cursor: pointer; font-weight: 600; }
 .btn-refresh:hover { filter: brightness(1.1); }
 .btn-refresh:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 .btn-refresh[disabled] { opacity: .55; cursor: progress; }
@@ -735,11 +815,18 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
 /* Amber plus the word "ago" carries the meaning — never colour alone. */
 #updated.stale { color: var(--amber); }
 h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
+/* Section heading takes its accent, with a matching rule so the colour isn't the only cue. */
+.sec h2 { color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--gap); }
 .tile { background: var(--surface); border: 1px solid var(--surface-border);
+  border-left: 3px solid var(--tile-accent, var(--teal));
   border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
+.tile:nth-child(1) { --tile-accent: #5eead4; }
+.tile:nth-child(2) { --tile-accent: #7dd3fc; }
+.tile:nth-child(3) { --tile-accent: #a5b4fc; }
+.tile:nth-child(4) { --tile-accent: #c4b5fd; }
 .tile__label { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
 .tile__value { font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
 .tile__sub { font-size: .8rem; color: var(--text-muted); min-height: 1.2em; }
@@ -767,6 +854,14 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .tbl tfoot th, .tbl tfoot td { border-bottom: 0; font-weight: 700; }
 .tbl tbody tr:hover { background: rgba(255,255,255,.03); }
 .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* The three OS columns are tinted so the eye can track one across a wide row. The heading
+   carries the colour; the figures stay in text ink so nothing competes with the numbers.
+   These hues sit well clear of amber/rose — a tinted column must never read as a warning. */
+.os--win { --os: #60a5fa; }
+.os--mac { --os: #e879f9; }
+.os--linux { --os: #86efac; }
+.tbl thead th.os, .tbl thead th.os .sort-btn { color: var(--os); }
+.tbl td.os { background: color-mix(in srgb, var(--os) 7%, transparent); }
 .strong { font-weight: 700; }
 .dim { color: var(--text-dim); }
 .warn { color: var(--amber); }

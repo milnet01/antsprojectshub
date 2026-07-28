@@ -146,6 +146,14 @@ Other invariants:
   colour and font to browser defaults. Any new asset the page references gets copied in and
   added to `FILES` too. The body class is `admin`, **not** `stats` — the site's own
   `.stats` rule is a flex container and would wreck the layout.
+- **Colour on the dashboard is wayfinding, not data.** Each section owns an `--accent`
+  (teal → violet down the page) shared with its nav link, and the three OS columns are
+  tinted blue/magenta/green. Those hues deliberately sit clear of the status language —
+  amber still means "look at this", teal "up", rose "down" — so a tinted column can never
+  read as a warning. Figures stay in text ink; the colour never competes with the numbers.
+- **The sticky nav is progressive enhancement too.** The links are ordinary anchors that
+  work without JavaScript; `dashboard.js` only adds the scroll-spy that highlights the
+  section you're looking at.
 - **Sorting is progressive enhancement.** `dashboard.js` turns each `table.sortable`
   header into a `<button>` and toggles `aria-sort`; every table also ships pre-sorted by
   its most useful column, so the page is complete if the script never runs. Sort keys come
