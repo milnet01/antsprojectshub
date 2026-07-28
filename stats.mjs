@@ -290,23 +290,34 @@ function downloadsTable(rows, history, base) {
       // downloaded it" from "we couldn't ask".
       if (!r.ok) {
         return `<tr class="row--missing">
-          <th scope="row">${esc(r.name)}<span class="repo">${esc(r.repo)}</span></th>
+          <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}<span class="repo">${esc(
+          r.repo
+        )}</span></th>
           <td class="n dim" colspan="6">no data this run</td>
         </tr>`;
       }
       const b = base?.projects[r.slug];
       const cells = OS_KEYS.map(
-        (k) => `<td class="n">${num(r.downloads[k])}<br>${delta(r.downloads[k], b?.[k])}</td>`
+        (k) =>
+          `<td class="n" data-sort="${r.downloads[k]}">${num(r.downloads[k])}<br>${delta(
+            r.downloads[k],
+            b?.[k]
+          )}</td>`
       ).join("");
       // Amber only when something is genuinely unexplained — signatures and source
       // archives land here too and are perfectly normal.
-      const other = `<td class="n ${r.unexplained.length ? "warn" : "dim"}">${num(
+      const other = `<td class="n ${r.unexplained.length ? "warn" : "dim"}" data-sort="${
         r.downloads.other
-      )}</td>`;
+      }">${num(r.downloads.other)}</td>`;
       return `<tr>
-        <th scope="row">${esc(r.name)}<span class="repo">${esc(r.repo)}</span></th>
+        <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}<span class="repo">${esc(
+        r.repo
+      )}</span></th>
         ${cells}${other}
-        <td class="n strong">${num(r.total)}<br>${delta(r.total, b?.total)}</td>
+        <td class="n strong" data-sort="${r.total}">${num(r.total)}<br>${delta(
+        r.total,
+        b?.total
+      )}</td>
         <td class="sparkcell">${sparkline(series(r.slug))}</td>
       </tr>`;
     })
@@ -318,14 +329,15 @@ function downloadsTable(rows, history, base) {
   ).join("");
   const grand = ok.reduce((s, r) => s + r.total, 0);
 
-  return `<table class="tbl">
+  return `<table class="tbl sortable">
     <caption>All-time downloads, by operating system. “Other” counts release files that
       aren't an OS download — signatures, checksums, updater metadata, source archives.
       That's normal; it only turns amber when something there is unexplained.</caption>
     <thead><tr><th scope="col">Project</th>${OS_KEYS.map(
       (k) => `<th scope="col" class="n">${OS_LABEL[k]}</th>`
-    ).join("")}<th scope="col" class="n">Other</th><th scope="col" class="n">Total</th>
-    <th scope="col" class="n">Trend</th></tr></thead>
+    ).join("")}<th scope="col" class="n">Other</th>
+    <th scope="col" class="n" aria-sort="descending">Total</th>
+    <th scope="col" class="n" data-nosort>Trend</th></tr></thead>
     <tbody>${body}</tbody>
     <tfoot><tr><th scope="row">All projects</th>${totals}
       <td class="n">${num(ok.reduce((s, r) => s + r.downloads.other, 0))}</td>
@@ -348,11 +360,11 @@ function trafficSection(rows) {
     .sort((a, b) => b.traffic.views - a.traffic.views)
     .map(
       (r) => `<tr>
-        <th scope="row">${esc(r.name)}</th>
-        <td class="n">${num(r.traffic.views)}</td>
-        <td class="n">${num(r.traffic.uniques)}</td>
-        <td class="n">${num(r.traffic.clones)}</td>
-        <td class="n">${num(r.traffic.cloneUniques)}</td>
+        <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}</th>
+        <td class="n" data-sort="${r.traffic.views}">${num(r.traffic.views)}</td>
+        <td class="n" data-sort="${r.traffic.uniques}">${num(r.traffic.uniques)}</td>
+        <td class="n" data-sort="${r.traffic.clones}">${num(r.traffic.clones)}</td>
+        <td class="n" data-sort="${r.traffic.cloneUniques}">${num(r.traffic.cloneUniques)}</td>
         <td class="ref">${
           r.traffic.referrers.length
             ? r.traffic.referrers
@@ -363,13 +375,15 @@ function trafficSection(rows) {
       </tr>`
     )
     .join("");
-  return `<table class="tbl">
+  return `<table class="tbl sortable">
     <caption>Last 14 days, from GitHub. Only you can see these numbers — GitHub deletes
       them after 14 days, but this dashboard keeps its own dated copy in
       <code>.stats/history.json</code>.</caption>
-    <thead><tr><th scope="col">Project</th><th scope="col" class="n">Views</th>
+    <thead><tr><th scope="col">Project</th>
+      <th scope="col" class="n" aria-sort="descending">Views</th>
       <th scope="col" class="n">Visitors</th><th scope="col" class="n">Clones</th>
-      <th scope="col" class="n">Cloners</th><th scope="col">Top referrers</th></tr></thead>
+      <th scope="col" class="n">Cloners</th>
+      <th scope="col" data-nosort>Top referrers</th></tr></thead>
     <tbody>${body}</tbody></table>`;
 }
 
@@ -379,22 +393,30 @@ function activityTable(rows, now) {
       const commitAge = daysSince(r.pushedAt, now);
       const relAge = daysSince(r.latestAt, now);
       const stale = commitAge != null && commitAge >= 90;
+      // Unknown ages sort as -1 so "never released" groups together rather than pretending
+      // to be brand new (0 days).
       return `<tr>
-        <th scope="row">${esc(r.name)}${r.archived ? ' <span class="flag">archived</span>' : ""}</th>
-        <td class="n">${num(r.stars)}</td>
-        <td class="n">${num(r.forks)}</td>
-        <td class="n">${num(r.watchers)}</td>
-        <td class="n">${num(r.issues)}</td>
-        <td class="n">${num(r.prs)}</td>
-        <td class="n">${r.latestTag ? esc(r.latestTag) : '<span class="dim">none</span>'}</td>
-        <td class="n">${relAge == null ? '<span class="dim">—</span>' : `${relAge}d`}</td>
-        <td class="n${stale ? " warn" : ""}">${
-          commitAge == null ? '<span class="dim">—</span>' : `${commitAge}d${stale ? " ⚠" : ""}`
-        }</td>
+        <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}${
+        r.archived ? ' <span class="flag">archived</span>' : ""
+      }</th>
+        <td class="n" data-sort="${r.stars}">${num(r.stars)}</td>
+        <td class="n" data-sort="${r.forks}">${num(r.forks)}</td>
+        <td class="n" data-sort="${r.watchers}">${num(r.watchers)}</td>
+        <td class="n" data-sort="${r.issues}">${num(r.issues)}</td>
+        <td class="n" data-sort="${r.prs}">${num(r.prs)}</td>
+        <td class="n" data-sort="${esc(r.latestTag || "")}">${
+        r.latestTag ? esc(r.latestTag) : '<span class="dim">none</span>'
+      }</td>
+        <td class="n" data-sort="${relAge ?? -1}">${
+        relAge == null ? '<span class="dim">—</span>' : `${relAge}d`
+      }</td>
+        <td class="n${stale ? " warn" : ""}" data-sort="${commitAge ?? -1}">${
+        commitAge == null ? '<span class="dim">—</span>' : `${commitAge}d${stale ? " ⚠" : ""}`
+      }</td>
       </tr>`;
     })
     .join("");
-  return `<table class="tbl">
+  return `<table class="tbl sortable">
     <caption>Audience and activity. A ⚠ marks 90+ days without a commit.</caption>
     <thead><tr><th scope="col">Project</th><th scope="col" class="n">Stars</th>
       <th scope="col" class="n">Forks</th><th scope="col" class="n">Watching</th>
@@ -477,6 +499,7 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
 <title>Ants Projects Hub — private stats</title>
 <link rel="stylesheet" href="../src/assets/style.css">
 <link rel="stylesheet" href="dashboard.css">
+<script src="dashboard.js" defer></script>
 </head>
 <body class="admin">
 <main class="wrap">
@@ -487,6 +510,7 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
       ${history.snapshots.length} snapshot(s) recorded${
         baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
       }</p>
+    <p class="sub">Click a column heading to sort by it; click it again to reverse.</p>
   </header>
 
   ${incompleteBanner(rows)}
@@ -560,16 +584,73 @@ function releasesTable(rows) {
              <strong>${num(x.total)}</strong></li>`
         )
         .join("");
-      return `<tr><th scope="row">${esc(r.name)}<span class="repo">${num(
+      return `<tr><th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}<span class="repo">${num(
         r.releaseCount
       )} releases</span></th><td><ul class="rels">${recent}</ul></td></tr>`;
     })
     .join("");
   if (!body) return `<p class="note">No releases published yet.</p>`;
-  return `<table class="tbl tbl--rel"><caption>Downloads by version — the five most recent
-    releases of each project.</caption><thead><tr><th scope="col">Project</th>
-    <th scope="col">Version · date · downloads</th></tr></thead><tbody>${body}</tbody></table>`;
+  // Sortable by project only — the second column is a per-project list, not a value.
+  return `<table class="tbl tbl--rel sortable"><caption>Downloads by version — the five most
+    recent releases of each project.</caption><thead><tr><th scope="col">Project</th>
+    <th scope="col" data-nosort>Version · date · downloads</th></tr></thead>
+    <tbody>${body}</tbody></table>`;
 }
+
+// ---------------------------------------------------------------------- the JS
+
+// Click-to-sort, as progressive enhancement: every table already ships sorted by its most
+// useful column, so the page is complete without this running. Sort keys come from
+// data-sort attributes written at generation time — parsing them back out of the rendered
+// text would break on thousands separators ("1,146"), units ("84d") and the delta line
+// under each number ("14 ▲ +5").
+const JS = `(function () {
+  // Numeric when the key parses as a number, otherwise a case-insensitive text compare.
+  function key(cell) {
+    var raw = cell && cell.dataset ? cell.dataset.sort : undefined;
+    if (raw === undefined) return { n: null, s: "" };
+    var n = raw === "" ? NaN : Number(raw);
+    return isNaN(n) ? { n: null, s: raw.toLowerCase() } : { n: n, s: "" };
+  }
+
+  function sort(table, index, dir) {
+    var body = table.tBodies[0];
+    var rows = Array.prototype.slice.call(body.rows);
+    // A row without that column ("no data this run" spans the rest) always sinks, whichever
+    // direction is active — it has no value to rank.
+    var has = function (r) { return r.cells.length > index; };
+    rows.sort(function (a, b) {
+      if (has(a) !== has(b)) return has(a) ? -1 : 1;
+      if (!has(a)) return 0;
+      var x = key(a.cells[index]), y = key(b.cells[index]);
+      var c = x.n !== null && y.n !== null ? x.n - y.n : x.s.localeCompare(y.s);
+      return c * dir;
+    });
+    rows.forEach(function (r) { body.appendChild(r); });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("table.sortable"), function (table) {
+    var heads = Array.prototype.slice.call(table.tHead.rows[0].cells);
+    heads.forEach(function (th, i) {
+      if (th.hasAttribute("data-nosort")) return;
+      // Wrap the label in a real <button> so it is keyboard-reachable and announced as a
+      // control; aria-sort then tells a screen reader the current direction.
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "sort-btn";
+      btn.textContent = th.textContent.trim();
+      th.textContent = "";
+      th.appendChild(btn);
+      btn.addEventListener("click", function () {
+        var asc = th.getAttribute("aria-sort") !== "ascending";
+        heads.forEach(function (h) { h.removeAttribute("aria-sort"); });
+        th.setAttribute("aria-sort", asc ? "ascending" : "descending");
+        sort(table, i, asc ? 1 : -1);
+      });
+    });
+  });
+})();
+`;
 
 // --------------------------------------------------------------------- the CSS
 
@@ -595,6 +676,18 @@ h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
 .tbl th, .tbl td { padding: 9px 12px; border-bottom: 1px solid var(--surface-border); text-align: left; }
 .tbl thead th { color: var(--text-dim); font-size: .74rem; text-transform: uppercase;
   letter-spacing: .05em; font-weight: 600; }
+/* The sort control fills the header cell so the whole header is the click target. */
+.tbl thead th:has(.sort-btn) { padding: 0; }
+.sort-btn { font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit;
+  background: none; border: 0; padding: 9px 12px; width: 100%; text-align: inherit;
+  cursor: pointer; }
+.sort-btn:hover { color: var(--text); }
+.sort-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+/* Direction is a character, not a colour — readable in greyscale and to a screen reader
+   (the th also carries aria-sort). */
+th[aria-sort] .sort-btn { color: var(--teal); }
+th[aria-sort="ascending"] .sort-btn::after { content: " ▲"; }
+th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .tbl tbody th { font-weight: 600; }
 .tbl tfoot th, .tbl tfoot td { border-bottom: 0; font-weight: 700; }
 .tbl tbody tr:hover { background: rgba(255,255,255,.03); }
@@ -668,6 +761,7 @@ async function main() {
   await mkdir(OUT, { recursive: true });
   await writeFile(HISTORY, JSON.stringify(history, null, 2));
   await writeFile(join(OUT, "dashboard.css"), CSS);
+  await writeFile(join(OUT, "dashboard.js"), JS);
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   await writeFile(PAGE, page({ rows, history, base, health, projects, now, elapsed }));
 

@@ -47,7 +47,11 @@ npm run stats           # writes .stats/dashboard.html and opens it
 
 Shows downloads per OS per project (with change since last run), repo views/visitors/
 clones and where they came from, stars and activity, release health, and content checks
-like screenshots missing alt text.
+like screenshots missing alt text. Click any column heading to sort by it; click again to
+reverse.
+
+It's a snapshot, not a live page — re-run the command to refresh the numbers. Each run also
+records a dated reading, which is what the change columns and trend lines are built from.
 
 **It is never published.** A static site on GitHub Pages can't keep a page private — a
 password box would be defeated by View Source — so this dashboard is written to `.stats/`,

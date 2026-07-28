@@ -135,6 +135,12 @@ Other invariants:
 - The page links `../src/assets/style.css` to inherit the AA-contrast tokens. Its body
   class is `admin`, **not** `stats` — the site's own `.stats` rule is a flex container and
   would wreck the layout.
+- **Sorting is progressive enhancement.** `dashboard.js` turns each `table.sortable`
+  header into a `<button>` and toggles `aria-sort`; every table also ships pre-sorted by
+  its most useful column, so the page is complete if the script never runs. Sort keys come
+  from `data-sort` attributes emitted with each cell — don't switch to parsing the rendered
+  text, which carries thousands separators, `d` suffixes and a delta line. Mark a column
+  `data-nosort` when it holds no rankable value (Trend, Top referrers).
 
 ## Dependencies
 
