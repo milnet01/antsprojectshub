@@ -55,7 +55,13 @@ which is git-ignored and untouched by the build and deploy. It only ever exists 
 machine that generated it.
 
 Getting a token (needed once): **github.com → your avatar → Settings → Developer settings
-→ Personal access tokens → Tokens (classic) → Generate new token (classic)**. Tick the
-**`repo`** scope, generate, and copy it — GitHub shows it once. Without a token the run
-still works but skips the visitor figures, which GitHub shares only with the repo owner.
-To avoid re-exporting it each time, add the `export` line to `~/.bashrc`.
+→ Personal access tokens → Tokens (classic) → Generate new token (classic)**. Tick
+**`public_repo`** — the indented item under `repo`, *not* `repo` itself, which would also
+grant full control of your private repositories. Every repo on the site is public, so
+`public_repo` is enough; the traffic endpoints need push access, which it grants. Give it a
+long expiry, generate, and copy it — GitHub shows it once.
+
+Run it from the project folder (`npm` looks for `package.json` in the current directory);
+the `export` itself works anywhere. Put the `export` line in `~/.bashrc` to set it once for
+every terminal. Without a token the run still works but skips the visitor figures, which
+GitHub shares only with the repo owner.

@@ -34,6 +34,16 @@ const OS_KEYS = ["win", "mac", "linux"];
 const OS_LABEL = { win: "Windows", mac: "macOS", linux: "Linux" };
 const DAY = 86400000;
 
+// Release files that legitimately aren't OS downloads: signatures, checksums, auto-updater
+// metadata, Python wheels, and plain source archives (a tarball with no OS hint in its
+// name). They land outside the win/mac/linux buckets by design, so flagging them as "a
+// missing download button" would nag about files the site is right to exclude. Anything
+// unmatched and NOT in here is genuinely unexplained and worth surfacing.
+const COMPANION_PAT =
+  /\.(sig|asc|pem|sha\d+|zsync|blockmap|torrent|ya?ml|json|whl|txt|md)$|checksums?|cosign|sbom|intoto|\.att\b/i;
+const SOURCE_PAT = /\.(tar\.(gz|xz|bz2)|tgz|zip)$/i;
+const isExpectedNonDownload = (name) => COMPANION_PAT.test(name) || SOURCE_PAT.test(name);
+
 const num = (n) => (n ?? 0).toLocaleString("en-GB");
 const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
 const daysSince = (iso, now) => (iso ? Math.floor((now - Date.parse(iso)) / DAY) : null);
@@ -68,11 +78,16 @@ async function collectProject(p) {
   // number there usually means a release asset is named in a way the matcher misses.
   const downloads = { win: 0, mac: 0, linux: 0, other: 0 };
   const perRelease = [];
+  const unexplained = new Map(); // filename → downloads, for assets we can't account for
   for (const r of releases) {
     const row = { tag: r.tag_name, at: r.published_at, prerelease: r.prerelease, total: 0 };
     for (const a of Array.isArray(r.assets) ? r.assets : []) {
       const n = a.download_count || 0;
-      downloads[assetPlatform(a.name) || "other"] += n;
+      const pl = assetPlatform(a.name);
+      downloads[pl || "other"] += n;
+      if (!pl && !isExpectedNonDownload(a.name)) {
+        unexplained.set(a.name, (unexplained.get(a.name) || 0) + n);
+      }
       row.total += n;
     }
     perRelease.push(row);
@@ -92,6 +107,7 @@ async function collectProject(p) {
     downloads,
     total,
     perRelease,
+    unexplained: [...unexplained].sort((a, b) => b[1] - a[1]).slice(0, 3),
     missingAssets,
     traffic,
     stars: repo.stargazers_count ?? 0,
@@ -185,9 +201,11 @@ function updateHistory(history, rows, now) {
 }
 
 // The snapshot to compare against: the most recent one at least a day old, so running
-// twice in a row doesn't reset every delta to zero. Falls back to the oldest we have.
+// twice in an afternoon doesn't flatten every delta to zero. When nothing is that old yet,
+// fall back to the *oldest* we have — the widest window available beats a minutes-old one.
+// Called before this run's snapshot is appended, so every entry here is a prior run.
 function baselineSnapshot(history, now) {
-  const prior = history.snapshots.slice(0, -1);
+  const prior = history.snapshots;
   if (!prior.length) return null;
   return prior.filter((s) => now - Date.parse(s.at) >= DAY).pop() || prior[0];
 }
@@ -272,9 +290,11 @@ function downloadsTable(rows, history, base) {
       const cells = OS_KEYS.map(
         (k) => `<td class="n">${num(r.downloads[k])}<br>${delta(r.downloads[k], b?.[k])}</td>`
       ).join("");
-      const other = r.downloads.other
-        ? `<td class="n warn">${num(r.downloads.other)}</td>`
-        : `<td class="n dim">0</td>`;
+      // Amber only when something is genuinely unexplained — signatures and source
+      // archives land here too and are perfectly normal.
+      const other = `<td class="n ${r.unexplained.length ? "warn" : "dim"}">${num(
+        r.downloads.other
+      )}</td>`;
       return `<tr>
         <th scope="row">${esc(r.name)}<span class="repo">${esc(r.repo)}</span></th>
         ${cells}${other}
@@ -291,11 +311,12 @@ function downloadsTable(rows, history, base) {
   const grand = ok.reduce((s, r) => s + r.total, 0);
 
   return `<table class="tbl">
-    <caption>All-time downloads, by operating system. “Unmatched” are release files that
-      fit no OS pattern — the site can't offer them as a download button.</caption>
+    <caption>All-time downloads, by operating system. “Other” counts release files that
+      aren't an OS download — signatures, checksums, updater metadata, source archives.
+      That's normal; it only turns amber when something there is unexplained.</caption>
     <thead><tr><th scope="col">Project</th>${OS_KEYS.map(
       (k) => `<th scope="col" class="n">${OS_LABEL[k]}</th>`
-    ).join("")}<th scope="col" class="n">Unmatched</th><th scope="col" class="n">Total</th>
+    ).join("")}<th scope="col" class="n">Other</th><th scope="col" class="n">Total</th>
     <th scope="col" class="n">Trend</th></tr></thead>
     <tbody>${body}</tbody>
     <tfoot><tr><th scope="row">All projects</th>${totals}
@@ -385,10 +406,11 @@ function issuesSection(rows, health) {
        fall back to the repo page.`
     );
   }
-  for (const r of rows.filter((x) => x.downloads.other > 0)) {
+  for (const r of rows.filter((x) => x.unexplained.length)) {
     items.push(
-      `<strong>${esc(r.name)}</strong> has ${num(r.downloads.other)} downloads of files the
-       OS matcher doesn't recognise — check the release asset filenames.`
+      `<strong>${esc(r.name)}</strong> ships release files that are neither an OS download
+       nor a signature/checksum/source archive, so nobody can get them from the site:
+       ${r.unexplained.map(([n, c]) => `${esc(n)} (${num(c)})`).join(", ")}.`
     );
   }
   if (health.missingAlt.length) {
@@ -421,7 +443,10 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
   const grand = ok.reduce((s, r) => s + r.total, 0);
   const stars = ok.reduce((s, r) => s + r.stars, 0);
   const views = ok.reduce((s, r) => s + (r.traffic?.views || 0), 0);
-  const baseAge = base ? Math.max(1, Math.round((now - Date.parse(base.at)) / DAY)) : null;
+  // Say "earlier today" rather than rounding a 40-minute-old baseline up to "1 day ago".
+  const baseGap = base ? now - Date.parse(base.at) : null;
+  const baseAge =
+    baseGap == null ? null : baseGap < DAY ? "earlier today" : `${Math.round(baseGap / DAY)} day(s) ago`;
   const tiles = [
     ["Total downloads", num(grand), base ? delta(grand, sumOf(base, "total")) : ""],
     ["Stars", num(stars), base ? delta(stars, sumOf(base, "stars")) : ""],
@@ -452,7 +477,7 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
     <p class="sub">Generated ${new Date(now).toLocaleString("en-GB")} · ${elapsed}s ·
       ${hasToken ? "authenticated" : "unauthenticated (limited)"} ·
       ${history.snapshots.length} snapshot(s) recorded${
-        baseAge ? ` · change shown vs ${baseAge} day(s) ago` : " · deltas appear from the second run"
+        baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
       }</p>
   </header>
 
@@ -641,7 +666,7 @@ async function main() {
   const failed = rows.filter((r) => !r.ok);
   console.log(
     `Stats for ${rows.length - failed.length}/${published.length} projects → ${PAGE}\n` +
-      `${history.snapshots.length} snapshot(s) on file${base ? "" : " — deltas appear on the next run"}`
+      `${history.snapshots.length} snapshot(s) on file${base ? "" : " — change appears on the next run"}`
   );
   if (failed.length) {
     console.warn(

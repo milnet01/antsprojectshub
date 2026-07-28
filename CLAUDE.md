@@ -122,9 +122,11 @@ Other invariants:
   as "no data", excluded from totals, and kept out of `.stats/history.json` — a false zero
   would poison every future delta. Keep this discipline in new metrics.
 - **`GITHUB_TOKEN` is effectively required.** A full run needs ~90 API calls against an
-  unauthenticated ceiling of 60/hour, and traffic endpoints are owner-only (403 without a
-  token with `repo` scope). Without one the run degrades: traffic is skipped, which keeps
-  it under 60 calls so the rest still fills in.
+  unauthenticated ceiling of 60/hour, and the traffic endpoints need push access (403
+  without a token). Every site repo is public, so classic scope `public_repo` suffices —
+  don't tell the owner to use full `repo`, which would also cover their private repos.
+  Without a token the run degrades: traffic is skipped, which keeps it under 60 calls so
+  the rest still fills in.
 - **History is append-only and local.** Download totals are stored as dated snapshots;
   traffic is merged as per-day buckets, because GitHub deletes traffic data after 14 days.
 - The page links `../src/assets/style.css` to inherit the AA-contrast tokens. Its body
