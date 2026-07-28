@@ -13,9 +13,9 @@
 // 60 calls/hour, under what a full run needs, and the traffic figures are owner-only, so
 // an anonymous run still works but skips traffic.
 
-import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { spawn } from "node:child_process";
 import { esc } from "./lib/templates.mjs";
 import {
@@ -497,7 +497,7 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Ants Projects Hub — private stats</title>
-<link rel="stylesheet" href="../src/assets/style.css">
+<link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="dashboard.css">
 <script src="dashboard.js" defer></script>
 </head>
@@ -505,14 +505,20 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
 <main class="wrap">
   <header class="head">
     <h1>Private stats</h1>
-    <p class="sub">Generated ${new Date(now).toLocaleString("en-GB")} · ${elapsed}s ·
+    <p class="sub">Last updated
+      <span id="updated" data-at="${new Date(now).toISOString()}">${new Date(now).toLocaleString(
+    "en-GB"
+  )}</span> · took ${elapsed}s ·
       ${AUTH_LABEL[tokenSource]} ·
       ${history.snapshots.length} snapshot(s) recorded${
         baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
       }</p>
     <p class="sub">Click a column heading to sort by it; click it again to reverse.</p>
+    <p class="refresh-row"><button type="button" id="refresh" class="btn-refresh" hidden>
+      Refresh now</button><span id="refresh-msg" class="refresh-msg" role="status"></span></p>
   </header>
 
+  ${gapBanner(history, now)}
   ${incompleteBanner(rows)}
 
   <section aria-labelledby="h-sum"><h2 id="h-sum" class="sr-only">Summary</h2>
@@ -549,6 +555,20 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
 </body>
 </html>
 `;
+}
+
+// GitHub serves only the last 14 days of traffic, so a gap longer than that loses those
+// days for good — the machine was off, or nobody ran it. Say so plainly rather than let a
+// hole appear silently in the history.
+function gapBanner(history, now) {
+  const prior = history.snapshots.slice(0, -1);
+  if (!prior.length) return "";
+  const gapDays = Math.floor((now - Date.parse(prior[prior.length - 1].at)) / DAY);
+  if (gapDays <= 14) return "";
+  return `<p class="note banner"><strong>${gapDays} days since the last run.</strong>
+    Download totals are unaffected — they're cumulative. But GitHub only keeps 14 days of
+    visitor data, so roughly ${gapDays - 14} day(s) of views and clones are gone for good.
+    Running at least once a fortnight avoids this.</p>`;
 }
 
 // A partial run must say so on the page itself. Totals below exclude these projects, so
@@ -629,6 +649,51 @@ const JS = `(function () {
     rows.forEach(function (r) { body.appendChild(r); });
   }
 
+  // "Last updated" as a live relative age, recomputed while the page sits open. A dashboard
+  // left on a second monitor for two days must not keep implying its numbers are current;
+  // past 36 hours it turns amber, which in practice means the background service has died.
+  var updated = document.getElementById("updated");
+  if (updated && updated.dataset.at) {
+    var at = new Date(updated.dataset.at).getTime();
+    var absolute = updated.textContent;
+    var plural = function (n, unit) { return n + " " + unit + (n === 1 ? "" : "s") + " ago"; };
+    var tick = function () {
+      var mins = Math.floor((Date.now() - at) / 60000);
+      var rel =
+        mins < 1 ? "just now"
+        : mins < 60 ? plural(mins, "minute")
+        : mins < 1440 ? plural(Math.floor(mins / 60), "hour")
+        : plural(Math.floor(mins / 1440), "day");
+      updated.textContent = absolute + " — " + rel;
+      updated.className = mins > 36 * 60 ? "stale" : "";
+    };
+    tick();
+    setInterval(tick, 30000);
+  }
+
+  // Refresh button. Only works when serve.mjs is serving the page — a page opened straight
+  // from disk has nothing to ask, so it stays hidden there rather than offering a control
+  // that would silently do nothing.
+  var refresh = document.getElementById("refresh");
+  var msg = document.getElementById("refresh-msg");
+  if (refresh && location.protocol !== "file:") {
+    refresh.hidden = false;
+    refresh.addEventListener("click", function () {
+      refresh.disabled = true;
+      msg.textContent = "Fetching from GitHub — about 12 seconds…";
+      fetch("refresh", { method: "POST" })
+        .then(function (r) {
+          if (!r.ok) throw new Error("server said " + r.status);
+          return r.json();
+        })
+        .then(function () { location.reload(); })
+        .catch(function (e) {
+          refresh.disabled = false;
+          msg.textContent = "Refresh failed — " + e.message;
+        });
+    });
+  }
+
   Array.prototype.forEach.call(document.querySelectorAll("table.sortable"), function (table) {
     var heads = Array.prototype.slice.call(table.tHead.rows[0].cells);
     heads.forEach(function (th, i) {
@@ -658,7 +723,17 @@ const CSS = `/* Private dashboard — layers on the site's tokens (already WCAG 
 body.admin { background: var(--bg); color: var(--text); font-family: var(--font); }
 .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .head h1 { margin: 0 0 4px; font-size: 1.6rem; }
-.sub { color: var(--text-muted); margin: 0 0 26px; font-size: .85rem; }
+.sub { color: var(--text-muted); margin: 0 0 6px; font-size: .85rem; }
+.refresh-row { display: flex; align-items: center; gap: 12px; margin: 14px 0 26px; }
+.btn-refresh { font: inherit; font-size: .85rem; color: var(--bg); background: var(--teal);
+  border: 0; border-radius: 999px; padding: 7px 16px; cursor: pointer; font-weight: 600; }
+.btn-refresh:hover { filter: brightness(1.1); }
+.btn-refresh:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.btn-refresh[disabled] { opacity: .55; cursor: progress; }
+.refresh-msg { color: var(--text-muted); font-size: .82rem; }
+#updated { color: var(--text); font-weight: 600; }
+/* Amber plus the word "ago" carries the meaning — never colour alone. */
+#updated.stale { color: var(--amber); }
 h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
@@ -728,7 +803,9 @@ code { background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 5px; 
 
 // ------------------------------------------------------------------------ main
 
-async function main() {
+// Fetch everything, update history, write the page. Exported so serve.mjs can call it on a
+// schedule and on demand without shelling out to a second Node process.
+export async function generate() {
   const started = Date.now();
   const { projects } = JSON.parse(await readFile(join(ROOT, "src/projects.json"), "utf8"));
   const published = projects.filter(isPublished);
@@ -760,6 +837,11 @@ async function main() {
 
   await mkdir(OUT, { recursive: true });
   await writeFile(HISTORY, JSON.stringify(history, null, 2));
+  // Copy the site stylesheet in rather than linking ../src/assets/style.css: a relative
+  // path out of .stats/ resolves when the file is opened from disk but 404s when serve.mjs
+  // serves the folder, which silently drops every colour and font to browser defaults.
+  // Copying keeps .stats/ self-contained and identical either way.
+  await copyFile(join(ROOT, "src/assets/style.css"), join(OUT, "site.css"));
   await writeFile(join(OUT, "dashboard.css"), CSS);
   await writeFile(join(OUT, "dashboard.js"), JS);
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
@@ -778,12 +860,19 @@ async function main() {
     );
   }
 
-  if (process.argv.includes("--open")) {
-    spawn("xdg-open", [PAGE], { detached: true, stdio: "ignore" }).unref();
-  }
+  return { page: PAGE, ok: rows.length - failed.length, total: published.length, failed };
 }
 
-main().catch((err) => {
-  console.error("Stats failed:", err);
-  process.exit(1);
-});
+// CLI entry — skipped when serve.mjs imports this module.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  generate()
+    .then(({ page: p }) => {
+      if (process.argv.includes("--open")) {
+        spawn("xdg-open", [p], { detached: true, stdio: "ignore" }).unref();
+      }
+    })
+    .catch((err) => {
+      console.error("Stats failed:", err);
+      process.exit(1);
+    });
+}

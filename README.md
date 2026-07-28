@@ -40,6 +40,29 @@ during the build and are never shipped to visitors.
 
 ## Private stats dashboard
 
+Runs as a small background server that starts with your desktop session, so the dashboard
+is always there at **http://127.0.0.1:4321** — bookmark it.
+
+```bash
+mkdir -p ~/.config/systemd/user
+ln -sf "$PWD/systemd/ants-stats.service" ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now ants-stats
+```
+
+It refreshes when your machine boots, every 24 hours after that, and instantly whenever you
+click **Refresh now** on the page itself. The header shows when the numbers were last
+updated ("2 hours ago"), turning amber past 36 hours — which means the service has stopped.
+
+```bash
+systemctl --user status ants-stats      # is it running?
+journalctl --user -u ants-stats -f      # watch it work
+systemctl --user disable --now ants-stats   # undo
+```
+
+Or generate it once by hand, without the server (the Refresh button hides itself, since
+there's nothing listening):
+
 ```bash
 cd /path/to/this/repo   # npm looks for package.json in the current folder
 npm run stats           # writes .stats/dashboard.html and opens it
@@ -50,8 +73,10 @@ clones and where they came from, stars and activity, release health, and content
 like screenshots missing alt text. Click any column heading to sort by it; click again to
 reverse.
 
-It's a snapshot, not a live page — re-run the command to refresh the numbers. Each run also
-records a dated reading, which is what the change columns and trend lines are built from.
+Each run records a dated reading, which is what the change columns and trend lines are built
+from. Download totals are cumulative so they're never lost, but GitHub keeps only 14 days of
+visitor data — a gap longer than that loses those days for good, and the page says so when it
+detects one.
 
 **It is never published.** A static site on GitHub Pages can't keep a page private — a
 password box would be defeated by View Source — so this dashboard is written to `.stats/`,

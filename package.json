@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "build": "node build.mjs",
-    "stats": "node stats.mjs --open"
+    "stats": "node stats.mjs --open",
+    "stats:serve": "node serve.mjs"
   },
   "engines": {
     "node": ">=20"

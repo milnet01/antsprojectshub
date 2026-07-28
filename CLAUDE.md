@@ -106,6 +106,8 @@ don't hunt for a code cause. `local-CI.sh` checks deploy *readiness* (dist/ has 
 
 `stats.mjs` builds an owner-only dashboard — downloads per OS per project, repo traffic,
 audience/activity, release health, and content checks — into `.stats/dashboard.html`.
+`serve.mjs` (systemd user unit in `systemd/`) serves it on `127.0.0.1:4321` and calls
+`generate()` on start, every 24 h, and on `POST /refresh` from the page's button.
 
 **The privacy model is "it is never published", and nothing weaker works.** This is a
 static site on public GitHub Pages: anything in `dist/` is world-readable, a password box
@@ -114,6 +116,9 @@ is only as secret as the URL. So the dashboard is deliberately *outside* the pip
 
 - `.stats/` is `.gitignore`d, and `stats.mjs` writes **only** there — never `dist/`.
 - Nothing in `build.mjs`, `local-CI.sh` or `deploy.yml` references it.
+- `serve.mjs` binds `127.0.0.1` explicitly, never `0.0.0.0` — the dashboard must not be
+  reachable from the local network. Keep the file allowlist (`FILES`) closed; don't turn it
+  into a general static server rooted at the repo.
 - Keep it that way. Do not add stats output to `src/assets/` — `build.mjs` copies that
   whole directory into `dist/`, which would publish it. Do not "just add a login".
 
@@ -132,9 +137,12 @@ Other invariants:
   is skipped, which keeps it under 60 calls so the rest still fills in.
 - **History is append-only and local.** Download totals are stored as dated snapshots;
   traffic is merged as per-day buckets, because GitHub deletes traffic data after 14 days.
-- The page links `../src/assets/style.css` to inherit the AA-contrast tokens. Its body
-  class is `admin`, **not** `stats` — the site's own `.stats` rule is a flex container and
-  would wreck the layout.
+- **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
+  `site.css`, not linked as `../src/assets/style.css`: the relative path resolves when the
+  file is opened from disk but 404s when `serve.mjs` serves it, silently dropping every
+  colour and font to browser defaults. Any new asset the page references gets copied in and
+  added to `FILES` too. The body class is `admin`, **not** `stats` — the site's own
+  `.stats` rule is a flex container and would wreck the layout.
 - **Sorting is progressive enhancement.** `dashboard.js` turns each `table.sortable`
   header into a `<button>` and toggles `aria-sort`; every table also ships pre-sorted by
   its most useful column, so the page is complete if the script never runs. Sort keys come

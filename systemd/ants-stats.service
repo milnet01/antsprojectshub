@@ -1,0 +1,35 @@
+# Private stats dashboard — always-on local server.
+#
+# Install (as your own user, NOT root — it needs your gh login and your keyring):
+#   mkdir -p ~/.config/systemd/user
+#   ln -sf "$PWD/systemd/ants-stats.service" ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now ants-stats
+#
+# Then open http://127.0.0.1:4321 — bookmark it.
+#
+#   systemctl --user status ants-stats     # is it running?
+#   journalctl --user -u ants-stats -f     # watch it work
+#   systemctl --user disable --now ants-stats   # undo
+#
+# WorkingDirectory is absolute because a systemd unit has no notion of "where you were".
+# Update it if the checkout ever moves.
+
+[Unit]
+Description=Ants Projects Hub private stats dashboard
+# Refreshing needs the GitHub API, so don't start before the network is usable.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/Games/Scripts/Linux/Ants_Projects_Hub_Website
+ExecStart=/usr/bin/node serve.mjs
+Environment=STATS_PORT=4321
+Environment=STATS_REFRESH_HOURS=24
+# A transient network or GitHub outage shouldn't leave the dashboard dead until next login.
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=default.target
