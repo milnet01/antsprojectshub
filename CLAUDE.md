@@ -87,7 +87,10 @@ The whole pipeline is four files. Data flows: `projects.json` → `build.mjs` �
   still break the CSP — never introduce them.
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative so a source tarball isn't mistaken for a Linux binary), falling
-  back to `homepage` → Releases page → repo home.
+  back to `homepage` → Releases page → repo home. Companion files — signatures, checksum
+  manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching:
+  several carry an OS name and GitHub lists assets alphabetically, so `foo-windows.cdx.json`
+  would otherwise sort ahead of `foo.exe` and become the Windows download.
 
 ## Deploy
 

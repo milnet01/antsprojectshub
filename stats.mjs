@@ -23,6 +23,7 @@ import {
   assetPlatform,
   pickAsset,
   pickLatestRelease,
+  isCompanionFile,
   hasToken,
   tokenSource,
 } from "./lib/github.mjs";
@@ -36,15 +37,14 @@ const OS_KEYS = ["win", "mac", "linux"];
 const OS_LABEL = { win: "Windows", mac: "macOS", linux: "Linux" };
 const DAY = 86400000;
 
-// Release files that legitimately aren't OS downloads: signatures, checksums, auto-updater
-// metadata, Python wheels, and plain source archives (a tarball with no OS hint in its
-// name). They land outside the win/mac/linux buckets by design, so flagging them as "a
-// missing download button" would nag about files the site is right to exclude. Anything
-// unmatched and NOT in here is genuinely unexplained and worth surfacing.
-const COMPANION_PAT =
-  /\.(sig|asc|pem|sha\d+|zsync|blockmap|torrent|ya?ml|json|whl|txt|md)$|checksums?|cosign|sbom|intoto|\.att\b/i;
+// Release files that legitimately aren't OS downloads, so listing them as "a missing
+// download button" would nag about files the site is right to exclude. Two groups: the
+// companion files the matcher itself skips (signatures, checksums, SBOMs — shared with
+// build.mjs via lib/github.mjs so the two can't disagree), plus plain source archives. A
+// source archive is only ever seen here after failing OS matching, i.e. it has no OS hint
+// in its name — a `*-Windows.zip` is a real download and never reaches this test.
 const SOURCE_PAT = /\.(tar\.(gz|xz|bz2)|tgz|zip)$/i;
-const isExpectedNonDownload = (name) => COMPANION_PAT.test(name) || SOURCE_PAT.test(name);
+const isExpectedNonDownload = (name) => isCompanionFile(name) || SOURCE_PAT.test(name);
 
 const AUTH_LABEL = {
   env: "authenticated (GITHUB_TOKEN)",
