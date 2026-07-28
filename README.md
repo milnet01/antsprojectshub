@@ -41,7 +41,7 @@ during the build and are never shipped to visitors.
 ## Private stats dashboard
 
 ```bash
-export GITHUB_TOKEN=ghp_yourtoken
+cd /path/to/this/repo   # npm looks for package.json in the current folder
 npm run stats           # writes .stats/dashboard.html and opens it
 ```
 
@@ -54,14 +54,11 @@ password box would be defeated by View Source — so this dashboard is written t
 which is git-ignored and untouched by the build and deploy. It only ever exists on the
 machine that generated it.
 
-Getting a token (needed once): **github.com → your avatar → Settings → Developer settings
-→ Personal access tokens → Tokens (classic) → Generate new token (classic)**. Tick
-**`public_repo`** — the indented item under `repo`, *not* `repo` itself, which would also
-grant full control of your private repositories. Every repo on the site is public, so
-`public_repo` is enough; the traffic endpoints need push access, which it grants. Give it a
-long expiry, generate, and copy it — GitHub shows it once.
+**No token setup needed.** If you're logged in with the GitHub CLI (`gh auth login`), the
+build borrows that login automatically — that's what lifts the anonymous 60-calls-per-hour
+limit and unlocks the owner-only visitor figures. Check with `gh auth status`.
 
-Run it from the project folder (`npm` looks for `package.json` in the current directory);
-the `export` itself works anywhere. Put the `export` line in `~/.bashrc` to set it once for
-every terminal. Without a token the run still works but skips the visitor figures, which
-GitHub shares only with the repo owner.
+Set `GITHUB_TOKEN` only if you'd rather not depend on `gh` (it takes precedence when
+present); a classic token with the **`public_repo`** scope is enough, since every repo on
+the site is public. With neither, the run still works but skips the visitor figures and
+may hit the rate limit — the page says so at the top and never records partial data.

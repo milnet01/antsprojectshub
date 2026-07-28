@@ -8,9 +8,10 @@
 //   npm run stats          fetch, render, print the path
 //   npm run stats -- --open   ... and open it in the browser
 //
-// Set GITHUB_TOKEN first. Unauthenticated GitHub allows 60 calls/hour, which is under what
-// a full run needs, and the traffic figures (views/clones/referrers) are owner-only — they
-// return 403 without a token. Without one the run still works, minus traffic.
+// Authentication is automatic if you're logged in with the GitHub CLI (`gh auth login`) —
+// no personal token needed. GITHUB_TOKEN wins if set. Unauthenticated GitHub allows only
+// 60 calls/hour, under what a full run needs, and the traffic figures are owner-only, so
+// an anonymous run still works but skips traffic.
 
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -23,6 +24,7 @@ import {
   pickAsset,
   pickLatestRelease,
   hasToken,
+  tokenSource,
 } from "./lib/github.mjs";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
@@ -43,6 +45,12 @@ const COMPANION_PAT =
   /\.(sig|asc|pem|sha\d+|zsync|blockmap|torrent|ya?ml|json|whl|txt|md)$|checksums?|cosign|sbom|intoto|\.att\b/i;
 const SOURCE_PAT = /\.(tar\.(gz|xz|bz2)|tgz|zip)$/i;
 const isExpectedNonDownload = (name) => COMPANION_PAT.test(name) || SOURCE_PAT.test(name);
+
+const AUTH_LABEL = {
+  env: "authenticated (GITHUB_TOKEN)",
+  gh: "authenticated (gh CLI login)",
+  none: "not authenticated — limited",
+};
 
 const num = (n) => (n ?? 0).toLocaleString("en-GB");
 const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
@@ -475,7 +483,7 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
   <header class="head">
     <h1>Private stats</h1>
     <p class="sub">Generated ${new Date(now).toLocaleString("en-GB")} · ${elapsed}s ·
-      ${hasToken ? "authenticated" : "unauthenticated (limited)"} ·
+      ${AUTH_LABEL[tokenSource]} ·
       ${history.snapshots.length} snapshot(s) recorded${
         baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
       }</p>
@@ -634,9 +642,9 @@ async function main() {
 
   if (!hasToken) {
     console.warn(
-      "! No GITHUB_TOKEN — traffic stats skipped and GitHub allows only 60 calls/hour.\n" +
-        "  Create one at https://github.com/settings/tokens (classic, scope: repo), then:\n" +
-        "    export GITHUB_TOKEN=ghp_xxx && npm run stats"
+      "! Not authenticated — traffic stats skipped and GitHub allows only 60 calls/hour.\n" +
+        "  Easiest fix: run `gh auth login` (this picks the CLI's login up automatically).\n" +
+        "  Or set a token: export GITHUB_TOKEN=<token with public_repo scope>"
     );
   }
 

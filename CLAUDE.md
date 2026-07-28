@@ -26,9 +26,10 @@ npm run stats           # private stats dashboard → .stats/ (never published)
 version, update the script to match. The deploy steps are GitHub Pages infra and can't run
 locally.
 
-Set `GITHUB_TOKEN` before `node build.mjs` to avoid GitHub API rate limits (CI passes the
-Actions token automatically). With no token / offline, the build still succeeds — each
-project falls back to static metadata from `projects.json`. There is no test suite or
+Authentication avoids GitHub API rate limits: `GITHUB_TOKEN` if set (CI passes the Actions
+token automatically), otherwise the GitHub CLI's login via `gh auth token`. With neither /
+offline, the build still succeeds — each project falls back to static metadata from
+`projects.json`. There is no test suite or
 linter; `.editorconfig` enforces 2-space indent, LF, UTF-8, final newline.
 
 You almost never run the build by hand: pushing to `main` is enough (see deploy below).
@@ -121,12 +122,14 @@ Other invariants:
 - **A failed fetch is never recorded as zero.** Rate-limited or errored projects are shown
   as "no data", excluded from totals, and kept out of `.stats/history.json` — a false zero
   would poison every future delta. Keep this discipline in new metrics.
-- **`GITHUB_TOKEN` is effectively required.** A full run needs ~90 API calls against an
-  unauthenticated ceiling of 60/hour, and the traffic endpoints need push access (403
-  without a token). Every site repo is public, so classic scope `public_repo` suffices —
-  don't tell the owner to use full `repo`, which would also cover their private repos.
-  Without a token the run degrades: traffic is skipped, which keeps it under 60 calls so
-  the rest still fills in.
+- **Authentication is effectively required, but automatic.** A full run needs ~90 API calls
+  against an unauthenticated ceiling of 60/hour, and the traffic endpoints need push access
+  (403 otherwise). `lib/github.mjs` resolves a token from `GITHUB_TOKEN`, else from
+  `gh auth token` — so a developer already logged into the GitHub CLI needs no setup, and
+  local `node build.mjs` runs authenticated too. If a token is ever suggested, it's classic
+  scope `public_repo`, **not** full `repo`: every site repo is public, and `repo` would
+  also grant control of the owner's private ones. With neither, the run degrades — traffic
+  is skipped, which keeps it under 60 calls so the rest still fills in.
 - **History is append-only and local.** Download totals are stored as dated snapshots;
   traffic is merged as per-day buckets, because GitHub deletes traffic data after 14 days.
 - The page links `../src/assets/style.css` to inherit the AA-contrast tokens. Its body
