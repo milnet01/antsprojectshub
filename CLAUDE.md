@@ -18,6 +18,7 @@ npm ci                  # install locked deps (Node >= 20)
 node build.mjs          # build → dist/  (or: npm run build)
 npx serve dist          # preview at http://localhost:3000
 ./local-CI.sh           # reproduce the CI build job locally before pushing
+npm run stats           # private stats dashboard → .stats/ (never published)
 ```
 
 `local-CI.sh` mirrors the `build` job in `.github/workflows/deploy.yml` step-for-step
@@ -34,7 +35,7 @@ You almost never run the build by hand: pushing to `main` is enough (see deploy 
 
 ## Architecture
 
-The whole pipeline is three files. Data flows: `projects.json` → `build.mjs` → `dist/`.
+The whole pipeline is four files. Data flows: `projects.json` → `build.mjs` → `dist/`.
 
 - **`src/projects.json`** — the single source of content and the file you edit most. Holds
   the `projects` array and `support` links. Adding/editing a project means editing this
@@ -53,6 +54,12 @@ The whole pipeline is three files. Data flows: `projects.json` → `build.mjs` �
 
 - **`lib/templates.mjs`** — pure presentation: the `basePage()` HTML document shell, the
   `esc()` escaper, and `ORIGIN`. No data access or fetching here — keep that boundary.
+
+- **`lib/github.mjs`** — shared GitHub I/O (`ghRequest`/`ghJson`) and the release-asset →
+  OS matcher (`ASSET_PAT`, `assetPlatform`, `pickAsset`, `pickLatestRelease`). Imported by
+  both `build.mjs` and `stats.mjs` **so the two can never disagree about which file counts
+  as a Windows/macOS/Linux download** — if they drifted, the private dashboard would report
+  numbers the public site doesn't show. Change the matcher here, nowhere else.
 
 - **`src/assets/style.css`** — all styling. Re-skin by editing the `:root` design tokens at
   the top; it is the single source of truth for theme.
@@ -93,6 +100,36 @@ If it fails with **`Deployment failed, try again later`** while the `build` job 
 is a transient Pages backend hiccup — **re-run the deploy job** (`gh run rerun <id> --failed`),
 don't hunt for a code cause. `local-CI.sh` checks deploy *readiness* (dist/ has `index.html`,
 `CNAME`, no stray symlinks) so the failures that *are* our fault are caught before pushing.
+
+## Private stats dashboard (`npm run stats`)
+
+`stats.mjs` builds an owner-only dashboard — downloads per OS per project, repo traffic,
+audience/activity, release health, and content checks — into `.stats/dashboard.html`.
+
+**The privacy model is "it is never published", and nothing weaker works.** This is a
+static site on public GitHub Pages: anything in `dist/` is world-readable, a password box
+would be defeated by View Source (the numbers are already in the page), and a secret URL
+is only as secret as the URL. So the dashboard is deliberately *outside* the pipeline:
+
+- `.stats/` is `.gitignore`d, and `stats.mjs` writes **only** there — never `dist/`.
+- Nothing in `build.mjs`, `local-CI.sh` or `deploy.yml` references it.
+- Keep it that way. Do not add stats output to `src/assets/` — `build.mjs` copies that
+  whole directory into `dist/`, which would publish it. Do not "just add a login".
+
+Other invariants:
+
+- **A failed fetch is never recorded as zero.** Rate-limited or errored projects are shown
+  as "no data", excluded from totals, and kept out of `.stats/history.json` — a false zero
+  would poison every future delta. Keep this discipline in new metrics.
+- **`GITHUB_TOKEN` is effectively required.** A full run needs ~90 API calls against an
+  unauthenticated ceiling of 60/hour, and traffic endpoints are owner-only (403 without a
+  token with `repo` scope). Without one the run degrades: traffic is skipped, which keeps
+  it under 60 calls so the rest still fills in.
+- **History is append-only and local.** Download totals are stored as dated snapshots;
+  traffic is merged as per-day buckets, because GitHub deletes traffic data after 14 days.
+- The page links `../src/assets/style.css` to inherit the AA-contrast tokens. Its body
+  class is `admin`, **not** `stats` — the site's own `.stats` rule is a flex container and
+  would wreck the layout.
 
 ## Dependencies
 

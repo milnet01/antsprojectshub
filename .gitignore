@@ -2,3 +2,7 @@ node_modules/
 dist/
 .DS_Store
 *.log
+
+# Private stats dashboard (npm run stats). Never published — the generated page and its
+# saved history contain owner-only visitor data and must stay on this machine.
+.stats/

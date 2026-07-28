@@ -11,10 +11,16 @@ import { dirname, join } from "node:path";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 import { basePage, esc, ORIGIN, setAssetVersion } from "./lib/templates.mjs";
+import {
+  ghJson,
+  assetPlatform,
+  pickAsset,
+  pickLatestRelease,
+  hasToken,
+} from "./lib/github.mjs";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
-const TOKEN = process.env.GITHUB_TOKEN || "";
 
 // ---------------------------------------------------------------- presentation
 const STATUS = {
@@ -96,24 +102,6 @@ function renderSupport(support) {
       <h2 class="section-label" id="support-h">Support the work</h2>
       <div class="support__row">${btns}</div>
     </section>`;
-}
-
-// ------------------------------------------------------------------- GitHub I/O
-async function ghJson(path) {
-  try {
-    const res = await fetch(`https://api.github.com${path}`, {
-      headers: {
-        Accept: "application/vnd.github+json",
-        "User-Agent": "ants-projects-hub-build",
-        "X-GitHub-Api-Version": "2022-11-28",
-        ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}),
-      },
-    });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
 }
 
 // Shift README headings down one level so the page keeps a single <h1>.
@@ -207,7 +195,7 @@ async function fetchRelease(repo) {
   // just the most recent handful — the counts are meant to be all-time totals.
   const list = await ghJson(`/repos/${repo}/releases?per_page=100`);
   const nonDraft = Array.isArray(list) ? list.filter((r) => !r.draft) : [];
-  const data = nonDraft.find((r) => !r.prerelease) || nonDraft[0] || null;
+  const data = pickLatestRelease(nonDraft);
   if (!data || !data.tag_name) return null;
   const notesHtml = data.body
     ? sanitizeHtml(marked.parse(data.body, { gfm: true }), sanitizeOptions())
@@ -221,24 +209,11 @@ async function fetchRelease(repo) {
   const downloads = { win: 0, mac: 0, linux: 0 };
   for (const r of nonDraft) {
     for (const a of Array.isArray(r.assets) ? r.assets : []) {
-      const pl = Object.keys(ASSET_PAT).find((k) => ASSET_PAT[k].test(a.name));
+      const pl = assetPlatform(a.name);
       if (pl) downloads[pl] += a.download_count || 0;
     }
   }
   return { version: data.tag_name, notesHtml, assets, downloads };
-}
-
-// Match a release asset to a platform by filename. Deliberately conservative: a Linux
-// match needs an AppImage/deb/rpm/flatpak extension or the word "linux" — so a plain
-// source `*.tar.gz` (e.g. a Python sdist) is NOT mistaken for a Linux binary.
-const ASSET_PAT = {
-  win: /\.(exe|msi)$|windows|win-?(64|32)|[-_]win[-_.]/i,
-  mac: /\.(dmg|pkg)$|macos|mac[-_.]|osx|darwin/i,
-  linux: /\.(appimage|deb|rpm|flatpak)$|linux/i,
-};
-function pickAsset(assets, pl) {
-  const pat = ASSET_PAT[pl];
-  return (assets || []).find((a) => pat && pat.test(a.name)) || null;
 }
 
 // No-release repos always fall back to the repo home (never a guessed upstream
@@ -593,7 +568,7 @@ async function main() {
 
   console.log(
     `Built ${projects.length} projects (${enriched} enriched from GitHub${
-      TOKEN ? ", authenticated" : ", unauthenticated"
+      hasToken ? ", authenticated" : ", unauthenticated"
     }) → dist/`
   );
 }

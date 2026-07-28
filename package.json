@@ -5,7 +5,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "stats": "node stats.mjs --open"
   },
   "engines": {
     "node": ">=20"

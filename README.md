@@ -37,3 +37,25 @@ npx serve dist          # preview at http://localhost:3000
 
 The deployed site is pure static HTML/CSS — `marked` and `sanitize-html` are used only
 during the build and are never shipped to visitors.
+
+## Private stats dashboard
+
+```bash
+export GITHUB_TOKEN=ghp_yourtoken
+npm run stats           # writes .stats/dashboard.html and opens it
+```
+
+Shows downloads per OS per project (with change since last run), repo views/visitors/
+clones and where they came from, stars and activity, release health, and content checks
+like screenshots missing alt text.
+
+**It is never published.** A static site on GitHub Pages can't keep a page private — a
+password box would be defeated by View Source — so this dashboard is written to `.stats/`,
+which is git-ignored and untouched by the build and deploy. It only ever exists on the
+machine that generated it.
+
+Getting a token (needed once): **github.com → your avatar → Settings → Developer settings
+→ Personal access tokens → Tokens (classic) → Generate new token (classic)**. Tick the
+**`repo`** scope, generate, and copy it — GitHub shows it once. Without a token the run
+still works but skips the visitor figures, which GitHub shares only with the repo owner.
+To avoid re-exporting it each time, add the `export` line to `~/.bashrc`.
