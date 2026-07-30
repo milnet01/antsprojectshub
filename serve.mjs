@@ -14,14 +14,17 @@
 
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
+import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { generate } from "./stats.mjs";
+import { resolveAuth } from "./lib/github.mjs";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, ".stats");
 const PORT = Number(process.env.STATS_PORT) || 4321;
 const REFRESH_HOURS = Number(process.env.STATS_REFRESH_HOURS) || 24;
+const AUTH_WAIT_MIN = Number(process.env.STATS_AUTH_WAIT_MINUTES ?? 15);
 
 const TYPES = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript" };
 const FILES = {
@@ -91,12 +94,36 @@ const server = createServer(async (req, res) => {
   }
 });
 
-await refresh("startup").catch(() => {
-  log("startup refresh failed — serving the last generated page, if any");
+// Listen before refreshing, not after: the previously generated page is already on disk, and
+// the startup refresh below can wait several minutes for credentials. Serving first means the
+// tray icon and the bookmark always open something instead of "connection refused".
+server.listen(PORT, "127.0.0.1", () => {
+  log(`dashboard on http://127.0.0.1:${PORT} — refreshing every ${REFRESH_HOURS}h`);
 });
 
 setInterval(() => refresh("scheduled").catch(() => {}), REFRESH_HOURS * 3600_000);
 
-server.listen(PORT, "127.0.0.1", () => {
-  log(`dashboard on http://127.0.0.1:${PORT} — refreshing every ${REFRESH_HOURS}h`);
+// At boot this service starts before the desktop session unlocks the keyring that `gh` keeps
+// the GitHub login in, so refreshing straight away yields an incomplete run: traffic skipped
+// and the 60-calls-an-hour anonymous ceiling hit part-way down the project list. Waiting for
+// the login to actually appear beats guessing a fixed delay — a slow login still works, and a
+// fast one costs no delay at all. If it never arrives we refresh anyway, because a partial
+// run that says so on the page still beats figures going stale for a day.
+async function waitForAuth() {
+  if (resolveAuth().hasToken) return;
+  log(`no GitHub login yet — waiting up to ${AUTH_WAIT_MIN} min for the keyring to unlock`);
+  const deadline = Date.now() + AUTH_WAIT_MIN * 60_000;
+  while (Date.now() < deadline) {
+    await sleep(15_000);
+    if (resolveAuth().hasToken) {
+      log("GitHub login available — refreshing now");
+      return;
+    }
+  }
+  log(`still no GitHub login after ${AUTH_WAIT_MIN} min — refreshing unauthenticated`);
+}
+
+await waitForAuth();
+await refresh("startup").catch(() => {
+  log("startup refresh failed — serving the last generated page, if any");
 });

@@ -26,6 +26,7 @@ import {
   isCompanionFile,
   hasToken,
   tokenSource,
+  resolveAuth,
 } from "./lib/github.mjs";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
@@ -902,6 +903,9 @@ code { background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 5px; 
 // schedule and on demand without shelling out to a second Node process.
 export async function generate() {
   const started = Date.now();
+  // Look for the login again each run: the long-lived server process may have started before
+  // the keyring holding it was unlocked, and without this it would stay logged out forever.
+  resolveAuth();
   const { projects } = JSON.parse(await readFile(join(ROOT, "src/projects.json"), "utf8"));
   const published = projects.filter(isPublished);
 
