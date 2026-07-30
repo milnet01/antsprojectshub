@@ -54,18 +54,42 @@ It refreshes when your machine boots, every 24 hours after that, and instantly w
 click **Refresh now** on the page itself. The header shows when the numbers were last
 updated ("2 hours ago"), turning amber past 36 hours — which means the service has stopped.
 
+The boot refresh waits for your GitHub login to become available before it runs (up to 15
+minutes; `STATS_AUTH_WAIT_MINUTES` changes that). At boot the service starts before your
+desktop unlocks the keyring `gh` stores the login in, and refreshing before then produces a
+half-finished run with no visitor figures. The dashboard is served the whole time you wait —
+it just shows the previous run until the fresh one lands.
+
 ```bash
 systemctl --user status ants-stats      # is it running?
 journalctl --user -u ants-stats -f      # watch it work
 systemctl --user disable --now ants-stats   # undo
 ```
 
-Or generate it once by hand, without the server (the Refresh button hides itself, since
+### Tray icon
+
+A small icon next to the clock to open the dashboard, refresh the stats, and start, restart
+or stop the server without a terminal. **Quit stops the server too.**
+
+```bash
+mkdir -p ~/.config/autostart
+ln -sf "$PWD/tray/ants-stats-tray.desktop" ~/.config/autostart/
+python3 tray/ants-stats-tray.py &   # or just log out and back in
+```
+
+It needs PySide6 (`zypper install python3-PySide6`, already present on a KDE desktop) and
+talks to the server over the same `POST /refresh` the page's button uses. The icon shows a
+solid dot when the server is running and a barred one when it is stopped — the tooltip and
+the menu wording say which too, so the state never rests on a 22-pixel icon. To remove it:
+`rm ~/.config/autostart/ants-stats-tray.desktop`.
+
+Or generate the page once by hand, without the server (the Refresh button hides itself, since
 there's nothing listening):
 
 ```bash
 cd /path/to/this/repo   # npm looks for package.json in the current folder
-npm run stats           # writes .stats/dashboard.html and opens it
+npm run stats             # writes .stats/dashboard.html
+npm run stats -- --open   # ...and opens it in the browser
 ```
 
 Shows downloads per OS per project (with change since last run), repo views/visitors/

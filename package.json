@@ -6,8 +6,9 @@
   "private": true,
   "scripts": {
     "build": "node build.mjs",
-    "stats": "node stats.mjs --open",
-    "stats:serve": "node serve.mjs"
+    "stats": "node stats.mjs",
+    "stats:serve": "node serve.mjs",
+    "stats:tray": "python3 tray/ants-stats-tray.py"
   },
   "engines": {
     "node": ">=20"

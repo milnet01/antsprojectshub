@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Stats server running">
+  <!-- Ant silhouette, simplified from src/assets/img/favicon.svg: at 22px on a panel the
+       favicon's thin legs turn to mush, so the strokes are thicker and the detail is gone.
+       The near-black outline is what lets one icon read on both a light and a dark panel. -->
+  <g fill="none" stroke="#2dd4bf" stroke-width="4" stroke-linecap="round">
+    <path d="M28 15 C 23 8, 19 8, 16 11"/>
+    <path d="M36 15 C 41 8, 45 8, 48 11"/>
+    <path d="M26 28 C 17 24, 13 23, 8 25"/>
+    <path d="M26 33 C 16 33, 12 35, 7 38"/>
+    <path d="M38 28 C 47 24, 51 23, 56 25"/>
+    <path d="M38 33 C 48 33, 52 35, 57 38"/>
+  </g>
+  <g fill="#2dd4bf" stroke="#0b0b14" stroke-width="1.5">
+    <circle cx="32" cy="17" r="7"/>
+    <ellipse cx="32" cy="31" rx="6.5" ry="7.5"/>
+    <ellipse cx="32" cy="48" rx="10" ry="12"/>
+  </g>
+
+  <!-- Running badge: a solid disc. Deliberately a different SHAPE from the stopped badge's
+       bar, not just a different colour — status must not be carried by hue alone. -->
+  <circle cx="51" cy="51" r="12" fill="#0b0b14"/>
+  <circle cx="51" cy="51" r="8.5" fill="#2dd4bf"/>
+</svg>

@@ -111,6 +111,10 @@ don't hunt for a code cause. `local-CI.sh` checks deploy *readiness* (dist/ has 
 audience/activity, release health, and content checks — into `.stats/dashboard.html`.
 `serve.mjs` (systemd user unit in `systemd/`) serves it on `127.0.0.1:4321` and calls
 `generate()` on start, every 24 h, and on `POST /refresh` from the page's button.
+`tray/ants-stats-tray.py` is an optional PySide6 tray icon that drives the unit
+(open / refresh / start / stop / restart / quit) — the one piece not written in JavaScript,
+because a tray icon needs a desktop toolkit and the Node route is Electron. It refreshes via
+the same `POST /refresh`, never by calling `generate()` itself.
 
 **The privacy model is "it is never published", and nothing weaker works.** This is a
 static site on public GitHub Pages: anything in `dist/` is world-readable, a password box
@@ -130,6 +134,14 @@ Other invariants:
 - **A failed fetch is never recorded as zero.** Rate-limited or errored projects are shown
   as "no data", excluded from totals, and kept out of `.stats/history.json` — a false zero
   would poison every future delta. Keep this discipline in new metrics.
+- **The token is resolved per run, never once per process.** `gh` keeps it in the desktop
+  keyring, which is still locked when the service starts at boot — so a token resolved at
+  import would leave a long-lived server permanently unauthenticated: traffic blank and every
+  run capped at 60 calls/hour, even after a manual refresh hours later. `resolveAuth()` in
+  `lib/github.mjs` re-checks while unauthenticated and caches success; `generate()` calls it
+  first, and `serve.mjs` waits for a login before its startup run rather than firing blind.
+  `hasToken`/`tokenSource` are `export let` **on purpose** — importers rely on the live
+  binding to see the update. Don't turn them back into `const`.
 - **Authentication is effectively required, but automatic.** A full run needs ~90 API calls
   against an unauthenticated ceiling of 60/hour, and the traffic endpoints need push access
   (403 otherwise). `lib/github.mjs` resolves a token from `GITHUB_TOKEN`, else from

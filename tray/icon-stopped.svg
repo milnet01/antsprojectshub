@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Stats server stopped">
+  <!-- Same ant as icon-running.svg, drained of colour; see that file for why it is drawn this
+       way. Only the badge and the fill differ between the two states. -->
+  <g fill="none" stroke="#9ca3af" stroke-width="4" stroke-linecap="round">
+    <path d="M28 15 C 23 8, 19 8, 16 11"/>
+    <path d="M36 15 C 41 8, 45 8, 48 11"/>
+    <path d="M26 28 C 17 24, 13 23, 8 25"/>
+    <path d="M26 33 C 16 33, 12 35, 7 38"/>
+    <path d="M38 28 C 47 24, 51 23, 56 25"/>
+    <path d="M38 33 C 48 33, 52 35, 57 38"/>
+  </g>
+  <g fill="#9ca3af" stroke="#0b0b14" stroke-width="1.5">
+    <circle cx="32" cy="17" r="7"/>
+    <ellipse cx="32" cy="31" rx="6.5" ry="7.5"/>
+    <ellipse cx="32" cy="48" rx="10" ry="12"/>
+  </g>
+
+  <!-- Stopped badge: a bar, not a disc. The shape is the signal; the colour only reinforces it. -->
+  <circle cx="51" cy="51" r="12" fill="#0b0b14"/>
+  <circle cx="51" cy="51" r="8.5" fill="none" stroke="#fb7185" stroke-width="3"/>
+  <rect x="45.5" y="49.5" width="11" height="3" rx="1.5" fill="#fb7185"/>
+</svg>

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Ants Stats Tray
+GenericName=Private stats server control
+Comment=Open, refresh, restart or stop the private stats dashboard server
+Exec=/usr/bin/python3 "/mnt/Games/Scripts/Linux/Ants_Projects_Hub_Website/tray/ants-stats-tray.py"
+Icon=/mnt/Games/Scripts/Linux/Ants_Projects_Hub_Website/tray/icon-running.svg
+Terminal=false
+Categories=Utility;System;Monitor;
+StartupNotify=false
+X-GNOME-Autostart-enabled=true
