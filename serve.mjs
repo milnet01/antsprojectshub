@@ -11,6 +11,7 @@
 //
 //   node serve.mjs                 → http://127.0.0.1:4321
 //   STATS_PORT=5000 node serve.mjs
+//   PORT=5000 node serve.mjs       → wins over STATS_PORT; see lib/port.mjs
 
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -19,10 +20,19 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { generate } from "./stats.mjs";
 import { resolveAuth } from "./lib/github.mjs";
+import { resolvePort } from "./lib/port.mjs";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, ".stats");
-const PORT = Number(process.env.STATS_PORT) || 4321;
+// Refuse to start on a port we were asked for and can't use, rather than binding a different
+// one and looking healthy while nothing reaches us.
+let PORT;
+try {
+  PORT = resolvePort(process.env);
+} catch (err) {
+  console.error(err.message);
+  process.exit(1);
+}
 const REFRESH_HOURS = Number(process.env.STATS_REFRESH_HOURS) || 24;
 const AUTH_WAIT_MIN = Number(process.env.STATS_AUTH_WAIT_MINUTES ?? 15);
 

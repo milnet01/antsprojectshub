@@ -19,6 +19,7 @@ node build.mjs          # build → dist/  (or: npm run build)
 npx serve dist          # preview at http://localhost:3000
 ./local-CI.sh           # reproduce the CI build job locally before pushing
 npm run stats           # private stats dashboard → .stats/ (never published)
+npm test                # the stats server's port handling (Node + Python)
 ```
 
 `local-CI.sh` mirrors the `build` job in `.github/workflows/deploy.yml` step-for-step
@@ -29,8 +30,13 @@ locally.
 Authentication avoids GitHub API rate limits: `GITHUB_TOKEN` if set (CI passes the Actions
 token automatically), otherwise the GitHub CLI's login via `gh auth token`. With neither /
 offline, the build still succeeds — each project falls back to static metadata from
-`projects.json`. There is no test suite or
-linter; `.editorconfig` enforces 2-space indent, LF, UTF-8, final newline.
+`projects.json`. There is no linter; `.editorconfig` enforces 2-space indent, LF, UTF-8,
+final newline.
+
+`npm test` covers the *stats server only* — the port contract below, and nothing else. It
+uses `node --test` and Python's `unittest`, so it adds no dependency; the site build has no
+tests. It is **local, not CI**: the tray half needs PySide6, which the deploy runner doesn't
+have, and the deploy workflow deliberately touches nothing under `.stats/`.
 
 You almost never run the build by hand: pushing to `main` is enough (see deploy below).
 
@@ -130,6 +136,18 @@ is only as secret as the URL. So the dashboard is deliberately *outside* the pip
   whole directory into `dist/`, which would publish it. Do not "just add a login".
 
 Other invariants:
+
+- **The port is `PORT` → `STATS_PORT` → 4321, resolved in `lib/port.mjs`.** `STATS_PORT` is
+  the packaged default in the unit file; `PORT` is how an external process manager overrides
+  it via a systemd drop-in, without editing a tracked file. A `PORT` that can't be used is
+  fatal — `serve.mjs` exits non-zero naming the value, because binding 4321 instead would
+  look healthy while nothing reached it. `STATS_PORT` keeps its older lenient behaviour
+  (a bad value still falls back) — that path predates this and must not change.
+  **The tray reads the port from the *unit's* environment** (`systemctl --user show
+  ants-stats -p Environment`), never from its own: the server is started by systemd, so an
+  override never reaches the tray's environment, and a tray that guessed would open a dead
+  port while the server was fine. `LWSM_MANAGED=1` drops the icon and logs to stdout
+  instead — a presentation hint only, never a reason to grant or skip anything.
 
 - **A failed fetch is never recorded as zero.** Rate-limited or errored projects are shown
   as "no data", excluded from totals, and kept out of `.stats/history.json` — a false zero

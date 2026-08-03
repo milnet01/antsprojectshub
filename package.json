@@ -8,7 +8,8 @@
     "build": "node build.mjs",
     "stats": "node stats.mjs",
     "stats:serve": "node serve.mjs",
-    "stats:tray": "python3 tray/ants-stats-tray.py"
+    "stats:tray": "python3 tray/ants-stats-tray.py",
+    "test": "node --test test/*.test.mjs && python3 -m unittest discover -s test -p '*_test.py'"
   },
   "engines": {
     "node": ">=20"

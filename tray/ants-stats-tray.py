@@ -11,12 +11,17 @@ icon behaves like a native one.
 
     python3 tray/ants-stats-tray.py          # or: npm run stats:tray
 
+With LWSM_MANAGED=1 it runs without an icon and logs to stdout instead, for a session manager
+that draws its own indicator.
+
 Talks to the server the same way the dashboard page does — POST /refresh on 127.0.0.1 — so
 there is no second code path that could disagree with the Refresh button.
 """
 
 import os
+import shlex
 import subprocess
+import time
 import urllib.request
 
 from PySide6.QtCore import QObject, QRunnable, QThreadPool, QTimer, Signal
@@ -25,12 +30,22 @@ from PySide6.QtWidgets import QApplication, QMenu, QMessageBox, QSystemTrayIcon
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 UNIT = os.environ.get("STATS_UNIT", "ants-stats.service")
-PORT = int(os.environ.get("STATS_PORT", "4321"))
-URL = f"http://127.0.0.1:{PORT}"
+DEFAULT_PORT = 4321
 POLL_MS = 5000
+
+# Filled in by main() once the unit's own environment has been read. Only ever used at call
+# time, never captured at import.
+PORT = DEFAULT_PORT
+URL = f"http://127.0.0.1:{PORT}"
 
 ICON_RUNNING = os.path.join(HERE, "icon-running.svg")
 ICON_STOPPED = os.path.join(HERE, "icon-stopped.svg")
+
+
+def log(msg):
+    # flush: when a process manager reads our stdout through a pipe it is block-buffered, and
+    # a line that arrives ten minutes late is no use for telling which port we picked.
+    print(f"[ants-stats-tray] {msg}", flush=True)
 
 
 def systemctl(*args, capture=False):
@@ -44,6 +59,56 @@ def systemctl(*args, capture=False):
 
 def is_running():
     return systemctl("is-active", UNIT, capture=True) == "active"
+
+
+# ------------------------------------------------------------------ which port to talk to
+#
+# The port must come from the *service's* environment, not ours. The server is started by
+# systemd, so an override lands in a drop-in on the unit — which this process never sees. A
+# tray that read its own STATS_PORT would keep opening 4321 and POSTing /refresh into nothing
+# while the server sat perfectly healthy on the port it was actually given, and every symptom
+# would point at the server. `systemctl show -p Environment` reports the effective
+# environment, drop-ins folded in, so we ask the same source systemd starts the unit from.
+
+
+def unit_environment():
+    """The service's effective environment, drop-ins included. `{}` if it can't be read."""
+    return parse_unit_env(systemctl("show", UNIT, "-p", "Environment", capture=True))
+
+
+def parse_unit_env(show_output):
+    """`Environment=A=1 B=2` → `{"A": "1", "B": "2"}`."""
+    env = {}
+    for line in show_output.splitlines():
+        if not line.startswith("Environment="):
+            continue
+        # shlex, because systemd quotes any value containing spaces.
+        for item in shlex.split(line[len("Environment=") :]):
+            name, sep, value = item.partition("=")
+            if sep:
+                env[name] = value
+    return env
+
+
+def resolve_port(unit_env, own_env):
+    """PORT → STATS_PORT, from the unit first and only then from our own environment."""
+    for source in (unit_env, own_env):
+        for name in ("PORT", "STATS_PORT"):
+            value = source.get(name, "")
+            if value.isdigit() and 1024 <= int(value) <= 65535:
+                return int(value)
+    return DEFAULT_PORT
+
+
+def is_headless(env):
+    """Whether to run without a tray icon.
+
+    LWSM_MANAGED is a presentation hint and nothing else. It is unauthenticated, trivially
+    forged and readable straight out of /proc/<pid>/environ, so it must never grant, skip or
+    relax anything — the only thing it may change is whether an icon appears. Exact "1" only,
+    so a stray "0" or "false" can't be read as consent either way.
+    """
+    return env.get("LWSM_MANAGED") == "1"
 
 
 def unit_installed():
@@ -200,10 +265,34 @@ class StatsTray(QSystemTrayIcon):
         QApplication.instance().quit()
 
 
+def run_headless():
+    """No icon — report the same state to stdout instead, and keep watching it."""
+    log(f"headless (LWSM_MANAGED=1) — unit {UNIT}, dashboard at {URL}")
+    if not unit_installed():
+        log(f"the {UNIT} user service isn't installed")
+        return 1
+    was = None
+    while True:
+        on = is_running()
+        if on != was:
+            log(f"server {'running on ' + URL if on else 'stopped'}")
+            was = on
+        time.sleep(POLL_MS / 1000)
+
+
 def main():
+    global PORT, URL
+    PORT = resolve_port(unit_environment(), os.environ)
+    URL = f"http://127.0.0.1:{PORT}"
+
+    if is_headless(os.environ):
+        return run_headless()
+
     app = QApplication([])
     app.setApplicationName("Ants Stats Tray")
     app.setQuitOnLastWindowClosed(False)  # closing a notification must not end the app
+
+    log(f"dashboard at {URL} — unit {UNIT}")
 
     if not QSystemTrayIcon.isSystemTrayAvailable():
         QMessageBox.critical(None, "Ants Stats Tray", "This desktop has no system tray.")

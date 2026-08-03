@@ -25,6 +25,17 @@ Wants=network-online.target
 Type=simple
 WorkingDirectory=/mnt/Games/Scripts/Linux/Ants_Projects_Hub_Website
 ExecStart=/usr/bin/node serve.mjs
+# STATS_PORT is this repo's packaged default and is meant to stay here. An external process
+# manager moves the port by dropping a PORT variable in alongside it, without editing this
+# file:
+#
+#   mkdir -p ~/.config/systemd/user/ants-stats.service.d
+#   printf '[Service]\nEnvironment=PORT=5997\n' > ~/.config/systemd/user/ants-stats.service.d/99-port.conf
+#   systemctl --user daemon-reload && systemctl --user restart ants-stats
+#
+# serve.mjs prefers PORT over STATS_PORT (lib/port.mjs), so the two compose. Don't "tidy"
+# them into one variable: collapsing them would mean an override has to edit a tracked,
+# symlinked file, which the next `git pull` would undo.
 Environment=STATS_PORT=4321
 Environment=STATS_REFRESH_HOURS=24
 # A transient network or GitHub outage shouldn't leave the dashboard dead until next login.

@@ -66,6 +66,24 @@ journalctl --user -u ants-stats -f      # watch it work
 systemctl --user disable --now ants-stats   # undo
 ```
 
+#### Running it on a different port
+
+4321 is the default the service ships with. To move it — say because another program on this
+machine wants that port — drop a `PORT` in beside it rather than editing the packaged unit,
+which is a symlink into this repo and would be overwritten by the next `git pull`:
+
+```bash
+mkdir -p ~/.config/systemd/user/ants-stats.service.d
+printf '[Service]\nEnvironment=PORT=5997\n' > ~/.config/systemd/user/ants-stats.service.d/99-port.conf
+systemctl --user daemon-reload && systemctl --user restart ants-stats
+```
+
+`PORT` wins over the unit's own `STATS_PORT`, and the tray picks the new port up on its own,
+so the icon keeps opening the right page. Delete the file and reload to go back to 4321. A
+`PORT` that isn't a whole number between 1024 and 65535 stops the server with an error naming
+the value — it will never quietly serve 4321 instead, which would leave you looking at a
+dashboard that isn't there.
+
 ### Tray icon
 
 A small icon next to the clock to open the dashboard, refresh the stats, and start, restart
@@ -82,6 +100,10 @@ talks to the server over the same `POST /refresh` the page's button uses. The ic
 solid dot when the server is running and a barred one when it is stopped — the tooltip and
 the menu wording say which too, so the state never rests on a 22-pixel icon. To remove it:
 `rm ~/.config/autostart/ants-stats-tray.desktop`.
+
+Started with `LWSM_MANAGED=1` it skips the icon entirely and prints the same status to the
+terminal instead, for a session manager that draws its own indicator. That flag changes
+nothing else — it decides whether an icon appears, and that is all it is allowed to decide.
 
 Or generate the page once by hand, without the server (the Refresh button hides itself, since
 there's nothing listening):
