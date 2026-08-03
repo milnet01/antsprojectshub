@@ -3,6 +3,11 @@ dist/
 .DS_Store
 *.log
 
+# Python bytecode for tray/ants-stats-tray.py and its tests. A build artefact keyed to the
+# interpreter version (cpython-313), so it rots on every Python upgrade and is rewritten by
+# every tray edit — a recurring, meaningless diff.
+__pycache__/
+
 # Private stats dashboard (npm run stats). Never published — the generated page and its
 # saved history contain owner-only visitor data and must stay on this machine.
 .stats/
