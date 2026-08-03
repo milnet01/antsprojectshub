@@ -11,3 +11,7 @@ __pycache__/
 # Private stats dashboard (npm run stats). Never published — the generated page and its
 # saved history contain owner-only visitor data and must stay on this machine.
 .stats/
+
+# ROADMAP.md's next-ID cache. Derived, not source: its real value is the highest APHW-NNNN
+# in ROADMAP.md + CHANGELOG.md, so a fresh clone recovers it and git can't drift it.
+.roadmap-counter
