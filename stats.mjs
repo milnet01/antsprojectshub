@@ -317,12 +317,22 @@ function downloadsTable(rows, history, base) {
         </tr>`;
       }
       const b = base?.projects[r.slug];
-      const cells = OS_KEYS.map(
-        (k) =>
-          `<td class="n os os--${k}" data-sort="${r.downloads[k]}">${num(
-            r.downloads[k]
-          )}<br>${delta(r.downloads[k], b?.[k])}</td>`
-      ).join("");
+      // An OS the project doesn't ship for gets a blank cell, not a zero: "there is no Mac
+      // build" and "the Mac build went undownloaded" are different facts, and a column of
+      // zeros told them apart for nobody. A stray download against an unclaimed OS is still
+      // shown — that mismatch is worth seeing, not hiding behind the blank.
+      const claimed = r.project?.platforms || [];
+      const cells = OS_KEYS.map((k) => {
+        const n = r.downloads[k];
+        if (!n && !claimed.includes(k)) {
+          // Sorts below every real figure; the blank reads as "not offered" aloud.
+          return `<td class="n os os--${k}" data-sort="-1"><span class="sr-only">not offered for ${OS_LABEL[k]}</span></td>`;
+        }
+        return `<td class="n os os--${k}" data-sort="${n}">${num(n)}<br>${delta(
+          n,
+          b?.[k]
+        )}</td>`;
+      }).join("");
       // Amber only when something is genuinely unexplained — signatures and source
       // archives land here too and are perfectly normal.
       const other = `<td class="n ${r.unexplained.length ? "warn" : "dim"}" data-sort="${
@@ -351,10 +361,11 @@ function downloadsTable(rows, history, base) {
   const grand = ok.reduce((s, r) => s + r.total, 0);
 
   return `<table class="tbl sortable">
-    <caption>All-time downloads, by operating system. Total and Trend count the three OS
-      columns only. “Other” is release files that aren't the app — signatures, checksums,
-      updater metadata, source archives — so it sits last, outside the total. That's
-      normal; it only turns amber when something there is unexplained.</caption>
+    <caption>All-time downloads, by operating system. A blank cell means the project isn't
+      offered for that OS; a zero means it is, and nobody has downloaded it. Total and Trend
+      count the three OS columns only. “Other” is release files that aren't the app —
+      signatures, checksums, updater metadata, source archives — so it sits last, outside
+      the total. That's normal; it only turns amber when something there is unexplained.</caption>
     <thead><tr><th scope="col">Project</th>${OS_KEYS.map(
       (k) => `<th scope="col" class="n os os--${k}">${OS_LABEL[k]}</th>`
     ).join("")}<th scope="col" class="n" aria-sort="descending">Total</th>
