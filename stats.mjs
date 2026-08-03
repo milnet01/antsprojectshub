@@ -113,7 +113,10 @@ async function collectProject(p) {
     }
     perRelease.push(row);
   }
-  const total = OS_KEYS.reduce((s, k) => s + downloads[k], 0) + downloads.other;
+  // Total means "people downloaded my software", so it counts the three OS columns only.
+  // `other` is signatures, checksums, updater metadata and source archives — genuinely
+  // fetched, but not the app — and including it inflated every headline figure and trend.
+  const total = OS_KEYS.reduce((s, k) => s + downloads[k], 0);
 
   // Does every platform the project claims actually ship a file? A claimed OS with no
   // matching asset is a download button silently falling back to the repo page.
@@ -189,6 +192,8 @@ function updateHistory(history, rows, now) {
     // into the history, and every later run would read the recovery as a huge spike.
     if (!r.ok) continue;
     snapshot.projects[r.slug] = {
+      // Per-OS counts are the durable record; `total` is a convenience that older snapshots
+      // wrote with `other` folded in, which is why every read goes through osTotal().
       ...r.downloads,
       total: r.total,
       stars: r.stars,
@@ -295,7 +300,9 @@ function sparkline(values) {
 
 function downloadsTable(rows, history, base) {
   const series = (slug) =>
-    history.snapshots.map((s) => s.projects[slug]?.total).filter((v) => v != null);
+    history.snapshots
+      .map((s) => (s.projects[slug] ? osTotal(s.projects[slug]) : null))
+      .filter((v) => v != null);
 
   const body = rows
     .map((r) => {
@@ -320,17 +327,18 @@ function downloadsTable(rows, history, base) {
       // archives land here too and are perfectly normal.
       const other = `<td class="n ${r.unexplained.length ? "warn" : "dim"}" data-sort="${
         r.downloads.other
-      }">${num(r.downloads.other)}</td>`;
+      }">${num(r.downloads.other)}<br>${delta(r.downloads.other, b?.other)}</td>`;
       return `<tr>
         <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}<span class="repo">${esc(
         r.repo
       )}</span></th>
-        ${cells}${other}
+        ${cells}
         <td class="n strong" data-sort="${r.total}">${num(r.total)}<br>${delta(
         r.total,
-        b?.total
+        b ? osTotal(b) : null
       )}</td>
         <td class="sparkcell">${sparkline(series(r.slug))}</td>
+        ${other}
       </tr>`;
     })
     .join("");
@@ -343,18 +351,19 @@ function downloadsTable(rows, history, base) {
   const grand = ok.reduce((s, r) => s + r.total, 0);
 
   return `<table class="tbl sortable">
-    <caption>All-time downloads, by operating system. “Other” counts release files that
-      aren't an OS download — signatures, checksums, updater metadata, source archives.
-      That's normal; it only turns amber when something there is unexplained.</caption>
+    <caption>All-time downloads, by operating system. Total and Trend count the three OS
+      columns only. “Other” is release files that aren't the app — signatures, checksums,
+      updater metadata, source archives — so it sits last, outside the total. That's
+      normal; it only turns amber when something there is unexplained.</caption>
     <thead><tr><th scope="col">Project</th>${OS_KEYS.map(
       (k) => `<th scope="col" class="n os os--${k}">${OS_LABEL[k]}</th>`
-    ).join("")}<th scope="col" class="n">Other</th>
-    <th scope="col" class="n" aria-sort="descending">Total</th>
-    <th scope="col" class="n" data-nosort>Trend</th></tr></thead>
+    ).join("")}<th scope="col" class="n" aria-sort="descending">Total</th>
+    <th scope="col" class="n" data-nosort>Trend</th>
+    <th scope="col" class="n">Other</th></tr></thead>
     <tbody>${body}</tbody>
     <tfoot><tr><th scope="row">All projects</th>${totals}
-      <td class="n">${num(ok.reduce((s, r) => s + r.downloads.other, 0))}</td>
-      <td class="n strong">${num(grand)}</td><td></td></tr></tfoot>
+      <td class="n strong">${num(grand)}</td><td></td>
+      <td class="n">${num(ok.reduce((s, r) => s + r.downloads.other, 0))}</td></tr></tfoot>
   </table>`;
 }
 
@@ -491,7 +500,7 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
   const baseAge =
     baseGap == null ? null : baseGap < DAY ? "earlier today" : `${Math.round(baseGap / DAY)} day(s) ago`;
   const tiles = [
-    ["Total downloads", num(grand), base ? delta(grand, sumOf(base, "total")) : ""],
+    ["Total downloads", num(grand), base ? delta(grand, sumOf(base, osTotal)) : ""],
     ["Stars", num(stars), base ? delta(stars, sumOf(base, "stars")) : ""],
     ["Repo views (14d)", hasToken ? num(views) : "—", ""],
     ["Projects", String(projects.length), `${health.byStatus.live || 0} live`],
@@ -607,8 +616,17 @@ function incompleteBanner(rows) {
     “no data” and were <em>not</em> saved to history, so your trends stay accurate.</p>`;
 }
 
-function sumOf(snapshot, key) {
-  return Object.values(snapshot.projects).reduce((s, p) => s + (p[key] || 0), 0);
+// A snapshot's real download total: the three OS columns, summed. Always derived, never
+// read from the snapshot's own `total` — snapshots written before Other left the total
+// still have it baked in, and comparing against one would show a large false drop.
+function osTotal(p) {
+  return OS_KEYS.reduce((s, k) => s + (p?.[k] || 0), 0);
+}
+
+// `pick` is a field name, or a function for a figure that has to be derived (osTotal).
+function sumOf(snapshot, pick) {
+  const get = typeof pick === "function" ? pick : (p) => p[pick] || 0;
+  return Object.values(snapshot.projects).reduce((s, p) => s + get(p), 0);
 }
 
 function releasesTable(rows) {
