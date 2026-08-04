@@ -76,9 +76,7 @@
       "status": "live",
       "repo": "milnet01/mame-curator",
       "platforms": [
-        "win",
-        "mac",
-        "linux"
+        "web"
       ],
       "isFork": false,
       "upstream": null,
