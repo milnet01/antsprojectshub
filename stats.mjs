@@ -273,12 +273,22 @@ function tally(items, keyOf) {
 
 // Change since the baseline snapshot. Never colour-only: the arrow is a character and the
 // number carries its own sign, so it reads correctly in greyscale and to a screen reader.
+// A figure that hasn't moved gets nothing at all — a "±0" under every unchanged number is a
+// symbol for "nothing happened", which is noise, not data, and it buries the real movements.
 function delta(now, before) {
-  if (before == null || now === before) return `<span class="d d--flat">±0</span>`;
+  if (before == null || now === before) return "";
   const diff = now - before;
   const cls = diff > 0 ? "d--up" : "d--down";
   const arrow = diff > 0 ? "▲" : "▼";
   return `<span class="d ${cls}">${arrow} ${diff > 0 ? "+" : "−"}${num(Math.abs(diff))}</span>`;
+}
+
+// Same, on its own line under a figure in a table cell. The line break belongs to the delta:
+// emitting it unconditionally would leave an empty second line under every unchanged number,
+// which is the row height the blank delta exists to reclaim.
+function deltaLine(now, before) {
+  const d = delta(now, before);
+  return d ? `<br>${d}` : "";
 }
 
 function sparkline(values) {
@@ -287,7 +297,10 @@ function sparkline(values) {
   const h = 18;
   const min = Math.min(...values);
   const max = Math.max(...values);
-  const span = max - min || 1;
+  // A series that never moved draws a dead-flat line, which looks like a measurement when it
+  // is really an absence. Leave the cell empty, same rule as the blank delta and OS cells.
+  if (min === max) return "";
+  const span = max - min;
   const pts = values
     .map((v, i) => {
       const x = (i / (values.length - 1)) * w;
@@ -297,6 +310,12 @@ function sparkline(values) {
     .join(" ");
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
 }
+
+// Wide tables keep their column widths and let this wrapper scroll instead of crushing on a
+// narrow screen. It is focusable and labelled because a plain overflow container can be
+// scrolled only by dragging — no keyboard, and nothing announced.
+const scrollTable = (label, html) =>
+  `<div class="tbl-scroll" tabindex="0" role="region" aria-label="${esc(label)}, scrollable">${html}</div>`;
 
 function downloadsTable(rows, history, base) {
   const series = (slug) =>
@@ -328,7 +347,7 @@ function downloadsTable(rows, history, base) {
           // Sorts below every real figure; the blank reads as "not offered" aloud.
           return `<td class="n os os--${k}" data-sort="-1"><span class="sr-only">not offered for ${OS_LABEL[k]}</span></td>`;
         }
-        return `<td class="n os os--${k}" data-sort="${n}">${num(n)}<br>${delta(
+        return `<td class="n os os--${k}" data-sort="${n}">${num(n)}${deltaLine(
           n,
           b?.[k]
         )}</td>`;
@@ -337,13 +356,13 @@ function downloadsTable(rows, history, base) {
       // archives land here too and are perfectly normal.
       const other = `<td class="n ${r.unexplained.length ? "warn" : "dim"}" data-sort="${
         r.downloads.other
-      }">${num(r.downloads.other)}<br>${delta(r.downloads.other, b?.other)}</td>`;
+      }">${num(r.downloads.other)}${deltaLine(r.downloads.other, b?.other)}</td>`;
       return `<tr>
         <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}<span class="repo">${esc(
         r.repo
       )}</span></th>
         ${cells}
-        <td class="n strong" data-sort="${r.total}">${num(r.total)}<br>${delta(
+        <td class="n strong" data-sort="${r.total}">${num(r.total)}${deltaLine(
         r.total,
         b ? osTotal(b) : null
       )}</td>
@@ -360,7 +379,9 @@ function downloadsTable(rows, history, base) {
   ).join("");
   const grand = ok.reduce((s, r) => s + r.total, 0);
 
-  return `<table class="tbl sortable">
+  return scrollTable(
+    "Downloads per OS",
+    `<table class="tbl sortable">
     <caption>All-time downloads, by operating system. A blank cell means the project isn't
       offered for that OS; a zero means it is, and nobody has downloaded it. Total and Trend
       count the three OS columns only. “Other” is release files that aren't the app —
@@ -375,7 +396,8 @@ function downloadsTable(rows, history, base) {
     <tfoot><tr><th scope="row">All projects</th>${totals}
       <td class="n strong">${num(grand)}</td><td></td>
       <td class="n">${num(ok.reduce((s, r) => s + r.downloads.other, 0))}</td></tr></tfoot>
-  </table>`;
+  </table>`
+  );
 }
 
 function trafficSection(rows) {
@@ -408,7 +430,9 @@ function trafficSection(rows) {
       </tr>`
     )
     .join("");
-  return `<table class="tbl sortable">
+  return scrollTable(
+    "Repo traffic",
+    `<table class="tbl sortable">
     <caption>Last 14 days, from GitHub. Only you can see these numbers — GitHub deletes
       them after 14 days, but this dashboard keeps its own dated copy in
       <code>.stats/history.json</code>.</caption>
@@ -417,7 +441,8 @@ function trafficSection(rows) {
       <th scope="col" class="n">Visitors</th><th scope="col" class="n">Clones</th>
       <th scope="col" class="n">Cloners</th>
       <th scope="col" data-nosort>Top referrers</th></tr></thead>
-    <tbody>${body}</tbody></table>`;
+    <tbody>${body}</tbody></table>`
+  );
 }
 
 function activityTable(rows, now) {
@@ -449,14 +474,17 @@ function activityTable(rows, now) {
       </tr>`;
     })
     .join("");
-  return `<table class="tbl sortable">
+  return scrollTable(
+    "Audience and activity",
+    `<table class="tbl sortable">
     <caption>Audience and activity. A ⚠ marks 90+ days without a commit.</caption>
     <thead><tr><th scope="col">Project</th><th scope="col" class="n">Stars</th>
       <th scope="col" class="n">Forks</th><th scope="col" class="n">Watching</th>
       <th scope="col" class="n">Issues</th><th scope="col" class="n">PRs</th>
       <th scope="col" class="n">Latest</th><th scope="col" class="n">Rel. age</th>
       <th scope="col" class="n">Last commit</th></tr></thead>
-    <tbody>${body}</tbody></table>`;
+    <tbody>${body}</tbody></table>`
+  );
 }
 
 function issuesSection(rows, health) {
@@ -660,10 +688,13 @@ function releasesTable(rows) {
     .join("");
   if (!body) return `<p class="note">No releases published yet.</p>`;
   // Sortable by project only — the second column is a per-project list, not a value.
-  return `<table class="tbl tbl--rel sortable"><caption>Downloads by version — the five most
+  return scrollTable(
+    "Recent releases",
+    `<table class="tbl tbl--rel sortable"><caption>Downloads by version — the five most
     recent releases of each project.</caption><thead><tr><th scope="col">Project</th>
     <th scope="col" data-nosort>Version · date · downloads</th></tr></thead>
-    <tbody>${body}</tbody></table>`;
+    <tbody>${body}</tbody></table>`
+  );
 }
 
 // ---------------------------------------------------------------------- the JS
@@ -857,16 +888,32 @@ h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
 .tile:nth-child(2) { --tile-accent: #7dd3fc; }
 .tile:nth-child(3) { --tile-accent: #a5b4fc; }
 .tile:nth-child(4) { --tile-accent: #c4b5fd; }
-.tile__label { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
+.tile__label { font-size: .8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
 .tile__value { font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
 .tile__sub { font-size: .8rem; color: var(--text-muted); min-height: 1.2em; }
 
-.tbl { width: 100%; border-collapse: collapse; font-size: .88rem;
+/* border-collapse: separate, because collapse defeats the border-radius and the tables then
+   sit square-cornered next to round-cornered tiles and notes; overflow clips the corners.
+   min-width is the floor the .tbl-scroll wrapper scrolls against. */
+.tbl { width: 100%; min-width: 40rem; border-collapse: separate; border-spacing: 0;
+  font-size: .88rem; overflow: hidden;
   background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius); }
+/* Without collapse the last row's own bottom border doubles up against the table's, so drop
+   it where no tfoot follows (tfoot rows already carry border-bottom: 0). */
+.tbl tbody:last-child tr:last-child > * { border-bottom: 0; }
+/* Wide tables scroll rather than crush. Focusable, so the region is keyboard-reachable. */
+.tbl-scroll { overflow-x: auto; }
+.tbl-scroll:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+/* Two columns — nothing to crush, so no floor and nothing to scroll. */
+.tbl--rel { min-width: 0; }
+/* The caption is prose, so it must wrap to the screen rather than ride the table's min-width
+   out of view: sized to the visible column instead of the table, and pinned left so it stays
+   put while the table scrolls under it. (.wrap contributes the 40px of side padding.) */
 .tbl caption { caption-side: top; text-align: left; color: var(--text-muted);
-  font-size: .8rem; padding: 0 0 8px; }
+  font-size: .8rem; padding: 0 0 8px;
+  position: sticky; left: 0; max-width: calc(100vw - 40px); }
 .tbl th, .tbl td { padding: 9px 12px; border-bottom: 1px solid var(--surface-border); text-align: left; }
-.tbl thead th { color: var(--text-dim); font-size: .74rem; text-transform: uppercase;
+.tbl thead th { color: var(--text-dim); font-size: .8rem; text-transform: uppercase;
   letter-spacing: .05em; font-weight: 600; }
 /* The sort control fills the header cell so the whole header is the click target. */
 .tbl thead th:has(.sort-btn) { padding: 0; }
@@ -882,7 +929,15 @@ th[aria-sort="ascending"] .sort-btn::after { content: " ▲"; }
 th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .tbl tbody th { font-weight: 600; }
 .tbl tfoot th, .tbl tfoot td { border-bottom: 0; font-weight: 700; }
-.tbl tbody tr:hover { background: rgba(255,255,255,.03); }
+/* Tracking one row across nine columns is exactly what a row highlight is for, so it has to
+   be visible — and it has to cross the OS columns, whose tints are cell background-colours
+   and would paint over a row background. Layering the wash as a background-image leaves the
+   tint showing underneath. Neutral white throughout: a highlighted row must never read as
+   the amber/teal/rose status language. Faint striping keeps rows separable without hovering. */
+.tbl tbody tr:nth-child(even) > * {
+  background-image: linear-gradient(rgba(255,255,255,.028), rgba(255,255,255,.028)); }
+.tbl tbody tr:hover > * {
+  background-image: linear-gradient(rgba(255,255,255,.09), rgba(255,255,255,.09)); }
 .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 /* The three OS columns are tinted so the eye can track one across a wide row. The heading
    carries the colour; the figures stay in text ink so nothing competes with the numbers.
@@ -895,12 +950,11 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .strong { font-weight: 700; }
 .dim { color: var(--text-dim); }
 .warn { color: var(--amber); }
-.repo { display: block; font-weight: 400; font-size: .74rem; color: var(--text-dim); }
+.repo { display: block; font-weight: 400; font-size: .8rem; color: var(--text-dim); }
 
-.d { font-size: .74rem; white-space: nowrap; }
+.d { font-size: .8rem; white-space: nowrap; }
 .d--up { color: var(--teal); }
 .d--down { color: var(--rose); }
-.d--flat { color: var(--text-dim); }
 .spark { color: var(--violet); display: block; }
 .sparkcell { width: 72px; }
 
@@ -913,7 +967,7 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .banner { border-color: var(--amber); color: var(--text); margin-bottom: 18px; }
 .banner strong { color: var(--amber); }
 .row--missing th { opacity: .75; }
-.flag { font-size: .68rem; color: var(--amber); border: 1px solid var(--amber);
+.flag { font-size: .8rem; color: var(--amber); border: 1px solid var(--amber);
   border-radius: 6px; padding: 0 5px; vertical-align: middle; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
 .chip { background: var(--surface); border: 1px solid var(--surface-border);
@@ -922,7 +976,7 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .rels { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; font-size: .84rem; }
 .ref { font-size: .8rem; color: var(--text-muted); }
 .foot { margin-top: 40px; color: var(--text-dim); font-size: .8rem; }
-code { background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 5px; font-size: .85em; }
+code { background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 5px; font-size: .95em; }
 @media (max-width: 720px) { .tbl { font-size: .8rem; } .tbl th, .tbl td { padding: 7px 8px; } }
 `;
 

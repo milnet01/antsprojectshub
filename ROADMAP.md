@@ -37,7 +37,7 @@ Nothing here changes what is measured, only what the eye lands on.
 
 ### 🖥 Platform & accessibility
 
-- 📋 [APHW-0001] **Raise the dashboard's minimum text size to ~0.8rem.**
+- ✅ [APHW-0001] **Raise the dashboard's minimum text size to ~0.8rem.**
   The delta lines and repo slugs are `.74rem` (`.d`, `.repo` in the CSS
   block of `stats.mjs:900` and `stats.mjs:898`), the `pre` / `archived`
   badges `.68rem` (`stats.mjs:916`) and the tile labels `.75rem`
@@ -52,8 +52,12 @@ Nothing here changes what is measured, only what the eye lands on.
   Source: in-session-2026-08-03.
   Priority: 2.
   Lanes: dashboard-css.
+  Resolved (2026-08-05): floor raised to .8rem — .tile__label,
+  .tbl thead th, .repo, .d and .flag; inline `code` to .95em. Contrast
+  re-checked on --text-dim: 6.65:1 plain row, 6.20:1 striped, 5.20:1
+  hovered (AA needs 4.5:1).
 
-- 📋 [APHW-0004] **Give wide tables somewhere to scroll on a narrow
+- ✅ [APHW-0004] **Give wide tables somewhere to scroll on a narrow
   screen.** "Audience & activity" is nine columns and the CSS has no
   horizontal-overflow rule anywhere — the only concession to small
   screens is a font-size drop at 720px (`stats.mjs:926`). On a phone or
@@ -67,8 +71,14 @@ Nothing here changes what is measured, only what the eye lands on.
   Source: in-session-2026-08-03.
   Priority: 3.
   Lanes: dashboard-css.
+  Resolved (2026-08-05): scrollTable() wraps all four tables in a
+  .tbl-scroll region (tabindex="0", role="region", aria-label); .tbl gets
+  a 40rem floor so columns keep their width, .tbl--rel opts out. Captions
+  are capped to the visible width and pinned left so prose still wraps to
+  the screen — caught by the 390px capture, which showed them scrolling
+  out of view on the first pass.
 
-- 📋 [APHW-0005] **Make the row highlight visible enough to track a row
+- ✅ [APHW-0005] **Make the row highlight visible enough to track a row
   across nine columns.** `.tbl tbody tr:hover` is
   `rgba(255,255,255,.03)` (`stats.mjs:885`) — a 3% wash that is
   effectively invisible. Tracking one project from its name across to
@@ -83,10 +93,16 @@ Nothing here changes what is measured, only what the eye lands on.
   Source: in-session-2026-08-03.
   Priority: 3.
   Lanes: dashboard-css.
+  Resolved (2026-08-05): hover raised from 3% to 9% and faint 2.8%
+  striping added. Layered as a background-image so the OS column tints
+  (cell background-colours) show through rather than being painted over —
+  measured on the render: an even row lifts 22,22,25 → 29,29,31 in a plain
+  column and keeps its magenta bias in a tinted one. Neutral white, clear
+  of the status language.
 
 ### 🎨 Signal over noise
 
-- 📋 [APHW-0002] **Show nothing instead of `±0` when a figure hasn't
+- ✅ [APHW-0002] **Show nothing instead of `±0` when a figure hasn't
   moved.** `delta()` (`stats.mjs:276`) prints a `±0` span for every
   unchanged number: 52 of them on the current page. It doubles the
   height of every table row and buries the handful of real movements
@@ -101,8 +117,13 @@ Nothing here changes what is measured, only what the eye lands on.
   Source: in-session-2026-08-03.
   Priority: 3.
   Lanes: stats.mjs.
+  Resolved (2026-08-05): delta() returns "" for the flat and
+  no-baseline cases; a new deltaLine() owns the <br> so an unchanged
+  figure leaves no empty second line. 54 ±0 markers on the page → 0, and
+  the real-delta path is unchanged (verified directly: delta(11,5) still
+  renders ▲ +6).
 
-- 📋 [APHW-0003] **Draw no sparkline when the series never moved.**
+- ✅ [APHW-0003] **Draw no sparkline when the series never moved.**
   `sparkline()` (`stats.mjs:284`) already returns nothing for a series
   shorter than two points, but a series of identical values still draws
   a dead-flat line — 11 of the 13 rows on the current page. A flat line
@@ -114,10 +135,14 @@ Nothing here changes what is measured, only what the eye lands on.
   Source: in-session-2026-08-03.
   Priority: 3.
   Lanes: stats.mjs.
+  Resolved (2026-08-05): sparkline() returns "" when min === max.
+  13 lines on the page → 2, matching the 11 flat series the bullet
+  counted. The `|| 1` span guard went with it — unreachable once min and
+  max must differ.
 
 ### 🧹 Cleanup / debt
 
-- 📋 [APHW-0006] **Tables ask for rounded corners and render square.**
+- ✅ [APHW-0006] **Tables ask for rounded corners and render square.**
   `.tbl` sets both `border-collapse: collapse` and `border-radius`
   (`stats.mjs:864`), and collapse defeats the radius — so the tables sit
   square-cornered next to round-cornered tiles and notes. Either drop
@@ -130,6 +155,10 @@ Nothing here changes what is measured, only what the eye lands on.
   Source: in-session-2026-08-03.
   Priority: 4.
   Lanes: dashboard-css.
+  Resolved (2026-08-05): .tbl switched to border-collapse: separate
+  with border-spacing: 0 and overflow: hidden, so the radius survives;
+  the last body row drops its bottom border where no tfoot follows, to
+  stop it doubling against the table border. Confirmed on the render.
 
 ---
 
