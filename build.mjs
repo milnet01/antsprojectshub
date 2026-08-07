@@ -372,6 +372,29 @@ function renderScreenshots(p) {
     </section>`;
 }
 
+// Optional demo video (one per project): { src, poster, caption }, both paths relative
+// to assets/video/. Native <video controls> — no player library, no JS. It never
+// autoplays: motion the visitor didn't ask for is a barrier, and a poster keeps the
+// layout stable. The screencasts are silent, so `caption` IS the text alternative
+// (WCAG 1.2.1 video-only) — it is required and rendered visibly under the player.
+function renderVideo(p) {
+  const v = p.video;
+  if (!v?.src) return "";
+  const url = `/assets/video/${esc(v.src)}`;
+  const poster = v.poster ? ` poster="/assets/video/${esc(v.poster)}"` : "";
+  return `<section class="demo-sec" id="demo" aria-labelledby="demo-h">
+      <h2 class="section-label" id="demo-h">Demo</h2>
+      <figure class="demo">
+        <video class="demo__video" src="${url}"${poster} controls preload="none" playsinline aria-label="${esc(
+    p.name
+  )} demo video">
+          <p>Your browser can't play this video. <a href="${url}">Download it (MP4)</a> instead.</p>
+        </video>
+        <figcaption class="demo__cap">${esc(v.caption)}</figcaption>
+      </figure>
+    </section>`;
+}
+
 // Split the rendered README into an always-visible lede (title + intro, up to the
 // first section heading) and the remainder, tucked behind a no-JS <details> reveal.
 // Headings are demoted one level, so a README's `# Title` is an <h2> and its first
@@ -452,10 +475,13 @@ function projectPage(p, { readmeHtml, release }) {
     )} <a href="${esc(repoUrl(p.repo))}" target="_blank" rel="noopener noreferrer">Read more on GitHub →</a></div>`;
   }
 
-  // Screenshots lead the page (the hook), then the body. Jump nav only links to
-  // sections that actually exist on this page.
+  // The demo video then the screenshots lead the page (the hook), then the body — a
+  // moving tour beats a still, and a still beats prose. Jump nav only links to sections
+  // that actually exist on this page.
+  const videoHtml = renderVideo(p);
   const shotsHtml = renderScreenshots(p);
   const navTargets = [];
+  if (videoHtml) navTargets.push(["demo", "Demo"]);
   if (shotsHtml) navTargets.push(["screenshots", "Screenshots"]);
   if (published && readmeHtml) {
     navTargets.push(["about", "About"]);
@@ -478,6 +504,7 @@ function projectPage(p, { readmeHtml, release }) {
       ${actionButtons(p, release)}
     </section>
     ${jump}
+    ${videoHtml}
     ${shotsHtml}
     ${body}`;
 

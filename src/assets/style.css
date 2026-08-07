@@ -631,6 +631,7 @@ a.card:hover .card__name {
 /* Anchored sections shouldn't butt against the very top when jumped to */
 .theme,
 .support,
+.demo-sec,
 .shots-sec,
 .panel {
   scroll-margin-top: 1.25rem;
@@ -639,6 +640,28 @@ a.card:hover .card__name {
 /* ---- Landing theme groups ---- */
 .theme .grid {
   margin-bottom: 1.5rem;
+}
+
+/* ---- Demo video: native <video controls>, no player library ----
+   The intrinsic aspect ratio comes from the file itself, so the box never jumps once
+   the poster loads. The caption below is the text alternative for a silent screencast,
+   so it stays at body size and full contrast — it is content, not a footnote. */
+.demo {
+  margin: 0;
+}
+.demo__video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+}
+.demo__cap {
+  margin-top: 0.8rem;
+  max-width: 68ch;
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
 /* ---- Screenshots: responsive thumbnail grid (no JS) ----

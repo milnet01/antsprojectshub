@@ -268,6 +268,11 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "video": {
+        "src": "finbreak-tour.mp4",
+        "poster": "finbreak-tour-poster.jpg",
+        "caption": "A silent 34-second tour of finbreak, in dark theme. It opens on the Home dashboard for July — 'July looked like a normal month', net R 10,533.21 — where three donut charts break down spending by category, income by source and transfers between accounts. It then moves through Transactions (306 rows auto-sorted into Groceries, Fuel, Dining out and the rest), the Categories tree, Recurring (auto-detected payments waiting to be confirmed above ones already confirmed), Forecast, and Accounts, before returning to the dashboard."
+      },
       "screenshots": [
         {
           "src": "shots/finbreak-dashboard.png",

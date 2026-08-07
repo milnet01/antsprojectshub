@@ -11,6 +11,20 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Project pages can carry a demo video, and finbreak now has one.**
+  A new optional `video` field in `src/projects.json` renders a **Demo**
+  section at the top of a project page — above the screenshots, with its
+  own jump-nav entry. finbreak leads with a silent 34-second tour of the
+  dashboard, transactions, categories, recurring items, forecast and
+  accounts.
+
+  It is a plain `<video controls>`: no player library, no extra
+  JavaScript, and it never autoplays. With `preload="none"` and a poster
+  frame, a visitor who doesn't press play downloads nothing but the
+  poster. Because the screencasts are silent, the caption printed under
+  the player is the accessible alternative and is required, not
+  decorative.
+
 - Private stats dashboard leaves an OS column blank when a project has no
   build for that system, instead of printing a misleading `0`. A zero now
   means "offered, nobody downloaded it"; a blank means "no such build".

@@ -52,7 +52,9 @@ The whole pipeline is four files. Data flows: `projects.json` → `build.mjs` �
   groups the project into a landing-page section (`engines` · `emulation` · `media` ·
   `utilities`); `screenshots` is an array of `{src, alt}` rendered as a gallery on the
   project page (`src` relative to `assets/img/`, `alt` required — see
-  `src/assets/img/shots/README.md`).
+  `src/assets/img/shots/README.md`); `video` is an optional single `{src, poster, caption}`
+  rendered as a Demo section above the gallery (both paths relative to `assets/video/`,
+  `caption` required — see `src/assets/video/README.md`).
 
 - **`build.mjs`** — the generator. For each *published* project (has a `repo` and status is
   not `soon`) it fetches the README and latest release from the GitHub API, renders them to
@@ -87,10 +89,16 @@ The whole pipeline is four files. Data flows: `projects.json` → `build.mjs` �
   lightbox, since CSS alone can't listen for key presses. The lightbox works fully without
   it (✕, click-outside, Back) — keep it that way, and don't add further client JS lightly.
   It's loaded only on gallery pages, via `basePage({ lightbox: true })`.
+- **Demo videos are native `<video controls>`** — no player library, no JS, self-hosted
+  under `/assets/video/`, and they **never autoplay**: unrequested motion is a barrier, and
+  `preload="none"` + a poster means a visitor who doesn't press play downloads nothing. The
+  screencasts are silent, so the visible `caption` *is* the accessible alternative (WCAG
+  1.2.1) — never make it optional, and never swap it for a decorative one-liner.
 - **Security headers ship via `<meta>`** (GitHub Pages can't set HTTP headers): a strict CSP
   (`script-src 'self'`, no inline scripts/styles), `referrer: no-referrer`, `nosniff`. The
-  self-hosted `lightbox.js` is allowed by `script-src 'self'`; **inline** `<script>`/`<style>`
-  still break the CSP — never introduce them.
+  self-hosted `lightbox.js` is allowed by `script-src 'self'` and demo videos by
+  `media-src 'self'`; **inline** `<script>`/`<style>` still break the CSP — never introduce
+  them.
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative so a source tarball isn't mistaken for a Linux binary), falling
   back to `homepage` → Releases page → repo home. Companion files — signatures, checksum
