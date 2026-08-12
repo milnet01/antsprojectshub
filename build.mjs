@@ -36,11 +36,12 @@ const PLAT_SHORT = { win: "WIN", mac: "MAC", linux: "LNX", web: "WEB" };
 // anchors), and sorted by status within each theme so finished work leads.
 const CATEGORY = {
   engines: { label: "Engines & Graphics", id: "engines" },
+  games: { label: "Games", id: "games" },
   emulation: { label: "Emulation & Retro", id: "emulation" },
   media: { label: "Media", id: "media" },
   utilities: { label: "Desktop Utilities", id: "utilities" },
 };
-const CATEGORY_ORDER = ["engines", "emulation", "media", "utilities"];
+const CATEGORY_ORDER = ["engines", "games", "emulation", "media", "utilities"];
 const STATUS_ORDER = { live: 0, beta: 1, wip: 2, soon: 3 };
 
 const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
@@ -248,8 +249,8 @@ ${cards}
     <section class="hero">
       <p class="kicker">Anthony Schemel · Open Source</p>
       <h1><img class="hero__logo" src="/assets/img/favicon.svg" alt="" width="64" height="64"><span class="hero__brand">Ants Projects Hub</span></h1>
-      <p class="tagline">A home for the things I build — engines, emulation tools,
-        utilities and more. Free, open, and downloadable.</p>
+      <p class="tagline">A home for the things I build — engines, games, emulation
+        tools, utilities and more. Free, open, and downloadable.</p>
       <div class="stats">
         <div class="stat"><b>${stats.total}</b><span>Projects</span></div>
         <div class="stat"><b>${stats.live}</b><span>Live now</span></div>
@@ -262,8 +263,8 @@ ${groups}
   return basePage({
     title: "Ants Projects Hub",
     description:
-      "Open-source projects by Anthony Schemel — a 3D engine, emulation tools, " +
-      "desktop utilities and more. Free and downloadable.",
+      "Open-source projects by Anthony Schemel — a 3D engine, games, emulation " +
+      "tools, desktop utilities and more. Free and downloadable.",
     canonical: `${ORIGIN}/`,
     content,
   });

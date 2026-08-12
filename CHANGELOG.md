@@ -11,6 +11,14 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Four more projects on the site, and a Games section to put them in.**
+  Games Hub (fourteen desktop games in one Qt 6 window, with Windows and
+  Linux downloads), LottoTracker, demoreel and Local Web Server Manager
+  are now listed. A new **Games** landing-page section sits between
+  Engines & Graphics and Emulation & Retro, and DOOM Ants moved into it
+  from Engines — it is a game you play, the ray tracing is how it is
+  built. The hero tagline and meta description name games too.
+
 - **Project pages can carry a demo video, and finbreak now has one.**
   A new optional `video` field in `src/projects.json` renders a **Demo**
   section at the top of a project page — above the screenshots, with its

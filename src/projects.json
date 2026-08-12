@@ -154,6 +154,23 @@
       "screenshots": []
     },
     {
+      "slug": "games-hub",
+      "name": "Games Hub",
+      "tagline": "Fourteen desktop games in one small window.",
+      "blurb": "Chess, Draughts, Reversi, Minesweeper, Sudoku, Snake, 2048, Pinball, Hearts, Canasta and five kinds of patience — Klondike, Spider, FreeCell and Pyramid — in a single Qt 6 window sized to sit beside whatever you are actually working on. The board games play against the computer at three strengths. Nothing to install: each download carries its own copy of Qt, so it runs on a machine that has never had it.",
+      "status": "beta",
+      "repo": "milnet01/games-hub",
+      "platforms": [
+        "win",
+        "linux"
+      ],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null,
+      "category": "games",
+      "screenshots": []
+    },
+    {
       "slug": "doom-ants",
       "name": "DOOM Ants",
       "tagline": "A ray-traced reimagining of id's DOOM on modern Linux.",
@@ -167,7 +184,7 @@
       "isFork": true,
       "upstream": "id-Software/DOOM",
       "homepage": null,
-      "category": "engines",
+      "category": "games",
       "screenshots": [
         {
           "src": "shots/doom-ants-title.png",
@@ -324,6 +341,54 @@
           "alt": "The same OneUp update dashboard in light theme, showing it follows the desktop's light/dark setting — identical toggle cards, buttons and read-only check log on a white background"
         }
       ]
+    },
+    {
+      "slug": "lotto-tracker",
+      "name": "LottoTracker",
+      "tagline": "Catches the lottery win sitting unnoticed in your inbox.",
+      "blurb": "Reads the lottery ticket confirmations your bank sends by SMS, remembers every ticket, and checks them against the real draw results — so a small win doesn't sit unnoticed until it expires. It works out every draw you paid to enter, scores each line, prices the wins, and flags what is still claimable and when it runs out. Everything stays on your own machine: no account, no API key, nothing paid. Specific to the South African National Lottery and, for now, Standard Bank's SMS wording.",
+      "status": "beta",
+      "repo": "milnet01/LottoTracker",
+      "platforms": [
+        "linux"
+      ],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null,
+      "category": "utilities",
+      "screenshots": []
+    },
+    {
+      "slug": "demoreel",
+      "name": "demoreel",
+      "tagline": "Record an app's demo video without filming your desktop.",
+      "blurb": "Records a short video of a desktop app running on a private virtual display — so nothing else you have open, and none of your accessibility tools, ends up in a file destined for a public pull request. One command takes an app and hands back a video file, optionally running a scripted list of clicks and keystrokes so the recording shows the app being used rather than sitting still. It refuses to return a blank recording: an empty display is an error, not a video.",
+      "status": "live",
+      "repo": "milnet01/demoreel",
+      "platforms": [
+        "linux"
+      ],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null,
+      "category": "utilities",
+      "screenshots": []
+    },
+    {
+      "slug": "local-web-server-manager",
+      "name": "Local Web Server Manager",
+      "tagline": "See which of your local web servers are actually running.",
+      "blurb": "If you keep several web projects in one folder, each starts a different way, on a different port, and nothing tells you which are running. This scans your projects folder, works out how each one starts and which port it wants, and gives you a window with a row per project: a status light, a Start/Stop button, its live output and a link to open it. It runs each project's own start script and never edits your projects. Early days — the design is settled and the build has started, but there is no usable application yet.",
+      "status": "wip",
+      "repo": "milnet01/LocalWebServerManager",
+      "platforms": [
+        "linux"
+      ],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null,
+      "category": "utilities",
+      "screenshots": []
     }
   ],
   "support": [
