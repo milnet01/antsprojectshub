@@ -686,18 +686,16 @@ a.card:hover .card__name {
 }
 
 /* ---- Jump nav (anchor links) ---- */
-/* Sticky so a long project page keeps its section links reachable — the backdrop is
-   opaque enough that prose scrolling under it stays legible. */
+/* Deliberately NOT sticky. A sticky bar needs a background to keep the prose scrolling
+   under it legible, and any background is a visible band across the mesh-glow backdrop
+   when the bar is sitting at its natural position — a stray dark rectangle under the
+   download buttons. Hiding it until the bar actually sticks needs a scroll listener,
+   and no page here loads JavaScript for layout. The links are cheap to scroll back to. */
 .jump {
-  position: sticky;
-  top: 0;
-  z-index: 3;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin: 0 0 1.75rem;
-  padding-block: 0.6rem;
-  background: linear-gradient(to bottom, var(--bg) 72%, rgba(8, 8, 12, 0));
 }
 .jump a {
   font-size: 0.8rem;
@@ -788,22 +786,26 @@ a.card:hover .card__name {
   line-height: 1.6;
 }
 
-/* ---- Screenshots: responsive thumbnail grid (no JS) ----
-   auto-fill keeps tiles a consistent size whatever the count — 2 shots or 20 — so
-   nothing hides off-screen and there's no strip to scroll. Each tile opens a
-   :target lightbox (below). */
+/* ---- Screenshots: responsive thumbnail columns (no JS) ----
+   Columns keep tiles a sensible size whatever the count — 2 shots or 20 — so nothing
+   hides off-screen and there's no strip to scroll. Each tile opens a :target lightbox
+   (below).
+
+   Each tile keeps its screenshot's own shape. A fixed tile ratio has to either crop
+   (the old 16:9 `cover`, which sliced OneUp's tall window through the middle and
+   showed neither its title bar nor its buttons) or letterbox (16:10 `contain`, which
+   left the same window a thin strip between two black bars). Columns let a tall shot
+   be tall and a wide one wide, so every screenshot is shown whole at a useful size —
+   and it is plain CSS multi-column, so no JavaScript ships for it. */
 .shots {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: var(--gap);
+  display: block;
+  columns: 3 260px;
+  column-gap: var(--gap);
 }
-/* contain, not cover: a thumbnail's job is to show which screen this is, and a tall
-   app window cropped to a 16:9 centre slice shows neither its title bar nor its
-   buttons — both OneUp shots read as fragments of something. Letterboxing on a
-   slightly darker tile shows the whole window and makes the padding look deliberate. */
 .shot {
   display: block;
-  aspect-ratio: 16 / 10;
+  break-inside: avoid;
+  margin-bottom: var(--gap);
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--surface-border);
@@ -813,8 +815,7 @@ a.card:hover .card__name {
 .shot img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
 }
 .shot:hover {
   border-color: var(--teal);
@@ -1167,9 +1168,11 @@ a.card:hover .card__name {
 .post {
   padding-block: clamp(1.5rem, 4vw, 2.25rem) 0;
 }
+/* Centred rather than flush left: the reading column is 42rem inside a 1140px wrap,
+   so left-aligning it hangs the whole post off one edge of a wide screen. */
 .post__head {
   max-width: 42rem;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem;
 }
 .post__head h1 {
   font-size: clamp(1.9rem, 5vw, 2.7rem);
@@ -1187,6 +1190,7 @@ a.card:hover .card__name {
 /* A measure this narrow is the point: the posts are prose, not documentation. */
 .post__body {
   max-width: 42rem;
+  margin-inline: auto;
 }
 .post__body h2 {
   margin: 2.4rem 0 0.75rem;
@@ -1234,7 +1238,9 @@ a.card:hover .card__name {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--gap);
-  margin: 3rem 0;
+  /* Same measure as the article above it, or the pair floats free of the post. */
+  max-width: 42rem;
+  margin: 3rem auto;
   padding-top: 1.5rem;
   border-top: 1px solid var(--surface-border);
 }

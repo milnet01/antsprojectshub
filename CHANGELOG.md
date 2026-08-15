@@ -66,7 +66,11 @@ so dated sections stand in for versions. Planned work lives in
   description a visitor got was whatever the README's first line happened
   to be. A download count of zero — which is what a freshly cut release
   honestly has — is now omitted rather than printed. The section jump-nav
-  is sticky, so it stays reachable down a long page.
+  was made sticky and then reverted: a sticky bar needs a background to
+  keep prose legible underneath it, and any background is a visible dark
+  band across the mesh-glow backdrop while the bar sits at its natural
+  position. Hiding it until the bar actually sticks needs a scroll
+  listener, and no page here loads JavaScript for layout.
 
 - **The five landing categories each own an accent colour, teal → pink down the page.**
   The same wayfinding idea the private stats dashboard already uses. The
@@ -126,11 +130,14 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Fixed
 
-- **Screenshot thumbnails are shown whole instead of cropped to a letterbox slice.**
+- **Screenshot thumbnails are shown whole, at their own shape.**
   The tiles were `object-fit: cover` at 16:9, so a tall application
   window was cut to a slice of whatever sat in its middle — both OneUp
-  shots read as fragments of something. Tiles are now 16:10 and
-  `contain`, letterboxed on a slightly darker ground.
+  shots read as fragments of something. Letterboxing them into a fixed
+  tile was no better: the same window became a thin strip between two
+  black bars. The gallery is now CSS multi-column, so each tile takes
+  its screenshot's own aspect ratio — a tall shot stays tall, a wide one
+  stays wide, and nothing is cropped or padded. Still no JavaScript.
 
 - **Project pages showed about 2% of the README; they now show a substantial chunk or all of it.**
   The split cut at the README's SECOND heading, which on most projects is
