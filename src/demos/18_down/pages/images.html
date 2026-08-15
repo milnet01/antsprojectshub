@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Images — 18 Down · Memoirs of a Sinner</title>
+<meta name="description" content="A photo gallery of 18 Down (Charl Jordaan) — portraits and moments from the Memoirs of a Sinner archive.">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+  <!-- PREVIEW BANNER  (identical on every page) -->
+  <div class="preview-banner">
+    <strong>Preview</strong> — fully-custom look (GitHub Pages / Netlify).
+    Note: his WordPress likes &amp; 208 followers do <strong>not</strong> carry over to this route.
+  </div>
+
+  <!-- HEADER + NAV -->
+  <header class="site">
+    <h1 class="wordmark">Memoirs of a Sinner</h1>
+    <p class="tagline">The home of music by 18 Down. On all streaming platforms —
+      please listen, like, follow and subscribe.</p>
+    <nav class="primary" aria-label="Primary">
+      <a href="../index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="images.html" aria-current="page">Images</a>
+      <a href="music.html">Music</a>
+      <a href="https://whereismysalvation.wordpress.com/blog/" target="_blank" rel="noopener">Journal</a>
+    </nav>
+    <hr class="rule">
+  </header>
+
+  <main class="wrap">
+
+    <div class="page-intro">
+      <p class="eyebrow">Images</p>
+      <h1>The gallery</h1>
+      <p class="lead">Portraits and moments from the archive. Click any photo to view it full-size.</p>
+    </div>
+
+    <!-- GALLERY  (add/remove <li> items; each thumbnail carries data-full + data-caption) -->
+    <ul class="gallery">
+      <li class="wide"><button class="shot" type="button" data-full="../assets/img/gallery/g01.jpg" data-caption="18 Down — 2026 session"><img src="../assets/img/gallery/g01.jpg" alt="18 Down — 2026 session" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g06.jpg" data-caption="Portrait — 2026"><img src="../assets/img/gallery/g06.jpg" alt="Portrait — 2026" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g02.jpg" data-caption="18 Down — 2026 session"><img src="../assets/img/gallery/g02.jpg" alt="18 Down — 2026 session" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g07.jpg" data-caption="Portrait — 2026"><img src="../assets/img/gallery/g07.jpg" alt="Portrait — 2026" loading="lazy"></button></li>
+      <li class="wide"><button class="shot" type="button" data-full="../assets/img/gallery/g03.jpg" data-caption="18 Down — 2026 session"><img src="../assets/img/gallery/g03.jpg" alt="18 Down — 2026 session" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g04.jpg" data-caption="18 Down — 2026 session"><img src="../assets/img/gallery/g04.jpg" alt="18 Down — 2026 session" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g05.jpg" data-caption="18 Down — 2026 session"><img src="../assets/img/gallery/g05.jpg" alt="18 Down — 2026 session" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g08.jpg" data-caption="18 Down — 2026 session"><img src="../assets/img/gallery/g08.jpg" alt="18 Down — 2026 session" loading="lazy"></button></li>
+      <li class="wide"><button class="shot" type="button" data-full="../assets/img/gallery/g09.jpg" data-caption="18 Down — 2019"><img src="../assets/img/gallery/g09.jpg" alt="18 Down — 2019" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g10.jpg" data-caption="18 Down — 2019"><img src="../assets/img/gallery/g10.jpg" alt="18 Down — 2019" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g11.jpg" data-caption="18 Down — 2019"><img src="../assets/img/gallery/g11.jpg" alt="18 Down — 2019" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g12.jpg" data-caption="18 Down — 2019"><img src="../assets/img/gallery/g12.jpg" alt="18 Down — 2019" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g13.jpg" data-caption="18 Down — 2019"><img src="../assets/img/gallery/g13.jpg" alt="18 Down — 2019" loading="lazy"></button></li>
+      <li><button class="shot" type="button" data-full="../assets/img/gallery/g14.jpg" data-caption="18 Down — 2016"><img src="../assets/img/gallery/g14.jpg" alt="18 Down — 2016" loading="lazy"></button></li>
+    </ul>
+  </main>
+
+  <!-- LIGHTBOX overlay (hidden until a photo is clicked) -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lb-close" type="button" aria-label="Close">×</button>
+    <button class="lb-nav prev" type="button" aria-label="Previous photo">‹</button>
+    <img src="" alt="">
+    <button class="lb-nav next" type="button" aria-label="Next photo">›</button>
+    <span class="lb-count"></span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site">
+    <p>The home of music by 18 Down. On all streaming platforms.<br>
+       Please listen, like, follow and subscribe.</p>
+    <p><a href="links.html">Streaming links</a> · <a href="../index.html">Home</a> · <a href="about.html">About</a> · <a href="music.html">Music</a></p>
+    <p class="credit">© <span id="year">2026</span> 18 Down · Memoirs of a Sinner</p>
+  </footer>
+
+  <script src="../assets/gallery.js"></script>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

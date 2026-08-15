@@ -1,0 +1,289 @@
+/* ============================================================================
+   Memoirs of a Sinner — 18 Down   |   custom showcase site  (shared styles)
+   Modern dark look. This one file controls the whole site's colours & layout,
+   so tweaks live in one place. Used by every page (index.html, about.html, …).
+   ============================================================================ */
+
+:root {
+  --bg-top:    #2c2c2e;   /* charcoal (matches salvation mock) */
+  --bg-mid:    #202022;   /* mid grey                          */
+  --bg-bot:    #141416;   /* fading to near-black              */
+  --panel:     rgba(255,255,255,0.04);
+  --panel-brd: rgba(255,255,255,0.09);
+  --text:      #d7d7dc;
+  --heading:   #f5f5f7;
+  --muted:     #8b8b93;
+  --accent:    #8fd0e0;   /* soft blue-teal */
+  --accent-hi: #bfe8f2;
+  --wrap:      1120px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.03rem;
+  line-height: 1.7;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(121,184,201,0.10) 0%, rgba(121,184,201,0) 45%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 40%, var(--bg-bot) 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover, a:focus-visible { color: var(--accent-hi); text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; border-radius: 3px; }
+img { max-width: 100%; display: block; }
+
+.wrap { width: min(var(--wrap), 92%); margin: 0 auto; }
+
+/* ---- header / nav (reused on every page) ---- */
+header.site { text-align: center; padding: 3rem 1rem 1.4rem; }
+.wordmark {
+  margin: 0; color: var(--heading);
+  font-weight: 300; letter-spacing: 0.015em;
+  font-size: clamp(2rem, 5.2vw, 3.1rem);
+}
+.tagline { max-width: 33rem; margin: 0.9rem auto 0; color: var(--muted); font-size: 0.96rem; }
+nav.primary {
+  margin-top: 1.6rem; display: flex; gap: 1.7rem; justify-content: center; flex-wrap: wrap;
+  font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase;
+}
+nav.primary a { color: var(--text); }
+nav.primary a[aria-current="page"] { color: var(--accent); }
+nav.primary a:hover { color: var(--accent-hi); text-decoration: none; }
+.rule { width: min(var(--wrap), 92%); height: 1px; margin: 1.3rem auto 0; border: 0;
+        background: linear-gradient(90deg, transparent, var(--panel-brd), transparent); }
+
+/* ---- hero: photo (left)  +  cycling player (right) ---- */
+.hero { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6rem; align-items: center;
+        padding: 2.8rem 0 1rem; }
+.hero-photo img {
+  width: 100%; border-radius: 8px;
+  box-shadow: 0 26px 60px rgba(0,0,0,0.6); border: 1px solid var(--panel-brd);
+}
+.hero-photo figcaption { margin-top: 0.7rem; color: var(--muted); font-size: 0.8rem; font-style: italic; text-align: center; }
+
+/* the cycling song player */
+.player { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: 12px;
+          padding: 1.3rem 1.3rem 1.5rem; }
+.player-eyebrow { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.player-title { margin: 0.35rem 0 1rem; color: var(--heading); font-size: 1.5rem; font-weight: 500; }
+.player-frame { border-radius: 12px; overflow: hidden; background: #101014; min-height: 152px; }
+.player-frame iframe { width: 100%; height: 152px; border: 0; display: block; }
+.player-controls { display: flex; align-items: center; gap: 0.9rem; margin-top: 1rem; }
+.player-btn {
+  width: 2.4rem; height: 2.4rem; border-radius: 50%; flex: none;
+  background: transparent; border: 1px solid var(--panel-brd); color: var(--text);
+  font-size: 1.1rem; cursor: pointer; line-height: 1; transition: border-color .15s, color .15s, background .15s;
+}
+.player-btn:hover { border-color: var(--accent); color: var(--accent-hi); background: rgba(143,208,224,0.08); }
+.player-count { color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.player-dots { display: flex; gap: 0.4rem; margin-left: auto; }
+.player-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--panel-brd); border: 0; padding: 0; cursor: pointer; }
+.player-dot[aria-current="true"] { background: var(--accent); }
+
+/* ---- section heading ---- */
+.section-label { color: var(--heading); font-weight: 500; font-size: 1.25rem; letter-spacing: 0.02em;
+                 margin: 3rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--panel-brd); }
+
+/* ---- streaming link cards ---- */
+.links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
+.links a { display: flex; align-items: center; gap: 0.7rem; padding: 0.95rem 1.1rem; color: var(--text);
+           background: var(--panel); border: 1px solid var(--panel-brd); border-radius: 9px;
+           transition: border-color .18s, background .18s, transform .18s; }
+.links a:hover { text-decoration: none; color: var(--heading); border-color: var(--accent);
+                 background: rgba(143,208,224,0.09); transform: translateY(-2px); }
+.links .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--accent); flex: none; }
+.links .go { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
+
+/* ---- lower row: subscribe + archives ---- */
+.lower { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+.card { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: 11px; padding: 1.4rem; }
+.card h3 { margin: 0 0 0.9rem; color: var(--heading); font-size: 0.76rem; letter-spacing: 0.16em;
+           text-transform: uppercase; font-weight: 600; }
+.card p { margin: 0 0 1rem; color: var(--muted); font-size: 0.9rem; }
+.subs-field { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.subs-field input { flex: 1 1 9rem; min-width: 0; padding: 0.6rem 0.75rem; color: var(--text);
+                    background: rgba(0,0,0,0.28); border: 1px solid var(--panel-brd); border-radius: 6px; font: inherit; font-size: 0.9rem; }
+.subs-field input::placeholder { color: #6d6d74; }
+.subs-field button { padding: 0.6rem 1.1rem; color: #0f1416; background: var(--accent); border: 0;
+                     border-radius: 6px; font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+.subs-field button:hover { background: var(--accent-hi); }
+.arch-list { columns: 2; column-gap: 1.2rem; list-style: none; margin: 0; padding: 0; font-size: 0.9rem; }
+.arch-list li { margin-bottom: 0.35rem; }
+.arch-list a { color: var(--text); }
+.arch-list a:hover { color: var(--accent-hi); text-decoration: none; }
+.arch-list .more { color: var(--muted); font-style: italic; }
+
+/* ---- footer ---- */
+footer.site { width: min(var(--wrap), 92%); margin: 3.4rem auto 0; padding: 2.2rem 0 2.8rem;
+              border-top: 1px solid var(--panel-brd); text-align: center; color: var(--muted); font-size: 0.87rem; }
+footer.site p { margin: 0 0 0.5rem; }
+footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
+
+/* ---- generic article/prose (about, posts) ---- */
+.prose { width: min(46rem, 92%); margin: 0 auto; padding: 1rem 0 2rem; }
+.prose h1 { color: var(--heading); font-weight: 400; font-size: clamp(1.8rem, 4vw, 2.4rem); }
+.prose h2 { color: var(--heading); font-weight: 500; margin-top: 2rem; }
+.prose a { color: var(--accent); }
+
+/* ============================================================================
+   Multi-page additions (about / images / music / links) — GitHub-custom build.
+   Everything below layers on top of the shared look above; interior pages reuse
+   the same header, footer and colour variables.
+   ============================================================================ */
+
+/* ---- slim preview banner (top of every page) ---- */
+.preview-banner {
+  background: rgba(143,208,224,0.07);
+  border-bottom: 1px solid var(--panel-brd);
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+  padding: 0.55rem 1rem;
+}
+.preview-banner strong { color: var(--accent); font-weight: 600; }
+
+/* ---- interior page intro (about / images / music / links headers) ---- */
+.page-intro { text-align: center; padding: 1.4rem 1rem 0.4rem; }
+.page-intro .eyebrow {
+  font-size: 0.74rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.6rem;
+}
+.page-intro h1 {
+  margin: 0; color: var(--heading); font-weight: 300; letter-spacing: 0.01em;
+  font-size: clamp(1.9rem, 4.6vw, 2.8rem);
+}
+.page-intro p.lead { max-width: 40rem; margin: 0.9rem auto 0; color: var(--muted); font-size: 0.98rem; }
+
+/* ---- prose (about) refinements ---- */
+.prose p { margin: 0 0 1.2rem; }
+.prose .dropcap::first-letter {
+  float: left; color: var(--accent); font-weight: 300; font-size: 3.3rem;
+  line-height: 0.8; padding: 0.35rem 0.6rem 0 0;
+}
+.prose figure.portrait { margin: 0 0 1.8rem; }
+.prose figure.portrait img { border-radius: 10px; border: 1px solid var(--panel-brd); box-shadow: 0 20px 46px rgba(0,0,0,0.5); }
+.prose figure.portrait figcaption { margin-top: 0.6rem; color: var(--muted); font-size: 0.8rem; font-style: italic; text-align: center; }
+.prose .pull {
+  margin: 2.2rem 0; padding: 0.2rem 0 0.2rem 1.3rem; border-left: 2px solid var(--accent);
+  color: var(--heading); font-size: 1.2rem; font-weight: 300; font-style: italic; line-height: 1.55;
+}
+
+/* ---- photo gallery grid + lightbox (images page) ---- */
+.gallery {
+  --min: 210px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr));
+  grid-auto-flow: dense; gap: 14px; margin: 1.6rem 0 1rem; padding: 0; list-style: none;
+}
+.gallery li { margin: 0; }
+.gallery li.wide { grid-column: span 2; }
+.gallery button.shot {
+  display: block; width: 100%; aspect-ratio: 1 / 1; padding: 0; border: 1px solid var(--panel-brd);
+  border-radius: 10px; overflow: hidden; cursor: zoom-in; background: #101014;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.gallery li.wide button.shot { aspect-ratio: 2 / 1; }
+.gallery button.shot img { width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: grayscale(18%) brightness(0.96); transition: filter .3s, transform .5s; }
+.gallery button.shot:hover { border-color: var(--accent); transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.5); }
+.gallery button.shot:hover img { filter: none; transform: scale(1.05); }
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 60; display: none;
+  align-items: center; justify-content: center; padding: 3vh 3vw;
+  background: rgba(9,9,12,0.92); backdrop-filter: blur(4px);
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 92vh; width: auto; border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7); border: 1px solid var(--panel-brd); }
+.lightbox .lb-close, .lightbox .lb-nav {
+  position: absolute; background: rgba(255,255,255,0.06); border: 1px solid var(--panel-brd);
+  color: var(--heading); border-radius: 50%; cursor: pointer; line-height: 1;
+  width: 3rem; height: 3rem; font-size: 1.5rem; transition: background .15s, border-color .15s;
+}
+.lightbox .lb-close:hover, .lightbox .lb-nav:hover { background: rgba(143,208,224,0.14); border-color: var(--accent); }
+.lightbox .lb-close { top: 1.2rem; right: 1.4rem; }
+.lightbox .lb-nav.prev { left: 1.4rem; top: 50%; transform: translateY(-50%); }
+.lightbox .lb-nav.next { right: 1.4rem; top: 50%; transform: translateY(-50%); }
+.lightbox .lb-count { position: absolute; bottom: 1.3rem; left: 50%; transform: translateX(-50%);
+  color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+/* ---- music page: grid of all song players ---- */
+.song-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.3rem; margin: 1.8rem 0 1rem; padding: 0; list-style: none;
+}
+.song-card { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: 12px;
+  padding: 1rem 1rem 1.1rem; transition: border-color .2s, transform .2s; }
+.song-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.song-card .track-no { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.song-card h3 { margin: 0.2rem 0 0.8rem; color: var(--heading); font-size: 1.12rem; font-weight: 500; }
+.song-card .embed { border-radius: 10px; overflow: hidden; background: #101014; }
+.song-card .embed iframe { width: 100%; height: 152px; border: 0; display: block; }
+
+/* ---- generic centred section blurb ---- */
+.blurb { width: min(46rem, 92%); margin: 2.4rem auto 0; text-align: center; color: var(--muted); }
+.blurb .accent { color: var(--accent); }
+
+@media (max-width: 780px) {
+  .hero { grid-template-columns: 1fr; }
+  .links, .lower { grid-template-columns: 1fr; }
+  .arch-list { columns: 1; }
+  .gallery { --min: 150px; }
+  .gallery li.wide { grid-column: span 1; }
+  .gallery li.wide button.shot { aspect-ratio: 1 / 1; }
+  .lightbox .lb-nav { width: 2.5rem; height: 2.5rem; font-size: 1.2rem; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+
+/* ============================================================================
+   CUSTOM-ONLY FLOURISHES — motion the $4 WordPress plan cannot run.
+   This is what makes the fully-custom build feel different, not just look it.
+   ============================================================================ */
+
+/* bolder, more cinematic hero */
+.wordmark { font-size: clamp(2.5rem, 6.2vw, 4.1rem); letter-spacing: 0.008em; }
+.hero { position: relative; padding-top: 1.4rem; }
+.hero::before {                                   /* ambient glow that slowly drifts */
+  content: ""; position: absolute; z-index: -1; inset: -10% -4% 4%;
+  background: radial-gradient(58% 55% at 32% 42%, rgba(121,184,201,0.17), rgba(0,0,0,0) 70%);
+  filter: blur(8px); animation: glowDrift 13s ease-in-out infinite;
+}
+.hero-photo { position: relative; overflow: hidden; border-radius: 10px; }
+.hero-photo img { animation: kenburns 26s ease-in-out infinite alternate; will-change: transform; }
+
+/* animated equaliser beside "NOW CYCLING" — a little music signature */
+.eq { display: inline-flex; gap: 3px; align-items: flex-end; height: 12px; margin-left: 9px; vertical-align: middle; }
+.eq i { width: 3px; height: 100%; background: var(--accent); border-radius: 2px; transform-origin: bottom;
+        animation: eqBar 900ms ease-in-out infinite; }
+.eq i:nth-child(2){ animation-delay: 150ms } .eq i:nth-child(3){ animation-delay: 300ms }
+.eq i:nth-child(4){ animation-delay: 450ms } .eq i:nth-child(5){ animation-delay: 220ms }
+
+/* page-load entrance (pure CSS, runs on load) */
+.reveal-load { opacity: 0; animation: riseIn .7s cubic-bezier(.2,.7,.2,1) forwards; }
+.reveal-load.d1{ animation-delay:.05s } .reveal-load.d2{ animation-delay:.18s }
+.reveal-load.d3{ animation-delay:.32s } .reveal-load.d4{ animation-delay:.48s }
+
+/* scroll reveal (JS adds .has-reveal to <html>, then .is-in per section) */
+.reveal { transition: opacity .7s ease, transform .7s ease; }
+.has-reveal .reveal { opacity: 0; transform: translateY(24px); }
+.has-reveal .reveal.is-in { opacity: 1; transform: none; }
+
+@keyframes riseIn   { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform:none; } }
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.07); } }
+@keyframes glowDrift{ 0%,100% { opacity:.55; transform: translate(-2%,0); } 50% { opacity:.92; transform: translate(2%,1%); } }
+@keyframes eqBar    { 0%,100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::before, .hero-photo img, .eq i { animation: none !important; }
+  .reveal-load, .has-reveal .reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
+}

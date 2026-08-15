@@ -4,7 +4,7 @@
 // never aborts the build. Runs in CI (authenticated via GITHUB_TOKEN) or locally
 // (unauthenticated; offline → fallbacks).
 
-import { readFile, writeFile, mkdir, rm, cp } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rm, cp, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -761,6 +761,22 @@ async function main() {
   await mkdir(join(DIST, "blog"), { recursive: true });
   await cp(join(ROOT, "src/assets"), join(DIST, "assets"), { recursive: true });
 
+  // Client demo previews: every folder under src/demos/ is copied verbatim to /<name>/.
+  // These are self-contained static sites shown to a client for feedback before they own
+  // the hosting; they are NOT part of the hub and get no nav entry, card or sitemap row.
+  // Each is temporary — delete the source folder when the client takes over hosting, and
+  // this loop stops emitting it. Absent src/demos/ is normal and not an error.
+  const demosDir = join(ROOT, "src/demos");
+  let demoNames = [];
+  try {
+    demoNames = await readdir(demosDir);
+  } catch (err) {
+    if (err.code !== "ENOENT") throw err; // no src/demos/ at all is the normal case
+  }
+  for (const name of demoNames) {
+    await cp(join(demosDir, name), join(DIST, name), { recursive: true });
+  }
+
   // Fingerprint the stylesheet so every page's <link> carries ?v=<hash>; browsers then
   // re-fetch the CSS the moment its contents change, rather than serving a stale cache.
   const cssBytes = await readFile(join(ROOT, "src/assets/style.css"));
@@ -813,9 +829,14 @@ async function main() {
     join(DIST, "google26e8bc6a1b61c6cf.html"),
     "google-site-verification: google26e8bc6a1b61c6cf.html"
   );
+  // Client demos are disallowed: each mirrors a client's real site, so letting it be
+  // indexed puts duplicate content on a domain they do not own and competes with the
+  // site it is previewing. One Disallow per demo folder, derived from the same list
+  // the copy loop used, so adding or removing a demo needs no edit here.
+  const demoDisallow = demoNames.map((name) => `Disallow: /${name}/\n`).join("");
   await writeFile(
     join(DIST, "robots.txt"),
-    `User-agent: *\nAllow: /\nSitemap: ${ORIGIN}/sitemap.xml\n`
+    `User-agent: *\nAllow: /\n${demoDisallow}Sitemap: ${ORIGIN}/sitemap.xml\n`
   );
   const urls = [`${ORIGIN}/`]
     .concat(projects.filter(isPublished).map((p) => `${ORIGIN}/p/${p.slug}.html`))

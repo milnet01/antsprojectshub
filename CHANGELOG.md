@@ -11,6 +11,20 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Client demo previews — anything in `src/demos/` is published at `/<name>/`.**
+  A self-contained static site dropped into `src/demos/<name>/` is copied
+  verbatim to `/<name>/` at build time, so a client can see work in
+  progress before they own any hosting. Demos are deliberately invisible
+  to the hub itself: no nav entry, no card, no sitemap row, and each gets
+  a `Disallow:` line in `robots.txt` — a demo mirrors a client's real
+  site, so letting it be indexed would put duplicate content on a domain
+  they do not own and compete with the site it previews. The disallow
+  list is derived from the same folder listing the copy loop uses, so
+  adding or removing a demo needs no second edit. An absent `src/demos/`
+  is the normal case and is not an error. First demo is `18_down`, a
+  preview for musician Charl Jordaan (18 Down), which comes down once he
+  takes over hosting on his own account.
+
 - **A header nav (Projects · Blog) on every page.**
   Two plain links, no JavaScript. The current section is marked with
   `aria-current` and named rather than only tinted. The old "← All
