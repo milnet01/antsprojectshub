@@ -287,3 +287,18 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
   .hero::before, .hero-photo img, .eq i { animation: none !important; }
   .reveal-load, .has-reveal .reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
+
+/* Subscribe call-to-action. Replaced the old email field, which had no name
+   attribute and therefore threw away whatever the visitor typed. Until the
+   newsletter exists this is a plain mailto — crude, but it actually reaches him. */
+.subs-cta { margin: 0.9rem 0 0; }
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.1rem;
+  color: #0f1416;
+  background: var(--accent);
+  border-radius: 8px;
+  font-weight: 600;
+}
+.btn:hover, .btn:focus-visible { background: var(--accent-hi); text-decoration: none; }
+.arch-list .arch-when { color: var(--muted); font-size: 0.82rem; white-space: nowrap; }
