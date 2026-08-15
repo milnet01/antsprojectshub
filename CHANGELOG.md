@@ -11,6 +11,25 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **A header nav (Projects · Blog) on every page.**
+  Two plain links, no JavaScript. The current section is marked with
+  `aria-current` and named rather than only tinted. The old "← All
+  projects" header link became a breadcrumb above the page content, and
+  blog posts get "← All posts" the same way.
+
+- **A blog — /blog/, an RSS feed, and the newest post on the home page.**
+  Posts are Markdown files in `src/posts/`, one per post, named
+  `YYYY-MM-DD-slug.md` with a small `---` header block (title, date,
+  summary, projects). `lib/posts.mjs` reads and renders them; adding a
+  post is dropping a file in that folder and nothing else. The build
+  emits `/blog/` (the index), `/blog/<slug>/` per post, `/blog/feed.xml`,
+  and adds all of them to the sitemap. A post names the projects it
+  covers by slug and each becomes a chip linking to that project's page;
+  an unknown slug warns and is dropped rather than failing the build.
+  The home page carries the newest post capped at its opening paragraphs,
+  so a long entry can never push the projects below the fold. Five
+  opening entries cover 13 July to 15 August.
+
 - **Four more projects on the site, and a Games section to put them in.**
   Games Hub (fourteen desktop games in one Qt 6 window, with Windows and
   Linux downloads), LottoTracker, demoreel and Local Web Server Manager
@@ -40,6 +59,31 @@ so dated sections stand in for versions. Planned work lives in
   figures.
 
 ### Changed
+
+- **Project pages state what the project is, and stop printing "0 downloads".**
+  The tagline now appears under the title. Before this the page went
+  straight from a two-word name to the download buttons, and the only
+  description a visitor got was whatever the README's first line happened
+  to be. A download count of zero — which is what a freshly cut release
+  honestly has — is now omitted rather than printed. The section jump-nav
+  is sticky, so it stays reachable down a long page.
+
+- **The five landing categories each own an accent colour, teal → pink down the page.**
+  The same wayfinding idea the private stats dashboard already uses. The
+  accent lands on the section label, a hairline above each card and the
+  monogram covers — never on a pill, so status language (teal LIVE, amber
+  BETA, violet EARLY WIP) stays the pills' alone and a tinted card can
+  never be read as a state.
+
+- **Landing cards carry a picture, and a lone project no longer fills the row.**
+  Each card gets a 16:10 cover: its first screenshot where it has one,
+  otherwise a monogram panel in the category's accent, so the grid stays
+  even while the other fourteen projects are unshot. The grid switched
+  from `auto-fit` to `auto-fill` — `auto-fit` collapses the empty tracks,
+  so Vestige, alone in Engines & Graphics, was stretched across the full
+  1140px and an accident of counting read as a statement of importance.
+  Card names dropped from `h2` to `h3`, which is where they belong under
+  their section's heading.
 
 - **The dashboard row you point at actually lights up.** (APHW-0005)
   The hover highlight was a 3% wash — effectively invisible, which is no
@@ -81,6 +125,23 @@ so dated sections stand in for versions. Planned work lives in
   `run.bat`), and it opens in your browser.
 
 ### Fixed
+
+- **Screenshot thumbnails are shown whole instead of cropped to a letterbox slice.**
+  The tiles were `object-fit: cover` at 16:9, so a tall application
+  window was cut to a slice of whatever sat in its middle — both OneUp
+  shots read as fragments of something. Tiles are now 16:10 and
+  `contain`, letterboxed on a slightly darker ground.
+
+- **Project pages showed about 2% of the README; they now show a substantial chunk or all of it.**
+  The split cut at the README's SECOND heading, which on most projects is
+  the title plus one sentence: 163 characters of DOOM Ants' 6,485 and 202
+  of OneUp's 8,487. Everything else sat behind a "Read the full guide"
+  button. It now cuts at a 4,000-character budget of visible text, at a
+  top-level block boundary so neither half can be left with unbalanced
+  tags, and shows the README whole when it fits or when the tail would be
+  under 400 characters. Measured across all 17 enriched pages: every one
+  moved, five now show 100% with no reveal at all, and the lowest is
+  27.8% against 0.7% before.
 
 - **Dashboard tables render the rounded corners they ask for.** (APHW-0006)
   The tables set a border radius and then defeated it with

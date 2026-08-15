@@ -229,7 +229,35 @@ body::after {
   text-decoration: none;
   color: var(--teal);
 }
+.site-nav {
+  display: flex;
+  gap: 0.4rem;
+}
+.site-nav a {
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+}
+.site-nav a:hover {
+  text-decoration: none;
+  color: var(--text);
+  border-color: var(--surface-border);
+  background: var(--surface);
+}
+/* The current section is named, not just tinted — colour alone never carries state. */
+.site-nav a[aria-current="page"] {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--teal);
+}
+/* Breadcrumb above the page content ("← All projects", "← All posts"). */
 .nav-back {
+  display: inline-block;
+  margin: 1.25rem 0 0;
   font-size: 0.95rem;
   color: var(--text-muted);
 }
@@ -328,14 +356,20 @@ body::after {
   font-size: 0.72rem;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--text-dim);
+  /* Falls back to the dim ink everywhere that has no category accent — project
+     panels, the support row, the blog. Only landing-page themes set --accent. */
+  color: var(--accent, var(--text-dim));
   margin: 2rem 0 1rem;
 }
 
-/* ---- Project grid ---- */
+/* ---- Project grid ----
+   auto-FILL, not auto-fit: auto-fit collapses the empty tracks, so a theme holding a
+   single project stretched that one card across the full 1140px and made an accident
+   of counting look like a statement of importance. auto-fill keeps the empty tracks,
+   so every card is the same width whether its section holds one project or six. */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr));
   gap: var(--gap);
   margin-bottom: 2.5rem;
 }
@@ -344,7 +378,7 @@ body::after {
   display: flex;
   flex-direction: column;
   border-radius: var(--radius);
-  padding: 1.05rem 1.1rem;
+  overflow: hidden;
   background: var(--surface);
   border: 1.5px solid var(--surface-border);
   backdrop-filter: blur(var(--blur));
@@ -370,6 +404,51 @@ a.card:hover .card__name {
 }
 .card--soon {
   opacity: 0.66;
+}
+
+/* ---- Card cover ----
+   A project with screenshots shows its first one; the rest get a monogram panel in
+   the category's accent, so the grid stays even while the others are still unshot.
+   object-position: top keeps a tall app window's title bar and toolbar in frame —
+   centring it crops to a slice of whatever happens to be in the middle. */
+.card__cover {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--accent, var(--teal)) 14%, transparent),
+    rgba(255, 255, 255, 0.02) 70%
+  );
+  border-bottom: 1px solid var(--surface-border);
+}
+.card__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.35s var(--ease);
+}
+.card:hover .card__cover img {
+  transform: scale(1.03);
+}
+.card__cover--mono {
+  display: grid;
+  place-items: center;
+}
+.card__mono {
+  font-size: 2.6rem;
+  font-weight: 900;
+  line-height: 1;
+  color: color-mix(in srgb, var(--accent, var(--teal)) 62%, transparent);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+.card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0.9rem 1.05rem 1rem;
 }
 .card__name {
   margin: 0 0 0.25rem;
@@ -607,11 +686,18 @@ a.card:hover .card__name {
 }
 
 /* ---- Jump nav (anchor links) ---- */
+/* Sticky so a long project page keeps its section links reachable — the backdrop is
+   opaque enough that prose scrolling under it stays legible. */
 .jump {
+  position: sticky;
+  top: 0;
+  z-index: 3;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin: 0 0 1.75rem;
+  padding-block: 0.6rem;
+  background: linear-gradient(to bottom, var(--bg) 72%, rgba(8, 8, 12, 0));
 }
 .jump a {
   font-size: 0.8rem;
@@ -637,9 +723,47 @@ a.card:hover .card__name {
   scroll-margin-top: 1.25rem;
 }
 
-/* ---- Landing theme groups ---- */
+/* ---- Landing theme groups ----
+   Each category owns an accent, running teal → pink down the page: the same wayfinding
+   idea the private stats dashboard uses, so the site and the tool finally speak one
+   language. The accent lands on the section label, a hairline above each card and the
+   monogram covers — never on a pill. Status language stays the pills' alone (teal LIVE,
+   amber BETA, violet EARLY WIP), so a tinted card can never be read as a state. Every
+   value below clears WCAG AA on --bg; the hairline and the wash are decoration and
+   carry no meaning of their own. */
 .theme .grid {
   margin-bottom: 1.5rem;
+}
+.theme--engines {
+  --accent: #5eead4;
+}
+.theme--games {
+  --accent: #7dd3fc;
+}
+.theme--emulation {
+  --accent: #a5b4fc;
+}
+.theme--media {
+  --accent: #d8b4fe;
+}
+.theme--utilities {
+  --accent: #f9a8d4;
+}
+.theme .card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  z-index: 1;
+  background: var(--accent, transparent);
+  opacity: 0.55;
+  transition: opacity 0.18s var(--ease);
+}
+.theme .card:hover::before {
+  opacity: 1;
+}
+.theme .card:hover {
+  border-color: color-mix(in srgb, var(--accent, var(--teal)) 55%, transparent);
 }
 
 /* ---- Demo video: native <video controls>, no player library ----
@@ -673,20 +797,24 @@ a.card:hover .card__name {
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--gap);
 }
+/* contain, not cover: a thumbnail's job is to show which screen this is, and a tall
+   app window cropped to a 16:9 centre slice shows neither its title bar nor its
+   buttons — both OneUp shots read as fragments of something. Letterboxing on a
+   slightly darker tile shows the whole window and makes the padding look deliberate. */
 .shot {
   display: block;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--surface-border);
-  background: var(--surface);
+  background: rgba(0, 0, 0, 0.28);
   cursor: zoom-in;
 }
 .shot img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .shot:hover {
   border-color: var(--teal);
@@ -916,6 +1044,228 @@ a.card:hover .card__name {
   font-size: 0.85rem;
 }
 
+/* ============================================================================
+   The log (blog)
+   ========================================================================== */
+
+/* ---- Home page: the newest post, capped ----
+   The band sits between the hero and the project grid. build.mjs caps the excerpt at
+   its opening paragraphs, so a long entry can never push the projects below the fold. */
+.logband {
+  --accent: var(--teal);
+  margin: 0 0 2.25rem;
+  padding: 1.25rem 1.35rem 1.1rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-left: 3px solid var(--accent);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+.logband__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.logband__head .section-label {
+  margin: 0;
+}
+.logband__all {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.logband__all:hover {
+  color: var(--teal);
+}
+.logband__title {
+  margin: 0.15rem 0 0.6rem;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+.logband__title a {
+  color: #fff;
+}
+.logband__lede {
+  font-size: 0.97rem;
+}
+.logband__lede > :last-child {
+  margin-bottom: 0;
+}
+.logband__more {
+  margin: 1rem 0 0;
+}
+
+/* ---- Blog index ---- */
+.blog-head {
+  padding-block: clamp(1.75rem, 5vw, 2.75rem) 0.5rem;
+  max-width: 40rem;
+}
+.blog-head h1 {
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  font-weight: 850;
+  margin: 0.4rem 0 0.6rem;
+  color: #fff;
+}
+.blog-head .tagline {
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+.blog-head__feed {
+  margin: 1rem 0 0;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.postlist {
+  list-style: none;
+  margin: 1.5rem 0 3rem;
+  padding: 0;
+  display: grid;
+  gap: var(--gap);
+}
+.postlist__item {
+  padding: 1.15rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  transition: border-color 0.18s var(--ease);
+}
+.postlist__item:hover {
+  border-color: var(--teal);
+}
+.postlist__title {
+  margin: 0.15rem 0 0.5rem;
+  font-size: 1.22rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.postlist__title a {
+  color: #fff;
+}
+.postlist__sum {
+  margin: 0 0 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+/* ---- A post ---- */
+.post__date {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.post {
+  padding-block: clamp(1.5rem, 4vw, 2.25rem) 0;
+}
+.post__head {
+  max-width: 42rem;
+  margin-bottom: 2rem;
+}
+.post__head h1 {
+  font-size: clamp(1.9rem, 5vw, 2.7rem);
+  font-weight: 850;
+  line-height: 1.15;
+  margin: 0.5rem 0 0.7rem;
+  color: #fff;
+}
+.post__sum {
+  margin: 0 0 1rem;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+/* A measure this narrow is the point: the posts are prose, not documentation. */
+.post__body {
+  max-width: 42rem;
+}
+.post__body h2 {
+  margin: 2.4rem 0 0.75rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+}
+.post__body h3 {
+  margin: 1.9rem 0 0.6rem;
+  font-size: 1.08rem;
+  font-weight: 750;
+}
+.post__body hr {
+  margin: 2.4rem 0;
+  border: 0;
+  border-top: 1px solid var(--surface-border);
+}
+
+/* Project chips — which projects a post is about, each linking to its page. */
+.post__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+}
+.chip {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text-muted);
+}
+.chip:hover {
+  text-decoration: none;
+  border-color: var(--teal);
+  color: var(--text);
+}
+
+/* Newer / older walk at the foot of a post. */
+.post__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--gap);
+  margin: 3rem 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--surface-border);
+}
+.post__prevnext {
+  flex: 1 1 16rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text-muted);
+  font-weight: 650;
+  line-height: 1.4;
+}
+.post__prevnext--older {
+  text-align: right;
+}
+.post__prevnext:hover {
+  text-decoration: none;
+  border-color: var(--teal);
+  color: var(--text);
+}
+
+/* ---- Project page: the tagline under the title ---- */
+.detail-tagline {
+  max-width: 46rem;
+  margin: 0 0 1rem;
+  font-size: clamp(1.02rem, 2.4vw, 1.15rem);
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
 /* ---- Motion: static unless the user allows motion ---- */
 @media (prefers-reduced-motion: no-preference) {
   /* (animations already declared above run only here) */
@@ -925,6 +1275,9 @@ a.card:hover .card__name {
   .bg-blobs::after,
   .hero__brand {
     animation: none !important;
+  }
+  .card:hover .card__cover img {
+    transform: none !important;
   }
   * {
     scroll-behavior: auto !important;
