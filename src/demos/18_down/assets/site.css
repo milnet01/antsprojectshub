@@ -286,9 +286,13 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
 
 /* ---- prose (about) refinements ---- */
 .prose p { margin: 0 0 1.25rem; text-wrap: pretty; }
-.prose .dropcap::first-letter {
+/* The opening drop cap is "18" -- the name of the project, and two characters.
+   This was ::first-letter, which can only ever take ONE character, so it set
+   the 1 alone and left the 8 in the body text. A pseudo-element cannot be made
+   to span two, so the digits are wrapped in a span in about.html instead. */
+.prose .dropcap {
   float: left; color: var(--accent); font-weight: 300; font-size: 3.3rem;
-  line-height: 0.8; padding: 0.35rem 0.6rem 0 0;
+  line-height: 0.8; letter-spacing: -0.02em; padding: 0.35rem 0.6rem 0 0;
 }
 .prose figure.portrait { margin: 0 0 1.8rem; }
 /* Centre any figure image narrower than the text column. `img` is display:block
