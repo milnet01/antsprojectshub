@@ -4,17 +4,111 @@
    so tweaks live in one place. Used by every page (index.html, about.html, …).
    ============================================================================ */
 
+/* ---- typefaces: self-hosted, no third-party request at runtime ------------
+   Served from this stylesheet's own folder, so the same rule works on the home
+   page and five levels down in blog/YYYY/MM/DD/slug/ without any HTML change.
+   Each face is split latin / latin-ext: the browser fetches latin-ext only if
+   a page actually uses an accented character, so the common cost is ~93 KB.
+   Fonts are SIL Open Font Licence -- redistributable in a public repo.        */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;          /* one variable file covers the whole range */
+  font-display: swap;
+  src: url("fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("fonts/inter-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+                 U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+                 U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/instrument-serif-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/instrument-serif-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+                 U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+                 U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
-  --bg-top:    #2c2c2e;   /* charcoal (matches salvation mock) */
-  --bg-mid:    #202022;   /* mid grey                          */
-  --bg-bot:    #141416;   /* fading to near-black              */
-  --panel:     rgba(255,255,255,0.04);
-  --panel-brd: rgba(255,255,255,0.09);
+  /* ---- surface ---------------------------------------------------------- */
+  /* The band ends are pushed further apart than the old flat palette: at the
+     original #2c2c2e/#141416 the diagonal was technically present and
+     effectively invisible, which is not what was asked for. */
+  --bg-top:    #35353c;   /* lit edge of a band  */
+  --bg-bot:    #111113;   /* trough between them */
+  /* Half a band of the diagonal background: dark at 0, grey at --band,
+     dark again at 2x. Scales with the viewport so a phone shows the same
+     few bands a desktop does, instead of one flat diagonal wash. */
+  --band:      clamp(140px, 18vw, 260px);
+
+  /* ---- ink -------------------------------------------------------------- */
   --text:      #d7d7dc;
   --heading:   #f5f5f7;
   --muted:     #8b8b93;
+
+  /* ---- accent: ONE colour, every tint derived from it -------------------
+     Previously eight hand-copied rgba(143,208,224,...) values. Changing the
+     accent now means editing one line, and none of them can drift apart.     */
   --accent:    #8fd0e0;   /* soft blue-teal */
-  --accent-hi: #bfe8f2;
+  --accent-hi: color-mix(in oklab, var(--accent) 55%, white);
+  --accent-06: color-mix(in oklab, var(--accent) 6%,  transparent);
+  --accent-10: color-mix(in oklab, var(--accent) 10%, transparent);
+  --accent-16: color-mix(in oklab, var(--accent) 16%, transparent);
+  --accent-24: color-mix(in oklab, var(--accent) 24%, transparent);
+  /* The ambient glow is a deeper teal than --accent on purpose: at 10-17%
+     over near-black, the accent itself goes grey and reads as haze.        */
+  --glow:      #79b8c9;
+
+  /* ---- panels: two levels, so hover has somewhere to go ----------------- */
+  --panel:     rgba(255,255,255,0.035);
+  --panel-2:   rgba(255,255,255,0.062);
+  --panel-brd: rgba(255,255,255,0.085);
+  /* A one-pixel lit top edge. This is what stops a dark card reading as a
+     flat grey rectangle -- it suggests a light source above the page.        */
+  --sheen:     inset 0 1px 0 rgba(255,255,255,0.055);
+
+  /* ---- elevation -------------------------------------------------------- */
+  --sh-1: 0 1px 2px rgba(0,0,0,0.30);
+  --sh-2: 0 12px 32px -12px rgba(0,0,0,0.60);
+  --sh-3: 0 34px 76px -24px rgba(0,0,0,0.75);
+
+  /* ---- radius: four steps, applied by role rather than by eye ----------- */
+  --r-sm:   8px;    /* inputs, chips, small controls */
+  --r-md:  14px;    /* cards and panels              */
+  --r-lg:  20px;    /* hero media, player, lightbox  */
+  --r-pill: 999px;
+
+  /* ---- type ------------------------------------------------------------- */
+  --font-body:    "Inter", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+
+  /* One easing curve everywhere. The browser default (ease) decelerates too
+     late and is the main reason stock hover states feel sluggish.          */
+  --ease:      cubic-bezier(0.2, 0.7, 0.2, 1);
+
   --wrap:      1120px;
 }
 
@@ -25,14 +119,28 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--text);
-  font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 1.03rem;
-  line-height: 1.7;
+  font-family: var(--font-body);
+  font-optical-sizing: auto;
+  font-size: 1.05rem;
+  line-height: 1.72;
+  /* Inter ships proper typographic defaults behind feature flags; without
+     these it renders straight quotes and lining figures like a 2015 UI. */
+  font-feature-settings: "cv05" 1, "cv11" 1, "ss03" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Repeating diagonal banding, dark -> mid grey -> dark. The cycle ends on
+     the same colour it starts with, so the repeat has no visible seam.
+     Fixed attachment on purpose: the archive runs to 616 entries, and a
+     scrolling background would strobe past the reader on a long page. */
   background:
-    radial-gradient(120% 60% at 50% 0%, rgba(121,184,201,0.10) 0%, rgba(121,184,201,0) 45%),
-    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 40%, var(--bg-bot) 100%);
+    radial-gradient(120% 60% at 50% 0%, color-mix(in oklab, var(--glow) 10%, transparent) 0%, transparent 45%),
+    repeating-linear-gradient(
+      135deg,
+      var(--bg-bot) 0,
+      var(--bg-top) var(--band),
+      var(--bg-bot) calc(var(--band) * 2)
+    );
   background-attachment: fixed;
-  background-repeat: no-repeat;
 }
 
 a { color: var(--accent); text-decoration: none; }
@@ -43,13 +151,24 @@ img { max-width: 100%; display: block; }
 .wrap { width: min(var(--wrap), 92%); margin: 0 auto; }
 
 /* ---- header / nav (reused on every page) ---- */
-header.site { text-align: center; padding: 3rem 1rem 1.4rem; }
+header.site { text-align: center; padding: 3.4rem 1rem 1.4rem; }
 .wordmark {
   margin: 0; color: var(--heading);
-  font-weight: 300; letter-spacing: 0.015em;
+  font-family: var(--font-display);
+  /* Display type wants NEGATIVE tracking. The old +0.015em was set for a UI
+     sans at 3rem; at this size it reads as spaced-out and dated. */
+  font-weight: 400; letter-spacing: -0.02em; line-height: 1.02;
   font-size: clamp(2rem, 5.2vw, 3.1rem);
+  text-wrap: balance;
 }
-.tagline { max-width: 33rem; margin: 0.9rem auto 0; color: var(--muted); font-size: 0.96rem; }
+/* On interior pages the wordmark is a link home, so it was picking up the
+   accent colour and rendering teal there but white on the home page. The
+   wordmark is identity, not navigation -- it keeps its colour either way. */
+.wordmark a { color: inherit; text-decoration: none; }
+.wordmark a:hover, .wordmark a:focus-visible { color: var(--accent-hi); text-decoration: none; }
+
+.tagline { max-width: 33rem; margin: 1rem auto 0; color: var(--muted); font-size: 0.96rem;
+           text-wrap: pretty; }
 nav.primary {
   margin-top: 1.6rem; display: flex; gap: 1.7rem; justify-content: center; flex-wrap: wrap;
   font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase;
@@ -64,17 +183,17 @@ nav.primary a:hover { color: var(--accent-hi); text-decoration: none; }
 .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6rem; align-items: center;
         padding: 2.8rem 0 1rem; }
 .hero-photo img {
-  width: 100%; border-radius: 8px;
-  box-shadow: 0 26px 60px rgba(0,0,0,0.6); border: 1px solid var(--panel-brd);
+  width: 100%; border-radius: var(--r-sm);
+  box-shadow: var(--sh-3); border: 1px solid var(--panel-brd);
 }
 .hero-photo figcaption { margin-top: 0.7rem; color: var(--muted); font-size: 0.8rem; font-style: italic; text-align: center; }
 
 /* the cycling song player */
-.player { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: 12px;
-          padding: 1.3rem 1.3rem 1.5rem; }
+.player { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: var(--r-lg);
+          padding: 1.3rem 1.3rem 1.5rem; box-shadow: var(--sheen), var(--sh-2); }
 .player-eyebrow { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
 .player-title { margin: 0.35rem 0 1rem; color: var(--heading); font-size: 1.5rem; font-weight: 500; }
-.player-frame { border-radius: 12px; overflow: hidden; background: #101014; min-height: 152px; }
+.player-frame { border-radius: var(--r-lg); overflow: hidden; background: #101014; min-height: 152px; }
 .player-frame iframe { width: 100%; height: 152px; border: 0; display: block; }
 .player-controls { display: flex; align-items: center; gap: 0.9rem; margin-top: 1rem; }
 .player-btn {
@@ -82,38 +201,44 @@ nav.primary a:hover { color: var(--accent-hi); text-decoration: none; }
   background: transparent; border: 1px solid var(--panel-brd); color: var(--text);
   font-size: 1.1rem; cursor: pointer; line-height: 1; transition: border-color .15s, color .15s, background .15s;
 }
-.player-btn:hover { border-color: var(--accent); color: var(--accent-hi); background: rgba(143,208,224,0.08); }
+.player-btn:hover { border-color: var(--accent); color: var(--accent-hi); background: var(--accent-06); }
 .player-count { color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
 .player-dots { display: flex; gap: 0.4rem; margin-left: auto; }
 .player-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--panel-brd); border: 0; padding: 0; cursor: pointer; }
 .player-dot[aria-current="true"] { background: var(--accent); }
 
 /* ---- section heading ---- */
-.section-label { color: var(--heading); font-weight: 500; font-size: 1.25rem; letter-spacing: 0.02em;
-                 margin: 3rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--panel-brd); }
+.section-label { color: var(--heading); font-family: var(--font-display); font-weight: 400;
+                 font-size: clamp(1.5rem, 3vw, 1.9rem); letter-spacing: -0.015em;
+                 margin: 3.4rem 0 1.3rem; padding-bottom: 0.6rem;
+                 border-bottom: 1px solid var(--panel-brd); }
 
 /* ---- streaming link cards ---- */
 .links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
 .links a { display: flex; align-items: center; gap: 0.7rem; padding: 0.95rem 1.1rem; color: var(--text);
-           background: var(--panel); border: 1px solid var(--panel-brd); border-radius: 9px;
-           transition: border-color .18s, background .18s, transform .18s; }
-.links a:hover { text-decoration: none; color: var(--heading); border-color: var(--accent);
-                 background: rgba(143,208,224,0.09); transform: translateY(-2px); }
+           background: var(--panel); border: 1px solid var(--panel-brd); border-radius: var(--r-md);
+           box-shadow: var(--sheen);
+           transition: border-color .2s var(--ease), background .2s var(--ease),
+                       transform .2s var(--ease), box-shadow .2s var(--ease); }
+.links a:hover { text-decoration: none; color: var(--heading); border-color: var(--accent-24);
+                 background: var(--panel-2); transform: translateY(-2px);
+                 box-shadow: var(--sheen), var(--sh-2); }
 .links .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--accent); flex: none; }
 .links .go { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
 
 /* ---- lower row: subscribe + archives ---- */
 .lower { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
-.card { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: 11px; padding: 1.4rem; }
+.card { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: var(--r-md);
+        padding: 1.5rem; box-shadow: var(--sheen), var(--sh-1); }
 .card h3 { margin: 0 0 0.9rem; color: var(--heading); font-size: 0.76rem; letter-spacing: 0.16em;
            text-transform: uppercase; font-weight: 600; }
 .card p { margin: 0 0 1rem; color: var(--muted); font-size: 0.9rem; }
 .subs-field { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .subs-field input { flex: 1 1 9rem; min-width: 0; padding: 0.6rem 0.75rem; color: var(--text);
-                    background: rgba(0,0,0,0.28); border: 1px solid var(--panel-brd); border-radius: 6px; font: inherit; font-size: 0.9rem; }
+                    background: rgba(0,0,0,0.28); border: 1px solid var(--panel-brd); border-radius: var(--r-sm); font: inherit; font-size: 0.9rem; }
 .subs-field input::placeholder { color: #6d6d74; }
 .subs-field button { padding: 0.6rem 1.1rem; color: #0f1416; background: var(--accent); border: 0;
-                     border-radius: 6px; font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+                     border-radius: var(--r-sm); font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
 .subs-field button:hover { background: var(--accent-hi); }
 .arch-list { columns: 2; column-gap: 1.2rem; list-style: none; margin: 0; padding: 0; font-size: 0.9rem; }
 .arch-list li { margin-bottom: 0.35rem; }
@@ -129,8 +254,12 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
 
 /* ---- generic article/prose (about, posts) ---- */
 .prose { width: min(46rem, 92%); margin: 0 auto; padding: 1rem 0 2rem; }
-.prose h1 { color: var(--heading); font-weight: 400; font-size: clamp(1.8rem, 4vw, 2.4rem); }
-.prose h2 { color: var(--heading); font-weight: 500; margin-top: 2rem; }
+.prose h1 { color: var(--heading); font-family: var(--font-display); font-weight: 400;
+            letter-spacing: -0.02em; line-height: 1.08; text-wrap: balance;
+            font-size: clamp(2rem, 4.4vw, 2.7rem); }
+.prose h2 { color: var(--heading); font-family: var(--font-display); font-weight: 400;
+            letter-spacing: -0.015em; margin-top: 2.4rem; font-size: 1.6rem;
+            text-wrap: balance; }
 .prose a { color: var(--accent); }
 
 /* ============================================================================
@@ -141,7 +270,7 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
 
 /* ---- slim preview banner (top of every page) ---- */
 .preview-banner {
-  background: rgba(143,208,224,0.07);
+  background: var(--accent-06);
   border-bottom: 1px solid var(--panel-brd);
   color: var(--muted);
   font-size: 0.78rem;
@@ -158,19 +287,20 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
   margin: 0 0 0.6rem;
 }
 .page-intro h1 {
-  margin: 0; color: var(--heading); font-weight: 300; letter-spacing: 0.01em;
-  font-size: clamp(1.9rem, 4.6vw, 2.8rem);
+  margin: 0; color: var(--heading); font-family: var(--font-display);
+  font-weight: 400; letter-spacing: -0.02em; line-height: 1.06;
+  font-size: clamp(2.1rem, 5vw, 3.2rem); text-wrap: balance;
 }
 .page-intro p.lead { max-width: 40rem; margin: 0.9rem auto 0; color: var(--muted); font-size: 0.98rem; }
 
 /* ---- prose (about) refinements ---- */
-.prose p { margin: 0 0 1.2rem; }
+.prose p { margin: 0 0 1.25rem; text-wrap: pretty; }
 .prose .dropcap::first-letter {
   float: left; color: var(--accent); font-weight: 300; font-size: 3.3rem;
   line-height: 0.8; padding: 0.35rem 0.6rem 0 0;
 }
 .prose figure.portrait { margin: 0 0 1.8rem; }
-.prose figure.portrait img { border-radius: 10px; border: 1px solid var(--panel-brd); box-shadow: 0 20px 46px rgba(0,0,0,0.5); }
+.prose figure.portrait img { border-radius: var(--r-md); border: 1px solid var(--panel-brd); box-shadow: var(--sh-2); }
 .prose figure.portrait figcaption { margin-top: 0.6rem; color: var(--muted); font-size: 0.8rem; font-style: italic; text-align: center; }
 .prose .pull {
   margin: 2.2rem 0; padding: 0.2rem 0 0.2rem 1.3rem; border-left: 2px solid var(--accent);
@@ -187,14 +317,14 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
 .gallery li.wide { grid-column: span 2; }
 .gallery button.shot {
   display: block; width: 100%; aspect-ratio: 1 / 1; padding: 0; border: 1px solid var(--panel-brd);
-  border-radius: 10px; overflow: hidden; cursor: zoom-in; background: #101014;
-  transition: border-color .2s, transform .2s, box-shadow .2s;
+  border-radius: var(--r-md); overflow: hidden; cursor: zoom-in; background: #101014;
+  transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
 }
 .gallery li.wide button.shot { aspect-ratio: 2 / 1; }
 .gallery button.shot img { width: 100%; height: 100%; object-fit: cover; display: block;
   filter: grayscale(18%) brightness(0.96); transition: filter .3s, transform .5s; }
-.gallery button.shot:hover { border-color: var(--accent); transform: translateY(-3px);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.5); }
+.gallery button.shot:hover { border-color: var(--accent-24); transform: translateY(-3px);
+  box-shadow: var(--sh-2); }
 .gallery button.shot:hover img { filter: none; transform: scale(1.05); }
 
 .lightbox {
@@ -203,14 +333,14 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
   background: rgba(9,9,12,0.92); backdrop-filter: blur(4px);
 }
 .lightbox.open { display: flex; }
-.lightbox img { max-width: 100%; max-height: 92vh; width: auto; border-radius: 8px;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.7); border: 1px solid var(--panel-brd); }
+.lightbox img { max-width: 100%; max-height: 92vh; width: auto; border-radius: var(--r-sm);
+  box-shadow: var(--sh-3); border: 1px solid var(--panel-brd); }
 .lightbox .lb-close, .lightbox .lb-nav {
   position: absolute; background: rgba(255,255,255,0.06); border: 1px solid var(--panel-brd);
   color: var(--heading); border-radius: 50%; cursor: pointer; line-height: 1;
   width: 3rem; height: 3rem; font-size: 1.5rem; transition: background .15s, border-color .15s;
 }
-.lightbox .lb-close:hover, .lightbox .lb-nav:hover { background: rgba(143,208,224,0.14); border-color: var(--accent); }
+.lightbox .lb-close:hover, .lightbox .lb-nav:hover { background: var(--accent-16); border-color: var(--accent); }
 .lightbox .lb-close { top: 1.2rem; right: 1.4rem; }
 .lightbox .lb-nav.prev { left: 1.4rem; top: 50%; transform: translateY(-50%); }
 .lightbox .lb-nav.next { right: 1.4rem; top: 50%; transform: translateY(-50%); }
@@ -222,12 +352,14 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
   display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.3rem; margin: 1.8rem 0 1rem; padding: 0; list-style: none;
 }
-.song-card { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: 12px;
-  padding: 1rem 1rem 1.1rem; transition: border-color .2s, transform .2s; }
-.song-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.song-card { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: var(--r-lg);
+  padding: 1.1rem 1.1rem 1.2rem; box-shadow: var(--sheen), var(--sh-1);
+  transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease); }
+.song-card:hover { border-color: var(--accent-24); transform: translateY(-3px);
+                   box-shadow: var(--sheen), var(--sh-2); }
 .song-card .track-no { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
 .song-card h3 { margin: 0.2rem 0 0.8rem; color: var(--heading); font-size: 1.12rem; font-weight: 500; }
-.song-card .embed { border-radius: 10px; overflow: hidden; background: #101014; }
+.song-card .embed { border-radius: var(--r-md); overflow: hidden; background: #101014; }
 .song-card .embed iframe { width: 100%; height: 152px; border: 0; display: block; }
 
 /* ---- generic centred section blurb ---- */
@@ -251,14 +383,14 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
    ============================================================================ */
 
 /* bolder, more cinematic hero */
-.wordmark { font-size: clamp(2.5rem, 6.2vw, 4.1rem); letter-spacing: 0.008em; }
+.wordmark { font-size: clamp(2.6rem, 6.6vw, 4.4rem); letter-spacing: -0.025em; }
 .hero { position: relative; padding-top: 1.4rem; }
 .hero::before {                                   /* ambient glow that slowly drifts */
   content: ""; position: absolute; z-index: -1; inset: -10% -4% 4%;
-  background: radial-gradient(58% 55% at 32% 42%, rgba(121,184,201,0.17), rgba(0,0,0,0) 70%);
+  background: radial-gradient(58% 55% at 32% 42%, color-mix(in oklab, var(--glow) 17%, transparent), transparent 70%);
   filter: blur(8px); animation: glowDrift 13s ease-in-out infinite;
 }
-.hero-photo { position: relative; overflow: hidden; border-radius: 10px; }
+.hero-photo { position: relative; overflow: hidden; border-radius: var(--r-md); }
 .hero-photo img { animation: kenburns 26s ease-in-out infinite alternate; will-change: transform; }
 
 /* animated equaliser beside "NOW CYCLING" — a little music signature */
@@ -297,7 +429,7 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
   padding: 0.6rem 1.1rem;
   color: #0f1416;
   background: var(--accent);
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   font-weight: 600;
 }
 .btn:hover, .btn:focus-visible { background: var(--accent-hi); text-decoration: none; }
