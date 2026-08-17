@@ -383,11 +383,12 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
 /* bolder, more cinematic hero */
 .wordmark { font-size: clamp(2.3rem, 5.8vw, 3.8rem); letter-spacing: -0.04em; }
 .hero { position: relative; padding-top: 1.4rem; }
-.hero::before {                                   /* ambient glow that slowly drifts */
-  content: ""; position: absolute; z-index: -1; inset: -10% -4% 4%;
-  background: radial-gradient(58% 55% at 32% 42%, color-mix(in oklab, var(--glow) 17%, transparent), transparent 70%);
-  filter: blur(8px); animation: glowDrift 13s ease-in-out infinite;
-}
+/* The drifting ambient glow that used to sit here is GONE. It was a flourish
+   from the flat-background mock-ups, and it is the reason the diagonal
+   gradient showed on every page except this one: a big blurred light wash,
+   painted above the body background, sitting exactly where the gradient's
+   light band runs. The home page had three background layers where every
+   other page has one. Consistency across pages beats the flourish. */
 .hero-photo { position: relative; overflow: hidden; border-radius: var(--r-md); }
 .hero-photo img { animation: kenburns 26s ease-in-out infinite alternate; will-change: transform; }
 
@@ -410,11 +411,10 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
 
 @keyframes riseIn   { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform:none; } }
 @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.07); } }
-@keyframes glowDrift{ 0%,100% { opacity:.55; transform: translate(-2%,0); } 50% { opacity:.92; transform: translate(2%,1%); } }
 @keyframes eqBar    { 0%,100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero::before, .hero-photo img, .eq i { animation: none !important; }
+  .hero-photo img, .eq i { animation: none !important; }
   .reveal-load, .has-reveal .reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 
