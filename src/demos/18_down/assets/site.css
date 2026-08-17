@@ -430,5 +430,9 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
   border-radius: var(--r-sm);
   font-weight: 600;
 }
-.btn:hover, .btn:focus-visible { background: var(--accent-hi); text-decoration: none; }
+/* Restate the dark label on hover. Without it the general `a:hover` rule up at
+   line 138 wins -- it is a class-plus-pseudo-class selector where `.btn` is a
+   bare class -- and repaints the text --accent-hi, which is exactly what the
+   background is becoming here. Pale on pale: the button went blank on hover. */
+.btn:hover, .btn:focus-visible { color: #0f1416; background: var(--accent-hi); text-decoration: none; }
 .arch-list .arch-when { color: var(--muted); font-size: 0.82rem; white-space: nowrap; }
