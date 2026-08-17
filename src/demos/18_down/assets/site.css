@@ -42,11 +42,6 @@
      was a browser extension repainting the page flat #181a1b, not the range. */
   --bg-top:    #282828;   /* lit edge of a band  */
   --bg-bot:    #181818;   /* trough between them */
-  /* Half a band of the diagonal background: dark at 0, grey at --band,
-     dark again at 2x. Scales with the viewport so a phone shows the same
-     few bands a desktop does, instead of one flat diagonal wash. */
-  --band:      clamp(85px, 10vw, 150px);
-
   /* ---- ink -------------------------------------------------------------- */
   --text:      #d7d7dc;
   --heading:   #f5f5f7;
@@ -125,19 +120,18 @@ body {
   font-feature-settings: "cv05" 1, "cv11" 1, "ss03" 1;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* Repeating diagonal banding, dark -> mid grey -> dark. The cycle ends on
-     the same colour it starts with, so the repeat has no visible seam.
-     Fixed attachment on purpose: the archive runs to 616 entries, and a
-     scrolling background would strobe past the reader on a long page. */
+  /* ONE diagonal gradient across the page: dark in the bottom-left corner,
+     lightest through the middle, dark again in the bottom-right. Not a
+     repeating one -- that was tried and is not what was wanted.
+     Fixed attachment matters more here than it did for bands: without it the
+     gradient stretches over the whole document, and the archive runs to 616
+     entries, so the ramp would spread across thousands of pixels and read as
+     flat. Anchored to the viewport, it stays one clean sweep at any length. */
   background:
-    radial-gradient(90% 42% at 50% 0%, color-mix(in oklab, var(--glow) 8%, transparent) 0%, transparent 60%),
-    repeating-linear-gradient(
-      135deg,
-      var(--bg-bot) 0,
-      var(--bg-top) var(--band),
-      var(--bg-bot) calc(var(--band) * 2)
-    );
+    radial-gradient(90% 42% at 50% 0%, color-mix(in oklab, var(--glow) 6%, transparent) 0%, transparent 60%),
+    linear-gradient(45deg, var(--bg-bot) 0%, var(--bg-top) 50%, var(--bg-bot) 100%);
   background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 a { color: var(--accent); text-decoration: none; }
