@@ -40,8 +40,8 @@
   /* Chosen by Charl and the user 2026-08-17, sampled in GIMP. Do not "improve"
      the contrast of these two: the reason earlier values kept being invisible
      was a browser extension repainting the page flat #181a1b, not the range. */
-  --bg-top:    #282828;   /* lit edge of a band  */
-  --bg-bot:    #181818;   /* trough between them */
+  --bg-top:    #282828;   /* the lit middle of the sweep */
+  --bg-bot:    #181818;   /* both corners it fades to    */
   /* ---- ink -------------------------------------------------------------- */
   --text:      #d7d7dc;
   --heading:   #f5f5f7;
