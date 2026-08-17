@@ -37,8 +37,11 @@
   /* The band ends are pushed further apart than the old flat palette: at the
      original #2c2c2e/#141416 the diagonal was technically present and
      effectively invisible, which is not what was asked for. */
-  --bg-top:    #3c3c45;   /* lit edge of a band  */
-  --bg-bot:    #0f0f11;   /* trough between them */
+  /* Chosen by Charl and the user 2026-08-17, sampled in GIMP. Do not "improve"
+     the contrast of these two: the reason earlier values kept being invisible
+     was a browser extension repainting the page flat #181a1b, not the range. */
+  --bg-top:    #282828;   /* lit edge of a band  */
+  --bg-bot:    #181818;   /* trough between them */
   /* Half a band of the diagonal background: dark at 0, grey at --band,
      dark again at 2x. Scales with the viewport so a phone shows the same
      few bands a desktop does, instead of one flat diagonal wash. */
@@ -100,6 +103,11 @@
 
   --wrap:      1120px;
 }
+
+/* Declares the site as dark. Chrome's auto-dark-mode leaves a page alone once
+   it sees this, and form controls, scrollbars and the canvas behind the body
+   all pick the dark palette instead of a white flash on load. */
+:root { color-scheme: dark; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }

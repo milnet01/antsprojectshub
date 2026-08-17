@@ -41,7 +41,11 @@
     <p class="back"><a href="../../../../../blog/index.html">← All journal entries</a></p>
   </main>
 
-  <footer class="site-foot">
+  <!-- class="site", NOT "site-foot": site.css styles footer.site and has no
+       rule for site-foot at all, so every generated page rendered its footer
+       unstyled and flush against the left window edge while the hand-authored
+       pages centred theirs. The journal must not look like a different site. -->
+  <footer class="site">
     <p class="credit">© <span>2026</span> 18 Down · Memoirs of a Sinner</p>
   </footer>
 

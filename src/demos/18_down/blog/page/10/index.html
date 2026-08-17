@@ -137,7 +137,11 @@
     <nav class="pager" aria-label="Pagination"><a class="pg" href="../../../blog/page/9/index.html">← Newer</a> <span class="pg-count">Page 10 of 31</span> <a class="pg" href="../../../blog/page/11/index.html">Older →</a></nav>
   </main>
 
-  <footer class="site-foot">
+  <!-- class="site", NOT "site-foot": site.css styles footer.site and has no
+       rule for site-foot at all, so every generated page rendered its footer
+       unstyled and flush against the left window edge while the hand-authored
+       pages centred theirs. The journal must not look like a different site. -->
+  <footer class="site">
     <p class="credit">© <span>2026</span> 18 Down · Memoirs of a Sinner</p>
   </footer>
 
