@@ -57,17 +57,22 @@
   /* The band ends are pushed further apart than the old flat palette: at the
      original #2c2c2e/#141416 the diagonal was technically present and
      effectively invisible, which is not what was asked for. */
-  --bg-top:    #35353c;   /* lit edge of a band  */
-  --bg-bot:    #111113;   /* trough between them */
+  --bg-top:    #3c3c45;   /* lit edge of a band  */
+  --bg-bot:    #0f0f11;   /* trough between them */
   /* Half a band of the diagonal background: dark at 0, grey at --band,
      dark again at 2x. Scales with the viewport so a phone shows the same
      few bands a desktop does, instead of one flat diagonal wash. */
-  --band:      clamp(140px, 18vw, 260px);
+  --band:      clamp(85px, 10vw, 150px);
 
   /* ---- ink -------------------------------------------------------------- */
   --text:      #d7d7dc;
   --heading:   #f5f5f7;
-  --muted:     #8b8b93;
+  /* Lifted from #8b8b93 2026-08-17. Measured against the LIGHTEST diagonal
+     band (#3c3c45), the worst case a reader can land on: the old value gave
+     3.23:1, below the 4.5:1 minimum for normal text -- and it was already
+     under at 4.12:1 on the flat background this replaced. #a6a6af gives
+     4.52:1. Body and headings were never in question (7.6:1 and 10:1). */
+  --muted:     #a6a6af;
 
   /* ---- accent: ONE colour, every tint derived from it -------------------
      Previously eight hand-copied rgba(143,208,224,...) values. Changing the
@@ -133,7 +138,7 @@ body {
      Fixed attachment on purpose: the archive runs to 616 entries, and a
      scrolling background would strobe past the reader on a long page. */
   background:
-    radial-gradient(120% 60% at 50% 0%, color-mix(in oklab, var(--glow) 10%, transparent) 0%, transparent 45%),
+    radial-gradient(90% 42% at 50% 0%, color-mix(in oklab, var(--glow) 8%, transparent) 0%, transparent 60%),
     repeating-linear-gradient(
       135deg,
       var(--bg-bot) 0,
