@@ -31,26 +31,6 @@
                  U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
                  U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-@font-face {
-  font-family: "Instrument Serif";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/instrument-serif-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
-                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Instrument Serif";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/instrument-serif-latin-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
-                 U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
-                 U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
 
 :root {
   /* ---- surface ---------------------------------------------------------- */
@@ -107,8 +87,12 @@
   --r-pill: 999px;
 
   /* ---- type ------------------------------------------------------------- */
+  /* ONE family for the whole site. A display face was tried and rejected:
+     a serif is not wanted here, and a second family means type that changes
+     between pages. Display size does its work through WEIGHT and negative
+     tracking instead, which is what --font-display now carries. */
   --font-body:    "Inter", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-display: var(--font-body);
 
   /* One easing curve everywhere. The browser default (ease) decelerates too
      late and is the main reason stock hover states feel sluggish.          */
@@ -162,7 +146,7 @@ header.site { text-align: center; padding: 3.4rem 1rem 1.4rem; }
   font-family: var(--font-display);
   /* Display type wants NEGATIVE tracking. The old +0.015em was set for a UI
      sans at 3rem; at this size it reads as spaced-out and dated. */
-  font-weight: 400; letter-spacing: -0.02em; line-height: 1.02;
+  font-weight: 700; letter-spacing: -0.035em; line-height: 1.04;
   font-size: clamp(2rem, 5.2vw, 3.1rem);
   text-wrap: balance;
 }
@@ -213,8 +197,8 @@ nav.primary a:hover { color: var(--accent-hi); text-decoration: none; }
 .player-dot[aria-current="true"] { background: var(--accent); }
 
 /* ---- section heading ---- */
-.section-label { color: var(--heading); font-family: var(--font-display); font-weight: 400;
-                 font-size: clamp(1.5rem, 3vw, 1.9rem); letter-spacing: -0.015em;
+.section-label { color: var(--heading); font-family: var(--font-display); font-weight: 650;
+                 font-size: clamp(1.4rem, 2.7vw, 1.75rem); letter-spacing: -0.022em;
                  margin: 3.4rem 0 1.3rem; padding-bottom: 0.6rem;
                  border-bottom: 1px solid var(--panel-brd); }
 
@@ -259,11 +243,11 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
 
 /* ---- generic article/prose (about, posts) ---- */
 .prose { width: min(46rem, 92%); margin: 0 auto; padding: 1rem 0 2rem; }
-.prose h1 { color: var(--heading); font-family: var(--font-display); font-weight: 400;
-            letter-spacing: -0.02em; line-height: 1.08; text-wrap: balance;
-            font-size: clamp(2rem, 4.4vw, 2.7rem); }
-.prose h2 { color: var(--heading); font-family: var(--font-display); font-weight: 400;
-            letter-spacing: -0.015em; margin-top: 2.4rem; font-size: 1.6rem;
+.prose h1 { color: var(--heading); font-family: var(--font-display); font-weight: 700;
+            letter-spacing: -0.032em; line-height: 1.1; text-wrap: balance;
+            font-size: clamp(1.9rem, 4.2vw, 2.5rem); }
+.prose h2 { color: var(--heading); font-family: var(--font-display); font-weight: 650;
+            letter-spacing: -0.022em; margin-top: 2.4rem; font-size: 1.45rem;
             text-wrap: balance; }
 .prose a { color: var(--accent); }
 
@@ -293,8 +277,8 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
 }
 .page-intro h1 {
   margin: 0; color: var(--heading); font-family: var(--font-display);
-  font-weight: 400; letter-spacing: -0.02em; line-height: 1.06;
-  font-size: clamp(2.1rem, 5vw, 3.2rem); text-wrap: balance;
+  font-weight: 700; letter-spacing: -0.035em; line-height: 1.08;
+  font-size: clamp(2rem, 4.6vw, 2.9rem); text-wrap: balance;
 }
 .page-intro p.lead { max-width: 40rem; margin: 0.9rem auto 0; color: var(--muted); font-size: 0.98rem; }
 
@@ -388,7 +372,7 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
    ============================================================================ */
 
 /* bolder, more cinematic hero */
-.wordmark { font-size: clamp(2.6rem, 6.6vw, 4.4rem); letter-spacing: -0.025em; }
+.wordmark { font-size: clamp(2.3rem, 5.8vw, 3.8rem); letter-spacing: -0.04em; }
 .hero { position: relative; padding-top: 1.4rem; }
 .hero::before {                                   /* ambient glow that slowly drifts */
   content: ""; position: absolute; z-index: -1; inset: -10% -4% 4%;

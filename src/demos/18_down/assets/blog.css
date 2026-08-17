@@ -33,10 +33,10 @@
 .post-card h2 {
   margin: 0.2rem 0 0.55rem;
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.55rem;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
+  font-weight: 650;
+  font-size: 1.4rem;
+  letter-spacing: -0.024em;
+  line-height: 1.25;
   color: var(--heading);
   text-wrap: balance;
 }
@@ -89,10 +89,10 @@
 .post h1 {
   margin: 0.3rem 0 1.7rem;
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.9rem, 4.6vw, 2.9rem);
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4.2vw, 2.5rem);
+  letter-spacing: -0.034em;
+  line-height: 1.14;
   color: var(--heading);
   text-wrap: balance;
 }
@@ -141,8 +141,8 @@
   border-top: 1px solid var(--panel-brd);
 }
 
-.comments h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.4rem;
-               letter-spacing: -0.01em; color: var(--heading); margin: 0 0 0.3rem; }
+.comments h2 { font-family: var(--font-display); font-weight: 650; font-size: 1.25rem;
+               letter-spacing: -0.02em; color: var(--heading); margin: 0 0 0.3rem; }
 .comments-note { margin: 0 0 1.4rem; font-size: 0.9rem; color: var(--muted); }
 .comment-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
 
@@ -184,8 +184,8 @@
 /* ---- archive --------------------------------------------------------- */
 
 .archive { max-width: 46rem; margin: 0 auto; display: grid; gap: 2.2rem; }
-.arch-year h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.7rem;
-                letter-spacing: -0.015em; color: var(--heading); margin: 0 0 0.7rem; }
+.arch-year h2 { font-family: var(--font-display); font-weight: 650; font-size: 1.5rem;
+                letter-spacing: -0.024em; color: var(--heading); margin: 0 0 0.7rem; }
 
 .arch-count {
   font-size: 0.8rem;
