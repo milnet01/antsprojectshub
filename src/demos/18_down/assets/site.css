@@ -189,10 +189,8 @@ nav.primary a:hover { color: var(--accent-hi); text-decoration: none; }
         padding: 2.8rem 0 1rem; }
 .hero-photo img {
   width: 100%; border-radius: var(--r-sm);
-  box-shadow: var(--sh-3); border: 1px solid var(--panel-brd);
-  transition: box-shadow .25s var(--ease);
+  border: 1px solid var(--panel-brd);
 }
-.hero-photo:hover img { box-shadow: var(--sh-4); }
 .hero-photo figcaption { margin-top: 0.7rem; color: var(--muted); font-size: 0.8rem; font-style: italic; text-align: center; }
 
 /* the cycling song player */
@@ -417,7 +415,16 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
    painted above the body background, sitting exactly where the gradient's
    light band runs. The home page had three background layers where every
    other page has one. Consistency across pages beats the flourish. */
-.hero-photo { position: relative; overflow: hidden; border-radius: var(--r-md); }
+/* The shadow belongs on the FIGURE, not on the img inside it. This element
+   clips its children (overflow: hidden, so the ken-burns zoom stays inside the
+   rounded corners), and a child's box-shadow is drawn outside the child and
+   therefore clipped away with everything else. The photo carried --sh-3 for
+   months and cast nothing: measured 2026-08-17, the background 2px to its
+   right was the same value 44px out, where the player card beside it falls off
+   properly. An element's OWN shadow is not clipped by its own overflow. */
+.hero-photo { position: relative; overflow: hidden; border-radius: var(--r-md);
+              box-shadow: var(--sh-3); transition: box-shadow .25s var(--ease); }
+.hero-photo:hover { box-shadow: var(--sh-4); }
 .hero-photo img { animation: kenburns 26s ease-in-out infinite alternate; will-change: transform; }
 
 /* animated equaliser beside "NOW CYCLING" — a little music signature */
