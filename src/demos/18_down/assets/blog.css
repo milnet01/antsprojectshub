@@ -18,7 +18,10 @@
   background: var(--panel);
   border: 1px solid var(--panel-brd);
   border-radius: var(--r-md);
-  box-shadow: var(--sheen), var(--sh-1);
+  /* --sh-2 at rest, --sh-3 on hover: the same pair every card on the site
+     uses. These were on --sh-1, whose 2px blur does not show against this
+     background, so a page of entries read as flat until the pointer landed. */
+  box-shadow: var(--sheen), var(--sh-2);
   transition: border-color .2s var(--ease), background .2s var(--ease),
               transform .2s var(--ease), box-shadow .2s var(--ease);
 }
@@ -26,8 +29,8 @@
 .post-card:hover {
   border-color: var(--accent-24);
   background: var(--panel-2);
-  transform: translateY(-2px);
-  box-shadow: var(--sheen), var(--sh-2);
+  transform: translateY(-3px);
+  box-shadow: var(--sheen), var(--sh-3);
 }
 
 .post-card h2 {

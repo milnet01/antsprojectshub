@@ -74,9 +74,17 @@
   --sheen:     inset 0 1px 0 rgba(255,255,255,0.055);
 
   /* ---- elevation -------------------------------------------------------- */
+  /* Four steps, and every raised block sits on one of them at REST. Before
+     2026-08-17 only the player and the photo had a visible shadow: the cards
+     were on --sh-1, which at 2px blur is invisible on this background, and
+     the link rows had none at all until hovered. So the page read as one flat
+     sheet with a single object floating on it. Rest --sh-2, hover --sh-3 is
+     the pair for a card; the hero photo is the largest object and runs one
+     step higher, --sh-3 to --sh-4. --sh-1 is kept for small inline chips. */
   --sh-1: 0 1px 2px rgba(0,0,0,0.30);
   --sh-2: 0 12px 32px -12px rgba(0,0,0,0.60);
   --sh-3: 0 34px 76px -24px rgba(0,0,0,0.75);
+  --sh-4: 0 52px 104px -28px rgba(0,0,0,0.85);
 
   /* ---- radius: four steps, applied by role rather than by eye ----------- */
   --r-sm:   8px;    /* inputs, chips, small controls */
@@ -137,7 +145,13 @@ body {
 a { color: var(--accent); text-decoration: none; }
 a:hover, a:focus-visible { color: var(--accent-hi); text-decoration: underline; }
 :focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; border-radius: 3px; }
-img { max-width: 100%; display: block; }
+/* `height: auto` is not optional next to `max-width`. An <img> carrying width
+   and height attributes gets them as real CSS values; max-width then shrinks
+   the WIDTH to fit the column while the height stays pinned at the attribute,
+   and the picture is stretched vertically. The hero was rendering 457x643
+   from a 857x643 file. Anything that sets its own height (the gallery tiles,
+   object-fit: cover) is more specific and is unaffected. */
+img { max-width: 100%; height: auto; display: block; }
 
 .wrap { width: min(var(--wrap), 92%); margin: 0 auto; }
 
@@ -176,12 +190,18 @@ nav.primary a:hover { color: var(--accent-hi); text-decoration: none; }
 .hero-photo img {
   width: 100%; border-radius: var(--r-sm);
   box-shadow: var(--sh-3); border: 1px solid var(--panel-brd);
+  transition: box-shadow .25s var(--ease);
 }
+.hero-photo:hover img { box-shadow: var(--sh-4); }
 .hero-photo figcaption { margin-top: 0.7rem; color: var(--muted); font-size: 0.8rem; font-style: italic; text-align: center; }
 
 /* the cycling song player */
 .player { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: var(--r-lg);
-          padding: 1.3rem 1.3rem 1.5rem; box-shadow: var(--sheen), var(--sh-2); }
+          padding: 1.3rem 1.3rem 1.5rem; box-shadow: var(--sheen), var(--sh-2);
+          transition: box-shadow .25s var(--ease); }
+/* Deliberately no lift on this one. The Spotify player is inside it, so the
+   pointer is usually on its way to a control -- moving the target underfoot. */
+.player:hover { box-shadow: var(--sheen), var(--sh-3); }
 .player-eyebrow { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
 .player-title { margin: 0.35rem 0 1rem; color: var(--heading); font-size: 1.5rem; font-weight: 500; }
 .player-frame { border-radius: var(--r-lg); overflow: hidden; background: #101014; min-height: 152px; }
@@ -208,19 +228,23 @@ nav.primary a:hover { color: var(--accent-hi); text-decoration: none; }
 .links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
 .links a { display: flex; align-items: center; gap: 0.7rem; padding: 0.95rem 1.1rem; color: var(--text);
            background: var(--panel); border: 1px solid var(--panel-brd); border-radius: var(--r-md);
-           box-shadow: var(--sheen);
+           box-shadow: var(--sheen), var(--sh-2);
            transition: border-color .2s var(--ease), background .2s var(--ease),
                        transform .2s var(--ease), box-shadow .2s var(--ease); }
 .links a:hover { text-decoration: none; color: var(--heading); border-color: var(--accent-24);
-                 background: var(--panel-2); transform: translateY(-2px);
-                 box-shadow: var(--sheen), var(--sh-2); }
+                 background: var(--panel-2); transform: translateY(-3px);
+                 box-shadow: var(--sheen), var(--sh-3); }
 .links .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--accent); flex: none; }
 .links .go { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
 
 /* ---- lower row: subscribe + archives ---- */
 .lower { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
 .card { background: var(--panel); border: 1px solid var(--panel-brd); border-radius: var(--r-md);
-        padding: 1.5rem; box-shadow: var(--sheen), var(--sh-1); }
+        padding: 1.5rem; box-shadow: var(--sheen), var(--sh-2);
+        transition: transform .2s var(--ease), box-shadow .2s var(--ease),
+                    border-color .2s var(--ease); }
+.card:hover { transform: translateY(-3px); border-color: var(--accent-24);
+              box-shadow: var(--sheen), var(--sh-3); }
 .card h3 { margin: 0 0 0.9rem; color: var(--heading); font-size: 0.76rem; letter-spacing: 0.16em;
            text-transform: uppercase; font-weight: 600; }
 .card p { margin: 0 0 1rem; color: var(--muted); font-size: 0.9rem; }
