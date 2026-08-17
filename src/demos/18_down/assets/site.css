@@ -291,6 +291,13 @@ footer.site .credit { font-size: 0.8rem; opacity: 0.85; }
   line-height: 0.8; padding: 0.35rem 0.6rem 0 0;
 }
 .prose figure.portrait { margin: 0 0 1.8rem; }
+/* Centre any figure image narrower than the text column. `img` is display:block
+   globally and max-width:100% only CAPS a width -- it never stretches one -- so
+   hero.jpg (640px intrinsic) sat flush left in a 736px column with all the slack
+   on its right, reading as misaligned against the paragraphs below it. Centring
+   rather than stretching: 640px is the only copy of that portrait, and scaling
+   it up to fill the measure would soften the one image of Charl on the page. */
+.prose figure img { margin-inline: auto; }
 .prose figure.portrait img { border-radius: var(--r-md); border: 1px solid var(--panel-brd); box-shadow: var(--sh-2); }
 .prose figure.portrait figcaption { margin-top: 0.6rem; color: var(--muted); font-size: 0.8rem; font-style: italic; text-align: center; }
 .prose .pull {
