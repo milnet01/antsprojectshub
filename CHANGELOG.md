@@ -74,6 +74,24 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Snatch's repository moved, and Local Web Server Manager's description
+  caught up with the app.**
+  The yt-dlp front end was renamed from `ytdlp-gui` to `snatch` upstream,
+  so `src/projects.json` points at `milnet01/snatch` — GitHub's redirect
+  kept the old path working, which is exactly why a stale path can sit
+  unnoticed. Local Web Server Manager's blurb still said there was no
+  usable application; it now describes the window, the keyboard
+  navigation and the eight themes, and says the download is still to
+  come.
+
+- **`marked` 18.0.10, `sanitize-html` 2.17.7, and `nanoid` 3.3.18 through
+  the lockfile.**
+  Routine latest-stable maintenance per `docs/DEPENDENCY_POLICY.md`. The
+  `nanoid` bump clears a high-severity advisory (GHSA-2v37-7h3g-55p8);
+  it reaches us three levels down, through `sanitize-html` → `postcss`,
+  and like every dependency here it is build-time only and never ships
+  to a visitor.
+
 - **Project pages state what the project is, and stop printing "0 downloads".**
   The tagline now appears under the title. Before this the page went
   straight from a two-word name to the download buttons, and the only
