@@ -641,7 +641,7 @@ a.card:hover .card__name {
   color: var(--text-muted);
 }
 
-/* Changelog + README prose */
+/* Changelog + About prose */
 .panel {
   margin: 1.5rem 0;
   padding: 1.1rem 1.25rem;
@@ -659,6 +659,7 @@ a.card:hover .card__name {
 }
 .prose h2 { font-size: 1.4rem; margin-top: 1.8rem; }
 .prose h3 { font-size: 1.15rem; margin-top: 1.5rem; }
+.prose h4 { font-size: 1rem; margin-top: 1.35rem; }
 .prose h2, .prose h3, .prose h4 { color: #fff; line-height: 1.3; }
 .prose a { color: var(--teal); }
 .prose code {
@@ -918,31 +919,31 @@ a.card:hover .card__name {
   right: clamp(0.5rem, 2.5vw, 1.75rem);
 }
 
-/* ---- Mirrored fading brackets on the README / changelog panels ----
+/* ---- Mirrored fading brackets on the About / changelog panels ----
    Each panel drops its uniform border for an L-shaped accent that fades out:
-   README anchors top-LEFT (teal), changelog mirrors it top-RIGHT (violet).
+   About anchors top-LEFT (teal), changelog mirrors it top-RIGHT (violet).
    The frosted fill still bounds the panel; the bracket is pure decoration. */
-.panel--readme,
+.panel--about,
 .panel--changelog {
   position: relative;
   border: none;
 }
-.panel--readme::before,
-.panel--readme::after,
+.panel--about::before,
+.panel--about::after,
 .panel--changelog::before,
 .panel--changelog::after {
   content: "";
   position: absolute;
   pointer-events: none;
 }
-.panel--readme::before {
+.panel--about::before {
   top: 0;
   left: 0;
   right: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--teal), transparent 72%);
 }
-.panel--readme::after {
+.panel--about::after {
   top: 0;
   left: 0;
   bottom: 0;
@@ -985,7 +986,7 @@ a.card:hover .card__name {
 }
 /* Expanded: drop the fade so the lede flows into the rest. :has() unsupported →
    the fade simply stays (cosmetic only; all text remains readable). */
-.panel--readme:has(.reveal[open]) .reveal__lede::after {
+.panel--about:has(.reveal[open]) .reveal__lede::after {
   opacity: 0;
 }
 .reveal {
@@ -1270,6 +1271,90 @@ a.card:hover .card__name {
   font-size: clamp(1.02rem, 2.4vw, 1.15rem);
   line-height: 1.55;
   color: var(--text-muted);
+}
+
+/* ---- Project page: "Full changelog →" under the latest release notes ---- */
+.panel__more {
+  margin: 1.1rem 0 0;
+  text-align: right;
+}
+/* The release date beside "What's new · 1.4.0". Dimmer and lighter than the version,
+   so the heading still reads as the version first and the date second. */
+.rel__date {
+  display: block;
+  margin: 0.15rem 0 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- The per-project changelog page ----
+   One entry per release, newest first, each a violet-railed block — violet because that
+   is the accent the "What's new" panel already owns on the project page, so the page a
+   visitor arrives at from it is visibly the same subject. Colour is wayfinding only:
+   what marks a release as a pre-release is the word "Pre-release", not the amber. */
+.changelog {
+  margin: 1.5rem 0;
+}
+.rel {
+  position: relative;
+  margin: 0 0 1.25rem;
+  padding: 1.1rem 1.25rem 1.1rem 1.5rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  scroll-margin-top: 1.25rem;
+}
+/* The rail, fading down the block. Decoration — it carries no meaning of its own. */
+.rel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: var(--radius) 0 0 var(--radius);
+  background: linear-gradient(180deg, var(--violet), transparent 78%);
+  pointer-events: none;
+}
+.rel__v {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  line-height: 1.25;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.rel__pre {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+/* A release whose GitHub title says something beyond the version number. */
+.rel__title {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+  font-size: 1.02rem;
+}
+.rel .prose {
+  margin-top: 0.9rem;
+}
+/* Nothing was written up for this version. Said plainly rather than left blank, so the
+   gap reads as "no notes" instead of "the page failed to load". */
+.rel__empty {
+  color: var(--text-dim);
+  font-style: italic;
 }
 
 /* ---- Motion: static unless the user allows motion ---- */

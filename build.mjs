@@ -1,8 +1,14 @@
 // Ants Projects Hub — static site generator.
-// Reads src/projects.json, enriches published projects from GitHub (README + latest
-// release), and writes dist/. A single project's GitHub failure uses its fallback and
-// never aborts the build. Runs in CI (authenticated via GITHUB_TOKEN) or locally
-// (unauthenticated; offline → fallbacks).
+// Reads src/projects.json plus the hand-written About copy in src/about/, enriches
+// published projects with their GitHub release history, and writes dist/. A single
+// project's GitHub failure uses its fallback and never aborts the build. Runs in CI
+// (authenticated via GITHUB_TOKEN) or locally (unauthenticated; offline → fallbacks).
+//
+// The prose a visitor reads is OURS: About copy comes from src/about/<slug>.md and the
+// changelog is rendered onto this site in full, so a visitor never has to leave for
+// GitHub to find out what a project is or what changed in it. What still points at
+// GitHub is what only GitHub can serve — the release binaries, the issue tracker, and
+// credit to the upstream of a fork.
 
 import { readFile, writeFile, mkdir, rm, cp, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
@@ -12,6 +18,7 @@ import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 import { basePage, esc, ORIGIN, setAssetVersion } from "./lib/templates.mjs";
 import { loadPosts, excerpt } from "./lib/posts.mjs";
+import { loadAbout } from "./lib/about.mjs";
 import {
   ghJson,
   assetPlatform,
@@ -47,10 +54,30 @@ const STATUS_ORDER = { live: 0, beta: 1, wip: 2, soon: 3 };
 
 const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
 // Releases LIST page — always valid and shows pre-releases too (unlike /releases/latest,
-// whose web page 404s for a repo that only has pre-releases).
+// whose web page 404s for a repo that only has pre-releases). Kept for the download
+// FALLBACK button, where the target is a file to fetch; a visitor who wants to READ the
+// history is sent to changelogPath() on this site instead.
 const releasesUrl = (repo) => `https://github.com/${repo}/releases`;
 const repoUrl = (repo) => `https://github.com/${repo}`;
 const issuesUrl = (repo) => `https://github.com/${repo}/issues`;
+// This site's own changelog for a project. A sibling directory of /p/<slug>.html rather
+// than a second flat file, so a project can grow further pages later without the /p/
+// directory turning into a pile of <slug>-<thing>.html.
+const changelogPath = (p) => `/p/${p.slug}/changelog.html`;
+
+// Release dates read as "14 August 2026" — spelled out, because 08/14 and 14/08 are the
+// same six characters and mean different days either side of the Atlantic.
+const DATE_FMT = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+function dateLabel(iso) {
+  if (!iso) return "";
+  const d = new Date(`${iso}T00:00:00Z`);
+  return Number.isNaN(d.getTime()) ? "" : DATE_FMT.format(d);
+}
 
 function computeStats(projects) {
   return {
@@ -125,7 +152,10 @@ function renderSupport(support) {
     </section>`;
 }
 
-// Shift README headings down one level so the page keeps a single <h1>.
+// Shift release-note headings down one level. Every place notes are rendered sits
+// under a section <h2> already — the "What's new" panel and each entry on the changelog
+// page — so a note opening with "# 1.4.0" would otherwise emit a second <h1> and break
+// the heading order a screen reader navigates by.
 function demoteHeadings(html) {
   for (let n = 5; n >= 1; n--) {
     const to = n + 1;
@@ -136,10 +166,11 @@ function demoteHeadings(html) {
   return html;
 }
 
-// One sanitiser config shared by the README and release-note paths, so the allowlist
-// can never drift between them. README content is UNTRUSTED (third-party fork READMEs
-// included), so the allowlist is tight: no script/style/iframe, no event handlers, no
-// javascript:/data: URLs, no protocol-relative links.
+// Sanitiser config for release notes. Notes are UNTRUSTED — a fork's upstream writes
+// some of them, and anyone with push access to a repo writes the rest — so the allowlist
+// is tight: no script/style/iframe, no event handlers, no javascript:/data: URLs, no
+// protocol-relative links. This is deliberately NOT the allowlist lib/about.mjs and
+// lib/posts.mjs use for our own in-repo copy, which may link internally.
 const ALLOWED_TAGS = [
   "h1", "h2", "h3", "h4", "h5", "h6", "p", "a", "ul", "ol", "li",
   "blockquote", "pre", "code", "em", "strong", "del", "hr", "br",
@@ -185,42 +216,134 @@ function sanitizeOptions({ rawBase, blobBase } = {}) {
   };
 }
 
-async function fetchReadmeHtml(repo) {
-  const data = await ghJson(`/repos/${repo}/readme`);
-  if (!data || !data.content || !data.download_url) return null;
-  let md;
+// Most projects keep a CHANGELOG.md, and it is usually the better text: a GitHub release
+// is often cut with an empty body (24 of this site's 180 releases have one, and OneUp's
+// are empty to the last), while the changelog file is written deliberately. Two projects
+// keep one and have cut no GitHub release at all, so without this their history is only
+// readable in the repo — the exact trip this page exists to remove.
+//
+// Keep-a-Changelog shape: `## [1.4.5] - 2026-08-19`, running until the next `## `. The
+// [Unreleased] section is skipped — it describes work that has not shipped, and putting
+// it on a public page beside shipped versions reads as a release that exists.
+async function fetchChangelogSections(repo, notesBase) {
+  const out = new Map();
+  const data = await ghJson(`/repos/${repo}/contents/CHANGELOG.md`).catch(() => null);
+  if (!data || !data.content) return out;
+  let text;
   try {
-    md = Buffer.from(data.content, data.encoding || "base64").toString("utf8");
+    text = Buffer.from(data.content, data.encoding || "base64").toString("utf8");
   } catch {
-    return null;
+    return out;
   }
-  // download_url: https://raw.githubusercontent.com/<owner>/<repo>/<branch>/README.md
-  const rawBase = data.download_url.replace(/[^/]*$/, ""); // strip filename → dir
-  let blobBase = rawBase;
-  const m = data.download_url.match(
-    /raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\//
-  );
-  if (m) blobBase = `https://github.com/${m[1]}/${m[2]}/blob/${m[3]}/`;
-  const rendered = marked.parse(md, { gfm: true });
-  return demoteHeadings(sanitizeHtml(rendered, sanitizeOptions({ rawBase, blobBase })));
+  // Split on level-2 headings, keeping each heading with the body that follows it.
+  const parts = text.split(/^##[ \t]+/m).slice(1);
+  for (const part of parts) {
+    const nl = part.indexOf("\n");
+    const heading = (nl < 0 ? part : part.slice(0, nl)).trim();
+    const body = nl < 0 ? "" : part.slice(nl + 1);
+    // `[1.4.5] - 2026-08-19`, `1.4.5 - 2026-08-19`, or a bare version.
+    const m = /^\[?v?([0-9][^\]\s]*)\]?(?:\s*[-–—]\s*(\d{4}-\d{2}-\d{2}))?/.exec(heading);
+    if (!m) continue; // [Unreleased] and any prose heading fall out here
+    if (!body.trim()) continue;
+    out.set(normalizeVersion(m[1]), {
+      dateISO: m[2] || "",
+      html: demoteHeadings(sanitizeHtml(marked.parse(body.trim(), { gfm: true }), sanitizeOptions(notesBase))),
+    });
+  }
+  return out;
 }
 
-async function fetchRelease(repo) {
-  // Prefer the newest *stable* release — never hand visitors a release-candidate/preview
-  // download. RCs are transient: GitHub deletes them when the final ships, leaving a dead
-  // 404 link (the exact symptom that motivated this). The list endpoint (newest first,
-  // pre-releases included) lets us fall back to a prerelease only for projects that have
-  // *only ever* shipped prereleases, so they still get a download rather than none. Skip
-  // drafts entirely — they're visible only to push-access tokens, never to the public.
-  // per_page=100 (not 10) so the cumulative download tally below sees every release, not
-  // just the most recent handful — the counts are meant to be all-time totals.
-  const list = await ghJson(`/repos/${repo}/releases?per_page=100`);
+// A release tag and a changelog heading spell the same version differently often enough
+// to matter — `v1.4.5` against `1.4.5` is the common pair — so both go through this
+// before they are compared.
+const normalizeVersion = (v) => String(v).trim().replace(/^v/i, "").toLowerCase();
+
+// The site renders a project's WHOLE release history, so this returns every non-draft
+// release, not just the newest. It costs nothing extra: the download tallies below
+// already needed the full list, and the notes for each release come down in the same
+// response. `latest` is the one the download buttons and the "What's new" panel use;
+// `history` is what the on-site changelog page is built from.
+// Returns { release, history }. They are separate on purpose: `release` is the newest
+// stable release and drives the download buttons and the version pill, so it is null
+// when a project has cut none — while `history` is every version the site can show and
+// may be populated from CHANGELOG.md alone. Two projects here are in exactly that state.
+async function fetchReleases(repo) {
+  // Relative links and images in a note resolve against the repo they were written in.
+  // "HEAD" rather than a branch name because the default branch would cost another API
+  // call to learn, and GitHub resolves HEAD to it for both hosts.
+  const notesBase = {
+    rawBase: `https://raw.githubusercontent.com/${repo}/HEAD/`,
+    blobBase: `https://github.com/${repo}/blob/HEAD/`,
+  };
+
+  // Prefer the newest *stable* release for `release` — never hand visitors a release-
+  // candidate/preview download. RCs are transient: GitHub deletes them when the final
+  // ships, leaving a dead 404 link (the exact symptom that motivated this). The list
+  // endpoint (newest first, pre-releases included) lets us fall back to a prerelease
+  // only for projects that have *only ever* shipped prereleases, so they still get a
+  // download rather than none. Skip drafts entirely — they're visible only to push-
+  // access tokens, never to the public. per_page=100 (not 10) so the tally and the
+  // changelog see every release, not just the most recent handful.
+  const [list, sections] = await Promise.all([
+    ghJson(`/repos/${repo}/releases?per_page=100`),
+    fetchChangelogSections(repo, notesBase),
+  ]);
   const nonDraft = Array.isArray(list) ? list.filter((r) => !r.draft) : [];
+
+  // GitHub appends "**Full Changelog**: <compare URL>" to notes generated from its own
+  // Releases UI — 52 of them across this site's projects, each rendering as a bare URL
+  // used as its own link text. On GitHub it is the way to reach the previous release;
+  // here the previous release is the next block down the page, so the line is both
+  // redundant and the one remaining thing sending a reader back for their own history.
+  //
+  // Matched as a whole LINE and globally, not anchored to the end of the body: some
+  // notes carry the trailer twice over, so stripping only the last one leaves the other
+  // sitting there. Anchoring per-line also means a sentence that merely mentions a
+  // compare URL in passing is left alone. Both URL shapes are covered — a first release
+  // has nothing to compare against, so GitHub points it at /commits/<tag> instead.
+  const stripCompareTrailer = (body) =>
+    body
+      .replace(
+        /^[ \t]*\*\*Full Changelog\*\*:[ \t]*<?https:\/\/github\.com\/\S+\/(?:compare|commits)\/\S+?>?[ \t]*\r?$/gim,
+        ""
+      )
+      .replace(/\n{3,}/g, "\n\n");
+
+  const renderNotes = (body) => {
+    const md = body ? stripCompareTrailer(body).trim() : "";
+    return md ? demoteHeadings(sanitizeHtml(marked.parse(md, { gfm: true }), sanitizeOptions(notesBase))) : "";
+  };
+  // A release's own notes win; CHANGELOG.md fills in for the ones cut with an empty body.
+  const notesFor = (tag, body) => renderNotes(body) || sections.get(normalizeVersion(tag))?.html || "";
+
+  // Every version the page can show, newest first. Releases come first because they carry
+  // a real publication date and a prerelease flag; a version that exists only in
+  // CHANGELOG.md is folded in afterwards, so a project with no releases still gets a
+  // history and one with both never lists a version twice.
+  const seen = new Set();
+  const history = [];
+  for (const r of nonDraft) {
+    if (!r.tag_name) continue;
+    seen.add(normalizeVersion(r.tag_name));
+    history.push({
+      version: r.tag_name,
+      title: r.name && r.name !== r.tag_name ? r.name : "",
+      prerelease: Boolean(r.prerelease),
+      dateISO: r.published_at ? r.published_at.slice(0, 10) : "",
+      notesHtml: notesFor(r.tag_name, r.body),
+    });
+  }
+  for (const [version, sec] of sections) {
+    if (seen.has(version)) continue;
+    history.push({ version, title: "", prerelease: false, dateISO: sec.dateISO, notesHtml: sec.html });
+  }
+  // Sort by date, newest first, so a CHANGELOG-only version lands among the releases
+  // rather than in a clump at the end. Undated entries keep the order they arrived in.
+  history.sort((a, b) => (b.dateISO || "").localeCompare(a.dateISO || ""));
+
   const data = pickLatestRelease(nonDraft);
-  if (!data || !data.tag_name) return null;
-  const notesHtml = data.body
-    ? sanitizeHtml(marked.parse(data.body, { gfm: true }), sanitizeOptions())
-    : "";
+  if (!data || !data.tag_name) return { release: null, history };
+
   const assets = Array.isArray(data.assets)
     ? data.assets.map((a) => ({ name: a.name, url: a.browser_download_url }))
     : [];
@@ -234,7 +357,17 @@ async function fetchRelease(repo) {
       if (pl) downloads[pl] += a.download_count || 0;
     }
   }
-  return { version: data.tag_name, notesHtml, assets, downloads };
+
+  return {
+    release: {
+      version: data.tag_name,
+      notesHtml: notesFor(data.tag_name, data.body),
+      dateISO: data.published_at ? data.published_at.slice(0, 10) : "",
+      assets,
+      downloads,
+    },
+    history,
+  };
 }
 
 // No-release repos always fall back to the repo home (never a guessed upstream
@@ -447,18 +580,18 @@ function renderVideo(p) {
     </section>`;
 }
 
-// How much README to show before the reveal, in characters of visible text, and how
-// small a tail has to be before hiding it is not worth a click. The budget is what it
-// is because splitting at the first section heading — which this used to do — showed
-// 163 characters of DOOM Ants' 6,485 and 202 of OneUp's 8,487: about 2%, so a visitor
-// saw the project name, one sentence and a button. Anything shorter than the budget is
-// shown whole with no reveal at all, which covers most projects outright.
-const README_BUDGET = 4000;
-const README_TAIL_MIN = 400;
+// How much About copy to show before the reveal, in characters of visible text, and
+// how small a tail has to be before hiding it is not worth a click. Anything shorter
+// than the budget is shown whole with no reveal at all, which is most projects: the
+// copy in src/about/ is written to be read, so it is short enough that hiding half of
+// it would be the wrong instinct. The reveal is here for the few engine-sized entries
+// that genuinely run long, and it no-ops for everything else.
+const ABOUT_BUDGET = 4000;
+const ABOUT_TAIL_MIN = 400;
 
 const textLength = (html) => html.replace(/<[^>]+>/g, "").length;
 
-// Cut the rendered README into its top-level blocks (<p>, <ul>, <h2>, <table>, …), so a
+// Cut the rendered About copy into its top-level blocks (<p>, <ul>, <h2>, <table>, …), so a
 // split can only ever land BETWEEN two of them. Splitting anywhere else — at the first
 // </p> found by a regex, say — lands inside a list or a blockquote and leaves both
 // halves with unbalanced tags. Depth tracking is what keeps a nested </p> from counting.
@@ -488,24 +621,24 @@ function topLevelBlocks(html) {
   return blocks;
 }
 
-// Split the rendered README into an always-visible opening and a remainder tucked behind
-// a no-JS <details> reveal. Returns the whole thing with no reveal when the README fits
-// the budget, or when what would be hidden is too small to be worth a click.
-function splitReadme(html) {
+// Split the rendered About copy into an always-visible opening and a remainder tucked
+// behind a no-JS <details> reveal. Returns the whole thing with no reveal when the copy
+// fits the budget, or when what would be hidden is too small to be worth a click.
+function splitAbout(html) {
   const blocks = topLevelBlocks(html);
   let used = 0;
   let i = 0;
-  while (i < blocks.length && used < README_BUDGET) {
+  while (i < blocks.length && used < ABOUT_BUDGET) {
     used += textLength(blocks[i]);
     i++;
   }
   const rest = blocks.slice(i).join("");
-  if (textLength(rest) < README_TAIL_MIN) return { lede: html, rest: "" };
+  if (textLength(rest) < ABOUT_TAIL_MIN) return { lede: html, rest: "" };
   return { lede: blocks.slice(0, i).join(""), rest };
 }
 
-function readmePanel(p, readmeHtml) {
-  const { lede, rest } = splitReadme(readmeHtml);
+function aboutPanel(p, aboutHtml) {
+  const { lede, rest } = splitAbout(aboutHtml);
   const inner = rest
     ? `<div class="prose reveal__lede">${lede}</div>
         <details class="reveal">
@@ -513,23 +646,56 @@ function readmePanel(p, readmeHtml) {
           <div class="prose">${rest}</div>
         </details>`
     : `<div class="prose">${lede}</div>`;
-  return `<section class="panel panel--readme" id="about" aria-labelledby="readme-h">
-        <h2 class="section-label" id="readme-h">About ${esc(p.name)}</h2>
+  return `<section class="panel panel--about" id="about" aria-labelledby="about-h">
+        <h2 class="section-label" id="about-h">About ${esc(p.name)}</h2>
         ${inner}
       </section>`;
 }
 
-function changelogPanel(p, release) {
+// The latest release's notes, on the project page. The link below them goes to this
+// site's own changelog page for the project — not to GitHub's releases list, which is
+// where it used to send people to read the rest of their own history.
+function changelogPanel(p, release, history) {
+  const older = history.length - 1;
+  const more =
+    older > 0
+      ? `<p class="panel__more"><a class="btn btn--ghost" href="${esc(
+          changelogPath(p)
+        )}">Full changelog · ${older} earlier release${older === 1 ? "" : "s"} →</a></p>`
+      : "";
   return `<section class="panel panel--changelog" id="whatsnew" aria-labelledby="cl-h">
-        <h2 class="section-label" id="cl-h">What's new · ${esc(release.version)}</h2>
-        <div class="prose">${release.notesHtml || "<p>See the release on GitHub.</p>"}</div>
-        <p><a href="${esc(
-          releasesUrl(p.repo)
-        )}" target="_blank" rel="noopener noreferrer">All releases on GitHub →</a></p>
+        <h2 class="section-label" id="cl-h">What's new · ${esc(release.version)}${
+          release.dateISO ? ` <span class="rel__date">${esc(dateLabel(release.dateISO))}</span>` : ""
+        }</h2>
+        <div class="prose">${
+          release.notesHtml || "<p>This release shipped without written notes.</p>"
+        }</div>
+        ${more}
       </section>`;
 }
 
-function projectPage(p, { readmeHtml, release }) {
+// The "What's new" panel for a project that keeps a changelog but has cut no release.
+// It leads with the newest version in that file rather than a release tag, because there
+// is no tag — and it says "version" rather than implying a download exists.
+function changelogFilePanel(p, history) {
+  const newest = history[0];
+  const older = history.length - 1;
+  const more =
+    older > 0
+      ? `<p class="panel__more"><a class="btn btn--ghost" href="${esc(
+          changelogPath(p)
+        )}">Full changelog · ${older} earlier version${older === 1 ? "" : "s"} →</a></p>`
+      : "";
+  return `<section class="panel panel--changelog" id="whatsnew" aria-labelledby="cl-h">
+        <h2 class="section-label" id="cl-h">What's new · ${esc(newest.version)}${
+          newest.dateISO ? ` <span class="rel__date">${esc(dateLabel(newest.dateISO))}</span>` : ""
+        }</h2>
+        <div class="prose">${newest.notesHtml}</div>
+        ${more}
+      </section>`;
+}
+
+function projectPage(p, { aboutHtml, release, history = [] }) {
   const published = isPublished(p);
   const hasRelease = Boolean(release);
   const fork =
@@ -542,33 +708,31 @@ function projectPage(p, { readmeHtml, release }) {
     ? `<span class="version">Latest: <strong>${esc(release.version)}</strong></span>`
     : "";
 
-  let body;
-  if (!published) {
-    // Most "soon" projects have no repo yet; finbreak and any future ones with a public
-    // repo get a real "follow development" link instead of a dead GitHub mention.
-    const follow = p.repo
-      ? ` <a href="${esc(
-          repoUrl(p.repo)
-        )}" target="_blank" rel="noopener noreferrer">Follow development on GitHub →</a>`
+  // Every project has About copy, published or not — an unreleased project is exactly
+  // the one a visitor knows least about, so telling them only "coming soon" wasted the
+  // page. The notice sits ABOVE the copy rather than replacing it.
+  const soon = !published
+    ? `<div class="callout"><strong>Coming soon.</strong> This project isn't published for
+        download yet — check back soon.${
+          p.repo
+            ? ` <a href="${esc(
+                repoUrl(p.repo)
+              )}" target="_blank" rel="noopener noreferrer">Follow development on GitHub →</a>`
+            : ""
+        }</div>`
+    : "";
+  // About first, then the changelog ("What's new") — newcomers read what the project is
+  // before what changed last release.
+  // A project with no release can still have a changelog — two here keep a CHANGELOG.md
+  // and have cut none — so the panel keys on having history, not on having a download.
+  const whatsNew = hasRelease
+    ? changelogPanel(p, release, history)
+    : history.length
+      ? changelogFilePanel(p, history)
       : "";
-    body = `<div class="callout"><strong>Coming soon.</strong> ${esc(
-      p.blurb
-    )} This project isn't published for download yet — check back soon.${follow}</div>`;
-  } else if (readmeHtml) {
-    // README ("About") first, then the changelog ("What's new") — newcomers read what
-    // the project is before what changed last release.
-    const whatsNew = hasRelease
-      ? changelogPanel(p, release)
-      : `<p><a class="btn btn--ghost" href="${esc(
-          releasesUrl(p.repo)
-        )}" target="_blank" rel="noopener noreferrer">Latest release on GitHub →</a></p>`;
-    body = `${readmePanel(p, readmeHtml)}
+  const body = `${soon}
+      ${aboutPanel(p, aboutHtml)}
       ${whatsNew}`;
-  } else {
-    body = `<div class="callout">${esc(
-      p.blurb
-    )} <a href="${esc(repoUrl(p.repo))}" target="_blank" rel="noopener noreferrer">Read more on GitHub →</a></div>`;
-  }
 
   // The demo video then the screenshots lead the page (the hook), then the body — a
   // moving tour beats a still, and a still beats prose. Jump nav only links to sections
@@ -578,10 +742,8 @@ function projectPage(p, { readmeHtml, release }) {
   const navTargets = [];
   if (videoHtml) navTargets.push(["demo", "Demo"]);
   if (shotsHtml) navTargets.push(["screenshots", "Screenshots"]);
-  if (published && readmeHtml) {
-    navTargets.push(["about", "About"]);
-    if (hasRelease) navTargets.push(["whatsnew", "What's new"]);
-  }
+  navTargets.push(["about", "About"]);
+  if (whatsNew) navTargets.push(["whatsnew", "What's new"]);
   const jump =
     navTargets.length >= 2
       ? `<nav class="jump" aria-label="Jump to a section">${navTargets
@@ -591,7 +753,7 @@ function projectPage(p, { readmeHtml, release }) {
 
   // The tagline is the page's own one-line answer to "what is this?" — without it the
   // page jumped from a two-word title straight to the download buttons, and the only
-  // description a visitor got was whatever the README's first line happened to be.
+  // description a visitor got was whatever the About copy opened with.
   const content = `
     <section class="detail-head">
       <p class="kicker">${esc(STATUS[p.status]?.label || "")}${
@@ -615,6 +777,59 @@ function projectPage(p, { readmeHtml, release }) {
     section: "projects",
     back: { href: "/", label: "All projects" },
     lightbox: Boolean(shotsHtml),
+  });
+}
+
+// One project's whole release history, on this site. This page is the reason the build
+// keeps every release rather than only the newest: the "All releases on GitHub →" link
+// it replaced was the last place a visitor had to leave the site to read something we
+// already had in hand.
+//
+// Each entry is a heading a URL can point at (#v1-4-0), so a release note elsewhere —
+// a blog post, an issue reply — can link straight to the version it is talking about.
+function changelogPage(p, history) {
+  const anchorFor = (v) => `v${String(v).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+
+  const entries = history
+    .map((r) => {
+      const tag = r.prerelease ? `<span class="rel__pre">Pre-release</span>` : "";
+      const date = r.dateISO
+        ? `<time class="rel__date" datetime="${esc(r.dateISO)}">${esc(dateLabel(r.dateISO))}</time>`
+        : "";
+      const subtitle = r.title ? `<p class="rel__title">${esc(r.title)}</p>` : "";
+      return `      <article class="rel" id="${esc(anchorFor(r.version))}">
+        <h2 class="rel__v">${esc(r.version)}${tag}</h2>
+        ${date}
+        ${subtitle}
+        <div class="prose">${
+          r.notesHtml || "<p class=\"rel__empty\">This release shipped without written notes.</p>"
+        }</div>
+      </article>`;
+    })
+    .join("\n");
+
+  const n = history.length;
+  const content = `
+    <section class="detail-head">
+      <p class="kicker">Changelog</p>
+      <h1>${esc(p.name)}</h1>
+      <p class="detail-tagline">Every release, newest first — ${n} in total.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="/p/${esc(p.slug)}.html">Back to ${esc(p.name)}</a>
+        ${ext(issuesUrl(p.repo), "Report an issue", "btn btn--ghost")}
+      </div>
+    </section>
+    <div class="changelog">
+${entries}
+    </div>`;
+
+  return basePage({
+    title: `${p.name} changelog`,
+    description: `Release notes for every version of ${p.name}.`,
+    canonical: `${ORIGIN}${changelogPath(p)}`,
+    content,
+    section: "projects",
+    back: { href: `/p/${p.slug}.html`, label: p.name },
   });
 }
 
@@ -751,9 +966,11 @@ async function main() {
   const data = JSON.parse(await readFile(join(ROOT, "src/projects.json"), "utf8"));
   const { projects, support } = data;
 
-  // Posts are read before anything is written: a malformed post should fail the build
-  // before dist/ is wiped, not halfway through generating it.
+  // In-repo content is read before anything is written: a malformed post, or a project
+  // whose About copy was never written, should fail the build before dist/ is wiped —
+  // not halfway through generating it, which would leave a half-built site behind.
   const posts = await loadPosts(join(ROOT, "src/posts"));
+  const about = await loadAbout(join(ROOT, "src/about"), projects);
   const bySlug = new Map(projects.map((p) => [p.slug, p]));
 
   await rm(DIST, { recursive: true, force: true });
@@ -782,26 +999,36 @@ async function main() {
   const cssBytes = await readFile(join(ROOT, "src/assets/style.css"));
   setAssetVersion(createHash("sha256").update(cssBytes).digest("hex").slice(0, 8));
 
-  // Project pages (enrich published ones; fallbacks never abort the build). Collect each
-  // project's release so the landing cards below can show the latest version.
+  // Project pages. The About copy is already in hand (in-repo, and a missing one has
+  // failed the build long before here); only the release history is fetched, and a
+  // GitHub failure there costs the changelog and the version, never the page.
   let enriched = 0;
   const releases = new Map();
+  const histories = new Map();
   for (const p of projects) {
-    let readmeHtml = null;
     let release = null;
+    let history = [];
     if (isPublished(p)) {
       try {
-        [readmeHtml, release] = await Promise.all([
-          fetchReadmeHtml(p.repo),
-          fetchRelease(p.repo),
-        ]);
-        if (readmeHtml) enriched++;
+        ({ release, history } = await fetchReleases(p.repo));
+        if (history.length) enriched++;
       } catch (err) {
-        console.warn(`! ${p.slug}: enrichment failed (${err.message}) — using fallback`);
+        console.warn(`! ${p.slug}: release fetch failed (${err.message}) — using fallback`);
       }
     }
     releases.set(p.slug, release);
-    await writeFile(join(DIST, "p", `${p.slug}.html`), projectPage(p, { readmeHtml, release }));
+    histories.set(p.slug, history);
+    await writeFile(
+      join(DIST, "p", `${p.slug}.html`),
+      projectPage(p, { aboutHtml: about.get(p.slug), release, history })
+    );
+    // The project's own changelog, so its history is readable without leaving the site.
+    // Keyed on history rather than on a release: a project can keep a CHANGELOG.md and
+    // have cut no release, and that history is exactly the one nobody else is showing.
+    if (history.length > 1) {
+      await mkdir(join(DIST, "p", p.slug), { recursive: true });
+      await writeFile(join(DIST, "p", p.slug, "changelog.html"), changelogPage(p, history));
+    }
   }
 
   // Blog: index, one directory per post (so its URL is /blog/<slug>/), and the feed.
@@ -840,6 +1067,13 @@ async function main() {
   );
   const urls = [`${ORIGIN}/`]
     .concat(projects.filter(isPublished).map((p) => `${ORIGIN}/p/${p.slug}.html`))
+    // Only projects that actually got a release history have a changelog page written.
+    // Only projects whose history was long enough to earn a page of its own.
+    .concat(
+      projects
+        .filter((p) => (histories.get(p.slug) || []).length > 1)
+        .map((p) => `${ORIGIN}${changelogPath(p)}`)
+    )
     .concat(posts.length ? [`${ORIGIN}/blog/`] : [])
     .concat(posts.map((post) => `${ORIGIN}${post.url}`));
   await writeFile(
@@ -850,7 +1084,7 @@ async function main() {
   );
 
   console.log(
-    `Built ${projects.length} projects (${enriched} enriched from GitHub${
+    `Built ${projects.length} projects (${enriched} with a changelog${
       hasToken ? ", authenticated" : ", unauthenticated"
     }) and ${posts.length} blog post${posts.length === 1 ? "" : "s"} → dist/`
   );

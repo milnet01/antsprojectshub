@@ -1,15 +1,19 @@
 # Ants Projects Hub
 
 Source for **[antsprojectshub.co.za](https://antsprojectshub.co.za)** — a static
-showcase site for my projects. Each project page pulls its README, latest version and
-downloads straight from GitHub at build time, so it stays current with no manual upkeep.
+showcase site for my projects. The site is meant to be a one-stop shop: what a visitor
+*reads* is here, and only what GitHub alone can serve — the download files, the issue
+tracker, credit to a fork's upstream — still links there.
 
 ## How it works
 
-- **`src/projects.json`** — the one file you edit. Every project (and the support
-  links) lives here.
-- **`build.mjs`** — reads that file, fetches each published project's README + latest
-  release from GitHub, and writes finished static HTML into `dist/`.
+- **`src/projects.json`** — the project list: status, platforms, repo, screenshots.
+- **`src/about/<slug>.md`** — the hand-written About section for one project. Every
+  project needs one; the build fails and names the slug if it is missing. See
+  [`src/about/README.md`](src/about/README.md) for what goes in one.
+- **`build.mjs`** — reads both, fetches each published project's release history and
+  changelog from GitHub, and writes finished static HTML into `dist/` — a page per
+  project plus a full on-site changelog for each.
 - **`.github/workflows/deploy.yml`** — on every push to `main` and once a day, GitHub
   Actions runs the build and deploys `dist/` to GitHub Pages.
 
@@ -19,7 +23,8 @@ You never run the build by hand — pushing is enough.
 
 | I want to… | Do this |
 |---|---|
-| Add a project | Add one entry to `projects` in `src/projects.json` |
+| Add a project | Add one entry to `projects` in `src/projects.json`, **and** write `src/about/<slug>.md` |
+| Reword a project's About | Edit `src/about/<slug>.md` |
 | Publish a "coming soon" project | Set its `repo` and change `status` from `"soon"` |
 | Add a support link | Fill in a `url` in the `support` array |
 | Re-skin the site | Edit the `:root` tokens at the top of `src/assets/style.css` |

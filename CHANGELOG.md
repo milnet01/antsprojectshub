@@ -11,6 +11,19 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **A full changelog for every project, on this site — `/p/<slug>/changelog.html`.**
+  Every release, newest first, with its notes and date, and an anchor per
+  version so a release can be linked to directly. "What's new" on the
+  project page now links there instead of to "All releases on GitHub →".
+  It costs no extra API calls: the build already downloaded every release
+  to tally the download counts, and threw the notes away.
+
+  Where a release was cut with an empty body — 24 of 180 here, including all
+  11 of OneUp's — the notes are taken from the repo's `CHANGELOG.md`,
+  matched by version. A project that keeps a changelog but has cut no
+  release gets a history too. Where neither exists the page says so plainly
+  rather than hiding the version.
+
 - **Client demo previews — anything in `src/demos/` is published at `/<name>/`.**
   A self-contained static site dropped into `src/demos/<name>/` is copied
   verbatim to `/<name>/` at build time, so a client can see work in
@@ -73,6 +86,25 @@ so dated sections stand in for versions. Planned work lives in
   figures.
 
 ### Changed
+
+- **Only what GitHub alone can serve still links to GitHub.**
+  That is the release binaries, the issue tracker, and credit to a fork's
+  upstream. Everything a visitor reads is now on this site. GitHub's own
+  "**Full Changelog**: <compare URL>" trailer is stripped from release
+  notes — 54 of them, each rendering as a bare URL used as its own link
+  text, and each pointing back out for history the page already shows.
+
+- **The About section on every project page is hand-written, and no longer the project's GitHub README.**
+  A README is written for someone who has already decided to clone the repo:
+  it opens with badges, build flags and a licence, and buries what the thing
+  actually does. It also changed the page's shape whenever the repo was
+  edited. Each project now has `src/about/<slug>.md` — written for a visitor
+  who has just arrived — and the build no longer fetches READMEs at all. All
+  19 projects were re-reviewed against their real source and given one,
+  including the two marked `soon`, whose pages previously showed a
+  four-word "coming soon" callout and nothing else. A project without About
+  copy now fails the build with its slug named, rather than shipping a page
+  with a hole in it. `src/about/README.md` owns what goes in one.
 
 - **Snatch's repository moved, and Local Web Server Manager's description
   caught up with the app.**

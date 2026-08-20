@@ -42,7 +42,7 @@ You almost never run the build by hand: pushing to `main` is enough (see deploy 
 
 ## Architecture
 
-The whole pipeline is four files. Data flows: `projects.json` → `build.mjs` → `dist/`.
+Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
 
 - **`src/projects.json`** — the single source of content and the file you edit most. Holds
   the `projects` array and `support` links. Adding/editing a project means editing this
@@ -56,10 +56,22 @@ The whole pipeline is four files. Data flows: `projects.json` → `build.mjs` �
   rendered as a Demo section above the gallery (both paths relative to `assets/video/`,
   `caption` required — see `src/assets/video/README.md`).
 
+- **`src/about/<slug>.md`** — the hand-written About section for one project, named for its
+  slug. **Every project needs one, `soon` ones included**; a missing file fails the build
+  with the slug named. This REPLACED rendering the project's GitHub README in that slot, on
+  2026-08-20: a README opens with badges and build flags, buries what the thing does, and
+  changed the page shape whenever the repo was edited. `src/about/README.md` owns what goes
+  in one and the house style. Plain markdown, no header block, headings start at `##`.
+
 - **`build.mjs`** — the generator. For each *published* project (has a `repo` and status is
-  not `soon`) it fetches the README and latest release from the GitHub API, renders them to
-  HTML, and writes a page. It also emits the landing page, `404.html`, `CNAME`, `robots.txt`
-  and `sitemap.xml`. Owns all data access and page-assembly logic.
+  not `soon`) it fetches the release history from the GitHub API, renders the notes to HTML,
+  and writes the project page plus a full on-site changelog. It also emits the landing page,
+  `404.html`, `CNAME`, `robots.txt` and `sitemap.xml`. Owns all data access and
+  page-assembly logic.
+
+- **`lib/about.mjs`** — reads and renders `src/about/*.md`. Data access + parsing only. Its
+  sanitiser allowlist is deliberately NOT `build.mjs`'s: this is our own copy, so an
+  internal link stays internal.
 
 - **`lib/templates.mjs`** — pure presentation: the `basePage()` HTML document shell, the
   `esc()` escaper, and `ORIGIN`. No data access or fetching here — keep that boundary.
@@ -78,11 +90,20 @@ The whole pipeline is four files. Data flows: `projects.json` → `build.mjs` �
 - **Resilience: one project's failure must never abort the build.** A GitHub fetch error
   falls back to static metadata and logs a warning. Keep new enrichment paths inside this
   try/fallback discipline.
-- **README/release HTML is untrusted** (third-party fork READMEs included). It is rendered
-  with `marked` then run through `sanitize-html` with a tight allowlist (`sanitizeOptions`,
-  shared by both the README and release-note paths so they can't drift). Links get
-  `rel="noopener noreferrer nofollow"` + `target="_blank"`; relative URLs are absolutized
-  against the source repo. Do not loosen the allowlist or skip sanitisation.
+- **The site is a one-stop shop; only what GitHub alone can serve still links there.** That
+  is the release binaries, the issue tracker, and credit to a fork's upstream. Everything a
+  visitor *reads* — the About copy and the whole changelog — is on this site. Do not
+  reintroduce an "on GitHub →" link for reading material.
+- **Release-note HTML is untrusted** (a fork's upstream writes some of it). It is rendered
+  with `marked` then run through `sanitize-html` with a tight allowlist (`sanitizeOptions`).
+  Links get `rel="noopener noreferrer nofollow"` + `target="_blank"`; relative URLs are
+  absolutized against the source repo. Do not loosen the allowlist or skip sanitisation.
+- **A release with no notes falls back to the repo's `CHANGELOG.md`.** 24 of 180 releases
+  here were cut with an empty body — all 11 of OneUp's — so without the fallback the
+  changelog page read "shipped without written notes" over and over. Sections are matched
+  by version (`v1.4.5` ↔ `## [1.4.5]`), `[Unreleased]` is skipped, and a project that keeps
+  a changelog but has cut no release still gets a history. Where neither exists the page
+  says so plainly rather than hiding the version.
 - **`marked` and `sanitize-html` are build-time only** — never ship them to visitors. The
   output is static HTML/CSS plus a single hand-written progressive-enhancement script
   (`src/assets/lightbox.js`, ~1 KB): keyboard shortcuts (Esc / ← / →) for the screenshot
@@ -109,7 +130,8 @@ The whole pipeline is four files. Data flows: `projects.json` → `build.mjs` �
 ## Deploy
 
 `.github/workflows/deploy.yml` runs the build and publishes `dist/` to GitHub Pages on every
-push to `main`, daily at ~05:00 UTC (to refresh READMEs/releases), and on manual dispatch.
+push to `main`, daily at ~05:00 UTC (to refresh release notes and changelogs), and on
+manual dispatch.
 The repo is public, so pushing is the normal way to ship. Action SHAs are pinned (with the
 version in a trailing comment) — bump them deliberately, not casually.
 
