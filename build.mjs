@@ -60,6 +60,16 @@ const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
 const releasesUrl = (repo) => `https://github.com/${repo}/releases`;
 const repoUrl = (repo) => `https://github.com/${repo}`;
 const issuesUrl = (repo) => `https://github.com/${repo}/issues`;
+// GitHub's own source archive for a repo — a real file, served immediately, rather than
+// a page a visitor has to read and click through. `refs/tags/<tag>.zip` pins a released
+// version; bare `HEAD.zip` tracks the default branch and is what a repo with no release
+// at all can offer. Neither costs an API call, and `HEAD` saves having to look the
+// default branch up (it differs across these repos — `main` for most, `master` for two).
+const sourceZipUrl = (repo, tag) =>
+  tag
+    ? `https://github.com/${repo}/archive/refs/tags/${encodeURIComponent(tag)}.zip`
+    : `https://github.com/${repo}/archive/HEAD.zip`;
+
 // This site's own changelog for a project. A sibling directory of /p/<slug>.html rather
 // than a second flat file, so a project can grow further pages later without the /p/
 // directory turning into a pile of <slug>-<thing>.html.
@@ -474,15 +484,25 @@ function actionButtons(p, release) {
   const hasRelease = Boolean(release);
   const hasWeb = p.platforms.includes("web");
   const desktop = p.platforms.filter((pl) => pl !== "web");
-  // Fallback when there's no matching binary: the project's homepage (e.g. Flathub) if
-  // set, else its Releases page (or repo home if there's no release at all).
-  const fallback = p.homepage || (hasRelease ? releasesUrl(p.repo) : repoUrl(p.repo));
-  const fallbackLabel = p.homepage || hasRelease ? "Download" : "Get it on GitHub";
+  // Fallback when there's no matching binary. Every button here starts a FILE
+  // downloading; none lands the visitor on a GitHub page first. That rules out the two
+  // this used to fall back to — the Releases page and the repo home — in favour of the
+  // source archive, which is a real download and, for every project in this state, the
+  // documented way to run the thing: mame-curator says clone and run `./run.sh`, and
+  // demoreel, LottoTracker and Local Web Server Manager all say outright that there is
+  // no packaged build yet and you run it from source. A `homepage` (e.g. Flathub) still
+  // wins where one is set, because that is a better download than either.
+  //
+  // The label says "source" rather than "Download" on its own: the file is a zip of the
+  // code, and a visitor who expected an installer should learn that from the button
+  // rather than from the download.
+  const fallback = p.homepage || sourceZipUrl(p.repo, hasRelease ? release.version : null);
+  const fallbackLabel = p.homepage ? "Download" : "Download source";
   const buttons = [];
 
   if (hasWeb) {
-    // Self-hosted web app — download & run it yourself.
-    buttons.push(ext(fallback, hasRelease ? "Download · Self-host" : "Get it on GitHub", "btn btn--primary"));
+    // Self-hosted web app — the source archive IS the download.
+    buttons.push(ext(fallback, "Download · Self-host", "btn btn--primary"));
   }
 
   // Direct per-OS download to the latest release's matching file (auto-updates each

@@ -87,6 +87,25 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Every download button starts a file — none lands the visitor on a GitHub page first.**
+  26 of the 31 buttons already went straight to the release asset. The
+  other five fell back to a GitHub page: mame-curator's "Download ·
+  Self-host" to the Releases list, and RetroArch, LottoTracker, demoreel
+  and Local Web Server Manager to the repo home, since none of the four
+  publishes a release binary.
+
+  All five now point at GitHub's source archive, which is a real file
+  served immediately — `archive/refs/tags/&lt;tag&gt;.zip` for a released
+  version, `archive/HEAD.zip` where there is no release. Neither costs an
+  API call, and `HEAD` avoids having to look up a default branch that
+  differs across the repos. That is also the documented way to run every
+  one of them: mame-curator says clone and run `./run.sh`, and the other
+  three say outright that there is no packaged build yet.
+
+  The label reads "Download source" rather than "Download", so a visitor
+  expecting an installer learns it from the button rather than from the
+  file. A project `homepage` still wins where one is set.
+
 - **Only what GitHub alone can serve still links to GitHub.**
   That is the release binaries, the issue tracker, and credit to a fork's
   upstream. Everything a visitor reads is now on this site. GitHub's own
