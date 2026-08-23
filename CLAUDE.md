@@ -83,6 +83,12 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   as a Windows/macOS/Linux download** — if they drifted, the private dashboard would report
   numbers the public site doesn't show. Change the matcher here, nowhere else.
 
+- **`lib/ga.mjs`** — the *read* half of analytics: service-account auth (a JWT signed with
+  `node:crypto`, no dependency) and the four GA4 Data API calls the dashboard shows. Local
+  only — `build.mjs` never imports it, so no GA figure can reach the public site. It is the
+  mirror of `src/assets/analytics.js`, which is the *write* half, and neither can switch the
+  other on.
+
 - **`src/assets/style.css`** — all styling. Re-skin by editing the `:root` design tokens at
   the top; it is the single source of truth for theme.
 
@@ -130,6 +136,15 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   inline `<script>` and the CSP forbids those. `googletagmanager.com` is the one
   third-party origin allowed, and it is allowed because GA has no self-hostable tag —
   apply that same test before widening the list for anything else.
+- **Reading the numbers back is a separate switch from sending them, deliberately.**
+  `analytics.measurementId` decides whether visitors are *tracked*; `analytics.propertyId`
+  (same block in `src/projects.json`) decides whether the private dashboard *reads* the
+  history back. They are not a second off switch for each other: blank the measurement ID
+  and tracking stops while the figures already collected stay readable, which is what you
+  want when switching tracking off — the past is still true. Blank the property ID and the
+  dashboard's "Site visitors" section disappears without touching the live site. Neither
+  ID is a credential; the key at `~/.config/gcloud/aph-ga-reader.json` is, and it is
+  read-only, scoped to one property, and never enters this repo.
 - **`/privacy/` and `analytics.js` are one fact written twice, and the build enforces
   it.** The page says in English what the script does in code, and English is the half
   no compiler checks — so `assertAnalyticsContract()` in `build.mjs` fails the build if
@@ -203,6 +218,14 @@ Other invariants:
   port while the server was fine. `LWSM_MANAGED=1` drops the icon and logs to stdout
   instead — a presentation hint only, never a reason to grant or skip anything.
 
+- **Google Analytics is read, never written, and never snapshotted.** The dashboard's
+  "Site visitors" section calls the GA4 Data API through `lib/ga.mjs` at render time and
+  keeps nothing: unlike GitHub's 14-day traffic window, Google retains the history itself,
+  so a local copy would only be a second version able to drift from the first. A GA failure
+  returns `null` and renders as "could not be read" — never as zeros, and never enough to
+  abort the run; the GitHub half of the page still builds. The section also states in plain
+  words that opt-in tracking makes every figure a floor rather than a total, because a
+  number with no such caveat gets read as the whole truth.
 - **A failed fetch is never recorded as zero.** Rate-limited or errored projects are shown
   as "no data", excluded from totals, and kept out of `.stats/history.json` — a false zero
   would poison every future delta. Keep this discipline in new metrics.
@@ -244,6 +267,15 @@ Other invariants:
   from `data-sort` attributes emitted with each cell — don't switch to parsing the rendered
   text, which carries thousands separators, `d` suffixes and a delta line. Mark a column
   `data-nosort` when it holds no rankable value (Trend, Top referrers).
+  **A chosen sort is remembered across reloads**, in `localStorage` under
+  `aph-sort:<data-table>` — every sortable table carries a `data-table` name, and a new one
+  needs its own. The key is that name and never the table's position, so inserting a
+  section can't transplant one table's preference onto another; a stored column index that
+  no longer names a sortable column is ignored rather than applied to whatever moved into
+  that slot. Every access is wrapped in `try`/`catch` — `localStorage` throws outright in
+  some privacy modes and on a `file://` page, and forgetting the sort is a far better
+  failure than a dashboard that doesn't render. Refresh re-renders the page from a fresh
+  run, so without this the reader's order was thrown away on every refresh.
 
 ## Dependencies
 

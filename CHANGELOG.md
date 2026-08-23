@@ -11,6 +11,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Site visitors from Google Analytics on the private dashboard**
+  A "Site visitors" section reads the GA4 Data API directly — visitors, sessions, page views, top pages, referrers and countries. Read-only, local-only, and it says plainly that opt-in tracking makes every figure a floor rather than a total. A read failure renders as "could not be read", never as zero.
+
 - **Google Analytics, behind an opt-in — plus a `/privacy/` page that cannot go stale.**
   The measurement ID lives in exactly one place, `src/projects.json`
   (`analytics.measurementId`); the build writes it onto the script tag and
@@ -236,6 +239,9 @@ so dated sections stand in for versions. Planned work lives in
   `run.bat`), and it opens in your browser.
 
 ### Fixed
+
+- **A chosen table sort now survives a refresh**
+  The dashboard threw the reader's sort away on every reload and snapped back to its own default. It is now remembered per table in localStorage. Audience & activity also ships pre-sorted by stars, highest first — the column it is actually read for.
 
 - **Screenshot thumbnails are shown whole, at their own shape.**
   The tiles were `object-fit: cover` at 16:9, so a tall application

@@ -29,6 +29,7 @@ You never run the build by hand — pushing is enough.
 | Add a support link | Fill in a `url` in the `support` array |
 | Re-skin the site | Edit the `:root` tokens at the top of `src/assets/style.css` |
 | Change or switch off Google Analytics | Edit `analytics.measurementId` in `src/projects.json` — one field, every page follows. Leave it blank and the tag, the cookie bar and the third-party request all disappear |
+| Stop the private dashboard reading Analytics | Blank `analytics.propertyId` in `src/projects.json`. Separate from the field above: that one stops *collecting*, this one stops *reading back* |
 
 `status` is one of `live` · `beta` · `wip` · `soon`. `platforms` is any of
 `win` · `mac` · `linux` · `web`.
@@ -127,10 +128,24 @@ npm run stats             # writes .stats/dashboard.html
 npm run stats -- --open   # ...and opens it in the browser
 ```
 
-Shows downloads per OS per project (with change since last run), repo views/visitors/
-clones and where they came from, stars and activity, release health, and content checks
-like screenshots missing alt text. Click any column heading to sort by it; click again to
-reverse.
+Shows **site visitors from Google Analytics** — how many people came, which pages they
+read, how they found you and roughly where from — plus downloads per OS per project (with
+change since last run), repo views/visitors/clones and where they came from, stars and
+activity, release health, and content checks like screenshots missing alt text. Click any
+column heading to sort by it; click again to reverse. **Your sort is remembered**, so a
+refresh keeps the order you chose rather than snapping back.
+
+The visitor figures are a **floor, not a total**: tracking only starts when someone presses
+Accept on the cookie bar, so anyone who declines or blocks scripts is never counted. A quiet
+week isn't proof of a quiet site. Google also takes up to 48 hours to finish processing, so
+the most recent day can still rise.
+
+That section needs a read-only Google service-account key at
+`~/.config/gcloud/aph-ga-reader.json` (or wherever `GOOGLE_APPLICATION_CREDENTIALS` points),
+granted **Viewer** on the property in Analytics → Admin → Property access management. Without
+it the rest of the dashboard is unaffected — the section simply says it couldn't read, which
+is deliberately not the same as reporting zero. To drop the section entirely, blank
+`analytics.propertyId` in `src/projects.json`; that changes nothing on the live site.
 
 Each run records a dated reading, which is what the change columns and trend lines are built
 from. Download totals are cumulative so they're never lost, but GitHub keeps only 14 days of

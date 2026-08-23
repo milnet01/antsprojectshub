@@ -17,7 +17,8 @@ import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises"
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { spawn } from "node:child_process";
-import { esc } from "./lib/templates.mjs";
+import { esc, ORIGIN } from "./lib/templates.mjs";
+import { collectAnalytics, gaError } from "./lib/ga.mjs";
 import {
   ghRequest,
   assetPlatform,
@@ -44,7 +45,8 @@ const DAY = 86400000;
 const NAV = [
   ["att", "h-att", "Attention"],
   ["dl", "h-dl", "Downloads"],
-  ["tr", "h-tr", "Traffic"],
+  ["ga", "h-ga", "Visitors"],
+  ["tr", "h-tr", "Repo traffic"],
   ["act", "h-act", "Audience"],
   ["rel", "h-rel", "Releases"],
   ["cnt", "h-cnt", "Content"],
@@ -381,7 +383,7 @@ function downloadsTable(rows, history, base) {
 
   return scrollTable(
     "Downloads per OS",
-    `<table class="tbl sortable">
+    `<table class="tbl sortable" data-table="downloads">
     <caption>All-time downloads, by operating system. A blank cell means the project isn't
       offered for that OS; a zero means it is, and nobody has downloaded it. Total and Trend
       count the three OS columns only. “Other” is release files that aren't the app —
@@ -432,7 +434,7 @@ function trafficSection(rows) {
     .join("");
   return scrollTable(
     "Repo traffic",
-    `<table class="tbl sortable">
+    `<table class="tbl sortable" data-table="traffic">
     <caption>Last 14 days, from GitHub. Only you can see these numbers — GitHub deletes
       them after 14 days, but this dashboard keeps its own dated copy in
       <code>.stats/history.json</code>.</caption>
@@ -446,7 +448,11 @@ function trafficSection(rows) {
 }
 
 function activityTable(rows, now) {
-  const body = rows
+  // Ships pre-sorted by stars, highest first — the column this table is actually read for,
+  // and the order it keeps when the script never runs. A reader's own choice is remembered
+  // client-side and replaces this on load; see the sort block in JS.
+  const body = [...rows]
+    .sort((a, b) => b.stars - a.stars)
     .map((r) => {
       const commitAge = daysSince(r.pushedAt, now);
       const relAge = daysSince(r.latestAt, now);
@@ -476,15 +482,166 @@ function activityTable(rows, now) {
     .join("");
   return scrollTable(
     "Audience and activity",
-    `<table class="tbl sortable">
+    `<table class="tbl sortable" data-table="activity">
     <caption>Audience and activity. A ⚠ marks 90+ days without a commit.</caption>
-    <thead><tr><th scope="col">Project</th><th scope="col" class="n">Stars</th>
+    <thead><tr><th scope="col">Project</th>
+      <th scope="col" class="n" aria-sort="descending">Stars</th>
       <th scope="col" class="n">Forks</th><th scope="col" class="n">Watching</th>
       <th scope="col" class="n">Issues</th><th scope="col" class="n">PRs</th>
       <th scope="col" class="n">Latest</th><th scope="col" class="n">Rel. age</th>
       <th scope="col" class="n">Last commit</th></tr></thead>
     <tbody>${body}</tbody></table>`
   );
+}
+
+// ------------------------------------------------------- site visitors (Google Analytics)
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// GA hands dates back as "20260823".
+const gaDay = (d) => `${Number(d.slice(6, 8))} ${MONTHS[Number(d.slice(4, 6)) - 1]}`;
+
+// Seconds as something a human reads. Zero is a dash, not "0s": on a page nobody has
+// engaged with yet, "0s" reads as a measured result rather than an absence.
+function duration(seconds) {
+  const n = Math.round(seconds || 0);
+  if (!n) return '<span class="dim">—</span>';
+  if (n < 60) return `${n}s`;
+  return `${Math.floor(n / 60)}m ${String(n % 60).padStart(2, "0")}s`;
+}
+
+const gaEmpty = (label) =>
+  `<p class="note">No ${label} recorded yet in this window.</p>`;
+
+function analyticsSection(ga, propertyId) {
+  if (!propertyId) {
+    return `<p class="note">No Google Analytics property is configured. Add
+      <code>analytics.propertyId</code> to <code>src/projects.json</code> to show visitor
+      figures here.</p>`;
+  }
+  // A failed read is never drawn as zero — the same rule the GitHub side follows. A dead
+  // credential and a dead site would otherwise look identical, and one of them is urgent.
+  if (!ga) {
+    return `<p class="note banner"><strong>Google Analytics could not be read, so no
+      visitor figures are shown.</strong> ${esc(gaError || "unknown error")}<br>
+      This is a read failure, not a measurement — treat it as "unknown", never as zero.
+      The service account key is expected at
+      <code>~/.config/gcloud/aph-ga-reader.json</code> (override with
+      <code>GOOGLE_APPLICATION_CREDENTIALS</code>), and it needs <strong>Viewer</strong> on
+      the property in Analytics → Admin → Property access management.</p>`;
+  }
+
+  const t = ga.totals || {};
+  const tiles = [
+    ["Visitors", num(t.totalUsers), `last ${ga.days} days`],
+    ["Sessions", num(t.sessions), t.engagementRate ? `${Math.round(t.engagementRate * 100)}% engaged` : ""],
+    ["Page views", num(t.screenPageViews), ""],
+    ["Avg session", duration(t.averageSessionDuration), ""],
+  ]
+    .map(
+      ([label, value, sub]) =>
+        `<div class="tile"><span class="tile__label">${label}</span>
+         <span class="tile__value">${value}</span><span class="tile__sub">${sub}</span></div>`
+    )
+    .join("");
+
+  // The trend only means anything with more than one day on file, and sparkline() already
+  // returns nothing for a flat or single-point series.
+  const spark = sparkline(ga.daily.map((d) => d.screenPageViews));
+  const trend = spark
+    ? `<p class="ga-trend"><span class="dim">${gaDay(ga.daily[0].date)}</span>
+       ${spark}
+       <span class="dim">${gaDay(ga.daily[ga.daily.length - 1].date)}</span>
+       <span class="ga-trend__label">daily page views</span></p>`
+    : "";
+
+  const pages = ga.pages.length
+    ? scrollTable(
+        "Top pages",
+        `<table class="tbl sortable" data-table="ga-pages">
+        <caption>Most-visited pages, last ${ga.days} days. Average time is engaged time per
+          view — GA counts only the time the tab was actually in front of someone.</caption>
+        <thead><tr><th scope="col">Page</th>
+          <th scope="col" class="n" aria-sort="descending">Views</th>
+          <th scope="col" class="n">Visitors</th>
+          <th scope="col" class="n">Avg time</th></tr></thead>
+        <tbody>${ga.pages
+          .map(
+            (r) => `<tr>
+            <th scope="row" data-sort="${esc(r.pagePath)}"><a href="${esc(
+              ORIGIN + r.pagePath
+            )}" target="_blank" rel="noopener">${esc(r.pagePath)}</a></th>
+            <td class="n" data-sort="${r.screenPageViews}">${num(r.screenPageViews)}</td>
+            <td class="n" data-sort="${r.activeUsers}">${num(r.activeUsers)}</td>
+            <td class="n" data-sort="${
+              r.screenPageViews ? r.userEngagementDuration / r.screenPageViews : 0
+            }">${duration(
+              r.screenPageViews ? r.userEngagementDuration / r.screenPageViews : 0
+            )}</td>
+          </tr>`
+          )
+          .join("")}</tbody></table>`
+      )
+    : gaEmpty("page views");
+
+  const sources = ga.sources.length
+    ? scrollTable(
+        "Where visitors came from",
+        `<table class="tbl sortable" data-table="ga-sources">
+        <caption>How people arrived. "Direct" and "(not set)" mean the browser sent no
+          referrer — a typed address, a bookmark, or a link from an app.</caption>
+        <thead><tr><th scope="col">Channel</th><th scope="col">Source</th>
+          <th scope="col" class="n" aria-sort="descending">Sessions</th>
+          <th scope="col" class="n">Visitors</th></tr></thead>
+        <tbody>${ga.sources
+          .map(
+            (r) => `<tr>
+            <th scope="row" data-sort="${esc(r.sessionDefaultChannelGroup)}">${esc(
+              r.sessionDefaultChannelGroup || "Unassigned"
+            )}</th>
+            <td data-sort="${esc(r.sessionSource)}">${esc(r.sessionSource || "—")}</td>
+            <td class="n" data-sort="${r.sessions}">${num(r.sessions)}</td>
+            <td class="n" data-sort="${r.activeUsers}">${num(r.activeUsers)}</td>
+          </tr>`
+          )
+          .join("")}</tbody></table>`
+      )
+    : gaEmpty("referrers");
+
+  const countries = ga.countries.length
+    ? scrollTable(
+        "Countries",
+        `<table class="tbl sortable" data-table="ga-countries">
+        <caption>Approximate, from the network the visit came in on. GA derives it and
+          discards the address — see /privacy/.</caption>
+        <thead><tr><th scope="col">Country</th>
+          <th scope="col" class="n" aria-sort="descending">Visitors</th>
+          <th scope="col" class="n">Sessions</th></tr></thead>
+        <tbody>${ga.countries
+          .map(
+            (r) => `<tr>
+            <th scope="row" data-sort="${esc(r.country || "zzz")}">${
+              r.country ? esc(r.country) : '<span class="dim">Not yet resolved</span>'
+            }</th>
+            <td class="n" data-sort="${r.activeUsers}">${num(r.activeUsers)}</td>
+            <td class="n" data-sort="${r.sessions}">${num(r.sessions)}</td>
+          </tr>`
+          )
+          .join("")}</tbody></table>`
+      )
+    : gaEmpty("locations");
+
+  return `<p class="note"><strong>These numbers are a floor, not a total.</strong>
+      Tracking is opt-in, so anyone who declines the cookie bar, ignores it, or blocks
+      scripts is never counted. A quiet week is not proof of a quiet site. GA also takes
+      up to 48 hours to finish processing, so the most recent day can still rise.</p>
+    <div class="tiles">${tiles}</div>
+    ${trend}
+    <h3>Top pages</h3>
+    ${pages}
+    <h3>Where visitors came from</h3>
+    ${sources}
+    <h3>Countries</h3>
+    ${countries}`;
 }
 
 function issuesSection(rows, health) {
@@ -529,7 +686,7 @@ function tallyList(obj) {
     .join("");
 }
 
-function page({ rows, history, base, health, projects, now, elapsed }) {
+function page({ rows, history, base, health, projects, now, elapsed, ga, propertyId }) {
   const ok = rows.filter((r) => r.ok);
   const grand = ok.reduce((s, r) => s + r.total, 0);
   const stars = ok.reduce((s, r) => s + r.stars, 0);
@@ -597,6 +754,9 @@ function page({ rows, history, base, health, projects, now, elapsed }) {
 
   <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads per OS</h2>
     ${downloadsTable(rows, history, base)}</section>
+
+  <section class="sec" data-sec="ga" aria-labelledby="h-ga"><h2 id="h-ga">Site visitors</h2>
+    ${analyticsSection(ga, propertyId)}</section>
 
   <section class="sec" data-sec="tr" aria-labelledby="h-tr"><h2 id="h-tr">Repo traffic</h2>
     ${trafficSection(ok)}</section>
@@ -690,7 +850,7 @@ function releasesTable(rows) {
   // Sortable by project only — the second column is a per-project list, not a value.
   return scrollTable(
     "Recent releases",
-    `<table class="tbl tbl--rel sortable"><caption>Downloads by version — the five most
+    `<table class="tbl tbl--rel sortable" data-table="releases"><caption>Downloads by version — the five most
     recent releases of each project.</caption><thead><tr><th scope="col">Project</th>
     <th scope="col" data-nosort>Version · date · downloads</th></tr></thead>
     <tbody>${body}</tbody></table>`
@@ -801,8 +961,42 @@ const JS = `(function () {
     });
   }
 
+  // A chosen sort outlives the reload. Refresh re-renders the whole page from a fresh run,
+  // so without this every refresh threw the reader's order away and snapped back to the
+  // server-side default. Keyed by the table's data-table name, never its position on the
+  // page: adding a section above must not transplant one table's preference onto another.
+  // Every access is guarded — localStorage throws outright in some privacy modes and when
+  // the page is opened as a file:// URL, and a dashboard that dies there would be worse
+  // than one that simply forgets.
+  var SORT_KEY = "aph-sort:";
+  function rememberSort(name, index, asc) {
+    try {
+      localStorage.setItem(SORT_KEY + name, index + ":" + (asc ? "a" : "d"));
+    } catch (e) {}
+  }
+  function recallSort(name) {
+    try {
+      var raw = localStorage.getItem(SORT_KEY + name);
+      if (!raw) return null;
+      var bits = raw.split(":");
+      var index = Number(bits[0]);
+      return isNaN(index) ? null : { index: index, asc: bits[1] !== "d" };
+    } catch (e) {
+      return null;
+    }
+  }
+
   Array.prototype.forEach.call(document.querySelectorAll("table.sortable"), function (table) {
     var heads = Array.prototype.slice.call(table.tHead.rows[0].cells);
+    var name = table.getAttribute("data-table");
+
+    function applySort(th, i, asc, save) {
+      heads.forEach(function (h) { h.removeAttribute("aria-sort"); });
+      th.setAttribute("aria-sort", asc ? "ascending" : "descending");
+      sort(table, i, asc ? 1 : -1);
+      if (save && name) rememberSort(name, i, asc);
+    }
+
     heads.forEach(function (th, i) {
       if (th.hasAttribute("data-nosort")) return;
       // Wrap the label in a real <button> so it is keyboard-reachable and announced as a
@@ -814,12 +1008,18 @@ const JS = `(function () {
       th.textContent = "";
       th.appendChild(btn);
       btn.addEventListener("click", function () {
-        var asc = th.getAttribute("aria-sort") !== "ascending";
-        heads.forEach(function (h) { h.removeAttribute("aria-sort"); });
-        th.setAttribute("aria-sort", asc ? "ascending" : "descending");
-        sort(table, i, asc ? 1 : -1);
+        applySort(th, i, th.getAttribute("aria-sort") !== "ascending", true);
       });
     });
+
+    // Restore last time's choice. Runs after the buttons exist so the header state matches.
+    // A stored index that no longer names a sortable column — the table gained or lost one
+    // since — is ignored rather than applied to whatever now sits at that position.
+    var saved = name ? recallSort(name) : null;
+    var target = saved ? heads[saved.index] : null;
+    if (target && !target.hasAttribute("data-nosort")) {
+      applySort(target, saved.index, saved.asc, false);
+    }
   });
 })();
 `;
@@ -839,6 +1039,7 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
 /* One accent per section, shared by the section and its nav link. */
 [data-sec="att"] { --accent: var(--amber); }
 [data-sec="dl"]  { --accent: #5eead4; }
+[data-sec="ga"]  { --accent: #67dde8; }
 [data-sec="tr"]  { --accent: #7dd3fc; }
 [data-sec="act"] { --accent: #93c5fd; }
 [data-sec="rel"] { --accent: #a5b4fc; }
@@ -888,6 +1089,13 @@ h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
 .tile:nth-child(2) { --tile-accent: #7dd3fc; }
 .tile:nth-child(3) { --tile-accent: #a5b4fc; }
 .tile:nth-child(4) { --tile-accent: #c4b5fd; }
+/* Trend row under the visitor tiles: end labels flank the sparkline so the line is read
+   against real dates rather than floating unanchored. */
+.ga-trend { display: flex; align-items: center; gap: 10px; margin: 14px 0 0;
+  font-size: .82rem; color: var(--text-muted); }
+.ga-trend .spark { color: var(--accent); flex: none; }
+.ga-trend__label { color: var(--text-dim); }
+
 .tile__label { font-size: .8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
 .tile__value { font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
 .tile__sub { font-size: .8rem; color: var(--text-muted); min-height: 1.2em; }
@@ -906,6 +1114,11 @@ h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
 .tbl-scroll:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 /* Two columns — nothing to crush, so no floor and nothing to scroll. */
 .tbl--rel { min-width: 0; }
+/* Site visitors is the only section carrying three tables. Each gets a heading of its own:
+   a dim caption is weak wayfinding, and this page is read by someone who needs the
+   structure to be obvious rather than inferred from spacing. */
+.sec h3 { font-size: .95rem; font-weight: 700; color: var(--text); margin: 26px 0 8px; }
+
 /* The caption is prose, so it must wrap to the screen rather than ride the table's min-width
    out of view: sized to the visible column instead of the table, and pinned left so it stays
    put while the table scrolls under it. (.wrap contributes the 40px of side padding.) */
@@ -989,8 +1202,11 @@ export async function generate() {
   // Look for the login again each run: the long-lived server process may have started before
   // the keyring holding it was unlocked, and without this it would stay logged out forever.
   resolveAuth();
-  const { projects } = JSON.parse(await readFile(join(ROOT, "src/projects.json"), "utf8"));
+  const { projects, analytics } = JSON.parse(
+    await readFile(join(ROOT, "src/projects.json"), "utf8")
+  );
   const published = projects.filter(isPublished);
+  const propertyId = analytics?.propertyId || "";
 
   if (!hasToken) {
     console.warn(
@@ -1011,6 +1227,14 @@ export async function generate() {
   }
   rows.sort((a, b) => b.total - a.total);
 
+  // Google Analytics, in parallel with nothing — it is four calls against a different API
+  // and a failure here must not touch the GitHub figures. collectAnalytics returns null
+  // rather than throwing, and null renders as "couldn't read", never as zero. Nothing from
+  // GA is written to history.json: unlike GitHub's 14-day traffic window, Google keeps the
+  // history itself, so snapshotting it would only create a second copy that could drift.
+  const ga = await collectAnalytics(propertyId);
+  if (propertyId && !ga) console.warn(`! Google Analytics: ${gaError} — visitor figures skipped`);
+
   const now = Date.now();
   const history = await loadHistory();
   const base = baselineSnapshot(history, now);
@@ -1027,7 +1251,10 @@ export async function generate() {
   await writeFile(join(OUT, "dashboard.css"), CSS);
   await writeFile(join(OUT, "dashboard.js"), JS);
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
-  await writeFile(PAGE, page({ rows, history, base, health, projects, now, elapsed }));
+  await writeFile(
+    PAGE,
+    page({ rows, history, base, health, projects, now, elapsed, ga, propertyId })
+  );
 
   const failed = rows.filter((r) => !r.ok);
   console.log(
