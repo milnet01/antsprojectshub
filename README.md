@@ -28,9 +28,17 @@ You never run the build by hand — pushing is enough.
 | Publish a "coming soon" project | Set its `repo` and change `status` from `"soon"` |
 | Add a support link | Fill in a `url` in the `support` array |
 | Re-skin the site | Edit the `:root` tokens at the top of `src/assets/style.css` |
+| Change or switch off Google Analytics | Edit `analytics.measurementId` in `src/projects.json` — one field, every page follows. Leave it blank and the tag, the cookie bar and the third-party request all disappear |
 
 `status` is one of `live` · `beta` · `wip` · `soon`. `platforms` is any of
 `win` · `mac` · `linux` · `web`.
+
+Analytics is **opt-in**: nothing is loaded, and no cookie is set, until a visitor
+presses Accept on the bar. Declining is remembered, and a "Cookie settings" link in
+the footer brings the bar back. What visitors are told is on
+[`/privacy/`](https://antsprojectshub.co.za/privacy/), written by `privacyPage()` in
+`build.mjs` — and the build fails if that page and `src/assets/analytics.js` ever stop
+agreeing.
 
 ## Build locally (optional)
 

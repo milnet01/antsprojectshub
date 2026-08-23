@@ -1357,6 +1357,88 @@ a.card:hover .card__name {
   font-style: italic;
 }
 
+/* ============================================================================
+   Cookie consent bar
+   Built by src/assets/analytics.js, never by the build — with no JavaScript there is
+   nothing to consent to, so a static bar would be a question with no consequence.
+
+   Deliberately OPAQUE rather than the site's usual translucent --surface: it sits over
+   arbitrary page content, and a glass panel over a screenshot is where contrast quietly
+   fails. --bg with a solid border keeps the AA text tokens honest wherever it lands.
+   It docks to the bottom of the viewport, so it never covers the header or the skip
+   link's destination.
+   ========================================================================== */
+.consent {
+  position: fixed;
+  z-index: 60;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem 1.5rem;
+  padding: 1rem 1.15rem calc(1rem + env(safe-area-inset-bottom));
+  background: var(--bg);
+  border-top: 1px solid var(--surface-border);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+}
+.consent__text {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.consent__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+/* The bar is what the page is asking about, so it gets the same visible focus ring as
+   everything else — including on the region itself, which takes focus when a visitor
+   reopens it from the footer. */
+.consent:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: -3px;
+}
+/* Room for the bar while it is up, so it never covers the end of the page. Set by
+   analytics.js on <body> and removed the moment a choice is made. */
+body.has-consent {
+  padding-bottom: 7rem;
+}
+@media (max-width: 620px) {
+  body.has-consent {
+    padding-bottom: 13rem;
+  }
+}
+
+/* Narrow screens: full-width buttons, so neither is a small target on a phone. */
+@media (max-width: 620px) {
+  .consent__row {
+    width: 100%;
+  }
+  .consent__row .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+/* A <button> that reads as a link — the footer's "Cookie settings", added by
+   analytics.js. It is a button because it acts on this page rather than navigating, but
+   in the footer it should look like its neighbours. */
+.linkish {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--teal);
+  cursor: pointer;
+}
+.linkish:hover {
+  text-decoration: underline;
+}
+
 /* ---- Motion: static unless the user allows motion ---- */
 @media (prefers-reduced-motion: no-preference) {
   /* (animations already declared above run only here) */

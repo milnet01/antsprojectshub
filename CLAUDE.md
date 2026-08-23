@@ -6,9 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Source for **[antsprojectshub.co.za](https://antsprojectshub.co.za)** — a static showcase
 site for Anthony Schemel's projects. It is a small Node build-time static-site generator:
-the only client-side JavaScript is one tiny progressive-enhancement script
-(`assets/lightbox.js`, keyboard shortcuts for the screenshot lightbox — see below),
-loaded only on pages that have a gallery. `dist/` is generated, never hand-edited (it is
+the only client-side JavaScript is two small hand-written scripts —
+`assets/lightbox.js` (keyboard shortcuts for the screenshot lightbox, loaded only on
+pages that have a gallery) and `assets/analytics.js` (the cookie consent bar, and the
+Google Analytics tag it gates). Both are progressive enhancement; see below. `dist/` is generated, never hand-edited (it is
 `.gitignore`d and rebuilt in CI).
 
 ## Build & preview
@@ -105,21 +106,44 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   a changelog but has cut no release still gets a history. Where neither exists the page
   says so plainly rather than hiding the version.
 - **`marked` and `sanitize-html` are build-time only** — never ship them to visitors. The
-  output is static HTML/CSS plus a single hand-written progressive-enhancement script
-  (`src/assets/lightbox.js`, ~1 KB): keyboard shortcuts (Esc / ← / →) for the screenshot
-  lightbox, since CSS alone can't listen for key presses. The lightbox works fully without
-  it (✕, click-outside, Back) — keep it that way, and don't add further client JS lightly.
-  It's loaded only on gallery pages, via `basePage({ lightbox: true })`.
+  output is static HTML/CSS plus two hand-written progressive-enhancement scripts.
+  `src/assets/lightbox.js` (~1 KB) adds keyboard shortcuts (Esc / ← / →) to the screenshot
+  lightbox, since CSS alone can't listen for key presses; the lightbox works fully without
+  it (✕, click-outside, Back) — keep it that way. It's loaded only on gallery pages, via
+  `basePage({ lightbox: true })`. `src/assets/analytics.js` builds the consent bar and,
+  only on Accept, the analytics tag — with no JavaScript there is nothing to track, so it
+  correctly does nothing at all. Don't add further client JS lightly.
 - **Demo videos are native `<video controls>`** — no player library, no JS, self-hosted
   under `/assets/video/`, and they **never autoplay**: unrequested motion is a barrier, and
   `preload="none"` + a poster means a visitor who doesn't press play downloads nothing. The
   screencasts are silent, so the visible `caption` *is* the accessible alternative (WCAG
   1.2.1) — never make it optional, and never swap it for a decorative one-liner.
+- **Analytics is opt-in, and the measurement ID has exactly one home.** The GA4 ID
+  lives in `src/projects.json` (`analytics.measurementId`) and nowhere else: the build
+  reads it, `lib/templates.mjs` writes it onto the `<script data-ga-id>` tag, and
+  `src/assets/analytics.js` reads it back off its own tag. **Blank that one field and
+  the tag, the consent bar and every third-party request vanish together** — that is
+  the off switch, don't add another. Nothing loads until the visitor presses Accept;
+  the choice is kept in `localStorage` (not a cookie — a cookie recording that you
+  refused cookies is its own punchline), so a visitor who never accepted has no Google
+  cookie at all. Google's own copy-paste snippet **cannot be used as given**: it is an
+  inline `<script>` and the CSP forbids those. `googletagmanager.com` is the one
+  third-party origin allowed, and it is allowed because GA has no self-hostable tag —
+  apply that same test before widening the list for anything else.
+- **`/privacy/` and `analytics.js` are one fact written twice, and the build enforces
+  it.** The page says in English what the script does in code, and English is the half
+  no compiler checks — so `assertAnalyticsContract()` in `build.mjs` fails the build if
+  ad personalisation is switched back on or if the script fetches a host the CSP does
+  not allow. **Adding a claim to the privacy page means adding its guard to
+  `ANALYTICS_CLAIMS` in the same edit.** Without that, a privacy notice quietly becomes
+  a lie and nothing complains.
 - **Security headers ship via `<meta>`** (GitHub Pages can't set HTTP headers): a strict CSP
-  (`script-src 'self'`, no inline scripts/styles), `referrer: no-referrer`, `nosniff`. The
-  self-hosted `lightbox.js` is allowed by `script-src 'self'` and demo videos by
-  `media-src 'self'`; **inline** `<script>`/`<style>` still break the CSP — never introduce
-  them.
+  with no inline scripts or styles, `referrer: no-referrer`, `nosniff`. Both self-hosted
+  scripts are allowed by `script-src 'self'` and demo videos by `media-src 'self'`;
+  **inline** `<script>`/`<style>` still break the CSP — never introduce them, which is
+  why Google's own snippet had to be rewritten as a file. The one third-party origin in
+  the whole policy is `googletagmanager.com` in `script-src`, plus Google Analytics'
+  collector in `connect-src` — see the analytics bullet above before adding a second.
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative so a source tarball isn't mistaken for a Linux binary), falling
   back to `homepage` → Releases page → repo home. Companion files — signatures, checksum

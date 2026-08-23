@@ -11,6 +11,30 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Google Analytics, behind an opt-in — plus a `/privacy/` page that cannot go stale.**
+  The measurement ID lives in exactly one place, `src/projects.json`
+  (`analytics.measurementId`); the build writes it onto the script tag and
+  `src/assets/analytics.js` reads it back off. Blank it and the tag, the
+  consent bar and the third-party request all disappear together.
+
+  Nothing is loaded until a visitor presses Accept — no script, no cookie,
+  no request to Google. Declining is remembered and never asked again; a
+  "Cookie settings" link in the footer brings the bar back. The choice is
+  kept in `localStorage`, not a cookie, so a visitor who never accepted has
+  no Google cookie at all. Google Signals and ad personalisation are both
+  switched off (`npa=1` in the outgoing hit).
+
+  Google's copy-paste snippet could not be used as given: it is an inline
+  `<script>`, which this site's CSP forbids. The same job is done from a
+  self-hosted file, and `googletagmanager.com` is the one third-party origin
+  the CSP now allows.
+
+  The privacy page states in prose what `analytics.js` does in code — the
+  one pair a compiler cannot keep honest. So the build checks it:
+  `assertAnalyticsContract()` fails the build if ad personalisation is
+  switched back on, or if the script fetches a host the CSP does not allow.
+  Verified by breaking each on purpose.
+
 - **A full changelog for every project, on this site — `/p/<slug>/changelog.html`.**
   Every release, newest first, with its notes and date, and an anchor per
   version so a release can be linked to directly. "What's new" on the

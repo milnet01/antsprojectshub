@@ -16,7 +16,14 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
-import { basePage, esc, ORIGIN, setAssetVersion } from "./lib/templates.mjs";
+import {
+  basePage,
+  esc,
+  ORIGIN,
+  CSP,
+  setAssetVersion,
+  setAnalyticsId,
+} from "./lib/templates.mjs";
 import { loadPosts, excerpt } from "./lib/posts.mjs";
 import { loadAbout } from "./lib/about.mjs";
 import {
@@ -969,6 +976,126 @@ ${items}
 `;
 }
 
+// ---- Keeping the privacy notice honest --------------------------------------
+// Three facts about analytics live in exactly one place each:
+//
+//   the measurement ID   → src/projects.json (analytics.measurementId)
+//   what the tag does    → src/assets/analytics.js
+//   what visitors are told → privacyPage() below, in prose
+//
+// The first flows through the build to the page, so it can never drift. The other two
+// are the same fact written twice — once as code, once as English — and English is the
+// one thing no compiler checks. So check it here. If someone switches ad personalisation
+// back on, or points the tag at a host the CSP does not allow, the build stops instead
+// of publishing a privacy notice that has quietly become false.
+//
+// Adding a claim to the privacy page? Add its guard here in the same edit.
+const ANALYTICS_CLAIMS = [
+  {
+    // "Google Signals and ad personalisation are both disabled"
+    needle: "allow_google_signals: false",
+    claim: "the privacy page says Google Signals is disabled",
+  },
+  {
+    needle: "allow_ad_personalization_signals: false",
+    claim: "the privacy page says ad personalisation is disabled",
+  },
+  {
+    // "No other third-party scripts" — one allowed origin, and the CSP must permit it.
+    needle: "https://www.googletagmanager.com/gtag/js",
+    claim: "the privacy page names googletagmanager as the only third party",
+  },
+];
+
+async function assertAnalyticsContract() {
+  const src = await readFile(join(ROOT, "src/assets/analytics.js"), "utf8");
+  const broken = ANALYTICS_CLAIMS.filter((c) => !src.includes(c.needle)).map(
+    (c) => `  - ${c.claim}, but analytics.js no longer contains "${c.needle}"`
+  );
+  // Every third-party host the script fetches should be one the CSP already names, or
+  // the tag is blocked at runtime and the site silently stops counting. This is a
+  // substring check, not a CSP evaluator: it reliably catches a NEW host nobody
+  // allowed, which is the case worth stopping the build for. It can wave through an
+  // apex that a *.wildcard entry would not actually match — that fails loudly in the
+  // browser instead. It also reads URLs out of comments, so a commented-out host still
+  // has to be allowed; that errs toward stopping, which is the right direction.
+  for (const url of src.match(/https:\/\/[a-z0-9.-]+/gi) || []) {
+    const host = new URL(url).host;
+    if (!CSP.includes(host)) {
+      broken.push(`  - analytics.js fetches ${host}, which the CSP in lib/templates.mjs does not allow`);
+    }
+  }
+  if (broken.length) {
+    throw new Error(
+      `Analytics and the privacy page disagree:\n${broken.join("\n")}\n` +
+        `Fix the code, or update privacyPage() in build.mjs and its guard in ANALYTICS_CLAIMS.`
+    );
+  }
+}
+
+// The page the consent bar links to. Written plainly and kept short: a privacy notice
+// nobody can read is the same as no privacy notice. It describes what the site actually
+// does — one analytics tag, opt-in — and is the only page that would need editing if
+// that ever changed.
+function privacyPage() {
+  return basePage({
+    title: "Privacy",
+    description:
+      "What this site collects: nothing at all unless you accept analytics, and only page-level statistics if you do.",
+    canonical: `${ORIGIN}/privacy/`,
+    back: { href: "/", label: "All projects" },
+    content: `<article class="post">
+      <header class="post__head">
+        <h1>Privacy</h1>
+        <p class="post__sum">The short version: this site collects nothing about you
+        unless you press Accept, and you can change your mind at any time.</p>
+      </header>
+      <div class="prose post__body">
+        <h2>If you decline, or ignore the bar</h2>
+        <p>Nothing is measured. No analytics script is downloaded, no cookie is set, and
+        no request goes to Google. Your choice is stored in your own browser, so the bar
+        stops asking.</p>
+
+        <h2>If you accept</h2>
+        <p>The site loads <strong>Google Analytics 4</strong>, which records
+        page-level statistics: which pages are opened, roughly where in the world the
+        visit came from, whether it was a phone or a desktop, and which site linked
+        here. It sets a cookie so repeat visits in the same browser are counted as one
+        person rather than several.</p>
+        <p>Google receives your IP address, as any web server must in order to answer
+        a request. Google Analytics 4 uses it to work out an approximate location and
+        then discards it — it is not stored against the visit. Advertising features are
+        switched off: Google Signals and ad personalisation are both disabled, so the
+        data is not used to build an advertising profile of you.</p>
+        <p>It is used for one thing: knowing which projects people actually look at.</p>
+
+        <h2>What the site never does</h2>
+        <ul>
+          <li>No accounts, no sign-in, no contact form, no newsletter.</li>
+          <li>No advertising, and nothing sold or shared with anyone.</li>
+          <li>No other third-party scripts. Screenshots, videos and styling are all
+          served from this domain.</li>
+        </ul>
+
+        <h2>Changing your mind</h2>
+        <p>Use the <strong>Cookie settings</strong> link at the bottom of any page. It
+        brings the bar back, and whichever button you press takes effect immediately.
+        Clearing your browser's site data for this domain also resets the choice and
+        removes the Google cookie.</p>
+
+        <h2>Hosting</h2>
+        <p>The site is static and hosted on GitHub Pages, which keeps its own server
+        logs. The source is
+        <a href="https://github.com/milnet01">public on GitHub</a>.</p>
+
+        <h2>Contact</h2>
+        <p>Questions about any of this: open an issue on
+        <a href="https://github.com/milnet01">the GitHub profile</a>.</p>
+      </div>
+    </article>`,
+  });
+}
+
 function notFoundPage() {
   return basePage({
     title: "Not found",
@@ -984,7 +1111,7 @@ function notFoundPage() {
 // ------------------------------------------------------------------------ main
 async function main() {
   const data = JSON.parse(await readFile(join(ROOT, "src/projects.json"), "utf8"));
-  const { projects, support } = data;
+  const { projects, support, analytics } = data;
 
   // In-repo content is read before anything is written: a malformed post, or a project
   // whose About copy was never written, should fail the build before dist/ is wiped —
@@ -1018,6 +1145,11 @@ async function main() {
   // re-fetch the CSS the moment its contents change, rather than serving a stale cache.
   const cssBytes = await readFile(join(ROOT, "src/assets/style.css"));
   setAssetVersion(createHash("sha256").update(cssBytes).digest("hex").slice(0, 8));
+
+  // Analytics. Set before the first page is rendered — every page carries the tag, or
+  // none does. An absent or empty measurementId emits no script and no consent bar.
+  setAnalyticsId(analytics?.measurementId || "");
+  if (analytics?.measurementId) await assertAnalyticsContract();
 
   // Project pages. The About copy is already in hand (in-repo, and a missing one has
   // failed the build long before here); only the release history is fetched, and a
@@ -1066,6 +1198,10 @@ async function main() {
   // Landing (built after enrichment so each card can show its latest release version)
   await writeFile(join(DIST, "index.html"), landingPage(projects, support, releases, posts));
 
+  // Privacy notice — the destination of the consent bar's link and the footer.
+  await mkdir(join(DIST, "privacy"), { recursive: true });
+  await writeFile(join(DIST, "privacy", "index.html"), privacyPage());
+
   // 404, CNAME, robots, sitemap
   await writeFile(join(DIST, "404.html"), notFoundPage());
   await writeFile(join(DIST, "CNAME"), "antsprojectshub.co.za\n");
@@ -1095,7 +1231,8 @@ async function main() {
         .map((p) => `${ORIGIN}${changelogPath(p)}`)
     )
     .concat(posts.length ? [`${ORIGIN}/blog/`] : [])
-    .concat(posts.map((post) => `${ORIGIN}${post.url}`));
+    .concat(posts.map((post) => `${ORIGIN}${post.url}`))
+    .concat([`${ORIGIN}/privacy/`]);
   await writeFile(
     join(DIST, "sitemap.xml"),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

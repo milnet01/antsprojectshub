@@ -404,5 +404,8 @@
       "label": "Paybru",
       "url": "https://paybru.co.za/tip/ants-projects-hub"
     }
-  ]
+  ],
+  "analytics": {
+    "measurementId": "G-TZFKMFJH8V"
+  }
 }
