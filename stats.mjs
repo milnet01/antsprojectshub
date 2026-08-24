@@ -402,6 +402,164 @@ function downloadsTable(rows, history, base) {
   );
 }
 
+// ------------------------------------------------------------ recent downloads
+
+const WINDOWS = [7, 30];
+
+// The newest reading we hold for one project. Every window is measured between two readings
+// rather than against the clock, so a project whose fetch failed today still reports the
+// record it has instead of dropping to "no data".
+const lastSeen = (history, slug) =>
+  history.snapshots.filter((s) => s.projects[slug]).pop();
+
+// One project's downloads over the last `days`. Download counts are cumulative counters, so
+// the figure is simply the difference between the two ends of the window — which means a gap
+// in the middle costs nothing at all. (The traffic archive above is the opposite: it sums
+// per-day buckets, so a day nobody ran the dashboard is a day lost for good. Same file, two
+// kinds of number, and only one of them heals.)
+//
+// The near end is the newest reading, never `now`: anchoring on the clock would measure the
+// window short for any project that couldn't be fetched this run, and report the shortfall as
+// a quiet week. The far end is the reading NEAREST the cut-off rather than the first one past
+// it — snapshots land a few hours apart, and nearest is the smallest error available.
+function windowDownloads(history, slug, days) {
+  const seen = history.snapshots.filter((s) => s.projects[slug]);
+  if (seen.length < 2) return null;
+  const latest = seen[seen.length - 1];
+  const cut = Date.parse(latest.at) - days * DAY;
+  const anchor = seen.reduce((best, s) =>
+    Math.abs(Date.parse(s.at) - cut) < Math.abs(Date.parse(best.at) - cut) ? s : best
+  );
+  const covered = (Date.parse(latest.at) - Date.parse(anchor.at)) / DAY;
+  // Less than half a day between the ends says nothing about a week — the window would be
+  // measured against this morning and report zero for a busy fortnight. Say nothing instead.
+  if (covered < 0.5) return null;
+  return {
+    count: osTotal(latest.projects[slug]) - osTotal(anchor.projects[slug]),
+    covered,
+    at: Date.parse(latest.at),
+  };
+}
+
+// How far back the record goes at all. A 30-day column against a 27-day record is a 27-day
+// column for everybody, and that is one fact about the file — not seventeen facts about
+// seventeen projects. Stating it per row buried the projects that really are short.
+function recordSpan(history) {
+  const all = history.snapshots;
+  return all.length < 2 ? 0 : (Date.parse(all[all.length - 1].at) - Date.parse(all[0].at)) / DAY;
+}
+
+// Short means shorter than the record could have managed — not shorter than the window. The
+// first is this project missing days everyone else has; the second is the archive being young,
+// which the note above the table already says once.
+const isShort = (w, reach) => !w || w.covered < reach - 0.5;
+
+// Site-wide downloads over a window, counting only the projects whose record covers the whole
+// of it. Mixing a full fortnight with someone's first three days produces a number that is
+// smaller than the truth and looks exactly like a quiet week.
+function windowTotal(rows, history, days) {
+  const reach = Math.min(days, recordSpan(history));
+  const ws = rows
+    .map((r) => windowDownloads(history, r.slug, days))
+    .filter((w) => !isShort(w, reach));
+  return ws.length
+    ? { count: ws.reduce((s, w) => s + w.count, 0), of: ws.length, all: rows.length }
+    : null;
+}
+
+// All-time answers "has anyone ever wanted this"; these two windows answer "does anyone want
+// it now", which is the question a flat cumulative counter cannot be made to answer.
+function recentDownloads(rows, history, now) {
+  const span = recordSpan(history);
+  const data = rows
+    .map((r) => ({ r, latest: lastSeen(history, r.slug), wins: WINDOWS.map((d) => windowDownloads(history, r.slug, d)) }))
+    .sort((a, b) => (b.wins[0]?.count || 0) - (a.wins[0]?.count || 0) ||
+      osTotal(b.latest?.projects[b.r.slug]) - osTotal(a.latest?.projects[a.r.slug]));
+
+  if (!data.some((d) => d.latest)) {
+    return `<p class="note">Nothing recorded yet. Each run writes a dated reading of every
+      download counter, and a window needs two of them — so these figures start filling in from
+      your second run.</p>`;
+  }
+
+  const cell = (w, days) => {
+    if (!w) return `<td class="n" data-sort="-1"><span class="dim">no data</span></td>`;
+    // Labelled with what this project's own record reaches. Without it a project watched for
+    // three days reads as a dead one: the number really is small, and the reason really isn't
+    // a lack of interest.
+    const note = isShort(w, Math.min(days, span))
+      ? `<br><span class="dim">${Math.round(w.covered)} d only</span>`
+      : "";
+    // A counter can fall — an asset deleted or re-uploaded takes its downloads with it. Say so
+    // rather than printing a negative download count and leaving the reader to guess.
+    const fell = w.count < 0 ? `<br><span class="dim">an asset was removed</span>` : "";
+    const shown = w.count < 0 ? `−${num(-w.count)}` : num(w.count);
+    return `<td class="n" data-sort="${w.count}">${shown}${note}${fell}</td>`;
+  };
+
+  const body = data
+    .map(({ r, latest, wins }) => {
+      const total = latest ? osTotal(latest.projects[r.slug]) : null;
+      const stale = latest && now - Date.parse(latest.at) >= DAY;
+      const first = history.snapshots.find((s) => s.projects[r.slug]);
+      return `<tr${latest ? "" : ' class="row--missing"'}>
+        <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}${
+        stale ? `<br><span class="dim">as of ${dayLabel(dayKey(Date.parse(latest.at)))}</span>` : ""
+      }</th>
+        ${wins.map((w, i) => cell(w, WINDOWS[i])).join("")}
+        <td class="n strong" data-sort="${total ?? -1}">${
+        total == null ? `<span class="dim">no data</span>` : num(total)
+      }</td>
+        <td class="n" data-sort="${first ? Date.parse(first.at) : -1}">${
+        first ? dayLabel(dayKey(Date.parse(first.at))) : `<span class="dim">—</span>`
+      }</td>
+      </tr>`;
+    })
+    .join("");
+
+  const foot = WINDOWS.map((days) => {
+    const t = windowTotal(rows, history, days);
+    if (!t) return `<td class="n"><span class="dim">no data</span></td>`;
+    const part = t.of < t.all ? `<br><span class="dim">${t.of} of ${t.all} projects</span>` : "";
+    return `<td class="n strong">${num(t.count)}${part}</td>`;
+  }).join("");
+  const grand = data.reduce((s, d) => s + (d.latest ? osTotal(d.latest.projects[d.r.slug]) : 0), 0);
+
+  // Named once, above the table, so the columns underneath can be read as they are labelled.
+  const thin = WINDOWS.filter((d) => d > span + 0.5);
+  const lead = thin.length
+    ? `<p class="note">The record is <strong>${Math.round(span)} days</strong> old, so the
+        ${thin.map((d) => `${d}-day`).join(" and ")} column${thin.length > 1 ? "s are" : " is"}
+        really ${Math.round(span)} days for every project watched throughout — a floor, not a
+        total. It fills out on its own as the runs accumulate.</p>`
+    : "";
+
+  return (
+    lead +
+    scrollTable(
+      "Recent downloads",
+    `<table class="tbl sortable" data-table="downloads-recent">
+    <caption>Downloads counted between two dated readings of the counter, so a day the
+      dashboard didn’t run costs nothing — unlike the repo-traffic archive further down, this
+      figure survives a gap. A project watched for less time than the rest carries what its own
+      record covers, and is left out of the totals row rather than folded in short: that
+      smaller number is a shorter window, not a quieter one. All time counts every download
+      since the project’s first release, including long before this dashboard existed.</caption>
+    <thead><tr><th scope="col">Project</th>
+      ${WINDOWS.map(
+        (d, i) =>
+          `<th scope="col" class="n"${i === 0 ? ' aria-sort="descending"' : ""}>Last ${d} days</th>`
+      ).join("")}
+      <th scope="col" class="n">All time</th>
+      <th scope="col" class="n">Record starts</th></tr></thead>
+    <tbody>${body}</tbody>
+    <tfoot><tr><th scope="row">All projects</th>${foot}
+      <td class="n strong">${num(grand)}</td><td></td></tr></tfoot>
+  </table>`
+    )
+  );
+}
+
 function trafficSection(rows) {
   if (!hasToken) {
     return `<p class="note">Visitor figures need a GitHub token — see the README section
@@ -809,8 +967,16 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
   const baseGap = base ? now - Date.parse(base.at) : null;
   const baseAge =
     baseGap == null ? null : baseGap < DAY ? "earlier today" : `${Math.round(baseGap / DAY)} day(s) ago`;
+  // Only projects whose record covers the whole week; the tile says so when that isn't all
+  // of them, because a total quietly missing a project reads as a quiet week.
+  const week = windowTotal(rows, history, 7);
   const tiles = [
     ["Total downloads", num(grand), base ? delta(grand, sumOf(base, osTotal)) : ""],
+    [
+      "Downloads (7d)",
+      week ? num(week.count) : "—",
+      week ? (week.of < week.all ? `${week.of} of ${week.all} projects on record` : "") : "needs two runs",
+    ],
     ["Stars", num(stars), base ? delta(stars, sumOf(base, "stars")) : ""],
     ["Repo views (14d)", hasToken ? num(views) : "—", ""],
     ["Projects", String(projects.length), `${health.byStatus.live || 0} live`],
@@ -866,8 +1032,11 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
   <section class="sec" data-sec="att" aria-labelledby="h-att"><h2 id="h-att">Needs attention</h2>
     ${issuesSection(ok, health)}</section>
 
-  <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads per OS</h2>
-    ${downloadsTable(rows, history, base)}</section>
+  <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads</h2>
+    <h3>All time, by operating system</h3>
+    ${downloadsTable(rows, history, base)}
+    <h3>The last 7 and 30 days</h3>
+    ${recentDownloads(rows, history, now)}</section>
 
   <section class="sec" data-sec="ga" aria-labelledby="h-ga"><h2 id="h-ga">Site visitors</h2>
     ${analyticsSection(ga, propertyId)}</section>
@@ -1228,12 +1397,16 @@ h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
 .tbl tbody:last-child tr:last-child > * { border-bottom: 0; }
 /* Wide tables scroll rather than crush. Focusable, so the region is keyboard-reachable. */
 .tbl-scroll { overflow-x: auto; }
+/* A note above a table sits flush against the caption's first line, because .note carries no
+   bottom margin and a caption has no top padding. Two tables lead with one, so the gap belongs
+   to the pair rather than to either. */
+.note + .tbl-scroll { margin-top: 14px; }
 .tbl-scroll:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 /* Two columns — nothing to crush, so no floor and nothing to scroll. */
 .tbl--rel { min-width: 0; }
-/* Site visitors carries three tables and Repo traffic two. Each gets a heading of its own:
-   a dim caption is weak wayfinding, and this page is read by someone who needs the
-   structure to be obvious rather than inferred from spacing. */
+/* Site visitors carries three tables, Downloads and Repo traffic two each. Every one gets a
+   heading of its own: a dim caption is weak wayfinding, and this page is read by someone who
+   needs the structure to be obvious rather than inferred from spacing. */
 .sec h3 { font-size: .95rem; font-weight: 700; color: var(--text); margin: 26px 0 8px; }
 
 /* The caption is prose, so it must wrap to the screen rather than ride the table's min-width
