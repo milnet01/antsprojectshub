@@ -11,6 +11,16 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Downloads for the last 7 and 30 days on the private dashboard** (APHW-0008)
+  A cumulative counter can't tell a steady trickle from a dead project
+  that had one good week, so a second table under Downloads reports each
+  project's last 7 and 30 days beside its all-time figure, with the date
+  its record starts. The figures are differences between two dated
+  readings, so a day the dashboard didn't run costs nothing. Where a
+  project has been watched for less time than the rest, the cell says how
+  far its own record reaches and the totals row leaves it out rather than
+  folding it in short.
+
 - **The traffic GitHub has already deleted, on the private dashboard** (APHW-0007)
   The dashboard has been quietly archiving GitHub's daily traffic buckets
   since its first run, because GitHub throws them away after 14 days.

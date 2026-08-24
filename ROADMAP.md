@@ -206,7 +206,7 @@ answers than the page asks of it.
   a repo whose traffic call is denied or rate-limited still shows its
   recorded past.
 
-- 📋 [APHW-0008] **Report downloads for a recent window, not just all-time.**
+- ✅ [APHW-0008] **Report downloads for a recent window, not just all-time.**
   Every download figure on the page is cumulative since the
   first release, so "finbreak: 23" can't distinguish a steady trickle
   from a dead project that had a good week in June. The dated snapshots
@@ -221,6 +221,27 @@ answers than the page asks of it.
   Source: in-session-2026-08-03.
   Priority: 2.
   Lanes: stats.mjs.
+  Resolved (2026-08-24): a second table under Downloads — last 7 days,
+  last 30 days, all time, and the date each project's record starts —
+  plus a "Downloads (7d)" tile. Figures are differences between two dated
+  readings of a cumulative counter, so a day the dashboard didn't run
+  costs nothing; the opposite of the traffic archive below it, which sums
+  per-day buckets and loses a missed day for good.
+
+  Two decisions the first render forced. The window's near end is the
+  newest reading, never the clock — anchoring on now would measure the
+  window short for a project whose fetch failed this run and report the
+  shortfall as a quiet week (the archiveTraffic bug, avoided here by
+  construction). And "short" means shorter than the RECORD could manage,
+  not shorter than the window: with a 27-day archive, marking every row
+  "27 d of 30" was seventeen copies of one fact about the file, buried the
+  four projects that really are short, and starved the 30-day total to "no
+  data". The record's age is stated once above the table; a row is marked
+  only when it has less than the rest, and only those rows leave the
+  totals.
+
+  A falling counter (an asset deleted or re-uploaded) says "an asset was
+  removed" rather than printing a negative download count.
 
 - 📋 [APHW-0009] **Rank "Needs attention" by how much it costs you.**
   `issuesSection()` (`stats.mjs:462`) emits one flat list, so "MAME
