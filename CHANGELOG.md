@@ -146,6 +146,14 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **"Needs attention" is ranked by what it costs, not listed flat** (APHW-0009)
+  A broken download button and a project without screenshots sat at the
+  same weight in one flat list. They are now two groups — Broken now, and
+  Incomplete — ordered within by cost, with the grouping and the wording
+  carrying the difference rather than the colour. Each heading counts the
+  things to fix rather than the bullets, so a single line covering
+  thirteen projects no longer reads as one job.
+
 - **Every download button starts a file — none lands the visitor on a GitHub page first.**
   26 of the 31 buttons already went straight to the release asset. The
   other five fell back to a GitHub page: mame-curator's "Download ·

@@ -243,7 +243,7 @@ answers than the page asks of it.
   A falling counter (an asset deleted or re-uploaded) says "an asset was
   removed" rather than printing a negative download count.
 
-- 📋 [APHW-0009] **Rank "Needs attention" by how much it costs you.**
+- ✅ [APHW-0009] **Rank "Needs attention" by how much it costs you.**
   `issuesSection()` (`stats.mjs:462`) emits one flat list, so "MAME
   Curator's download buttons fall back to the repo page" sits at the
   same weight as "Vestige Engine has no screenshots". The first is
@@ -257,6 +257,23 @@ answers than the page asks of it.
   Source: in-session-2026-08-03.
   Priority: 3.
   Lanes: stats.mjs.
+  Resolved (2026-08-24): two groups — ⚠ Broken now, and Incomplete —
+  ordered within by cost. A claimed OS with no matching release file
+  first (the site advertises a download it can't deliver), then missing
+  alt text (the build substitutes a generic description rather than
+  failing, so a live page tells a screen-reader visitor nothing), then
+  release files reachable only from GitHub. Below the line: no
+  screenshots, then unused image files.
+
+  Grouping and wording carry it, per the dashboard's colour rule — the ⚠
+  and the word "broken" read in greyscale and the amber only reinforces
+  them. An empty group is omitted rather than headed "(0)".
+
+  The count is of things to FIX, not of bullets. "No screenshots" is one
+  line covering thirteen projects, and the first render headed it
+  "Incomplete (1)". Each line now carries how many things it is about and
+  the heading sums them, so the total is traceable to the list under
+  it.
 
 ---
 
