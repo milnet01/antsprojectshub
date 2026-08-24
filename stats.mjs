@@ -916,40 +916,89 @@ function analyticsSection(ga, propertyId) {
     ${countries}`;
 }
 
+// Ranked by what it costs you, worst first, and split in two: a download button that doesn't
+// work and a project without screenshots are not the same kind of problem, and one flat list
+// gave them the same weight. The heading and the wording carry the split — the ⚠ and the amber
+// only reinforce something already legible in greyscale.
 function issuesSection(rows, health) {
   const items = [];
+  // `n` is how many things this line is really about, not how many lines there are: "no
+  // screenshots" is one bullet covering thirteen projects, and a group heading reading "(1)"
+  // said thirteen projects' worth of work was one thing to do.
+  const add = (now, rank, n, html) => items.push({ now, rank, n, html });
+
+  // Worst thing on the page: the site advertises a download it can't deliver, so the visitor
+  // lands on a repo page and has to go looking. Every one of these is losing a download today.
   for (const r of rows.filter((x) => x.missingAssets.length)) {
-    items.push(
+    add(
+      true,
+      1,
+      r.missingAssets.length,
       `<strong>${esc(r.name)}</strong> claims ${r.missingAssets
         .map((p) => OS_LABEL[p])
         .join(", ")} but its latest release has no matching file — those download buttons
        fall back to the repo page.`
     );
   }
+  // A live page failing the visitors least able to work around it. The build doesn't stop for
+  // this: it substitutes "<project> screenshot", which describes nothing, so the image is
+  // announced and still says nothing about what it shows.
+  if (health.missingAlt.length) {
+    add(
+      true,
+      2,
+      health.missingAlt.length,
+      `<strong>Missing alt text</strong> on ${health.missingAlt.length} screenshot(s) — the
+       page ships a generic description instead, which tells a screen-reader visitor nothing:
+       ${health.missingAlt.map(esc).join("; ")}.`
+    );
+  }
+  // Reachable only from GitHub. Costing you something, but nobody arrived expecting them.
   for (const r of rows.filter((x) => x.unexplained.length)) {
-    items.push(
+    add(
+      true,
+      3,
+      r.unexplained.length,
       `<strong>${esc(r.name)}</strong> ships release files that are neither an OS download
        nor a signature/checksum/source archive, so nobody can get them from the site:
        ${r.unexplained.map(([n, c]) => `${esc(n)} (${num(c)})`).join(", ")}.`
     );
   }
-  if (health.missingAlt.length) {
-    items.push(
-      `<strong>Missing alt text</strong> on ${health.missingAlt.length} screenshot(s):
-       ${health.missingAlt.map(esc).join("; ")}.`
+  // Nothing is broken below this line — a thinner page, and some tidying.
+  if (health.noShots.length) {
+    add(
+      false,
+      4,
+      health.noShots.length,
+      `<strong>No screenshots</strong> on ${health.noShots.length} project(s):
+       ${health.noShots.map(esc).join(", ")}.`
     );
   }
-  if (health.noShots.length) {
-    items.push(`<strong>No screenshots:</strong> ${health.noShots.map(esc).join(", ")}.`);
-  }
   if (health.orphanShots.length) {
-    items.push(
-      `<strong>Unused image files</strong> in <code>src/assets/img/shots/</code>:
+    add(
+      false,
+      5,
+      health.orphanShots.length,
+      `<strong>Unused image files</strong> (${health.orphanShots.length}) in
+       <code>src/assets/img/shots/</code>:
        ${health.orphanShots.map(esc).join(", ")}.`
     );
   }
+
   if (!items.length) return `<p class="note ok">Nothing needs attention. ✓</p>`;
-  return `<ul class="issues">${items.map((i) => `<li>${i}</li>`).join("")}</ul>`;
+
+  // An empty group is left out rather than shown as a heading with nothing under it: "Broken
+  // now (0)" is a thing to read and dismiss, and the good news is that it isn't there.
+  const group = (now, label) => {
+    const list = items.filter((i) => i.now === now).sort((a, b) => a.rank - b.rank);
+    if (!list.length) return "";
+    const n = list.reduce((t, i) => t + i.n, 0);
+    return `<h3 class="issues-h${now ? " issues-h--now" : ""}">${label}
+      <span class="count">(${n})</span></h3>
+      <ul class="issues">${list.map((i) => `<li>${i.html}</li>`).join("")}</ul>`;
+  };
+
+  return group(true, "⚠ Broken now") + group(false, "Incomplete");
 }
 
 function tallyList(obj) {
@@ -1461,6 +1510,13 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .spark { color: var(--violet); display: block; }
 .sparkcell { width: 72px; }
 
+/* The heading is the cue and the wording is the cue: "⚠ Broken now" says it in text, so the
+   amber only reinforces what already reads in greyscale. The count is dim because it is the
+   least urgent thing in the line — the reader wants the word first. */
+.issues-h { font-size: .95rem; font-weight: 700; color: var(--text); margin: 26px 0 8px; }
+.issues-h:first-child { margin-top: 0; }
+.issues-h--now { color: var(--amber); }
+.issues-h .count { color: var(--text-dim); font-weight: 600; }
 .issues { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
 .issues li { color: var(--text-muted); font-size: .88rem; line-height: 1.5; }
 .issues strong { color: var(--text); }
