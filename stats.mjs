@@ -435,9 +435,9 @@ function trafficSection(rows) {
   return scrollTable(
     "Repo traffic",
     `<table class="tbl sortable" data-table="traffic">
-    <caption>Last 14 days, from GitHub. Only you can see these numbers — GitHub deletes
-      them after 14 days, but this dashboard keeps its own dated copy in
-      <code>.stats/history.json</code>.</caption>
+    <caption>Straight from GitHub, and only you can see it. GitHub deletes these after 14
+      days — the archive below is this dashboard's own dated copy, which doesn't
+      expire.</caption>
     <thead><tr><th scope="col">Project</th>
       <th scope="col" class="n" aria-sort="descending">Views</th>
       <th scope="col" class="n">Visitors</th><th scope="col" class="n">Clones</th>
@@ -445,6 +445,117 @@ function trafficSection(rows) {
       <th scope="col" data-nosort>Top referrers</th></tr></thead>
     <tbody>${body}</tbody></table>`
   );
+}
+
+// ------------------------------------------------------------- archived traffic
+
+const ARCHIVE_WINDOW = 14;
+
+// Sum one project's archived buckets across a date window, counting only the days actually
+// recorded. A missing day is a gap — the dashboard wasn't run, or GitHub didn't answer — and
+// folding it in as a zero would understate the window and read the next run's recovery as a
+// spike. Same discipline the download snapshots keep.
+function windowSum(bucket, from, to) {
+  const out = { views: 0, uniques: 0, clones: 0, cloneUniques: 0, days: 0 };
+  for (let t = from; t <= to; t += DAY) {
+    const d = bucket[dayKey(t)];
+    if (!d) continue;
+    out.days += 1;
+    out.views += d.views || 0;
+    out.uniques += d.uniques || 0;
+    out.clones += d.clones || 0;
+    out.cloneUniques += d.cloneUniques || 0;
+  }
+  return out;
+}
+
+// The half GitHub can't serve. updateHistory() has been merging per-day buckets into
+// history.traffic since the first run, and GitHub keeps only 14 days — so past a fortnight
+// this archive is the only copy that exists. Until now nothing on the page read it back.
+function archiveTraffic(rows, history, now) {
+  // Every row, not just this run's successes — the one table on the page that can outlive a
+  // bad run. A repo whose traffic call was denied or rate-limited today still has its
+  // recorded past, and surviving that is the whole reason for keeping an archive.
+  const kept = rows
+    .map((r) => ({ r, bucket: history.traffic?.[r.slug] }))
+    .filter(({ bucket }) => bucket && Object.keys(bucket).length);
+
+  if (!kept.length) {
+    return `<p class="note">Nothing archived yet. Every run merges in the day buckets GitHub
+      is currently serving, so the record starts at your first authenticated run and passes
+      GitHub's own 14-day window a fortnight later.</p>`;
+  }
+
+  const allDays = new Set();
+  for (const { bucket } of kept) for (const d of Object.keys(bucket)) allDays.add(d);
+  const span = [...allDays].sort();
+
+  // The window ends at the newest day ARCHIVED, never at today. GitHub's daily buckets run a
+  // day or two behind the clock, so anchoring on now leaves the recent window permanently
+  // short and the fairness test below refuses every comparison on the page — a real trend
+  // suppressed by an artefact of when GitHub closes a bucket. The note names the end date so
+  // nobody reads this as "up to this minute".
+  const end = Date.parse(`${span[span.length - 1]}T00:00:00Z`);
+  const curFrom = end - (ARCHIVE_WINDOW - 1) * DAY;
+  const prevTo = curFrom - DAY;
+  const prevFrom = prevTo - (ARCHIVE_WINDOW - 1) * DAY;
+
+  // Measured against GitHub's live window rather than the archive's, because the question is
+  // what GitHub can still serve TODAY — which is what makes the rest worth keeping.
+  const beyond = span.filter((d) => d < dayKey(now - (ARCHIVE_WINDOW - 1) * DAY)).length;
+
+  const body = kept
+    .map((k) => ({
+      ...k,
+      cur: windowSum(k.bucket, curFrom, end),
+      prev: windowSum(k.bucket, prevFrom, prevTo),
+    }))
+    .sort((a, b) => b.cur.views - a.cur.views)
+    .map(({ r, bucket, cur, prev }) => {
+      const own = Object.keys(bucket).sort();
+      // Two windows covering a different number of days can't be set against each other: the
+      // shorter one reads as a quiet fortnight, so the change would report a trend that is
+      // really a hole in the record. Say nothing rather than something untrue.
+      const fair = cur.days > 0 && cur.days === prev.days;
+      const cell = (key) =>
+        cur.days === 0
+          ? `<td class="n" data-sort="-1"><span class="dim">no data</span></td>`
+          : `<td class="n" data-sort="${cur[key]}">${num(cur[key])}${
+              fair ? deltaLine(cur[key], prev[key]) : ""
+            }</td>`;
+      return `<tr>
+        <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}</th>
+        ${["views", "uniques", "clones", "cloneUniques"].map(cell).join("")}
+        <td class="n">${sparkline(own.map((d) => bucket[d].views || 0))}</td>
+        <td class="n" data-sort="${own.length}">${own.length} d<br>
+          <span class="dim">since ${dayLabel(own[0])}${fair ? "" : " \u00b7 no comparison"}</span></td>
+      </tr>`;
+    })
+    .join("");
+
+  return `<p class="note"><strong>${span.length} days archived</strong>,
+    ${dayLabel(span[0])} to ${dayLabel(span[span.length - 1])}.${
+    beyond
+      ? ` GitHub still serves the most recent ${ARCHIVE_WINDOW}; the other ${beyond} exist
+          nowhere but this machine.`
+      : ` Once it passes ${ARCHIVE_WINDOW} days it starts holding traffic GitHub has already
+          deleted.`
+  }</p>
+  ${scrollTable(
+    "Archived repo traffic",
+    `<table class="tbl sortable" data-table="traffic-archive">
+    <caption>The ${ARCHIVE_WINDOW} days to ${dayLabel(span[span.length - 1])}, from your own
+      archive, set against the ${ARCHIVE_WINDOW} before them. A change is shown only where both windows recorded the
+      same number of days — otherwise the older one is short of data, not short of visitors,
+      and the row says so. Trend is every day held for that project, gaps closed up.</caption>
+    <thead><tr><th scope="col">Project</th>
+      <th scope="col" class="n" aria-sort="descending">Views</th>
+      <th scope="col" class="n">Visitors</th><th scope="col" class="n">Clones</th>
+      <th scope="col" class="n">Cloners</th>
+      <th scope="col" data-nosort>Trend</th>
+      <th scope="col" class="n">Archived</th></tr></thead>
+    <tbody>${body}</tbody></table>`
+  )}`;
 }
 
 function activityTable(rows, now) {
@@ -499,6 +610,9 @@ function activityTable(rows, now) {
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 // GA hands dates back as "20260823".
 const gaDay = (d) => `${Number(d.slice(6, 8))} ${MONTHS[Number(d.slice(4, 6)) - 1]}`;
+// The same, for an archive key. GA hands back YYYYMMDD and dayKey() writes YYYY-MM-DD; two
+// formats reach the page, so they share one month table rather than growing a second.
+const dayLabel = (key) => `${Number(key.slice(8, 10))} ${MONTHS[Number(key.slice(5, 7)) - 1]}`;
 
 // Seconds as something a human reads. Zero is a dash, not "0s": on a page nobody has
 // engaged with yet, "0s" reads as a measured result rather than an absence.
@@ -759,7 +873,10 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
     ${analyticsSection(ga, propertyId)}</section>
 
   <section class="sec" data-sec="tr" aria-labelledby="h-tr"><h2 id="h-tr">Repo traffic</h2>
-    ${trafficSection(ok)}</section>
+    <h3>Last 14 days, live from GitHub</h3>
+    ${trafficSection(ok)}
+    <h3>The longer record, from your archive</h3>
+    ${archiveTraffic(rows, history, now)}</section>
 
   <section class="sec" data-sec="act" aria-labelledby="h-act"><h2 id="h-act">Audience &amp; activity</h2>
     ${activityTable(ok, now)}</section>
@@ -1114,7 +1231,7 @@ h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
 .tbl-scroll:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 /* Two columns — nothing to crush, so no floor and nothing to scroll. */
 .tbl--rel { min-width: 0; }
-/* Site visitors is the only section carrying three tables. Each gets a heading of its own:
+/* Site visitors carries three tables and Repo traffic two. Each gets a heading of its own:
    a dim caption is weak wayfinding, and this page is read by someone who needs the
    structure to be obvious rather than inferred from spacing. */
 .sec h3 { font-size: .95rem; font-weight: 700; color: var(--text); margin: 26px 0 8px; }

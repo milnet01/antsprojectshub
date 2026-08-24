@@ -57,8 +57,8 @@ Nothing here changes what is measured, only what the eye lands on.
   re-checked on --text-dim: 6.65:1 plain row, 6.20:1 striped, 5.20:1
   hovered (AA needs 4.5:1).
 
-- ✅ [APHW-0004] **Give wide tables somewhere to scroll on a narrow
-  screen.** "Audience & activity" is nine columns and the CSS has no
+- ✅ [APHW-0004] **Give wide tables somewhere to scroll on a narrow screen.**
+  "Audience & activity" is nine columns and the CSS has no
   horizontal-overflow rule anywhere — the only concession to small
   screens is a font-size drop at 720px (`stats.mjs:926`). On a phone or
   a half-width window the table simply crushes. Wrap each table in a
@@ -78,8 +78,8 @@ Nothing here changes what is measured, only what the eye lands on.
   the screen — caught by the 390px capture, which showed them scrolling
   out of view on the first pass.
 
-- ✅ [APHW-0005] **Make the row highlight visible enough to track a row
-  across nine columns.** `.tbl tbody tr:hover` is
+- ✅ [APHW-0005] **Make the row highlight visible enough to track a row across nine columns.**
+  `.tbl tbody tr:hover` is
   `rgba(255,255,255,.03)` (`stats.mjs:885`) — a 3% wash that is
   effectively invisible. Tracking one project from its name across to
   its last-commit age is exactly when a row highlight earns its keep.
@@ -102,8 +102,8 @@ Nothing here changes what is measured, only what the eye lands on.
 
 ### 🎨 Signal over noise
 
-- ✅ [APHW-0002] **Show nothing instead of `±0` when a figure hasn't
-  moved.** `delta()` (`stats.mjs:276`) prints a `±0` span for every
+- ✅ [APHW-0002] **Show nothing instead of `±0` when a figure hasn't moved.**
+  `delta()` (`stats.mjs:276`) prints a `±0` span for every
   unchanged number: 52 of them on the current page. It doubles the
   height of every table row and buries the handful of real movements
   (finbreak's ▲+6). Return an empty string for the flat case and let the
@@ -171,8 +171,8 @@ answers than the page asks of it.
 
 ### 🎨 Features
 
-- 📋 [APHW-0007] **Surface the archived visitor history the dashboard is
-  already collecting.** `updateHistory()` (`stats.mjs:188`) merges
+- ✅ [APHW-0007] **Surface the archived visitor history the dashboard is already collecting.**
+  `updateHistory()` (`stats.mjs:188`) merges
   GitHub's daily traffic buckets into `.stats/history.json` precisely
   because GitHub deletes them after 14 days — and as of 2026-08-03 that
   archive holds 18–20 days per project going back to 2026-07-13, i.e.
@@ -188,9 +188,26 @@ answers than the page asks of it.
   Source: in-session-2026-08-03.
   Priority: 2.
   Lanes: stats.mjs, dashboard-css.
+  Resolved (2026-08-24): the Repo traffic section now carries two
+  tables — "Last 14 days, live from GitHub" and "The longer record, from
+  your archive". archiveTraffic() reads history.traffic and shows the
+  last 14 archived days against the 14 before them, per project, with a
+  sparkline over that project's whole held span. 41 days are archived
+  today, 29 of them beyond what GitHub will still serve.
+  Gaps stay gaps: windowSum() counts only days actually recorded, and a
+  change is rendered ONLY where both windows recorded the same number of
+  days — otherwise the row says "no comparison" rather than reporting a
+  trend that is really a hole in the record. 4 of 17 projects say so.
+  The window ends at the newest day ARCHIVED, never at today: GitHub's
+  daily buckets run ~2 days behind the clock, and anchoring on now left
+  every current window short and suppressed all 17 comparisons. That was
+  caught on the first render, not by reading the code.
+  The table is driven by every row rather than this run's successes, so
+  a repo whose traffic call is denied or rate-limited still shows its
+  recorded past.
 
-- 📋 [APHW-0008] **Report downloads for a recent window, not just
-  all-time.** Every download figure on the page is cumulative since the
+- 📋 [APHW-0008] **Report downloads for a recent window, not just all-time.**
+  Every download figure on the page is cumulative since the
   first release, so "finbreak: 23" can't distinguish a steady trickle
   from a dead project that had a good week in June. The dated snapshots
   in `.stats/history.json` (28 of them as of 2026-08-03) make "downloads

@@ -11,6 +11,28 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **The traffic GitHub has already deleted, on the private dashboard** (APHW-0007)
+  The dashboard has been quietly archiving GitHub's daily traffic buckets
+  since its first run, because GitHub throws them away after 14 days.
+  Nothing ever read them back. "Repo traffic" now carries two tables: the
+  live 14 days, and the longer record — 41 days today, 29 of them beyond
+  anything GitHub will still serve.
+
+  Each project shows its last 14 archived days against the 14 before, with
+  a sparkline over its whole held span. Gaps stay gaps: a day that was
+  never recorded is not counted as a zero, and a change is shown only where
+  both windows recorded the same number of days — otherwise the row says
+  "no comparison", because the older window is short of data, not short of
+  visitors.
+
+  The window ends at the newest day archived rather than at today. GitHub's
+  buckets run about two days behind the clock, so anchoring on today left
+  every window short and silently suppressed every comparison on the page.
+
+  Unlike every other table, this one is driven by the whole project list
+  rather than the current run's successes — a repo whose traffic call is
+  denied or rate-limited still shows its recorded past.
+
 - **Site visitors from Google Analytics on the private dashboard**
   A "Site visitors" section reads the GA4 Data API directly — visitors, sessions, page views, top pages, referrers and countries. Read-only, local-only, and it says plainly that opt-in tracking makes every figure a floor rather than a total. A read failure renders as "could not be read", never as zero.
 
