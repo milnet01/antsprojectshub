@@ -23,8 +23,13 @@ There is no account to make and no password to lose.
 
 This matters more than it sounds. Pressless never talks to your visitors and
 is not reachable from the internet — it is a program on your desk, not a
-service. Your visitors are served by GitHub Pages, which is free and does that
-job properly. Pressless just hands it the finished pages.
+service. Your visitors are served by a hosting service that does that job
+properly. Pressless just hands it the finished pages.
+
+Today that service is GitHub Pages, because it is free, fast and does not go
+away. Only the very last step knows which host it is talking to — everything
+before it builds a plain folder of pages, which is what every host of this
+kind wants — so others may well follow later.
 
 ## What it is planned to do
 
