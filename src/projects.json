@@ -157,7 +157,7 @@
       "slug": "games-hub",
       "name": "Games Hub",
       "tagline": "Fourteen desktop games in one small window.",
-      "blurb": "Chess, Draughts, Reversi, Minesweeper, Sudoku, Snake, 2048, Pinball, Hearts, Canasta and five kinds of patience — Klondike, Spider, FreeCell and Pyramid — in a single Qt 6 window sized to sit beside whatever you are actually working on. The board games play against the computer at three strengths. Nothing to install: each download carries its own copy of Qt, so it runs on a machine that has never had it.",
+      "blurb": "Chess, Draughts, Reversi, Minesweeper, Sudoku, Snake, 2048, Pinball, Hearts, Canasta and four kinds of patience — Klondike, Spider, FreeCell and Pyramid — in a single Qt 6 window sized to sit beside whatever you are actually working on. The board games play against the computer at three strengths. Nothing to install: each download carries its own copy of Qt, so it runs on a machine that has never had it.",
       "status": "beta",
       "repo": "milnet01/games-hub",
       "platforms": [
