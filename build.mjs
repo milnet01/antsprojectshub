@@ -28,6 +28,7 @@ import { loadPosts, excerpt } from "./lib/posts.mjs";
 import { loadAbout } from "./lib/about.mjs";
 import {
   ghJson,
+  ghRaw,
   assetPlatform,
   pickAsset,
   pickLatestRelease,
@@ -245,13 +246,24 @@ function sanitizeOptions({ rawBase, blobBase } = {}) {
 async function fetchChangelogSections(repo, notesBase) {
   const out = new Map();
   const data = await ghJson(`/repos/${repo}/contents/CHANGELOG.md`).catch(() => null);
-  if (!data || !data.content) return out;
-  let text;
-  try {
-    text = Buffer.from(data.content, data.encoding || "base64").toString("utf8");
-  } catch {
-    return out;
+  if (!data) return out;
+  let text = "";
+  if (data.content) {
+    try {
+      text = Buffer.from(data.content, data.encoding || "base64").toString("utf8");
+    } catch {
+      text = "";
+    }
   }
+  // Over 1 MB the contents API answers 200 with `encoding: "none"` and an empty
+  // `content` — indistinguishable, to the check above, from a repo that keeps no
+  // changelog. Ants Terminal's is 1.29 MB, so all 100 of its releases fell back to
+  // nothing and its on-site history was empty. `ghRaw` has no size cap; it costs a
+  // second request only for a file that big, which is one repo here.
+  if (!text.trim() && (data.encoding === "none" || data.size > 1_000_000)) {
+    text = (await ghRaw(repo, "CHANGELOG.md")) || "";
+  }
+  if (!text.trim()) return out;
   // Split on level-2 headings, keeping each heading with the body that follows it.
   const parts = text.split(/^##[ \t]+/m).slice(1);
   for (const part of parts) {
@@ -326,11 +338,42 @@ async function fetchReleases(repo) {
       )
       .replace(/\n{3,}/g, "\n\n");
 
+  // A paragraph pointing at the repo's own CHANGELOG.md is an "on GitHub →" link for
+  // reading material, which is the one thing this page exists to remove. Ants Terminal's
+  // release tool writes one on every cut, in two shapes ("See [CHANGELOG.md](…) for
+  // release notes." and "Full release notes: CHANGELOG.md at this tag — <url>"), and it
+  // lands two different ways: on 50 of its 106 releases the pointer IS the whole body,
+  // and on 8 more it trails a real set of notes. Stripping the paragraph covers both —
+  // a body that was nothing else becomes empty and falls through to CHANGELOG.md below,
+  // and a real note simply loses a redundant last line. Same treatment, same reason, as
+  // GitHub's own compare trailer above.
+  //
+  // Judged per paragraph rather than matched against those two templates, which would go
+  // stale the moment the tool reworded: delete every link pointing at THIS repo's
+  // CHANGELOG.md and see what the paragraph has left. A pointer leaves only its lead-in;
+  // a paragraph that cites the changelog while saying something leaves its substance.
+  // Repo-scoped, so a note linking some OTHER project's changelog is untouched, and the
+  // residue bound is what keeps a short-but-real body — "Respin of v0.7.93-rc1 with
+  // cherry-picked fixes: c6cc905" — out of it.
+  const changelogLinkSrc =
+    `(?:\\[[^\\]]*\\]\\(\\s*)?<?https?://github\\.com/${repo.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}` +
+    `/blob/[^\\s)>]+/CHANGELOG\\.md[^\\s)>]*>?\\s*\\)?`;
+  const stripChangelogPointer = (body) =>
+    body
+      .split(/\n\s*\n/)
+      .filter((para) => {
+        if (!new RegExp(changelogLinkSrc, "i").test(para)) return true;
+        const residue = para.replace(new RegExp(changelogLinkSrc, "gi"), "").replace(/\s+/g, " ").trim();
+        return residue.length > 80;
+      })
+      .join("\n\n");
+
   const renderNotes = (body) => {
-    const md = body ? stripCompareTrailer(body).trim() : "";
+    const md = body ? stripChangelogPointer(stripCompareTrailer(body)).trim() : "";
     return md ? demoteHeadings(sanitizeHtml(marked.parse(md, { gfm: true }), sanitizeOptions(notesBase))) : "";
   };
-  // A release's own notes win; CHANGELOG.md fills in for the ones cut with an empty body.
+  // A release's own notes win; CHANGELOG.md fills in for the ones cut with an empty body
+  // and for the ones whose body only points back at it.
   const notesFor = (tag, body) => renderNotes(body) || sections.get(normalizeVersion(tag))?.html || "";
 
   // Every version the page can show, newest first. Releases come first because they carry
