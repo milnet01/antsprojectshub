@@ -201,12 +201,29 @@
       ]
     },
     {
+      "slug": "ut-ants",
+      "name": "UT Ants",
+      "tagline": "Plays your Unreal Tournament maps on a modern engine.",
+      "blurb": "Unreal Tournament is from 1999 and people are still playing it and still making maps for it — one Monster Hunt server here carries 515 of them. The engine underneath is frozen: shadows are painted into the walls at build time, and the computer players walk into a closed door and stop. UT Ants is a new engine that reads the maps you already have and rebuilds each one as a modernised version of itself — moving shadows, real materials, fog and light shafts — while running, dodging and shock-combos feel exactly as your hands expect. It ships none of Epic's content: you bring your own copy of the game. Very early, and there is nothing to download yet.",
+      "status": "soon",
+      "repo": "milnet01/UT_Ants",
+      "platforms": [
+        "win",
+        "linux"
+      ],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null,
+      "category": "games",
+      "screenshots": []
+    },
+    {
       "slug": "slipcase",
       "name": "Slipcase",
       "tagline": "Turns flat 2D game covers into realistic 3D box renders.",
-      "blurb": "A desktop tool that generates photorealistic 3D box-art renders from flat 2D cover images — multiple case types, configurable sizes, cover-art sourcing, and clean anti-aliased PNG output sized for RetroArch or LaunchBox.",
-      "status": "soon",
-      "repo": null,
+      "blurb": "A desktop tool that turns a flat 2D cover image into a photorealistic 3D box render — front, spine, top edge and a soft shadow, at the real millimetre measurements of fifteen case types from NES cartridge boxes to Switch cases. It can find the artwork for you, invent a spine when your cover has none, do a whole folder at once, and spin the box as an animation. Output is transparent PNG sized for RetroArch or LaunchBox. It runs, and there is no packaged download yet — for now you run it from a copy of the source.",
+      "status": "wip",
+      "repo": "milnet01/Slipcase",
       "platforms": [
         "linux"
       ],
