@@ -46,7 +46,27 @@ elif [ "$node_major" -ne "$CI_NODE_MAJOR" ]; then
 fi
 
 step "Install (locked)  ->  npm ci"
-npm ci
+# Same command the workflow runs — but never with its stdout on a pipe.
+#
+# Measured on this machine (npm 11.16.0, 19 locked packages, warm cache), the
+# SAME `npm ci` costs:
+#     stdout -> file    2.35s
+#     stdout -> pipe  300.62s        (npm's own summary agrees: "added 18 packages in 5m")
+#
+# A 128x difference decided by nothing but where the output goes. It is npm's
+# pathology, not this project's, and it matters here because a git hook runs
+# this script with its output on a pipe — so `git push` paid five minutes for a
+# two-second install, every push. Redirecting to a log and printing it after is
+# the whole fix; the install itself is unchanged and still lockfile-exact, so
+# the mirror of the workflow's build steps holds.
+npm_log="$(mktemp -t local-ci-npm.XXXXXX)"
+trap 'rm -f "$npm_log"' EXIT
+if ! npm ci >"$npm_log" 2>&1; then
+  cat "$npm_log" >&2
+  warn "npm ci failed — see the output above."
+  exit 1
+fi
+cat "$npm_log"
 
 step "Build site  ->  node build.mjs"
 # GITHUB_TOKEN is passed through if set, exactly as the workflow does.
