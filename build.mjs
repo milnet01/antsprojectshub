@@ -779,7 +779,7 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
   const version = hasRelease
     ? `<span class="version">Latest: <strong>${esc(release.version)}</strong>${
         release.dateISO
-          ? ` <span class="version__date">&middot; <time datetime="${esc(
+          ? ` <span class="version__date">&middot; <time data-localise datetime="${esc(
               release.dateISO
             )}">${esc(release.dateISO)}</time></span>`
           : ""
@@ -855,6 +855,9 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
     section: "projects",
     back: { href: "/", label: "All projects" },
     lightbox: Boolean(shotsHtml),
+    // The version line carries a release date; the script rewrites it to the reader's own
+    // system format. Only loaded where there is one — an unreleased project has no date.
+    dates: hasRelease && Boolean(release.dateISO),
   });
 }
 

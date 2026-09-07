@@ -6,10 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Source for **[antsprojectshub.co.za](https://antsprojectshub.co.za)** — a static showcase
 site for Anthony Schemel's projects. It is a small Node build-time static-site generator:
-the only client-side JavaScript is two small hand-written scripts —
+the only client-side JavaScript is three small hand-written scripts —
 `assets/lightbox.js` (keyboard shortcuts for the screenshot lightbox, loaded only on
-pages that have a gallery) and `assets/analytics.js` (the cookie consent bar, and the
-Google Analytics tag it gates). Both are progressive enhancement; see below. `dist/` is generated, never hand-edited (it is
+pages that have a gallery), `assets/dates.js` (rewrites a release date into the reader's
+own locale format, loaded only on project pages that have one) and `assets/analytics.js`
+(the cookie consent bar, and the Google Analytics tag it gates). All three are progressive
+enhancement; see below. `dist/` is generated, never hand-edited (it is
 `.gitignore`d and rebuilt in CI).
 
 ## Build & preview
@@ -112,11 +114,18 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   a changelog but has cut no release still gets a history. Where neither exists the page
   says so plainly rather than hiding the version.
 - **`marked` and `sanitize-html` are build-time only** — never ship them to visitors. The
-  output is static HTML/CSS plus two hand-written progressive-enhancement scripts.
+  output is static HTML/CSS plus three hand-written progressive-enhancement scripts.
   `src/assets/lightbox.js` (~1 KB) adds keyboard shortcuts (Esc / ← / →) to the screenshot
   lightbox, since CSS alone can't listen for key presses; the lightbox works fully without
   it (✕, click-outside, Back) — keep it that way. It's loaded only on gallery pages, via
-  `basePage({ lightbox: true })`. `src/assets/analytics.js` builds the consent bar and,
+  `basePage({ lightbox: true })`. `src/assets/dates.js` (~1 KB) rewrites the release date
+  in a project page's version line from ISO into the reader's own system format, asking
+  `navigator.languages` — a build on a CI runner cannot know a visitor's locale, so the
+  page ships `2026-08-19`, which is unambiguous and sorts, and the script only upgrades
+  what a human reads. It never touches the `datetime` attribute, and it acts only on
+  `<time data-localise>`, so nothing else on the page can drift; loaded via
+  `basePage({ dates: true })` on pages that have a release date.
+  `src/assets/analytics.js` builds the consent bar and,
   only on Accept, the analytics tag — with no JavaScript there is nothing to track, so it
   correctly does nothing at all. Don't add further client JS lightly.
 - **Demo videos are native `<video controls>`** — no player library, no JS, self-hosted
@@ -153,8 +162,8 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   `ANALYTICS_CLAIMS` in the same edit.** Without that, a privacy notice quietly becomes
   a lie and nothing complains.
 - **Security headers ship via `<meta>`** (GitHub Pages can't set HTTP headers): a strict CSP
-  with no inline scripts or styles, `referrer: no-referrer`, `nosniff`. Both self-hosted
-  scripts are allowed by `script-src 'self'` and demo videos by `media-src 'self'`;
+  with no inline scripts or styles, `referrer: no-referrer`, `nosniff`. All three
+  self-hosted scripts are allowed by `script-src 'self'` and demo videos by `media-src 'self'`;
   **inline** `<script>`/`<style>` still break the CSP — never introduce them, which is
   why Google's own snippet had to be rewritten as a file. The one third-party origin in
   the whole policy is `googletagmanager.com` in `script-src`, plus Google Analytics'
