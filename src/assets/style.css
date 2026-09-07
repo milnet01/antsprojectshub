@@ -584,6 +584,13 @@ a.card:hover .card__name {
   font-size: 0.9rem;
   color: var(--text-muted);
 }
+/* The release date after "Latest: v1.4.0". Dimmer than the version so the version still
+   reads first, but it stays text — never colour alone — because it answers a question
+   ("how long ago was that?") the version cannot. */
+.detail-sub .version__date {
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
 .actions {
   display: flex;
   flex-wrap: wrap;

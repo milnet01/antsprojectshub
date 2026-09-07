@@ -774,8 +774,16 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
           p.upstream
         )}</a>`
       : "";
+  // The date is what says whether "latest" means last week or last year, so it sits
+  // beside the version rather than only in the What's new heading further down.
   const version = hasRelease
-    ? `<span class="version">Latest: <strong>${esc(release.version)}</strong></span>`
+    ? `<span class="version">Latest: <strong>${esc(release.version)}</strong>${
+        release.dateISO
+          ? ` <span class="version__date">&middot; <time datetime="${esc(
+              release.dateISO
+            )}">${esc(release.dateISO)}</time></span>`
+          : ""
+      }</span>`
     : "";
 
   // Every project has About copy, published or not — an unreleased project is exactly
