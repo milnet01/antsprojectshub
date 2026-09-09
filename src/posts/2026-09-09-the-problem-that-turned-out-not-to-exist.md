@@ -355,7 +355,9 @@ small script rewrites it into whatever your own system uses once the page is
 open. If that script never runs, the date is still there and still correct.
 
 **Games Hub is now listed as Live** rather than Beta, on the strength of
-1.0.0.
+1.0.0. **DOOM Ants moves from Early WIP to Beta** — its own README has said
+"playable" for a while, and it ships builds you can download and run, so the
+old label was underselling it.
 
 New downloads picked up this week: Games Hub 1.0.0, Ants Terminal 0.7.108,
 DOOM Ants 0.7.2, finbreak 0.1.23 and demoreel 0.1.1.
