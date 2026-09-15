@@ -59,11 +59,13 @@ built for.
 **Very early. There is nothing to play and nothing to download.** The project
 started in September 2026.
 
-What exists is the foundation the rest is built on: how the code reports
-failure, how it writes its log, where it puts your settings, and the part that
-spreads work across the cores of your machine. Windows and Linux are both built
-and tested on every single change — not one first and the other later — and the
-tests pass on a machine that has never had Unreal Tournament installed.
+What exists is the reading and the drawing. It reads a real map end to end —
+its walls, textures, sounds, lights and everything placed in it — and rebuilds
+the old textures as modern materials. A first program opens that map and lets
+you fly a camera through it, lit and shadowed. There is no player, no gravity,
+no weapons and no monsters yet. Windows and Linux are both built and tested on
+every single change — not one first and the other later — and the tests pass
+on a machine that has never had Unreal Tournament installed.
 
 The whole thing is measured against twelve things you could observe by playing
 it, written down before any code was. The last of them is the honest one: the
