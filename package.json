@@ -9,6 +9,8 @@
     "stats": "node stats.mjs",
     "stats:serve": "node serve.mjs",
     "stats:tray": "python3 tray/ants-stats-tray.py",
+    "digest": "node scripts/week-digest.mjs",
+    "weekly-post": "scripts/weekly-post.sh",
     "test": "node --test test/*.test.mjs && python3 -m unittest discover -s test -p '*_test.py'"
   },
   "engines": {

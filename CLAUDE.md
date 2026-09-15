@@ -286,6 +286,37 @@ Other invariants:
   failure than a dashboard that doesn't render. Refresh re-renders the page from a fresh
   run, so without this the reader's order was thrown away on every refresh.
 
+## Weekly blog post (`scripts/weekly-post.sh`)
+
+A user timer (`systemd/ants-weekly-post.timer`, Wednesdays 09:00, catching up after a
+missed one) publishes the week's post with nobody at the keyboard. Install lines are in
+`systemd/ants-weekly-post.service`. Three stages, and the split is the point:
+
+- **Gather — `scripts/week-digest.mjs`, no AI.** Reads every project's local clone and
+  GitHub since the newest post was committed: commits, releases and whether they carry
+  downloads, tags, what `CHANGELOG.md` gained, roadmap lines marked done, and commit
+  subjects with the body lines that carry a figure. Writes `.digest/<date>.md`
+  (`.gitignore`d). **This is where the token saving lives** — the writer reads one compact
+  file instead of hundreds of commits, so keep new facts flowing through the digest rather
+  than telling a session to go and read histories. Same discipline as the stats
+  dashboard: a source that could not be read says "could not be read", never none. A tag
+  on the same commit as an earlier one is flagged, because a promoted preview carries
+  nothing new.
+- **Write, then review — two separate `claude -p` sessions**, prompts in
+  `scripts/weekly-post/`. The reviewer never saw the writing, checks every figure against
+  the digest or its commit, and ends `VERDICT: PASS` or `FAIL`; only PASS publishes. Both
+  skip user-level settings and run under `dontAsk` holding exactly: read anything, edit
+  `src/posts/**`, and `git log`/`git show` on each clone the digest names **with the path
+  spelled out** — a wildcard before the subcommand would also approve `git -c`, which runs
+  commands. Don't widen that list to make a run succeed.
+- **Build and publish.** `local-CI.sh`, then commit the one new post and push. Any failed
+  step stops with a desktop notification and leaves the draft uncommitted, so nothing
+  unreviewed goes live.
+
+It refuses a dirty tree, and skips a week whose newest post is under five days old or in
+which no project moved. `--dry-run` gathers the digest and stops, spending no tokens;
+`--no-push` stops after the review and the build.
+
 ## Dependencies
 
 **All dependencies are kept at their latest stable version** (npm packages, pinned GitHub

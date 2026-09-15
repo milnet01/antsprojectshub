@@ -1,0 +1,12 @@
+# Every Wednesday morning. Install instructions are in ants-weekly-post.service.
+
+[Unit]
+Description=Ants Projects Hub weekly blog post, Wednesday morning
+
+[Timer]
+OnCalendar=Wed *-*-* 09:00
+# A Wednesday the PC was off still gets its post, at the next boot.
+Persistent=true
+
+[Install]
+WantedBy=timers.target
