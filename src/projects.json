@@ -411,8 +411,8 @@
       "slug": "pressless",
       "name": "Pressless",
       "tagline": "Write and publish your own website from your own computer.",
-      "blurb": "A writing app that runs on your own machine and opens in your normal browser: you type an entry, see it exactly as it will look, and click once to publish it to your own free website — GitHub Pages today, with other hosts likely to follow. No accounts, no monthly fee and no service in between — every entry stays an ordinary text file in an ordinary folder, readable with Pressless closed, deleted or never installed. It is deliberately not a host: it never talks to your visitors and is not reachable from the internet. Very early — the styling language everything else renders through is built, and nothing around it is yet, so there is nothing to download.",
-      "status": "soon",
+      "blurb": "A writing app that runs on your own machine and opens in your normal browser: you type an entry, see it exactly as it will look, and click once to publish it to your own free website — GitHub Pages today, with other hosts likely to follow. No accounts, no monthly fee and no service in between — every entry stays an ordinary text file in an ordinary folder, readable with Pressless closed, deleted or never installed. It is deliberately not a host: it never talks to your visitors and is not reachable from the internet. Writing, previewing and publishing work today; undo, photographs and a visitor dashboard are still to come.",
+      "status": "beta",
       "repo": "milnet01/Pressless",
       "platforms": [
         "linux",

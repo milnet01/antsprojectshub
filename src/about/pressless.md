@@ -31,34 +31,49 @@ away. Only the very last step knows which host it is talking to — everything
 before it builds a plain folder of pages, which is what every host of this
 kind wants — so others may well follow later.
 
-## What it is planned to do
+## What it does today
 
 - **Write with a handful of simple marks** — bold, a heading, a link, a
-  picture — instead of buttons and hidden formatting.
+  quotation — instead of buttons and hidden formatting.
 - **Show you the real page while you type**, rendered by the same code that
   builds the live site, so what you see is what gets published.
-- **Publish in one press**, sending only the pages that actually changed.
+- **Save as you go.** Your words save themselves a moment after you stop
+  typing. A change to an entry that is already live waits in a separate copy
+  until you publish it.
+- **Publish in one press.** If publishing fails, your files go back to how
+  they were and you are told what to do next. Pressless refuses to replace
+  your site with an empty one.
+- **Explain every problem in plain words** — what happened, what it means for
+  your site, and what to do about it.
+
+## Still to come
+
 - **Put back yesterday's version** when a change turns out wrong.
-- **Bring an existing blog across** from a WordPress export — years of posts,
-  including the awkward ones with no title and the poems whose line breaks are
-  the point.
-- **Resize your photographs for you**, so a phone picture does not take a
-  minute to load.
-- **Tell you how the site is being read** — how many people, and roughly where
+- **Add photographs** from the editor, resized for the web for you.
+- **Edit your other pages**, such as an About page, in the same box.
+- **Start a new entry from a template.**
+- **Show how the site is being read** — how many people, and roughly where
   from.
+- **Update itself.**
 
 ## Where it stands
 
-**There is nothing to use yet, and nothing to download.** One piece is
-finished: the small styling language that turns what you type into a page,
-which is shared by the editor and by the site builder so the two can never
-disagree about how your writing looks. Everything around it — the editor
-itself, the publishing, the import — is designed and queued, not written.
+**It is an early beta, for Linux and Windows.** Download the file for your
+system and run it. There is nothing to install first — no Python, no
+compiler, no command line.
 
-It is aimed at Linux and Windows, and will arrive as a single file you run,
-with no Python, no compiler and no command line to install first. That is the
-whole point of it, so it is being tested that way from the start: on a Windows
-machine with nothing developer-ish on it at all.
+Pressless keeps everything in a folder called `Pressless-data`, right beside
+the program. So put the program where you want your writing to live before
+you first start it.
 
-If you want to watch it being built, the repository is public and linked at the
-top of this page.
+The first time, it asks for three things: your site's GitHub repository, your
+site's name and address, and a publishing key from GitHub. It checks them with
+GitHub before saving anything, and keeps the key where only your own computer
+account can read it. So you need a GitHub account and a GitHub Pages site
+before you begin.
+
+If a console window (a plain text window) opens alongside the browser, leave
+it open while you work: closing it stops Pressless.
+
+Bringing an existing WordPress blog across works, but for now it is a
+separate, technical step rather than a button in the app.
