@@ -52,6 +52,25 @@ The page says in English what the script does in code, and English is the half
 no compiler checks. `assertAnalyticsContract()` exists so a privacy notice
 cannot quietly become a lie.
 
+## An About page is checked against the release history
+
+Slipcase's About page said the project had no download after it had shipped one. Nothing
+caught it; a person reading the site did, and the fix was commit 6ab16ab.
+
+Only the contradiction a machine can see is checked. Reading prose for truth is the
+weekly post's fact-checker, which needs a digest; an About page has none.
+
+The check warns in the build and fails in `local-CI.sh` because the daily rebuild exists
+to keep release notes fresh. Stopping it over a stale sentence would cost the whole
+site's freshness to report one page's drift.
+
+## The changelog is closed on the weekly cadence
+
+`CHANGELOG.md` said from the start that dated sections stand in for versions, and nothing
+closed one, so every entry accumulated under `[Unreleased]`. The weekly post already runs
+on a timer and already commits, so it closes the section too — a cadence that exists
+beats one that must be remembered.
+
 ## Companion files are skipped before OS matching
 
 Several companion files carry an OS name, and GitHub lists assets

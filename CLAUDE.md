@@ -35,6 +35,10 @@ npm test                # the stats server's port handling (Node + Python)
 version, update the script to match. The deploy steps are GitHub Pages infra and cannot run
 locally.
 
+It adds two checks the workflow has no reason to run: that `dist/` is deploy-ready, and
+that no About page contradicts the release history. Both fail the script, so a push is
+stopped without ever stopping the site's daily rebuild.
+
 Authentication avoids GitHub API rate limits: `GITHUB_TOKEN` if set (CI passes the Actions
 token automatically), otherwise the GitHub CLI's login via `gh auth token`. With neither, or
 offline, the build still succeeds — each project falls back to static metadata from
@@ -162,6 +166,14 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   **inline** `<script>`/`<style>` still break the CSP — never introduce them. The one
   third-party origin in the whole policy is `googletagmanager.com` in `script-src`, plus
   Google Analytics' collector in `connect-src`.
+
+- **An About page's claim to be unpublished must stay true.** The copy is hand-written
+  and the release history is not, so a page saying "no download yet" outlives the release
+  that gave it one. `build.mjs` compares each About page against the history it has just
+  fetched and warns; `local-CI.sh` turns that warning into a failure. The phrases it
+  recognises are `UNPUBLISHED_CLAIMS` in `build.mjs` — extend that list rather than adding
+  a second check. No About page states a version number, so nothing reads one; add that
+  check when one does.
 
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative so a source tarball is not mistaken for a Linux binary), falling
@@ -308,6 +320,13 @@ file before bumping or pinning anything.
 The site owner is partially sighted. All visual changes must keep WCAG AA contrast (the CSS
 text tokens are chosen to meet AA on `--bg`), preserve the skip-link and semantic landmarks,
 and not rely on colour alone to convey status. Verify contrast when touching colours.
+
+## Changelog
+
+The site deploys continuously, so dated sections stand in for versions. Add entries under
+`## [Unreleased]`; `scripts/weekly-post.sh` closes them under the day's date when it
+publishes, so no section stays open. `scripts/close-changelog.mjs` does the closing and
+can be run by hand.
 
 ## History
 

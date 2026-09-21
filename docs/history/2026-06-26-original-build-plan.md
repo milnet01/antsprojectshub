@@ -1,5 +1,7 @@
 # Ants Projects Hub — Implementation Plan (pre-rendered)
 
+> **Historical.** This is the build plan for the site's first build, carried out and finished 2026-06-26. Its steps are done and its instructions to a worker are spent. [`CLAUDE.md`](../../CLAUDE.md) describes the site as it stands. Do not execute this.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans (inline) or subagent-driven-development. Steps use `- [ ]`.
 
 **Goal:** A build-time pre-rendered static site (GitHub Pages) showcasing 13 projects — landing grid + one static page per project, with README/version/downloads/issues baked from GitHub. "Mesh Glow" theme, accessible, fluid-responsive, secure.

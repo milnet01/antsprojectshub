@@ -1162,6 +1162,35 @@ function notFoundPage() {
   });
 }
 
+// --------------------------------------------------- About copy vs. the releases
+// An About page is hand-written; the release history is not. So the two drift — a page
+// saying "no download yet" outlives the release that gave it one. Slipcase's page said
+// exactly that after it had shipped, and only a person reading the site caught it.
+//
+// Only the contradiction a machine can see is checked: a claim of being unpublished on
+// a project the build has just fetched a release for. No About page states a version
+// number, so nothing here reads one — add that check when one does.
+//
+// This warns; it does not fail. The daily rebuild exists to keep release notes fresh and
+// must not stop over a stale sentence. local-CI.sh fails on these lines instead, so the
+// drift is caught before a person publishes rather than after.
+const UNPUBLISHED_CLAIMS = [
+  /not published yet/i,
+  /not packaged for download/i,
+  /no download yet/i,
+  /there is no (?:package|download)/i,
+];
+
+function aboutDrift(p, aboutHtml, release) {
+  if (!release?.version || !aboutHtml) return null;
+  // Tags are stripped first, so a phrase broken across markup still reads as prose.
+  const text = aboutHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  const claim = UNPUBLISHED_CLAIMS.find((re) => re.test(text));
+  if (!claim) return null;
+  return `! about-drift: ${p.slug}: src/about/${p.slug}.md says "${text.match(claim)[0]}", `
+    + `but ${p.repo} has released ${release.version}`;
+}
+
 // ------------------------------------------------------------------------ main
 async function main() {
   const data = JSON.parse(await readFile(join(ROOT, "src/projects.json"), "utf8"));
@@ -1209,6 +1238,7 @@ async function main() {
   // failed the build long before here); only the release history is fetched, and a
   // GitHub failure there costs the changelog and the version, never the page.
   let enriched = 0;
+  const driftWarnings = [];
   const releases = new Map();
   const histories = new Map();
   for (const p of projects) {
@@ -1224,6 +1254,8 @@ async function main() {
     }
     releases.set(p.slug, release);
     histories.set(p.slug, history);
+    const drift = aboutDrift(p, about.get(p.slug), release);
+    if (drift) driftWarnings.push(drift);
     await writeFile(
       join(DIST, "p", `${p.slug}.html`),
       projectPage(p, { aboutHtml: about.get(p.slug), release, history })
@@ -1236,6 +1268,9 @@ async function main() {
       await writeFile(join(DIST, "p", p.slug, "changelog.html"), changelogPage(p, history));
     }
   }
+
+  // Grouped rather than printed in the loop, so they are not lost among fetch warnings.
+  for (const w of driftWarnings) console.warn(w);
 
   // Blog: index, one directory per post (so its URL is /blog/<slug>/), and the feed.
   for (const [i, post] of posts.entries()) {

@@ -9,6 +9,26 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- **An About page can no longer quietly claim a project has no download after it
+  has shipped one.** The build compares each About page against the release history
+  it just fetched, and `local-CI.sh` fails on a contradiction — so it is caught
+  before a push, while the daily rebuild keeps refreshing the site regardless.
+
+### Changed
+
+- **The changelog now closes a dated section each week instead of growing forever
+  under `[Unreleased]`.** This file said from the start that dated sections stand in
+  for version numbers, and nothing was closing one. The weekly post script does it
+  now, in the same commit as the post.
+
+- **The original June design documents moved to `docs/history/`**, marked as the
+  record of the first build. They describe the site as it was launched, not as it
+  stands, and nothing links to them.
+
+## 2026-09-21
+
 ### Fixed
 
 - **Ants Terminal's on-site changelog was empty, and said so in 100 different

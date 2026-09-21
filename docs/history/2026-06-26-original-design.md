@@ -1,5 +1,7 @@
 # Ants Projects Hub — Design Spec
 
+> **Historical.** This is the original design for the site's first build, shipped 2026-06-26. It is kept for the reasoning behind the early decisions. It does not describe the site as it stands — [`CLAUDE.md`](../../CLAUDE.md) does. Do not build from it.
+
 **Date:** 2026-06-26
 **Owner:** Anthony Schemel (GitHub: `milnet01`)
 **Status:** ✅ Shipped 2026-06-26 — live at https://antsprojectshub.co.za

@@ -70,7 +70,23 @@ cat "$npm_log"
 
 step "Build site  ->  node build.mjs"
 # GITHUB_TOKEN is passed through if set, exactly as the workflow does.
-node build.mjs
+#
+# Output is teed rather than buffered: the build talks to GitHub and a silent minute
+# looks like a hang. The copy is kept for the About-drift check below.
+build_log="$(mktemp -t local-ci-build.XXXXXX)"
+trap 'rm -f "$npm_log" "$build_log"' EXIT
+node build.mjs 2>&1 | tee "$build_log"
+
+step "Check About copy against the release history"
+# build.mjs only warns on these. The daily rebuild exists to keep release notes fresh
+# and must not stop over a stale sentence — but a person about to publish should be.
+# So the warning is advisory in the build and fatal here, at the gate before a push.
+if grep -q '^! about-drift:' "$build_log"; then
+  grep '^! about-drift:' "$build_log" >&2
+  warn "An About page contradicts the release history. Fix src/about/ before pushing."
+  exit 1
+fi
+ok "About copy agrees with the release history."
 
 step "Check deploy readiness (what upload-pages-artifact / deploy-pages expect)"
 # The deploy job runs only on GitHub Pages infrastructure and can't be reproduced

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Weekly blog post: gather the facts (free) → Claude writes the post → a second, fresh
-# Claude session checks it against the sources → build → commit and push.
+# Claude session checks it against the sources → build → close the week's
+# changelog section → commit and push.
 # systemd/ants-weekly-post.timer runs it every Wednesday. Safe to run by hand:
 #
 #   scripts/weekly-post.sh             # the whole thing
@@ -119,12 +120,19 @@ if [[ $mode == --no-push ]]; then
   exit 0
 fi
 
-git add -- "$post"
+# The site ships by pushing, so dated changelog sections stand in for versions.
+# This is the cadence that closes one: whatever accrued under [Unreleased] since
+# the last post is dated now, in the same commit as the post that describes it.
+closed=$(node scripts/close-changelog.mjs) || stop "closing the changelog section failed"
+say "${closed#close-changelog: }"
+git add -- "$post" CHANGELOG.md
 git commit -q -F - <<EOF
 content: this week's post
 
 Written by scripts/weekly-post.sh from $digest, then checked against its
 sources by a second, independent session before publishing (VERDICT: PASS).
+
+Changelog: ${closed#close-changelog: }
 
 CLAUDE.md rule 14: checked, no contract document edited, no gate.
 
