@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-09-22
+
 ### Added
 
 - **An About page can no longer quietly claim a project has no download after it
