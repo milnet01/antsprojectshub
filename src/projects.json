@@ -185,6 +185,7 @@
       "upstream": null,
       "homepage": null,
       "category": "media",
+      "logo": "logos/album-builder.png",
       "screenshots": [
         {
           "src": "shots/album-builder-curate.png",
