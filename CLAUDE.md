@@ -30,14 +30,15 @@ npm run stats           # private stats dashboard → .stats/ (never published)
 npm test                # the stats server's port handling (Node + Python)
 ```
 
-`local-CI.sh` mirrors the `build` job in `.github/workflows/deploy.yml` step for step
-(`npm ci` → `node build.mjs`). If you change the workflow's build steps or its pinned Node
-version, update the script to match. The deploy steps are GitHub Pages infra and cannot run
-locally.
+`local-CI.sh` **is** the build: the `build` job in `.github/workflows/deploy.yml` calls
+`./local-CI.sh --ci`, and reads the Node version from `./local-CI.sh --print-node-major`.
+Change a build step or the Node version in the script, never in the workflow. Only the
+Pages steps (configure, upload, deploy) belong to the workflow; they cannot run locally.
 
-It adds two checks the workflow has no reason to run: that `dist/` is deploy-ready, and
-that no About page contradicts the release history. Both fail the script, so a push is
-stopped without ever stopping the site's daily rebuild.
+It checks two things beyond the build: that `dist/` is deploy-ready, and that no About page
+contradicts the release history. Both fail a plain `./local-CI.sh`, which is the pre-push
+gate. Under `--ci` the About check is reported and not fatal, so a stale sentence never
+stops the site's daily rebuild.
 
 Authentication avoids GitHub API rate limits: `GITHUB_TOKEN` if set (CI passes the Actions
 token automatically), otherwise the GitHub CLI's login via `gh auth token`. With neither, or
@@ -170,7 +171,8 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
 - **An About page's claim to be unpublished must stay true.** The copy is hand-written
   and the release history is not, so a page saying "no download yet" outlives the release
   that gave it one. `build.mjs` compares each About page against the history it has just
-  fetched and warns; `local-CI.sh` turns that warning into a failure. The phrases it
+  fetched and warns; `local-CI.sh` turns that warning into a failure (except under
+  `--ci`, the daily rebuild). The phrases it
   recognises are `UNPUBLISHED_CLAIMS` in `build.mjs` — extend that list rather than adding
   a second check. No About page states a version number, so nothing reads one; add that
   check when one does.
