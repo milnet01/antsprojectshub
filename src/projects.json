@@ -421,7 +421,20 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/lotto-tracker-top.png",
+          "alt": "Lotto Tracker's dark page, using invented tickets. Below a notice that one entry cannot be checked, it lists two winning lines, each with the ticket's numbers beside the numbers drawn as coloured balls, the prize amount and the date by which it can be claimed, then the tickets that still have draws to come."
+        },
+        {
+          "src": "shots/lotto-tracker-entries.png",
+          "alt": "A table of every ticket entry with its cost, how many draws were checked and what it won, followed by money spent against money won for the year."
+        },
+        {
+          "src": "shots/lotto-tracker-settings.png",
+          "alt": "Totals comparing what was spent with what was won, then the settings: a colour theme choice, switches for starting the tray at login and opening this page when the tray starts, and a Refresh results button."
+        }
+      ]
     },
     {
       "slug": "demoreel",
