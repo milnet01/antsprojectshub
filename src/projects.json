@@ -31,6 +31,7 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "logo": "logos/ants-terminal.svg",
       "screenshots": [
         {
           "src": "shots/ants-terminal-claude-session.png",
@@ -71,6 +72,7 @@
       "upstream": null,
       "homepage": null,
       "category": "emulation",
+      "logo": "logos/retrodb.svg",
       "screenshots": [
         {
           "src": "shots/retrodb-library.png",
@@ -120,6 +122,7 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "logo": "logos/perch.svg",
       "screenshots": [
         {
           "src": "shots/perch-layouts.png",
@@ -151,6 +154,7 @@
       "upstream": "libretro/RetroArch",
       "homepage": null,
       "category": "emulation",
+      "logo": "logos/retroarch.svg",
       "screenshots": [
         {
           "src": "shots/retroarch-ozone-main-menu.png",
@@ -323,6 +327,7 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "logo": "logos/contact-list.svg",
       "screenshots": [
         {
           "src": "shots/contact-list-list.png",
