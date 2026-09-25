@@ -11,6 +11,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **The dashboard shows how many people read each weekly post.** (APHW-0014)
+  A Blog posts table under Site visitors gives each post's views in its
+  first week and in total. A post published before tracking began says
+  so rather than showing zero, and a failed read says it failed.
+
 - **The dashboard shows the weekly post's last run.** (APHW-0013)
   `scripts/weekly-post.sh` records every real run's outcome in
   `.stats/weekly-post.json`. The dashboard's Site content section shows

@@ -18,7 +18,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { spawn } from "node:child_process";
 import { esc, ORIGIN } from "./lib/templates.mjs";
-import { collectAnalytics, gaError } from "./lib/ga.mjs";
+import { collectAnalytics, collectPostViews, gaError } from "./lib/ga.mjs";
+import { loadPosts } from "./lib/posts.mjs";
 import {
   ghRequest,
   assetPlatform,
@@ -820,10 +821,68 @@ function duration(seconds) {
   return `${Math.floor(n / 60)}m ${String(n % 60).padStart(2, "0")}s`;
 }
 
+// Each weekly post's readership: views in its first seven days (the week it was the newest
+// post) and in total. GA keys the page by path, and a post's path is /blog/<slug>/. A post
+// published before GA recorded anything has an unknown first week, never a zero one; a post
+// younger than a week says how many days its figure covers.
+function blogTable(posts, pv, now) {
+  if (!posts.length) return `<p class="note">No blog posts yet.</p>`;
+  if (!pv || pv.error) {
+    return `<p class="note">Blog readership could not be read${
+      pv?.error ? `: ${esc(pv.error)}` : ""
+    }. Treat it as unknown, never as zero.</p>`;
+  }
+  const gaKey = (iso) => iso.replaceAll("-", "");
+  const byPath = new Map();
+  for (const r of pv.rows) {
+    const path = r.pagePath.replace(/index\.html$/, "").replace(/\/?$/, "/");
+    if (!byPath.has(path)) byPath.set(path, []);
+    byPath.get(path).push(r);
+  }
+  const rows = posts.map((p) => {
+    const views = byPath.get(p.url) || [];
+    const start = p.date.getTime();
+    const end = gaKey(new Date(start + 6 * DAY).toISOString().slice(0, 10));
+    const total = views.reduce((t, r) => t + r.screenPageViews, 0);
+    const beforeTracking = !pv.firstDay || gaKey(p.dateISO) < pv.firstDay;
+    const week = views
+      .filter((r) => r.date >= gaKey(p.dateISO) && r.date <= end)
+      .reduce((t, r) => t + r.screenPageViews, 0);
+    const age = Math.floor((now - start) / DAY) + 1;
+    return { p, total, week, beforeTracking, age };
+  });
+  return scrollTable(
+    "Blog posts",
+    `<table class="tbl sortable" data-table="ga-posts">
+    <caption>Views per weekly post. "First week" is its first seven days, while it was the
+      newest post. A floor, like every figure here.</caption>
+    <thead><tr><th scope="col">Post</th>
+      <th scope="col" aria-sort="descending">Published</th>
+      <th scope="col" class="n">First week</th>
+      <th scope="col" class="n">All time</th></tr></thead>
+    <tbody>${rows
+      .map(
+        ({ p, total, week, beforeTracking, age }) => `<tr>
+        <th scope="row" data-sort="${esc(p.title)}"><a href="${esc(
+          ORIGIN + p.url
+        )}" target="_blank" rel="noopener">${esc(p.title)}</a></th>
+        <td data-sort="${esc(p.dateISO)}">${esc(p.dateISO)}</td>
+        <td class="n" data-sort="${beforeTracking ? -1 : week}">${
+          beforeTracking
+            ? '<span class="dim">before tracking</span>'
+            : `${num(week)}${age < 7 ? ` <span class="dim">(${age} d so far)</span>` : ""}`
+        }</td>
+        <td class="n" data-sort="${total}">${num(total)}</td>
+      </tr>`
+      )
+      .join("")}</tbody></table>`
+  );
+}
+
 const gaEmpty = (label) =>
   `<p class="note">No ${label} recorded yet in this window.</p>`;
 
-function analyticsSection(ga, propertyId) {
+function analyticsSection(ga, propertyId, blog) {
   if (!propertyId) {
     return `<p class="note">No Google Analytics property is configured. Add
       <code>analytics.propertyId</code> to <code>src/projects.json</code> to show visitor
@@ -952,7 +1011,9 @@ function analyticsSection(ga, propertyId) {
     <h3>Where visitors came from</h3>
     ${sources}
     <h3>Countries</h3>
-    ${countries}`;
+    ${countries}
+    <h3>Blog posts</h3>
+    ${blogTable(blog.posts, blog.views, blog.now)}`;
 }
 
 // Ranked by what it costs you, worst first, and split in two: a download button that doesn't
@@ -1058,7 +1119,7 @@ function tallyList(obj) {
     .join("");
 }
 
-function page({ rows, history, base, health, projects, now, elapsed, ga, propertyId }) {
+function page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews }) {
   const ok = rows.filter((r) => r.ok);
   const grand = ok.reduce((s, r) => s + r.total, 0);
   const stars = ok.reduce((s, r) => s + r.stars, 0);
@@ -1139,7 +1200,7 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
     ${recentDownloads(rows, history, now)}</section>
 
   <section class="sec" data-sec="ga" aria-labelledby="h-ga"><h2 id="h-ga">Site visitors</h2>
-    ${analyticsSection(ga, propertyId)}</section>
+    ${analyticsSection(ga, propertyId, { posts, views: postViews, now })}</section>
 
   <section class="sec" data-sec="tr" aria-labelledby="h-tr"><h2 id="h-tr">Repo traffic</h2>
     <h3>Last 14 days, live from GitHub</h3>
@@ -1632,6 +1693,11 @@ export async function generate() {
   // history itself, so snapshotting it would only create a second copy that could drift.
   const ga = await collectAnalytics(propertyId);
   if (propertyId && !ga) console.warn(`! Google Analytics: ${gaError} — visitor figures skipped`);
+  const posts = await loadPosts(join(ROOT, "src/posts"));
+  const postViews = posts.length
+    ? await collectPostViews(propertyId, posts[posts.length - 1].dateISO)
+    : null;
+  if (postViews?.error) console.warn(`! Blog readership: ${postViews.error} — table skipped`);
 
   const now = Date.now();
   const history = await loadHistory();
@@ -1651,7 +1717,7 @@ export async function generate() {
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   await writeFile(
     PAGE,
-    page({ rows, history, base, health, projects, now, elapsed, ga, propertyId })
+    page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews })
   );
 
   const failed = rows.filter((r) => !r.ok);

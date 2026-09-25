@@ -344,11 +344,16 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Source: user-2026-09-25.
   Lanes: scripts/weekly-post.sh, stats.mjs.
 
-- 📋 [APHW-0014] **Show blog post readership on the dashboard.**
+- ✅ [APHW-0014] **Show blog post readership on the dashboard.**
   Read page views per post path through `lib/ga.mjs`, and show each post's
   views in its first week and in total. A GA failure renders as "could not
   be read", never as zeros.
   Priority: 3.
+  Resolved (2026-09-25): collectPostViews() in lib/ga.mjs reads
+  daily /blog/ page views plus the first day GA recorded anything;
+  blogTable() in stats.mjs joins them to lib/posts.mjs's post list. Totals
+  checked against a direct GA query. Separate from collectAnalytics so a
+  failure costs only this table.
   **Layman:** Views per weekly post, so you can see whether the posts earn their effort.
   Kind: feature.
   Source: user-2026-09-25.
