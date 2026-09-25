@@ -400,7 +400,21 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "logo": "logos/rolodex.svg",
+      "screenshots": [
+        {
+          "src": "shots/rolodex-detail.png",
+          "alt": "Rolodex's main window, holding an invented vault. A sidebar groups entries under Email, Games, Shopping and Work. On the right, a Fastmail entry shows its email address, a hidden password, and a live six-digit two-factor code with a countdown ring."
+        },
+        {
+          "src": "shots/rolodex-health.png",
+          "alt": "The Password Health check, which lists every stored password from weakest to strongest, marks those reused across accounts, and sums them up as 4 weak or fair and 2 reused."
+        },
+        {
+          "src": "shots/rolodex-edit.png",
+          "alt": "The Edit Entry window. Each field has a label, a value, a Hide switch for secrets, a button to generate a new password, and a drag handle for reordering."
+        }
+      ]
     },
     {
       "slug": "rusty-psn",
