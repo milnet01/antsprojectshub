@@ -47,3 +47,7 @@ target is a solid 60 frames a second floor while looking like that.
 
 The original code is © id Software and this inherits its GPL v2 licence. This is
 a fork of their released source, and all the credit for DOOM itself is theirs.
+
+DOOM is a trademark of id Software LLC, a ZeniMax Media company. The logo's DOOM
+lettering comes from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Doom_%E2%80%93_Game%E2%80%99s_logo.svg)
+(public domain); "ANTS" and the ant are this project's own.

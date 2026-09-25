@@ -279,6 +279,7 @@
       "upstream": "id-Software/DOOM",
       "homepage": null,
       "category": "games",
+      "logo": "logos/doom-ants.svg",
       "screenshots": [
         {
           "src": "shots/doom-ants-title.png",
