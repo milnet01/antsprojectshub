@@ -498,6 +498,7 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "logo": "logos/demoreel.svg",
       "screenshots": [],
       "video": {
         "src": "demoreel-demo.mp4",
