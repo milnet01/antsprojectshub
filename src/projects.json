@@ -103,7 +103,20 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/perch-layouts.png",
+          "alt": "Perch's settings window on its Layouts page. A layout named \"coding\" is selected, described as \"Editor left, browser right\", and has two entries: the code editor takes 60% of the primary screen's width on the left, and Firefox the remaining 40% on the right."
+        },
+        {
+          "src": "shots/perch-rules.png",
+          "alt": "Perch's Rules page, noting that rules are checked from top to bottom and the first match wins. A table lists three example rules: one maximises the browser, one sizes the terminal to half the screen's width and height, and one sends the music player to virtual desktop 2."
+        },
+        {
+          "src": "shots/perch-general.png",
+          "alt": "Perch's General settings page. Checkboxes to start Perch at login and to restore each window's remembered position when it reopens are ticked; showing a notification on restore is not. Below are a theme choice, set to light, and a button to run the setup wizard again. A sidebar on the left lists the other pages: Windows, Rules, Layouts, Profiles, Hotkeys, Exclusions and Import / Export."
+        }
+      ]
     },
     {
       "slug": "retroarch",
@@ -121,7 +134,20 @@
       "upstream": "libretro/RetroArch",
       "homepage": null,
       "category": "emulation",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/retroarch-ozone-main-menu.png",
+          "alt": "RetroArch's Ozone menu in dark grey. A sidebar on the left lists Main Menu, Settings, History, Favorites, Images, Import Content, Contentless Cores and Explore. The main panel lists Load Core (highlighted), Load Content, Playlists, Netplay, Online Updater, Information and Configuration File, each with a one-line description underneath."
+        },
+        {
+          "src": "shots/retroarch-xmb-main-menu.png",
+          "alt": "RetroArch's XMB menu: a row of category icons runs across a flowing blue wave background, in the style of a games-console home screen. Below it is a vertical list starting with Load Core, then Load Content, Playlists, Netplay, Online Updater, Information, Configuration File, Show Desktop Menu, Restart and Quit."
+        },
+        {
+          "src": "shots/retroarch-rgui-main-menu.png",
+          "alt": "RetroArch's RGUI menu, a retro text-only style: green and white pixel lettering on a dark checkered background inside a green border. It lists the main menu options with an arrow pointing at Load Core, and \"Select which core to use.\" along the bottom."
+        }
+      ]
     },
     {
       "slug": "album-builder",
@@ -432,7 +458,24 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/lwsm-main-window.png",
+          "alt": "The Local Web Server Manager window in its dark Midnight theme, listing five sample web projects: Photo Gallery and Book Club are running, shown with green dots, Recipe Box and Budget Planner are stopped, and Weather Dashboard is unknown because it has no port. Each row has its port, a browser picker (its label cut short at \"Default b\") and Start, Stop, Restart and Open buttons."
+        },
+        {
+          "src": "shots/lwsm-light-theme.png",
+          "alt": "The same five sample projects in the light Ledger theme, dark text on warm off-white, with the two running projects' Stop, Restart and Open buttons enabled."
+        },
+        {
+          "src": "shots/lwsm-high-contrast.png",
+          "alt": "The project list in the High contrast dark theme, white text with bright green and yellow status words on pure black, for readers who need the strongest contrast."
+        },
+        {
+          "src": "shots/lwsm-filtered.png",
+          "alt": "The word \"book\" typed into the filter box at the top narrows the list to the one matching project, Book Club, running on port 8604."
+        }
+      ]
     },
     {
       "slug": "pressless",
