@@ -244,6 +244,7 @@
       "upstream": null,
       "homepage": null,
       "category": "games",
+      "logo": "logos/games-hub.svg",
       "screenshots": [
         {
           "src": "shots/games-hub-tiles.png",
