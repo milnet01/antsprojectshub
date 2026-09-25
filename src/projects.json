@@ -181,7 +181,16 @@
       "upstream": null,
       "homepage": null,
       "category": "media",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/album-builder-curate.png",
+          "alt": "Album Builder's main screen in a dark theme, with an invented library: a song library list on the left with the song \"Lanterns on the Water\" highlighted, the track order for a draft album called \"Night Drive\" in the middle, and on the right the song now playing with its colourful fractal cover art, title, album and artist, above playback controls."
+        },
+        {
+          "src": "shots/album-builder-player.png",
+          "alt": "Album Builder's player tab in a dark theme: large fractal cover art for the song \"Paper Boats\" by Harbour Lights, with playback controls and a progress bar below it, and an \"Up Next\" queue on the right listing the playing song."
+        }
+      ]
     },
     {
       "slug": "snatch",
@@ -314,7 +323,24 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/contact-list-list.png",
+          "alt": "The main contact list, with invented contacts, headed \"15 contacts\": the first five are in view, with coloured initial avatars, star marks on three favourites, and each contact's email and phone number, under a search box, an A-to-Z letter bar and a row of tag filters such as family, friends and work."
+        },
+        {
+          "src": "shots/contact-list-detail.png",
+          "alt": "One contact's page for Amara Okafor, a starred individual, showing her email, phone number, a note that reads \"Met at the community garden\", her birthday, and the tags friends and garden, with Edit, Delete and Back buttons below."
+        },
+        {
+          "src": "shots/contact-list-birthdays.png",
+          "alt": "The Upcoming Birthdays page listing five contacts whose birthdays fall in the next 30 days, each with the date, the age they will turn, and how many days away it is, from 2 days to 23 days."
+        },
+        {
+          "src": "shots/contact-list-new-contact.png",
+          "alt": "The empty New Contact form, with fields for type, name, email, phone, a photo upload, notes and tags."
+        }
+      ]
     },
     {
       "slug": "rolodex",
