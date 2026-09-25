@@ -433,9 +433,20 @@ a.card:hover .card__name {
 .card:hover .card__cover img {
   transform: scale(1.03);
 }
-.card__cover--mono {
+.card__cover--mono,
+.card__cover--logo {
   display: grid;
   place-items: center;
+}
+/* A logo sits whole in the middle of the panel rather than filling it: square icons
+   and wide wordmarks both fit, and nothing is cropped. */
+.card__cover--logo img {
+  width: auto;
+  height: auto;
+  max-width: 62%;
+  max-height: 62%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
 }
 .card__mono {
   font-size: 2.6rem;

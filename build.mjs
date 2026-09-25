@@ -114,15 +114,17 @@ function platformTags(p) {
     .join("")}</span>`;
 }
 
-// The picture at the top of a card. A project with screenshots shows its first one;
-// the rest get a monogram panel in their category's colour, so the grid stays even
-// instead of going patchy while the other fourteen are still unshot. The image is
-// alt="" on purpose — it is decorative here, and the link already announces itself
+// The picture at the top of a card: the project's logo, centred on a panel in its
+// category's colour, or a monogram on the same panel where there is no logo yet. Never
+// a screenshot — those belong on the project page, and a shrunken screen of an app
+// says less at card size than its logo does. `logo` is relative to assets/img/ (see
+// src/assets/img/logos/README.md). alt="" on purpose: the link already announces itself
 // with the project's name and tagline.
 function cardCover(p) {
-  const shot = Array.isArray(p.screenshots) ? p.screenshots[0] : null;
-  if (shot?.src) {
-    return `<span class="card__cover"><img src="/assets/img/${esc(shot.src)}" alt="" loading="lazy" decoding="async"></span>`;
+  if (p.logo) {
+    return `<span class="card__cover card__cover--logo"><img src="/assets/img/${esc(
+      p.logo
+    )}" alt="" loading="lazy" decoding="async"></span>`;
   }
   const mono = [...p.name.trim()][0] || "?";
   return `<span class="card__cover card__cover--mono" aria-hidden="true"><span class="card__mono">${esc(
