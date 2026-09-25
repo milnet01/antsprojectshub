@@ -74,3 +74,6 @@ switch back. That is what version 1.0 means here.
 
 If you want to watch it being built, the repository is public and linked at the
 top of this page.
+
+The logo's Unreal Tournament emblem is © Epic Games, used without affiliation or
+endorsement. The ant and the lettering are this project's own.
