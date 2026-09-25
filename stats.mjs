@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { spawn } from "node:child_process";
 import { esc, ORIGIN } from "./lib/templates.mjs";
-import { collectAnalytics, collectPostViews, gaError } from "./lib/ga.mjs";
+import { collectAnalytics, collectDownloadClicks, collectPostViews, gaError } from "./lib/ga.mjs";
 import { loadPosts } from "./lib/posts.mjs";
 import {
   ghRequest,
@@ -124,7 +124,7 @@ async function collectProject(p) {
   const total = OS_KEYS.reduce((s, k) => s + downloads[k], 0);
 
   // Does every platform the project claims actually ship a file? A claimed OS with no
-  // matching asset is a download button silently falling back to the repo page.
+  // matching asset is a download button silently falling back to the source code.
   const missingAssets = (p.platforms || [])
     .filter((pl) => OS_KEYS.includes(pl))
     .filter((pl) => !latest || !pickAsset(latest.assets || [], pl));
@@ -879,6 +879,42 @@ function blogTable(posts, pv, now) {
   );
 }
 
+// Download-button presses on the site, per project page. Counting began with APHW-0010 on
+// 2026-09-25, so an empty table is expected at first and says so rather than listing zeros.
+// Only visitors who accepted analytics are counted — the same floor as every figure here.
+function clicksTable(clicks, projects) {
+  if (!clicks || clicks.error) {
+    return `<p class="note">Download clicks could not be read${
+      clicks?.error ? `: ${esc(clicks.error)}` : ""
+    }. Treat them as unknown, never as zero.</p>`;
+  }
+  const bySlug = new Map(projects.map((p) => [p.slug, p.name]));
+  const rows = clicks.rows
+    .map((r) => {
+      const slug = /^\/p\/([^/]+?)(?:\.html)?$/.exec(r.pagePath)?.[1];
+      return { label: bySlug.get(slug) || r.pagePath, n: r.eventCount };
+    })
+    .sort((a, b) => b.n - a.n);
+  if (!rows.length) {
+    return `<p class="note">No Download clicks in the last ${clicks.days} days. Counting
+      began on 25 Sep 2026, and only visitors who accepted analytics are counted.</p>`;
+  }
+  return scrollTable(
+    "Download clicks",
+    `<table class="tbl sortable" data-table="ga-clicks">
+    <caption>Download-button presses on each project page, last ${clicks.days} days. A floor:
+      only visitors who accepted analytics are counted.</caption>
+    <thead><tr><th scope="col">Project</th>
+      <th scope="col" class="n" aria-sort="descending">Clicks</th></tr></thead>
+    <tbody>${rows
+      .map(
+        (r) => `<tr><th scope="row" data-sort="${esc(r.label)}">${esc(r.label)}</th>
+        <td class="n" data-sort="${r.n}">${num(r.n)}</td></tr>`
+      )
+      .join("")}</tbody></table>`
+  );
+}
+
 const gaEmpty = (label) =>
   `<p class="note">No ${label} recorded yet in this window.</p>`;
 
@@ -1012,6 +1048,8 @@ function analyticsSection(ga, propertyId, blog) {
     ${sources}
     <h3>Countries</h3>
     ${countries}
+    <h3>Download clicks</h3>
+    ${clicksTable(blog.clicks, blog.projects)}
     <h3>Blog posts</h3>
     ${blogTable(blog.posts, blog.views, blog.now)}`;
 }
@@ -1028,7 +1066,7 @@ function issuesSection(rows, health) {
   const add = (now, rank, n, html) => items.push({ now, rank, n, html });
 
   // Worst thing on the page: the site advertises a download it can't deliver, so the visitor
-  // lands on a repo page and has to go looking. Every one of these is losing a download today.
+  // gets a zip of source code instead of the app. Every one of these is losing a download today.
   for (const r of rows.filter((x) => x.missingAssets.length)) {
     add(
       true,
@@ -1037,7 +1075,7 @@ function issuesSection(rows, health) {
       `<strong>${esc(r.name)}</strong> claims ${r.missingAssets
         .map((p) => OS_LABEL[p])
         .join(", ")} but its latest release has no matching file — those download buttons
-       fall back to the repo page.`
+       hand visitors the source code instead (or the project's homepage, where one is set).`
     );
   }
   // A live page failing the visitors least able to work around it. The build doesn't stop for
@@ -1119,7 +1157,7 @@ function tallyList(obj) {
     .join("");
 }
 
-function page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews }) {
+function page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks }) {
   const ok = rows.filter((r) => r.ok);
   const grand = ok.reduce((s, r) => s + r.total, 0);
   const stars = ok.reduce((s, r) => s + r.stars, 0);
@@ -1200,7 +1238,7 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
     ${recentDownloads(rows, history, now)}</section>
 
   <section class="sec" data-sec="ga" aria-labelledby="h-ga"><h2 id="h-ga">Site visitors</h2>
-    ${analyticsSection(ga, propertyId, { posts, views: postViews, now })}</section>
+    ${analyticsSection(ga, propertyId, { posts, views: postViews, now, clicks, projects })}</section>
 
   <section class="sec" data-sec="tr" aria-labelledby="h-tr"><h2 id="h-tr">Repo traffic</h2>
     <h3>Last 14 days, live from GitHub</h3>
@@ -1698,6 +1736,8 @@ export async function generate() {
     ? await collectPostViews(propertyId, posts[posts.length - 1].dateISO)
     : null;
   if (postViews?.error) console.warn(`! Blog readership: ${postViews.error} — table skipped`);
+  const clicks = await collectDownloadClicks(propertyId);
+  if (clicks?.error) console.warn(`! Download clicks: ${clicks.error} — table skipped`);
 
   const now = Date.now();
   const history = await loadHistory();
@@ -1717,7 +1757,7 @@ export async function generate() {
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   await writeFile(
     PAGE,
-    page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews })
+    page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks })
   );
 
   const failed = rows.filter((r) => !r.ok);

@@ -30,7 +30,11 @@ So the file has to be small and self-explanatory:
   the visitor pays for none of it until they press play (`preload="none"`).
 - **Metadata up front** so playback can start before the download finishes:
   `ffmpeg -i in.mp4 -c copy -movflags +faststart out.mp4`.
-- **Poster** = the video's own first frame, so nothing shifts when playback starts:
-  `ffmpeg -i out.mp4 -frames:v 1 -q:v 3 poster.jpg`. Use JPEG, not a quantised PNG —
+- **Poster** = a frame of the video itself. Prefer the first frame, so nothing shifts
+  when playback starts: `ffmpeg -i out.mp4 -frames:v 1 -q:v 3 poster.jpg`. Where the
+  first frame shows nothing (an empty terminal before a command is typed), take one
+  that shows what the video is about instead — add `-ss <seconds>` before `-i`, as
+  `demoreel-demo` does. A still that says nothing costs more than the jump on play.
+  Use JPEG, not a quantised PNG —
   these UIs are dark, and palette quantisation bands the near-black backgrounds
   badly (measured on `finbreak-tour`; the plain PNG is clean but 2× the size).

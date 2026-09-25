@@ -11,6 +11,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **The dashboard counts Download clicks per project.** (APHW-0015)
+  A Download clicks table under Site visitors, from the events APHW-0010
+  added. It replaces counting visitors the site sent to GitHub, which
+  GitHub cannot see: the site deliberately sends no referrer.
+
 - **The dashboard shows how many people read each weekly post.** (APHW-0014)
   A Blog posts table under Site visitors gives each post's views in its
   first week and in total. A post published before tracking began says
@@ -31,6 +36,18 @@ so dated sections stand in for versions. Planned work lives in
   Each Download button reports a `download_click` event naming the
   project and the system, and nothing else. The privacy page says so, and
   the build fails if the script ever sends more than that.
+
+### Changed
+
+- **demoreel's demo video shows the spinning cube before you press play.**
+  Its first frame was an empty terminal. The video README now allows a
+  later frame as the poster where the first one shows nothing.
+
+### Fixed
+
+- **The dashboard no longer says a missing download falls back to the repo page.**
+  It falls back to the source code, or the project's homepage, and the
+  Needs attention line now says so.
 
 ## 2026-09-22
 

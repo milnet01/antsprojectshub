@@ -359,11 +359,23 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Source: user-2026-09-25.
   Lanes: lib/ga.mjs, stats.mjs.
 
-- 📋 [APHW-0015] **Show how many GitHub visitors each project got from the site.**
+- ✅ [APHW-0015] **Show Download clicks per project on the dashboard.**
   The repo-traffic referrer data already names the site. Pull that figure
   out per project so it reads directly. A failed fetch is "no data", never
   zero.
   Priority: 4.
+  Blocked (2026-09-25): the premise is false. The site ships
+  `referrer: no-referrer`, so browsers never tell GitHub a visitor came
+  from here; the referrer lists across every repo name Google,
+  DuckDuckGo, chatgpt.com and github.com only. Needs a decision: loosen
+  the referrer policy, or answer the question from the download_click
+  events APHW-0010 added.
+  Resolved (2026-09-25): user chose the click counts over loosening
+  the referrer policy, which stays no-referrer. collectDownloadClicks()
+  in lib/ga.mjs counts download_click events by page path; clicksTable()
+  in stats.mjs names the project from /p/<slug>.html. Checked empty,
+  filled and failed renders. A per-system split needs the event's
+  parameters registered as GA custom dimensions first.
   **Layman:** Per project, how many people your site sent on to GitHub.
   Kind: feature.
   Source: user-2026-09-25.
