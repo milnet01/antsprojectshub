@@ -3,8 +3,10 @@
 # local-CI.sh — reproduce the GitHub Actions "Build & deploy" build job locally,
 # so you can catch failures before pushing to main.
 #
-# It mirrors the build steps in .github/workflows/deploy.yml exactly:
-#     Set up Node 24  ->  npm ci  ->  node build.mjs   (env: GITHUB_TOKEN)
+# It IS the build job's steps, not a copy of them: .github/workflows/deploy.yml
+# calls `./local-CI.sh --ci` and reads its Node version from
+# `./local-CI.sh --print-node-major`, so the two cannot drift.
+#     Node 24 check  ->  npm ci  ->  node build.mjs   (env: GITHUB_TOKEN)
 #
 # The workflow's deploy steps (configure-pages / upload-pages-artifact /
 # deploy-pages) are GitHub Pages infrastructure and cannot run locally. What we
@@ -13,7 +15,12 @@
 # on for OUR reasons are good; a transient "Deployment failed, try again later"
 # from Pages is a backend hiccup — just re-run the deploy job.
 #
-# Usage:   ./local-CI.sh
+# Usage:   ./local-CI.sh                     the pre-push gate
+#          ./local-CI.sh --ci                the workflow's build job: an About page
+#                                            that contradicts the releases is reported
+#                                            but not fatal, so the daily rebuild never
+#                                            stops over a stale sentence
+#          ./local-CI.sh --print-node-major  the Node major the workflow sets up
 # Token:   export GITHUB_TOKEN=<pat>   before running to avoid GitHub API rate
 #          limits (CI passes secrets.GITHUB_TOKEN automatically). Without it the
 #          build still succeeds via projects.json fallbacks — same as CI.
@@ -23,15 +30,23 @@ set -euo pipefail
 # Always run from the repo root, whatever the caller's cwd.
 cd "$(dirname "$(readlink -f "$0")")"
 
-# The Node major version pinned in the workflow. Keep in lockstep with
-# .github/workflows/deploy.yml's `node-version:`.
+# The Node major version, here and nowhere else: the workflow's setup-node step
+# reads it through --print-node-major before this script's build runs.
 readonly CI_NODE_MAJOR=24
+
+mode=gate
+case "${1:-}" in
+  "") ;;
+  --ci) mode=ci ;;
+  --print-node-major) echo "$CI_NODE_MAJOR"; exit 0 ;;
+  *) echo "usage: $0 [--ci | --print-node-major]" >&2; exit 2 ;;
+esac
 
 step() { printf '\n\033[1;34m==> %s\033[0m\n' "$1"; }
 ok()   { printf '\033[1;32m%s\033[0m\n' "$1"; }
 warn() { printf '\033[1;33m%s\033[0m\n' "$1" >&2; }
 
-step "Set up Node (workflow pins Node ${CI_NODE_MAJOR})"
+step "Check Node (the workflow sets up Node ${CI_NODE_MAJOR})"
 if ! command -v node >/dev/null 2>&1; then
   warn "node not found on PATH — install Node >= ${CI_NODE_MAJOR}."
   exit 1
@@ -69,7 +84,7 @@ fi
 cat "$npm_log"
 
 step "Build site  ->  node build.mjs"
-# GITHUB_TOKEN is passed through if set, exactly as the workflow does.
+# GITHUB_TOKEN is used if set; the workflow passes the Actions token.
 #
 # Output is teed rather than buffered: the build talks to GitHub and a silent minute
 # looks like a hang. The copy is kept for the About-drift check below.
@@ -84,9 +99,10 @@ step "Check About copy against the release history"
 if grep -q '^! about-drift:' "$build_log"; then
   grep '^! about-drift:' "$build_log" >&2
   warn "An About page contradicts the release history. Fix src/about/ before pushing."
-  exit 1
+  [ "$mode" = ci ] || exit 1
+else
+  ok "About copy agrees with the release history."
 fi
-ok "About copy agrees with the release history."
 
 step "Check deploy readiness (what upload-pages-artifact / deploy-pages expect)"
 # The deploy job runs only on GitHub Pages infrastructure and can't be reproduced

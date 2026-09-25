@@ -28,15 +28,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      # local-CI.sh owns the build: the Node version and every build step live there,
+      # and this job calls it, so the pre-push gate and CI cannot drift. Only the Pages
+      # steps below are the workflow's own — they cannot run locally.
+      - name: Read the Node version
+        id: pins
+        run: echo "node=$(./local-CI.sh --print-node-major)" >> "$GITHUB_OUTPUT"
       - name: Set up Node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: "24"
+          node-version: ${{ steps.pins.outputs.node }}
           cache: npm
-      - name: Install (locked)
-        run: npm ci
-      - name: Build site
-        run: node build.mjs
+      - name: Install and build (local-CI.sh)
+        run: ./local-CI.sh --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Configure Pages
