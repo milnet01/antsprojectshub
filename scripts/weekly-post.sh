@@ -28,15 +28,41 @@ budget=${WEEKLY_POST_BUDGET_USD:-15}
 today=${WEEKLY_POST_TODAY:-$(date +%F)}
 
 say() { echo "weekly-post: $1"; }
+
+# Every run that holds the lock leaves its outcome in .stats/weekly-post.json, which the
+# private dashboard shows, so a stopped run is not only a desktop notification that is
+# easy to miss. .stats/ is gitignored, so writing there never dirties the tree. A dry
+# run is a test and records nothing; a run that dies without saying why (set -e) is
+# caught by the EXIT trap and recorded as stopped.
+recording=0
+recorded=0
+record() {
+  (( recording && !recorded )) || return 0
+  recorded=1
+  mkdir -p .stats
+  OUTCOME=$1 DETAIL=$2 MODE=$mode node -e '
+    const e = process.env;
+    require("fs").writeFileSync(".stats/weekly-post.json", JSON.stringify(
+      { at: new Date().toISOString(), outcome: e.OUTCOME, detail: e.DETAIL, mode: e.MODE }, null, 2) + "\n");
+  ' || true
+}
 stop() {
   say "$1"
+  record stopped "$1"
   notify-send -a "Ants Projects Hub" "Weekly post stopped" "$1" 2>/dev/null || true
   exit 1
+}
+skip() {
+  say "$1"
+  record skipped "$1"
+  exit 0
 }
 
 mkdir -p .digest
 exec 9>.digest/.lock
 flock -n 9 || stop "another run is already in progress"
+[[ $mode == --dry-run ]] || recording=1
+trap 'rc=$?; record stopped "the script ended unexpectedly (exit $rc)"' EXIT
 
 if [[ $mode != --dry-run ]]; then
   [[ -z $(git status --porcelain) ]] ||
@@ -46,8 +72,7 @@ if [[ $mode != --dry-run ]]; then
   newest=$(basename "$(printf '%s\n' src/posts/*.md | tail -1)")
   age_days=$(( ($(date -d "$today" +%s) - $(date -d "${newest:0:10}" +%s)) / 86400 ))
   if (( age_days < 5 )); then
-    say "the newest post, $newest, is only $age_days day(s) old; nothing to do"
-    exit 0
+    skip "the newest post, $newest, is only $age_days day(s) old; nothing to do"
   fi
 fi
 
@@ -63,8 +88,7 @@ gh auth token >/dev/null 2>&1 || stop "no GitHub login after 30 minutes (is the 
 digest=$(node scripts/week-digest.mjs) || stop "the digest could not be gathered"
 say "digest: $digest ($(wc -c <"$digest") bytes)"
 if head -1 "$digest" | grep -qx NO-ACTIVITY; then
-  say "no project moved since the last post; no post this week"
-  exit 0
+  skip "no project moved since the last post; no post this week"
 fi
 if [[ $mode == --dry-run ]]; then
   say "dry run: stopping before the AI steps"
@@ -116,8 +140,7 @@ verdict=$(fill scripts/weekly-post/review.md | claude_run | tee /dev/stderr | gr
 
 ./local-CI.sh || stop "the site did not build with the new post. The draft is $post"
 if [[ $mode == --no-push ]]; then
-  say "--no-push: $post is reviewed and builds, and is not committed"
-  exit 0
+  skip "--no-push: $post is reviewed and builds, and is not committed"
 fi
 
 # The site ships by pushing, so dated changelog sections stand in for versions.
@@ -140,4 +163,5 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
 EOF
 git push -q origin main || stop "the post is committed but the push failed; run git push"
 say "published $post"
+record published "$post"
 notify-send -a "Ants Projects Hub" "Weekly post published" "$post" 2>/dev/null || true

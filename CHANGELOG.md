@@ -11,6 +11,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **The dashboard shows the weekly post's last run.** (APHW-0013)
+  `scripts/weekly-post.sh` records every real run's outcome in
+  `.stats/weekly-post.json`. The dashboard's Site content section shows
+  it, and a stopped run, or no run for over a week, goes under Needs
+  attention.
+
 - **Project pages describe themselves to search engines.** (APHW-0012)
   Each published project page carries a schema.org SoftwareApplication
   block: name, tagline, systems, latest version, and that it is free.

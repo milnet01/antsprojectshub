@@ -34,6 +34,8 @@ const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, ".stats");
 const HISTORY = join(OUT, "history.json");
 const PAGE = join(OUT, "dashboard.html");
+// Written by scripts/weekly-post.sh at the end of every real run; read, never written, here.
+const WEEKLY = join(OUT, "weekly-post.json");
 
 const OS_KEYS = ["win", "mac", "linux"];
 const OS_LABEL = { win: "Windows", mac: "macOS", linux: "Linux" };
@@ -262,7 +264,44 @@ async function contentHealth(projects) {
       (p.screenshots || []).filter((s) => !s.alt?.trim()).map((s) => `${p.name} → ${s.src}`)
     ),
     orphanShots: files.filter((f) => !isUsed(f)),
+    weekly: await readWeekly(),
   };
+}
+
+// The weekly post's last run. null means no run has been recorded yet, which is not a
+// failure; an unreadable file is reported as unreadable rather than as "no run".
+async function readWeekly() {
+  let text;
+  try {
+    text = await readFile(WEEKLY, "utf8");
+  } catch {
+    return null;
+  }
+  try {
+    const run = JSON.parse(text);
+    return run && run.at && run.outcome ? run : { unreadable: true };
+  } catch {
+    return { unreadable: true };
+  }
+}
+
+const WEEKLY_LABEL = { published: "published", skipped: "skipped", stopped: "⚠ stopped" };
+
+function weeklyLine(run, now) {
+  if (!run) {
+    return `<p class="note">Weekly post: no run recorded yet. The first Wednesday run writes one.</p>`;
+  }
+  if (run.unreadable) {
+    return `<p class="note">Weekly post: the run record in <code>.stats/weekly-post.json</code>
+      could not be read.</p>`;
+  }
+  const when = new Date(run.at);
+  const days = Math.floor((now - when) / DAY);
+  const ago = days === 0 ? "today" : days === 1 ? "yesterday" : `${days} days ago`;
+  const mode = run.mode && run.mode !== "publish" ? ` (${esc(run.mode)})` : "";
+  return `<p class="note">Weekly post, last run ${esc(ago)}
+    (<time datetime="${esc(run.at)}">${esc(when.toLocaleString("en-GB"))}</time>)${mode}:
+    <strong>${esc(WEEKLY_LABEL[run.outcome] || run.outcome)}</strong> — ${esc(run.detail || "")}</p>`;
 }
 
 function tally(items, keyOf) {
@@ -964,6 +1003,18 @@ function issuesSection(rows, health) {
        ${r.unexplained.map(([n, c]) => `${esc(n)} (${num(c)})`).join(", ")}.`
     );
   }
+  // The weekly post did not go out. Nothing is lost that the next run won't cover, so it
+  // ranks below everything costing downloads — but a stop repeats every week until someone
+  // reads why. Eight days without any run means the timer itself has stopped firing.
+  const run = health.weekly;
+  if (run && !run.unreadable) {
+    if (run.outcome === "stopped") {
+      add(true, 4, 1, `<strong>The weekly post stopped</strong>: ${esc(run.detail || "no reason recorded")}.`);
+    } else if (Date.now() - new Date(run.at) > 8 * DAY) {
+      add(true, 4, 1, `<strong>The weekly post has not run for over a week</strong> — check
+       <code>systemctl --user status ants-weekly-post.timer</code>.`);
+    }
+  }
   // Nothing is broken below this line — a thinner page, and some tidying.
   if (health.noShots.length) {
     add(
@@ -1110,6 +1161,7 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
         ? `<p class="note">Unpublished (no repo yet): ${health.noRepo.map(esc).join(", ")}.</p>`
         : ""
     }
+    ${weeklyLine(health.weekly, now)}
   </section>
 
   <footer class="foot">Local file — never published. Regenerate with
