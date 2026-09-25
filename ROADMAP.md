@@ -328,11 +328,17 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Source: user-2026-09-25.
   Lanes: build.mjs, lib/templates.mjs.
 
-- 📋 [APHW-0013] **Show the weekly post's last run on the dashboard.**
+- ✅ [APHW-0013] **Show the weekly post's last run on the dashboard.**
   `scripts/weekly-post.sh` reports failure only as a desktop
   notification. Have it record each run's outcome and failing stage under
   `.stats/`, and show that on the dashboard.
   Priority: 3.
+  Resolved (2026-09-25): record() in weekly-post.sh writes
+  .stats/weekly-post.json from stop(), skip(), the publish tail and an
+  EXIT trap. All four were exercised: dirty tree → stopped, young post →
+  skipped, a forced basename failure → "ended unexpectedly (exit 3)",
+  dry run → no write. readWeekly()/weeklyLine() in stats.mjs render it;
+  checked on a generated dashboard.
   **Layman:** A visible line saying whether Wednesday's post published, failed or was skipped, and why.
   Kind: feature.
   Source: user-2026-09-25.

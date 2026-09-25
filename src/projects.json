@@ -389,7 +389,12 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [],
+      "video": {
+        "src": "demoreel-demo.mp4",
+        "poster": "demoreel-demo-poster.jpg",
+        "caption": "A silent 21-second clip of demoreel recording a demo of itself. In a dark terminal, the command 'demoreel record -o cube.mp4 -d 4 --gpu --app-log app.log -- vkcube' is typed and run. demoreel reports that it is recording private screen :3 for four seconds, then prints the finished video's path. That video is then played back below the terminal: a grey cube with teal LunarG logos, spinning. Nothing from the real desktop appears, because the terminal and the cube each ran on a private screen of their own."
+      }
     },
     {
       "slug": "local-web-server-manager",
