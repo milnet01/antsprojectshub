@@ -398,6 +398,7 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "logo": "logos/fin-break.svg",
       "video": {
         "src": "finbreak-tour.mp4",
         "poster": "finbreak-tour-poster.jpg",
