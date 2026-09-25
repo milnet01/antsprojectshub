@@ -15,7 +15,26 @@
       "upstream": null,
       "homepage": null,
       "category": "engines",
-      "screenshots": []
+      "logo": "logos/vestige-engine.svg",
+      "screenshots": [
+        {
+          "src": "shots/vestige-walkthrough-meadow.jpg",
+          "alt": "A first-person view across a meadow of tall, bright green grass, with a small pond, scattered pine trees and a hazy lilac evening sky."
+        },
+        {
+          "src": "shots/vestige-editor-meadow.jpg",
+          "alt": "The Vestige editor, with a list of scene objects on the left, a grassy meadow with pine trees in the centre view where a selected object shows red, green and blue move arrows, and that object's position, rotation and scale on the right."
+        },
+        {
+          "src": "shots/vestige-editor-material-demo.png",
+          "alt": "The Vestige editor showing a material test scene: blocks of red brick, dark wood and pale stone standing on a pale floor marked with a placement grid, with tufts of grass between them."
+        }
+      ],
+      "video": {
+        "src": "vestige-meadow.mp4",
+        "poster": "vestige-meadow-poster.jpg",
+        "caption": "A silent 15-second clip rendered by Vestige: a still, first-person view of the meadow. Tall grass in the foreground sways in the wind, while the pond, the pine trees and the evening sky stay still in the distance. Recorded with demoreel."
+      }
     },
     {
       "slug": "ants-terminal",
