@@ -53,3 +53,6 @@ resumes from where it stopped.
 
 Live and stable, on Windows, macOS and Linux. Snatch bundles yt-dlp and ffmpeg,
 each under its own licence.
+
+The screenshots show Blender open movies. Big Buck Bunny is © Blender Foundation,
+under [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/) ([peach.blender.org](https://peach.blender.org)).

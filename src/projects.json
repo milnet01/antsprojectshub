@@ -214,7 +214,20 @@
       "homepage": null,
       "category": "media",
       "logo": "logos/snatch.svg",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/snatch-download.png",
+          "alt": "Snatch's Download tab with Big Buck Bunny loaded (© Blender Foundation, CC-BY 3.0): a thumbnail of the giant rabbit beside its title and running time, and below it a table of the 47 available formats, listing audio-only and video streams by type, resolution, size and codec, with buttons to pick the best video, the best MP4 or audio only."
+        },
+        {
+          "src": "shots/snatch-search.png",
+          "alt": "The Search tab after searching Blender Studio's own channel for \"open movie\": a numbered list of results such as Spring, CHARGE and Coffee Run, each with its channel, running time and view count, above a built-in video player area."
+        },
+        {
+          "src": "shots/snatch-history.png",
+          "alt": "The History tab listing four past downloads, Big Buck Bunny, Sintel, Elephants Dream and Tears of Steel, with the date, the format such as MP4 1080p or MP3 audio, and where each file was saved, plus buttons to open the file or its folder."
+        }
+      ]
     },
     {
       "slug": "games-hub",
