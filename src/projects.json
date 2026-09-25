@@ -522,6 +522,7 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "logo": "logos/lotto-tracker.svg",
       "screenshots": [
         {
           "src": "shots/lotto-tracker-top.png",
