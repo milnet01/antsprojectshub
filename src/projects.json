@@ -48,7 +48,12 @@
           "src": "shots/ants-terminal-theme.png",
           "alt": "Ants Terminal in a different colour theme, displaying a detailed multi-thread stack trace from a crash report"
         }
-      ]
+      ],
+      "video": {
+        "src": "ants-terminal-demo.mp4",
+        "poster": "ants-terminal-demo-poster.jpg",
+        "caption": "A silent 25-second clip of Ants Terminal in its dark theme. It opens on a plain prompt, moves into its own source folder and clears the screen, then lists the first twenty source files. Finally it prints the words 'colour and Unicode' in green, blue and magenta, followed by a tick, a lambda and a sparkle. Recorded with demoreel."
+      }
     },
     {
       "slug": "retrodb",
@@ -168,7 +173,24 @@
       "upstream": null,
       "homepage": null,
       "category": "games",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/games-hub-tiles.png",
+          "alt": "The Games Hub start screen, headed \"Pick a game\", showing large dark tiles in rows of three, each with a picture and a name: Chess, Reversi, Draughts, Minesweeper, Solitaire, Spider, FreeCell, Pyramid and Sudoku, with more below."
+        },
+        {
+          "src": "shots/games-hub-solitaire.png",
+          "alt": "A new game of Klondike solitaire on a green table, with the draw pile top left, four empty ace spaces top right, and seven columns of large, clearly printed cards below."
+        },
+        {
+          "src": "shots/games-hub-chess.png",
+          "alt": "A chess board at the start of a game, cream and green squares with the pieces in their starting positions, labelled a to h and 1 to 8, with Easy, Medium and Hard difficulty buttons in the toolbar."
+        },
+        {
+          "src": "shots/games-hub-canasta.png",
+          "alt": "A four-player Canasta game in progress on a deep red table, with the player's hand of large cards at the bottom, both teams' melds laid out in the middle, the stock and discard pile in the centre, and the two team scores in the top corners."
+        }
+      ]
     },
     {
       "slug": "doom-ants",
@@ -305,7 +327,7 @@
       "video": {
         "src": "finbreak-tour.mp4",
         "poster": "finbreak-tour-poster.jpg",
-        "caption": "A silent 34-second tour of finbreak, in dark theme. It opens on the Home dashboard for July — 'July looked like a normal month', net R 10,533.21 — where three donut charts break down spending by category, income by source and transfers between accounts. It then moves through Transactions (306 rows auto-sorted into Groceries, Fuel, Dining out and the rest), the Categories tree, Recurring (auto-detected payments waiting to be confirmed above ones already confirmed), Forecast, and Accounts, before returning to the dashboard."
+        "caption": "A silent 32-second tour of finbreak, in dark theme, using invented demo data. It opens on the lock screen, where the master password is typed. The Home dashboard follows for August — 'August looked like a normal month', net R 10,533.21 — where three donut charts break down spending by category, income by source and transfers between accounts. It then moves through Transactions (306 rows sorted into categories such as Groceries, Fuel and Dining out), the Categories tree, Recurring (suggested payments above confirmed ones), Accounts and Transfers, before returning to the dashboard. Recorded with demoreel."
       },
       "screenshots": [
         {

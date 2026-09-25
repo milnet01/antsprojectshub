@@ -11,6 +11,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Games Hub has screenshots, and Ants Terminal has a demo video; finbreak's tour is re-recorded.**
+  Supplied by each project's own session. Both videos were recorded with
+  demoreel, and the captions say so. finbreak's tour now uses invented
+  demo data and opens on the lock screen.
+
 - **The dashboard counts Download clicks per project.** (APHW-0015)
   A Download clicks table under Site visitors, from the events APHW-0010
   added. It replaces counting visitors the site sent to GitHub, which
