@@ -776,6 +776,15 @@ function changelogFilePanel(p, history) {
       </section>`;
 }
 
+// A project's heading, on its page and its changelog: the project's logo where it has
+// one, its name in text otherwise. The logo sits inside the <h1> with the name as its
+// alt, so the heading still reads "Perch" to a screen reader and in the document
+// outline, only now in the project's own lettering.
+function detailTitle(p) {
+  if (!p.logo) return `<h1>${esc(p.name)}</h1>`;
+  return `<h1 class="detail-logo"><img src="/assets/img/${esc(p.logo)}" alt="${esc(p.name)}"></h1>`;
+}
+
 function projectPage(p, { aboutHtml, release, history = [] }) {
   const published = isPublished(p);
   const hasRelease = Boolean(release);
@@ -848,7 +857,7 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
       <p class="kicker">${esc(STATUS[p.status]?.label || "")}${
     fork ? " · " + fork : ""
   }</p>
-      <h1>${esc(p.name)}</h1>
+      ${detailTitle(p)}
       <p class="detail-tagline">${esc(p.tagline)}</p>
       <div class="detail-sub">${statusPill(p)}${platformTags(p)}${version}</div>
       ${actionButtons(p, release)}
@@ -940,7 +949,7 @@ function changelogPage(p, history) {
   const content = `
     <section class="detail-head">
       <p class="kicker">Changelog</p>
-      <h1>${esc(p.name)}</h1>
+      ${detailTitle(p)}
       <p class="detail-tagline">Every release, newest first — ${n} in total.</p>
       <div class="actions">
         <a class="btn btn--primary" href="/p/${esc(p.slug)}.html">Back to ${esc(p.name)}</a>

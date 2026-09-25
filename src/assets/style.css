@@ -584,6 +584,18 @@ a.card:hover .card__name {
   margin: 0.4rem 0 0.5rem;
   color: #fff;
 }
+/* A logo in place of the text heading. Width-led with a height cap: the logos run
+   from a stacked 1.7:1 to a 5.6:1 strip, and one common height left the stacked
+   ones' lettering at ~13px on a phone. This way a wide strip fills the width and a
+   stacked logo grows taller instead, so every name stays large enough to read. */
+.detail-logo img {
+  display: block;
+  width: min(100%, 24rem);
+  height: auto;
+  max-height: 7.5rem;
+  object-fit: contain;
+  object-position: left center;
+}
 .detail-sub {
   display: flex;
   align-items: center;

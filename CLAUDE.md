@@ -68,10 +68,11 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   project page (`src` relative to `assets/img/`, `alt` required — see
   `src/assets/img/shots/README.md`); `video` is an optional single `{src, poster, caption}`
   rendered as a Demo section above the gallery (both paths relative to `assets/video/`,
-  `caption` required — see `src/assets/video/README.md`); `logo` is the optional picture on
-  the project's landing-page card (relative to `assets/img/`, see
+  `caption` required — see `src/assets/video/README.md`); `logo` is the optional wordmark on
+  the project's landing-page card and, as the `<h1>` with the name as its alt, at the top
+  of its page and changelog (relative to `assets/img/`, see
   `src/assets/img/logos/README.md`) — without one the card shows the name's first letter,
-  never a screenshot.
+  never a screenshot, and the pages a text heading.
 
 - **`src/about/<slug>.md`** — the hand-written About section for one project, named for its
   slug. **Every project needs one, `soon` ones included**; a missing file fails the build

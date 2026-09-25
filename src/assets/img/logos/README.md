@@ -1,6 +1,7 @@
 # Logos
 
-Each project's logo, shown on its card on the landing page. Point at it from
+Each project's logo, shown on its card on the landing page and as the heading of its
+project page and changelog page. Point at it from
 `src/projects.json` with the project's `logo` field, relative to `src/assets/img/`:
 
 ```json
@@ -18,6 +19,9 @@ Each project's logo, shown on its card on the landing page. Point at it from
   height, so a roughly 3:1 to 2:1 shape fills it best.
 - **It must read on a dark panel** tinted in the project's category colour: light
   lettering, or a dark mark with a light outline.
+- **Cropped to the drawing**, with only a thin even margin. On a page heading it is
+  sized by width with a height cap, so empty space inside the file makes the name
+  smaller.
 - It is decorative on the card (`alt=""`), because the card's link already names
-  the project.
+  the project. On the page it is the heading, with the project's name as its alt.
 - A project with no `logo` shows the first letter of its name instead.
