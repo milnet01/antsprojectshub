@@ -96,10 +96,16 @@ step "Check About copy against the release history"
 # build.mjs only warns on these. The daily rebuild exists to keep release notes fresh
 # and must not stop over a stale sentence — but a person about to publish should be.
 # So the warning is advisory in the build and fatal here, at the gate before a push.
+# Under --ci the check is downgraded, never silenced: each contradiction becomes a
+# GitHub warning annotation on the run's summary page, and the final line says the
+# pass carries one. A non-fatal check that says nothing would be a green that lies.
+advisory=""
 if grep -q '^! about-drift:' "$build_log"; then
   grep '^! about-drift:' "$build_log" >&2
   warn "An About page contradicts the release history. Fix src/about/ before pushing."
   [ "$mode" = ci ] || exit 1
+  grep '^! about-drift:' "$build_log" | sed 's/^! about-drift: /::warning title=About copy contradicts the releases::/'
+  advisory=" — WITH A WARNING: an About page contradicts the release history (see above)"
 else
   ok "About copy agrees with the release history."
 fi
@@ -142,4 +148,4 @@ fi
 printf 'dist/ OK — %s files, %s\n' "$(find dist -type f | wc -l)" "$(du -sh dist | cut -f1)"
 
 step "Result"
-ok "Local CI passed — build + deploy-readiness verified (the live Pages deploy runs only on GitHub)."
+ok "Local CI passed — build + deploy-readiness verified (the live Pages deploy runs only on GitHub)${advisory}."
