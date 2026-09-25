@@ -313,12 +313,16 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Source: user-2026-09-25.
   Lanes: projects.json, assets/img/shots.
 
-- 📋 [APHW-0012] **Describe each published project to search engines.**
+- ✅ [APHW-0012] **Describe each published project to search engines.**
   Emit a `SoftwareApplication` JSON-LD block per project page: name,
   description, operating systems, latest version, download URL. JSON-LD is
   data, not script, so the CSP's no-inline-script rule still holds;
   confirm in the browser that nothing is blocked.
   Priority: 3.
+  Resolved (2026-09-25): basePage({ jsonLd }) emits the block with
+  every "<" escaped; softwareLd() in build.mjs fills it for published
+  projects only. Every block parses; headless Chrome reports no CSP
+  violation on a project page.
   **Layman:** An invisible label on each project page lets Google show the platforms and version in its results.
   Kind: feature.
   Source: user-2026-09-25.

@@ -11,6 +11,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Project pages describe themselves to search engines.** (APHW-0012)
+  Each published project page carries a schema.org SoftwareApplication
+  block: name, tagline, systems, latest version, and that it is free.
+  It is data, not script, so the page's security policy is unchanged.
+
 - **Download clicks are counted, for visitors who accepted analytics.** (APHW-0010)
   Each Download button reports a `download_click` event naming the
   project and the system, and nothing else. The privacy page says so, and

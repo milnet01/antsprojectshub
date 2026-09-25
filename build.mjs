@@ -867,7 +867,43 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
     // The version line carries a release date; the script rewrites it to the reader's own
     // system format. Only loaded where there is one — an unreleased project has no date.
     dates: hasRelease && Boolean(release.dateISO),
+    jsonLd: published ? softwareLd(p, release) : null,
   });
+}
+
+// schema.org's applicationCategory for each landing-page group. Search engines read it
+// to decide which kind of rich result a page can have.
+const LD_CATEGORY = {
+  engines: "DeveloperApplication",
+  games: "GameApplication",
+  emulation: "GameApplication",
+  media: "MultimediaApplication",
+  utilities: "UtilitiesApplication",
+};
+
+// What a search engine is told about one published project: the same facts the page
+// shows, and nothing it does not. Every project here is free, and the offer says so.
+function softwareLd(p, release) {
+  const url = `${ORIGIN}/p/${p.slug}.html`;
+  const ld = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: p.name,
+    description: p.tagline,
+    url,
+    applicationCategory: LD_CATEGORY[p.category] || "UtilitiesApplication",
+    operatingSystem: p.platforms.map((pl) => PLATFORM[pl] || pl).join(", "),
+    author: { "@type": "Person", name: "Anthony Schemel" },
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    downloadUrl: url,
+  };
+  if (release) {
+    ld.softwareVersion = release.version.replace(/^v/, "");
+    if (release.dateISO) ld.dateModified = release.dateISO;
+  }
+  const shot = Array.isArray(p.screenshots) && p.screenshots[0];
+  if (shot) ld.screenshot = `${ORIGIN}/assets/img/${shot.src}`;
+  return ld;
 }
 
 // One project's whole release history, on this site. This page is the reason the build
