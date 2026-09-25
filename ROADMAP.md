@@ -1,4 +1,5 @@
 <!-- ants-roadmap-format: 1 -->
+<!-- Generated from the Ants Terminal roadmap store. Edit it with roadmap_log; hand edits are discarded by the next write. -->
 # Ants Projects Hub — Roadmap
 
 > **What this is:** the planned work for
@@ -15,6 +16,7 @@
 **Legend**
 
 - ✅ Done (shipped) · 🚧 In progress · 📋 Planned · 💭 Considered
+- 🚫 Dropped (closed, not done)
 
 **Themes**
 
@@ -276,6 +278,81 @@ answers than the page asks of it.
   it.
 
 ---
+
+## P03 — Pictures, clicks and the weekly post (target: 2026-10)
+
+**Theme:** show visitors what each app looks like, learn which pages lead to a
+download, and make the weekly post's effort and health visible on the dashboard.
+
+- ✅ [APHW-0010] **Count Download clicks as an analytics event, after consent only.**
+  `src/assets/analytics.js` reports page views only. Add one event per
+  Download-button click, naming the project and the OS. It fires only
+  after Accept, through the same collector the CSP already allows. The
+  privacy page gains a sentence saying so, and that sentence gains its
+  guard in `ANALYTICS_CLAIMS` in the same edit.
+  Priority: 2.
+  Resolved (2026-09-25): buttons carry data-dl-project and
+  data-dl-platform; analytics.js sends download_click only once GA is
+  loaded. Checked in headless Chrome: Decline sends nothing, Accept sends
+  exactly the project and the platform. The ANALYTICS_CLAIMS guard was
+  proved by adding a field, which failed the build. GA had recorded no
+  automatic outbound-click events before this.
+  **Layman:** Learn which project pages actually lead to a download.
+  Kind: feature.
+  Source: user-2026-09-25.
+  Lanes: analytics.js, privacy page, build.mjs.
+
+- 📋 [APHW-0011] **Get screenshots from each project's own session.**
+  Running sessions are asked to supply screenshots with alt text, in the
+  shape `src/assets/img/shots/README.md` sets. This session wires them
+  into `src/projects.json`. The dashboard's "no screenshots" line is the
+  measure of progress.
+  Priority: 2.
+  **Layman:** Most project pages have no pictures; ask each project's Claude session to supply them.
+  Kind: feature.
+  Source: user-2026-09-25.
+  Lanes: projects.json, assets/img/shots.
+
+- 📋 [APHW-0012] **Describe each published project to search engines.**
+  Emit a `SoftwareApplication` JSON-LD block per project page: name,
+  description, operating systems, latest version, download URL. JSON-LD is
+  data, not script, so the CSP's no-inline-script rule still holds;
+  confirm in the browser that nothing is blocked.
+  Priority: 3.
+  **Layman:** An invisible label on each project page lets Google show the platforms and version in its results.
+  Kind: feature.
+  Source: user-2026-09-25.
+  Lanes: build.mjs, lib/templates.mjs.
+
+- 📋 [APHW-0013] **Show the weekly post's last run on the dashboard.**
+  `scripts/weekly-post.sh` reports failure only as a desktop
+  notification. Have it record each run's outcome and failing stage under
+  `.stats/`, and show that on the dashboard.
+  Priority: 3.
+  **Layman:** A visible line saying whether Wednesday's post published, failed or was skipped, and why.
+  Kind: feature.
+  Source: user-2026-09-25.
+  Lanes: scripts/weekly-post.sh, stats.mjs.
+
+- 📋 [APHW-0014] **Show blog post readership on the dashboard.**
+  Read page views per post path through `lib/ga.mjs`, and show each post's
+  views in its first week and in total. A GA failure renders as "could not
+  be read", never as zeros.
+  Priority: 3.
+  **Layman:** Views per weekly post, so you can see whether the posts earn their effort.
+  Kind: feature.
+  Source: user-2026-09-25.
+  Lanes: lib/ga.mjs, stats.mjs.
+
+- 📋 [APHW-0015] **Show how many GitHub visitors each project got from the site.**
+  The repo-traffic referrer data already names the site. Pull that figure
+  out per project so it reads directly. A failed fetch is "no data", never
+  zero.
+  Priority: 4.
+  **Layman:** Per project, how many people your site sent on to GitHub.
+  Kind: feature.
+  Source: user-2026-09-25.
+  Lanes: stats.mjs.
 
 ## How to add an item
 

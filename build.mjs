@@ -511,10 +511,16 @@ ${groups}
   });
 }
 
-function ext(url, label, cls = "btn") {
+// `dl` marks a download button for src/assets/analytics.js, which reports a click on
+// one as a `download_click` event naming the project and what was fetched. Only after
+// the visitor has accepted analytics; the attributes themselves send nothing.
+function ext(url, label, cls = "btn", dl = null) {
+  const mark = dl
+    ? ` data-dl-project="${esc(dl.project)}" data-dl-platform="${esc(dl.platform)}"`
+    : "";
   return `<a class="${cls}" href="${esc(
     url
-  )}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`;
+  )}" target="_blank" rel="noopener noreferrer"${mark}>${esc(label)}</a>`;
 }
 
 // All-time GitHub download count for one OS's binaries, shown under its download button.
@@ -552,7 +558,7 @@ function actionButtons(p, release) {
 
   if (hasWeb) {
     // Self-hosted web app — the source archive IS the download.
-    buttons.push(ext(fallback, "Download · Self-host", "btn btn--primary"));
+    buttons.push(ext(fallback, "Download · Self-host", "btn btn--primary", { project: p.slug, platform: "self-host" }));
   }
 
   // Direct per-OS download to the latest release's matching file (auto-updates each
@@ -560,7 +566,10 @@ function actionButtons(p, release) {
   const matched = desktop.map((pl) => ({ pl, asset: hasRelease ? pickAsset(release.assets, pl) : null }));
   const direct = matched.filter((m) => m.asset);
   direct.forEach((m, i) => {
-    const btn = ext(m.asset.url, `Download · ${PLATFORM[m.pl] || m.pl}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`);
+    const btn = ext(m.asset.url, `Download · ${PLATFORM[m.pl] || m.pl}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`, {
+      project: p.slug,
+      platform: m.pl,
+    });
     // Cumulative all-time downloads for this OS. A freshly-cut release genuinely has
     // none yet, and printing "0 downloads" under the button reads worse than printing
     // nothing at all — so the count appears only once there is one.
@@ -570,7 +579,7 @@ function actionButtons(p, release) {
   });
   if (matched.some((m) => !m.asset)) {
     const primary = direct.length === 0 && !hasWeb ? "btn--primary" : "";
-    buttons.push(ext(fallback, fallbackLabel, `btn ${primary}`));
+    buttons.push(ext(fallback, fallbackLabel, `btn ${primary}`, { project: p.slug, platform: p.homepage ? "homepage" : "source" }));
   }
 
   buttons.push(ext(issuesUrl(p.repo), "Report an issue", "btn btn--ghost"));
@@ -1059,6 +1068,14 @@ const ANALYTICS_CLAIMS = [
     needle: "https://www.googletagmanager.com/gtag/js",
     claim: "the privacy page names googletagmanager as the only third party",
   },
+  {
+    // "records when you press a Download button: which project and which system"
+    needle: `window.gtag("event", "download_click", {
+      project: a.getAttribute("data-dl-project"),
+      platform: a.getAttribute("data-dl-platform"),
+    });`,
+    claim: "the privacy page says a download click sends only the project and the system",
+  },
 ];
 
 async function assertAnalyticsContract() {
@@ -1116,6 +1133,8 @@ function privacyPage() {
         visit came from, whether it was a phone or a desktop, and which site linked
         here. It sets a cookie so repeat visits in the same browser are counted as one
         person rather than several.</p>
+        <p>It also records when you press a Download button: which project and which
+        system the download was for. Nothing else about the click is sent.</p>
         <p>Google receives your IP address, as any web server must in order to answer
         a request. Google Analytics 4 uses it to work out an approximate location and
         then discards it — it is not stored against the visit. Advertising features are

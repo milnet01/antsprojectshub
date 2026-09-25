@@ -150,6 +150,22 @@
     foot.append(document.createTextNode(" · "), b);
   }
 
+  // ---- Download clicks -----------------------------------------------------
+  // The build marks each download button with data-dl-project / data-dl-platform. A
+  // click on one becomes a download_click event, so the dashboard can say which pages
+  // lead to a download. `loaded` is only true after Accept, so a visitor who declined
+  // or never chose sends nothing. The buttons open in a new tab, so this page stays
+  // alive to send the hit.
+  document.addEventListener("click", function (e) {
+    if (!loaded || !e.target.closest) return;
+    var a = e.target.closest("a[data-dl-project]");
+    if (!a) return;
+    window.gtag("event", "download_click", {
+      project: a.getAttribute("data-dl-project"),
+      platform: a.getAttribute("data-dl-platform"),
+    });
+  });
+
   var choice = remembered();
   if (choice === "granted") loadGA();
   else if (choice !== "denied") showBar(false);

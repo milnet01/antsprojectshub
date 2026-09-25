@@ -9,6 +9,13 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- **Download clicks are counted, for visitors who accepted analytics.** (APHW-0010)
+  Each Download button reports a `download_click` event naming the
+  project and the system, and nothing else. The privacy page says so, and
+  the build fails if the script ever sends more than that.
+
 ## 2026-09-22
 
 ### Added
