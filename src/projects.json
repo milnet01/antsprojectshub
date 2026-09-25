@@ -212,6 +212,7 @@
       "upstream": null,
       "homepage": null,
       "category": "media",
+      "logo": "logos/snatch.svg",
       "screenshots": []
     },
     {
@@ -445,6 +446,7 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "logo": "logos/oneup.svg",
       "screenshots": [
         {
           "src": "shots/oneup-dark.png",
