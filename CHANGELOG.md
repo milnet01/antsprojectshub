@@ -11,6 +11,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **MAME Curator has screenshots and a demo video.**
+  Four screenshots (library, alternative versions, dry-run preview,
+  filter settings) and a 35-second tour, supplied by MAME Curator's own
+  session from a real library. The video was recorded headless.
+
 - **Games Hub has screenshots, and Ants Terminal has a demo video; finbreak's tour is re-recorded.**
   Supplied by each project's own session. Both videos were recorded with
   demoreel, and the captions say so. finbreak's tour now uses invented
