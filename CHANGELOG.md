@@ -11,6 +11,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **MAME Curator wordmark logo.**
+  A pixel-art arcade cabinet beside "MAME CURATOR" in Press Start 2P
+  (SIL OFL 1.1, converted to outlines), supplied by MAME Curator's own
+  session. No MAME logo or game artwork is used.
+
 - **MAME Curator has screenshots and a demo video.**
   Four screenshots (library, alternative versions, dry-run preview,
   filter settings) and a 35-second tour, supplied by MAME Curator's own

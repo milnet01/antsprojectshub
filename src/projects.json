@@ -125,6 +125,7 @@
       "upstream": null,
       "homepage": null,
       "category": "emulation",
+      "logo": "logos/mame-curator.svg",
       "screenshots": [
         {
           "src": "shots/mame-curator-library.png",
