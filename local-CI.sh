@@ -46,6 +46,21 @@ step() { printf '\n\033[1;34m==> %s\033[0m\n' "$1"; }
 ok()   { printf '\033[1;32m%s\033[0m\n' "$1"; }
 warn() { printf '\033[1;33m%s\033[0m\n' "$1" >&2; }
 
+# The machine-wide pre-push hook skips this whole script for a push it takes to be
+# documentation only, and its default guess counts every *.md — src/about/ and
+# src/posts/ included, though the build reads both. `ants.gate.docsGlob` narrows the
+# guess, but git config is per clone and never committed, so a fresh clone is back
+# on the default. Checked here because this is the one file every clone runs; a
+# setup step written down and checked by nothing does not survive a new clone.
+# Not under --ci: GitHub's runner has no hook to misjudge anything.
+DOCS_GLOB='docs/*|README.md|CHANGELOG.md|ROADMAP.md|CLAUDE.md|LICENSE'
+if [ "$mode" = gate ] && [ "$(git config --get ants.gate.docsGlob || true)" != "$DOCS_GLOB" ]; then
+  warn "ants.gate.docsGlob is not set to this repo's value, so a push touching only About"
+  warn "pages or posts would skip this gate. Set it once, then re-run:"
+  warn "  git config ants.gate.docsGlob '$DOCS_GLOB'"
+  exit 1
+fi
+
 step "Check Node (the workflow sets up Node ${CI_NODE_MAJOR})"
 if ! command -v node >/dev/null 2>&1; then
   warn "node not found on PATH — install Node >= ${CI_NODE_MAJOR}."

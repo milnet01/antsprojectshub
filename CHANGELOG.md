@@ -54,6 +54,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **The weekly post's reviewer must show what it checked.**
+  It prints one CLAIM line per figure with its source, and the
+  publishing script refuses a PASS without them. Projects that could
+  not be read get their own list, and heavy cutting now fails.
+
 - **MAME Curator's demo video now shows the copy counting up to the end, and a new screenshot shows a copy in progress.**
 
 - **Vestige's demo video is now a moving fly-through of the meadow.**
@@ -66,6 +71,19 @@ so dated sections stand in for versions. Planned work lives in
   later frame as the poster where the first one shows nothing.
 
 ### Fixed
+
+- **Five About pages corrected by the projects' own sessions.**
+  RetroArch no longer claims a stale commit count or two fixes that
+  were upstream's own, and now says four of the fork's fixes were
+  accepted into official RetroArch on 2026-09-26. Ants Terminal
+  admits its launch-time update check. MAME Curator no longer claims
+  it installs Python or has an automated telemetry check. Pressless
+  gives the Windows steps. UT Ants describes its map launcher.
+
+- **The push gate can no longer be skipped by an About-only push.**
+  The machine-wide hook took every .md as documentation. local-CI.sh
+  now refuses to run until the clone sets ants.gate.docsGlob, and
+  prints the command.
 
 - **The dashboard no longer says a missing download falls back to the repo page.**
   It falls back to the source code, or the project's homepage, and the

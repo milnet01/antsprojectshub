@@ -15,7 +15,7 @@ voice: first person, the person who builds these projects.
 `src/posts/{{TODAY}}-<slug>.md`, where `<slug>` is short, lowercase and hyphenated,
 from your title. The header block holds `title`, `date: {{TODAY}}`, `summary` (one
 to four sentences) and `projects` (comma-separated slugs of the active projects,
-taken from the digest's headings).
+taken from the digest's headings; each must be a `slug` in src/projects.json).
 
 ## Rules
 
@@ -23,7 +23,8 @@ taken from the digest's headings).
   thing. Name the mechanism only in passing.
 - **Structure it as the recent posts do.** One section per active project, biggest
   story first. "Short notes" for small ones. "Quiet this week" naming every project
-  the digest lists as quiet. "What changed on the site": new downloads are the
+  the digest lists as quiet. "Could not check this week" naming every project the
+  digest says could not be read, if any. "What changed on the site": new downloads are the
   digest's stable releases with files attached, plus any commits to this site.
 - **Lead each project with what a user would notice**, then its one to three most
   striking findings: a check that reported success without checking anything, a
@@ -36,7 +37,8 @@ taken from the digest's headings).
 - **Released and waiting are different.** Only what sits inside a GitHub release
   is released. A tag marked "same commit as" an earlier tag carries nothing new.
   Everything else is waiting for the next release.
-- **"could not be read" means unknown.** Never report it as quiet or as zero.
+- **"could not be read" means unknown.** List it under "Could not check this week",
+  never as quiet or as zero.
 - Plain markdown, no inline HTML, headings starting at `##`.
 - Edit no other file. Do not commit or push.
 

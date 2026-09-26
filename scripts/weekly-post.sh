@@ -132,9 +132,15 @@ post=$(sed -n "s|^?? \(src/posts/${today}-.*\.md\)\$|\1|p" <<<"$changed")
   stop "the writing session did not leave exactly one new post: ${changed:-nothing}"
 
 say "reviewing $post"
-verdict=$(fill scripts/weekly-post/review.md | claude_run | tee /dev/stderr | grep '^VERDICT:' | tail -1) || true
+review=$(fill scripts/weekly-post/review.md | claude_run | tee /dev/stderr) || true
+verdict=$(grep '^VERDICT:' <<<"$review" | tail -1) || true
 [[ $verdict == "VERDICT: PASS" ]] ||
   stop "the review did not pass, so nothing was published (${verdict:-no verdict}). The draft is $post"
+# A PASS is only as good as the checking behind it, and a reviewer that opened nothing
+# prints the same verdict as one that checked every figure. The claim lines are the
+# evidence that it looked; a PASS without them is treated as no review at all.
+grep -qE '^[`*-]*[[:space:]]*CLAIM: .+ (ok|fixed|removed)[`*.]*[[:space:]]*$' <<<"$review" ||
+  stop "the review passed without listing the claims it checked, so nothing was published. The draft is $post"
 [[ $(git status --porcelain --untracked-files=all) == "?? $post" ]] ||
   stop "the review changed more than the post; nothing was published"
 
