@@ -129,7 +129,7 @@
       "screenshots": [
         {
           "src": "shots/mame-curator-library.png",
-          "alt": "The MAME Curator library in a dark theme, filtered to the Capcom Classics collection: a grid of arcade cover art for 1941, 1942, 1943, Armored Warriors, Avengers and more, with search and filter controls in a left sidebar and a row of featured collection tiles across the top."
+          "alt": "The MAME Curator library in a dark theme, filtered to the Capcom Classics collection: a grid of arcade cover art for 1941, 1942, 1943, Armored Warriors, Avengers and more, with search and filter controls in a left sidebar. Across the top, five featured collection tiles give their sizes: Capcom Classics 121 games, Beat 'em Ups 85, Run & Gun Shooters 83, Best of 1992 303, and SHMUPS — Vertical 260."
         },
         {
           "src": "shots/mame-curator-override.png",
@@ -147,7 +147,7 @@
       "video": {
         "src": "mame-curator-tour.mp4",
         "poster": "mame-curator-tour-poster.jpg",
-        "caption": "A silent 35-second tour of MAME Curator in its browser interface; a white circle marks the pointer. It opens on the full game library, then clicks the Capcom Classics collection and the grid fills with Capcom cover art, which scrolls down and back up. Street fighter ii is typed into the search box and the grid narrows to Street Fighter games. Clicking Street Fighter II opens the Alternative versions panel, listing 38 versions with a short Wikipedia summary; Use this version is clicked on one release, the panel closes and an Override applied notice appears. Four games are added to the list one after another and the counter at the bottom climbs to 4. Dry-run opens a preview showing 4 new files to copy, which is cancelled. Finally Copy is pressed, a Copy in progress window appears and closes, and the list empties."
+        "caption": "A silent 35-second tour of MAME Curator in its browser interface; a white circle marks the pointer. It opens on the full game library, then clicks the Capcom Classics collection: after a moment's loading the grid fills with Capcom cover art, which scrolls down and back up. Street fighter ii is typed into the search box and the grid narrows to Street Fighter games. Clicking Street Fighter II opens the Alternative versions panel, listing 38 versions with a short Wikipedia summary; Use this version is clicked on one release, the panel closes and an Override applied notice appears. Four games are added to the list one after another and the counter at the bottom climbs to 4. Dry-run opens a preview of the files to copy, Copy is pressed inside it, and a Copy in progress window opens and stays until the end."
       }
     },
     {
