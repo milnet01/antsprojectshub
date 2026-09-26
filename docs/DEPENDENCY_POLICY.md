@@ -13,7 +13,12 @@ where the versions live (§7), how often to check (§5), and the hold ledger (§
 - **GitHub Actions** — the `uses:` pins in `.github/workflows/deploy.yml`, each a full
   commit SHA with the version in a trailing comment.
 - **The Node runtime** — `CI_NODE_MAJOR` in `local-CI.sh` (the workflow reads it from
-  there) and `engines.node` in `package.json`.
+  there), `engines.node` in `package.json`, and the `Node >= 20` that `CLAUDE.md` § Build
+  & preview quotes from it. Node tracks the newest **LTS** major: that is how this repo
+  reads the standard's "latest stable" for Node, because a Current major is short-lived
+  and an odd-numbered one never becomes LTS.
+- **The runner image** — `runs-on: ubuntu-latest` in both jobs of `deploy.yml`, a label
+  GitHub moves forward itself.
 
 ## When to check
 
@@ -28,12 +33,13 @@ npm outdated
 for a in actions/checkout actions/setup-node actions/configure-pages \
          actions/upload-pages-artifact actions/deploy-pages; do
   t=$(gh api "repos/$a/releases/latest" --jq .tag_name)
-  sha=$(gh api "repos/$a/git/ref/tags/$t" --jq .object.sha)
+  sha=$(gh api "repos/$a/commits/$t" --jq .sha)
   echo "$a  $t  $sha"
 done
 
-# Node — compare CI_NODE_MAJOR in local-CI.sh against current LTS
-node --version   # https://nodejs.org/en/about/previous-releases for the LTS schedule
+# Node — the pinned major, then the newest LTS release
+./local-CI.sh --print-node-major
+curl -s https://nodejs.org/dist/index.json | jq -r '[.[] | select(.lts)][0].version'
 ```
 
 ## Held-back dependencies
@@ -54,3 +60,5 @@ asks for. When a retest succeeds, delete the row and bump in the same change.
   `sanitize-html`, also confirm the calls this site makes still behave: `marked.parse(md,
   { gfm: true })` returns the expected HTML, and `sanitizeOptions` in `build.mjs` still
   strips what it should.
+
+Review history: [`docs/reviews/dependency_policy-loop-log.md`](reviews/dependency_policy-loop-log.md).

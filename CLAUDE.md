@@ -322,9 +322,9 @@ which no project moved. `--dry-run` gathers the digest and stops, spending no to
 ## Dependencies
 
 **All dependencies are kept at their latest stable version** (npm packages, pinned GitHub
-Actions, and the Node runtime) — for security as much as features. The only time a dep may
-be held back is when a newer version explicitly breaks a feature, and then it **must** be
-documented in [`docs/DEPENDENCY_POLICY.md`](docs/DEPENDENCY_POLICY.md) — including the exact
+Actions, and the Node runtime, which tracks the newest LTS) — for security as much as
+features. The only time a dep may be held back is when a newer version explicitly breaks a
+feature, and then it **must** be documented in [`docs/DEPENDENCY_POLICY.md`](docs/DEPENDENCY_POLICY.md) — including the exact
 version that broke us, so a later release can be re-tested and the pin lifted. Read that
 file before bumping or pinning anything.
 
