@@ -44,6 +44,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Vestige's demo video is now a moving fly-through of the meadow.**
+  The old clip held one still camera for 15 seconds. The new one follows
+  Vestige's built-in fly-through path, recorded with demoreel, and its
+  caption describes the route and calls the scene daytime, not evening.
+
 - **demoreel's demo video shows the spinning cube before you press play.**
   Its first frame was an empty terminal. The video README now allows a
   later frame as the poster where the first one shows nothing.
