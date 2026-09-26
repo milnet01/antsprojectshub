@@ -140,6 +140,10 @@
           "alt": "The Dry-run preview window over the library, after five Street Fighter games were added to the list. It reports 5 new files to copy, 0 to replace, 0 to skip and 0 BIOS files, with Cancel and Copy buttons."
         },
         {
+          "src": "shots/mame-curator-copy-progress.png",
+          "alt": "The Copy in progress window over the library, part-way through copying four Street Fighter games. It reads 3 / 4 — sfiii2n and State: Copying, with the red progress bar about three-quarters full and Pause and Cancel buttons."
+        },
+        {
           "src": "shots/mame-curator-filters.png",
           "alt": "The Settings page on its Filters tab: switches that drop BIOS and device machines, Japanese-only games, games with preliminary emulation, games needing CHD disk images, and mature content, all switched on, plus fields to drop games by year, category, genre, publisher and developer."
         }
@@ -147,7 +151,7 @@
       "video": {
         "src": "mame-curator-tour.mp4",
         "poster": "mame-curator-tour-poster.jpg",
-        "caption": "A silent 35-second tour of MAME Curator in its browser interface; a white circle marks the pointer. It opens on the full game library, then clicks the Capcom Classics collection: after a moment's loading the grid fills with Capcom cover art, which scrolls down and back up. Street fighter ii is typed into the search box and the grid narrows to Street Fighter games. Clicking Street Fighter II opens the Alternative versions panel, listing 38 versions with a short Wikipedia summary; Use this version is clicked on one release, the panel closes and an Override applied notice appears. Four games are added to the list one after another and the counter at the bottom climbs to 4. Dry-run opens a preview of the files to copy, Copy is pressed inside it, and a Copy in progress window opens and stays until the end."
+        "caption": "A silent 44-second tour of MAME Curator in its browser interface; a white circle marks the pointer. It opens on the full game library, then clicks the Capcom Classics collection: after a moment's loading the grid fills with Capcom cover art. Street fighter ii is typed into the search box and the grid narrows to Street Fighter games. Clicking Street Fighter II opens the Alternative versions panel, listing its versions with a short Wikipedia summary; Use this version is clicked on one release and the panel closes. Four games are added to the list one after another and the counter at the bottom climbs to 4. Dry-run opens a preview of the files to copy, and Copy is pressed inside it. A Copy in progress window counts up from 1 of 4 to 4 of 4 as each game is copied, then closes, and the list at the bottom is empty again."
       }
     },
     {

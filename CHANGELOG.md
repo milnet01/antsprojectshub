@@ -54,6 +54,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **MAME Curator's demo video now shows the copy counting up to the end, and a new screenshot shows a copy in progress.**
+
 - **Vestige's demo video is now a moving fly-through of the meadow.**
   The old clip held one still camera for 15 seconds. The new one follows
   Vestige's built-in fly-through path, recorded with demoreel, and its
