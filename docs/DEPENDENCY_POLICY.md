@@ -6,8 +6,8 @@ applies to every kind of dependency:
 
 - **npm packages** — `package.json` / `package-lock.json` (`marked`, `sanitize-html`).
 - **GitHub Actions** — the `uses:` pins in `.github/workflows/*.yml`.
-- **The Node runtime** — the `node-version:` in the workflow and `engines.node` in
-  `package.json`.
+- **The Node runtime** — `CI_NODE_MAJOR` in `local-CI.sh` (the workflow reads it from
+  there) and `engines.node` in `package.json`.
 
 ## The one exception: a newer version that breaks us
 
@@ -49,7 +49,7 @@ for a in actions/checkout actions/setup-node actions/configure-pages \
   echo "$a  $t  $sha"
 done
 
-# Node — compare the workflow's node-version against current LTS
+# Node — compare CI_NODE_MAJOR in local-CI.sh against current LTS
 node --version   # https://nodejs.org/en/about/previous-releases for the LTS schedule
 ```
 
