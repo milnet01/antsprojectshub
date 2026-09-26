@@ -4,7 +4,8 @@ The policy is the global dependency standard,
 `~/.claude/standards/dependencies.md`, read in place: every dependency at its latest
 stable release, a hold only where a specific newer version breaks something, and every
 hold written down. This file holds only what that standard leaves to each project —
-where the versions live (§7), how often to check (§5), and the hold ledger (§3).
+where the versions live (§7), how often to check (§5), and the hold ledger (§3) —
+plus one reading of §1, for Node, stated below.
 
 ## Where the versions live
 
@@ -16,9 +17,10 @@ where the versions live (§7), how often to check (§5), and the hold ledger (§
   there) tracks the newest **LTS** major: that is how this repo reads the standard's
   "latest stable" for Node, because a Current major is short-lived and an odd-numbered
   one never becomes LTS.
-- **The Node floor** — `engines.node` in `package.json`, and the `Node >= 20` that
+- **The Node floor** — `engines.node` in `package.json`, and the `Node >= 22.12` that
   `CLAUDE.md` § Build & preview quotes from it. A floor, not a hold (standard §4): it
-  does not move with `CI_NODE_MAJOR`, only when the build needs a newer Node.
+  does not move with `CI_NODE_MAJOR`. It is the highest `engines.node` among the npm
+  dependencies, so recheck it on every npm bump (command below).
 - **The runner image** — `runs-on: ubuntu-latest` in both jobs of `deploy.yml`, a label
   GitHub moves forward itself.
 
@@ -26,10 +28,13 @@ where the versions live (§7), how often to check (§5), and the hold ledger (§
 
 Monthly, and whenever `package.json` or a workflow is edited for any other reason. The
 site has no releases, so the standard's default of "every release cycle" never fires.
+Nothing records a sweep that finds nothing, so this cadence is unchecked.
 
 ```bash
-# npm packages — Current vs Latest
+# npm packages — Current vs Latest, then each one's Node floor
 npm outdated
+node -e 'for (const p of Object.keys(require("./package.json").dependencies))
+  console.log(p, require(`./node_modules/${p}/package.json`).engines?.node)'
 
 # GitHub Actions — latest release tag + its commit SHA (to re-pin)
 for a in actions/checkout actions/setup-node actions/configure-pages \

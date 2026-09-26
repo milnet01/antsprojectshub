@@ -22,7 +22,7 @@ The only client-side JavaScript is hand-written, and each piece is progressive e
 ## Build & preview
 
 ```bash
-npm ci                  # install locked deps (Node >= 20)
+npm ci                  # install locked deps (Node >= 22.12)
 node build.mjs          # build → dist/  (or: npm run build)
 npx serve dist          # preview at http://localhost:3000
 ./local-CI.sh           # reproduce the CI build job locally before pushing

@@ -6,7 +6,7 @@
 # It IS the build job's steps, not a copy of them: .github/workflows/deploy.yml
 # calls `./local-CI.sh --ci` and reads its Node version from
 # `./local-CI.sh --print-node-major`, so the two cannot drift.
-#     Node 24 check  ->  npm ci  ->  node build.mjs   (env: GITHUB_TOKEN)
+#     Node check  ->  npm ci  ->  node build.mjs   (env: GITHUB_TOKEN)
 #
 # The workflow's deploy steps (configure-pages / upload-pages-artifact /
 # deploy-pages) are GitHub Pages infrastructure and cannot run locally. What we
