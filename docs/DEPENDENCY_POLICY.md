@@ -16,7 +16,8 @@ plus one reading of §1, for Node, stated below.
 - **The Node runtime** — `CI_NODE_MAJOR` in `local-CI.sh` (the workflow reads it from
   there) tracks the newest **LTS** major: that is how this repo reads the standard's
   "latest stable" for Node, because a Current major is short-lived and an odd-numbered
-  one never becomes LTS.
+  one never becomes LTS. This is a deliberate difference from standard §1, which would
+  move to the newest Current major; decided by the user on 2026-09-26.
 - **The Node floor** — `engines.node` in `package.json`, and the `Node >= 22.12` that
   `CLAUDE.md` § Build & preview quotes from it. A floor, not a hold (standard §4): it
   does not move with `CI_NODE_MAJOR`. It is the highest `engines.node` among the npm
