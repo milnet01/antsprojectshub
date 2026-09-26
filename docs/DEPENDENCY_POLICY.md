@@ -13,10 +13,12 @@ where the versions live (§7), how often to check (§5), and the hold ledger (§
 - **GitHub Actions** — the `uses:` pins in `.github/workflows/deploy.yml`, each a full
   commit SHA with the version in a trailing comment.
 - **The Node runtime** — `CI_NODE_MAJOR` in `local-CI.sh` (the workflow reads it from
-  there), `engines.node` in `package.json`, and the `Node >= 20` that `CLAUDE.md` § Build
-  & preview quotes from it. Node tracks the newest **LTS** major: that is how this repo
-  reads the standard's "latest stable" for Node, because a Current major is short-lived
-  and an odd-numbered one never becomes LTS.
+  there) tracks the newest **LTS** major: that is how this repo reads the standard's
+  "latest stable" for Node, because a Current major is short-lived and an odd-numbered
+  one never becomes LTS.
+- **The Node floor** — `engines.node` in `package.json`, and the `Node >= 20` that
+  `CLAUDE.md` § Build & preview quotes from it. A floor, not a hold (standard §4): it
+  does not move with `CI_NODE_MAJOR`, only when the build needs a newer Node.
 - **The runner image** — `runs-on: ubuntu-latest` in both jobs of `deploy.yml`, a label
   GitHub moves forward itself.
 
