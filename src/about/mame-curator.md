@@ -44,5 +44,6 @@ something this project distributes.
 ## Where it stands
 
 Version 1 and stable. It runs entirely on your own machine: no telemetry, no
-analytics, no cloud sync. You need Python 3.12 or newer and a browser;
+analytics, no cloud sync, and the ban on adding any is enforced by an automated
+check rather than good intentions. You need Python 3.12 or newer and a browser;
 everything else is handled for you. MIT licensed.
