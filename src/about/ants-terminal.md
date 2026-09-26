@@ -11,7 +11,7 @@ of the output. Checking what changed in your code, searching your files, reading
 long to-do list: each one is a wall of text you pay for.
 
 Ants Terminal answers a lot of those questions itself and hands Claude a short,
-tidy summary instead. It ships 93 built-in tools that replace the expensive
+tidy summary instead. It ships more than 90 built-in tools that replace the expensive
 long-hand commands — *where is this function defined*, *what changed on this
 branch*, *what did the last test run say* — and a counter in the bottom bar keeps
 a running total of what they have saved you this session.
@@ -29,14 +29,14 @@ the terminal is connected.
 - **Set permissions visually**, rather than hand-editing a settings file.
 - **Paste a screenshot** and the file lands in the prompt ready to send.
 
-All of this happens on your own machine. Nothing is sent anywhere.
+All of this happens on your own machine. None of it sends your work anywhere.
 
 ## It is also just a good terminal
 
 With Claude out of the picture entirely: full colour and Unicode, full-screen
 programs like `vim` and `htop`, programming-font ligatures, inline images,
 clickable links and file paths, a command palette, searchable history, a
-pop-out editor for long commands, a snippets library, 11 colour themes with
+pop-out editor for long commands, a snippets library, a dozen colour themes with
 automatic dark/light switching, and small Lua plugins that run sandboxed and
 cannot freeze the window.
 
@@ -50,9 +50,10 @@ other program — you then get updates automatically. On anything else, the
 AppImage is a single file: download it, make it executable, run it. Both routes
 are on the download buttons above.
 
-Your settings live in `~/.config/ants-terminal/`, readable only by you. The
-terminal makes no network connections at all unless you switch on the optional
-AI chat.
+Your settings live in `~/.config/ants-terminal/`, readable only by you. The only
+network connection it makes on its own is a check for a newer release when it
+starts. Everything else that goes online — the AI chat, and sending code to an AI
+for review — is off until you switch it on.
 
 ## Where it stands
 

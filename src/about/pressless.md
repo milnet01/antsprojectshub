@@ -17,7 +17,7 @@ stick. If you delete Pressless tomorrow, nothing you wrote goes with it — the
 files were never inside the app, and there is no export button because there is
 nothing to export from.
 
-There is no account to make and no password to lose.
+There is no Pressless account to make and no Pressless password to lose.
 
 ## It is not a host
 
@@ -58,16 +58,17 @@ kind wants — so others may well follow later.
 
 ## Where it stands
 
-**It is an early beta, for Linux and Windows.** Download the file for your
-system and run it. There is nothing to install first — no Python, no
+**It is an early beta, for Linux and Windows.** On Linux, download the file and
+run it. On Windows, download the zip, extract it, and double-click
+`Start Pressless.bat`. There is nothing to install first — no Python, no
 compiler, no command line.
 
 Pressless keeps everything in a folder called `Pressless-data`, right beside
 the program. So put the program where you want your writing to live before
 you first start it.
 
-The first time, it asks for three things: your site's GitHub repository, your
-site's name and address, and a publishing key from GitHub. It checks them with
+The first time, it asks for your site's GitHub repository, your site's name and
+address, and a publishing key from GitHub. It checks them with
 GitHub before saving anything, and keeps the key where only your own computer
 account can read it. So you need a GitHub account and a GitHub Pages site
 before you begin.

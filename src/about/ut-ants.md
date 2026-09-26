@@ -61,8 +61,10 @@ started in September 2026.
 
 What exists is the reading and the drawing. It reads a real map end to end —
 its walls, textures, sounds, lights and everything placed in it — and rebuilds
-the old textures as modern materials. A first program opens that map and lets
-you fly a camera through it, lit and shadowed. There is no player, no gravity,
+the old textures as modern materials. Point the first program at your Unreal
+Tournament folder and it lists the maps in it. Pick one and it is rebuilt and
+opened, and you can fly a camera through it — lit, shadowed, with fog and light
+shafts — on a keyboard and mouse or a gamepad. There is no player, no gravity,
 no weapons and no monsters yet. Windows and Linux are both built and tested on
 every single change — not one first and the other later — and the tests pass
 on a machine that has never had Unreal Tournament installed.

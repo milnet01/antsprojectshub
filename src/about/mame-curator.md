@@ -29,10 +29,11 @@ MAME Curator does that sorting for you, then lets you argue with its choices.
 
 ## Using it
 
-Clone it and run `./run.sh` — `run.bat` on Windows. That sets up Python, installs
-what it needs, runs a setup wizard the first time asking where your DAT, your ROMs
-and your destination folder live, then opens the interface in your browser. Run
-it again any time; it picks up where it left off.
+Clone it and run `./run.sh` — `run.bat` on Windows. That checks you have Python
+3.12 or newer and installs everything else it needs. The first time, a setup
+wizard asks where your DAT, your ROMs and your destination folder live, and where
+to write the playlist. Then the interface opens in your browser. Run it again any
+time; it picks up where it left off.
 
 There is a command-line route too, including a dry run that reports what would be
 copied without copying anything.
@@ -43,6 +44,5 @@ something this project distributes.
 ## Where it stands
 
 Version 1 and stable. It runs entirely on your own machine: no telemetry, no
-analytics, no cloud sync, and the ban on adding any is enforced by an automated
-check rather than good intentions. You need Python 3.12 or newer and a browser;
+analytics, no cloud sync. You need Python 3.12 or newer and a browser;
 everything else is handled for you. MIT licensed.
