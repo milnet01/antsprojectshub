@@ -37,8 +37,7 @@ Pages steps (configure, upload, deploy) belong to the workflow; they cannot run 
 
 It checks two things beyond the build: that `dist/` is deploy-ready, and that no About page
 contradicts the release history. Both fail a plain `./local-CI.sh`, which is the pre-push
-gate. Under `--ci` the About check is reported and not fatal, so a stale sentence never
-stops the site's daily rebuild.
+gate. Under `--ci` the About check is reported and not fatal.
 
 The push hook runs it; running it by hand is for iterating. The hook is the machine-wide
 one (`core.hooksPath`), and it skips the gate for a push it takes to be documentation
@@ -101,8 +100,7 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
 
 - **`lib/github.mjs`** — shared GitHub I/O (`ghRequest`/`ghJson`) and the release-asset → OS
   matcher (`ASSET_PAT`, `assetPlatform`, `pickAsset`, `pickLatestRelease`). Imported by both
-  `build.mjs` and `stats.mjs` **so the two can never disagree about which file counts as a
-  Windows/macOS/Linux download**. Change the matcher here, nowhere else.
+  `build.mjs` and `stats.mjs`. Change the matcher here, nowhere else.
 
 - **`lib/ga.mjs`** — the *read* half of analytics: service-account auth (a JWT signed with
   `node:crypto`, no dependency) and the GA4 Data API calls the dashboard shows. Local only —
