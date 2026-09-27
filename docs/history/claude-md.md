@@ -5,28 +5,75 @@ arguments that settled those rules live here, so the instructions stay short
 without losing the reasoning.
 
 Each heading names the `CLAUDE.md` section and the opening words of the rule
-it explains. A reason `CLAUDE.md` still states is not repeated here.
+it explains, as read, with markup and line breaks stripped. A reason
+`CLAUDE.md` still states is not repeated here.
 
-## Architecture: "`src/about/<slug>.md` — the hand-written About section"
+A list headed "Moved verbatim from CLAUDE.md" holds clauses cut out of that
+rule, word for word, when all of its "why" moved here.
+
+## Build & preview: "local-CI.sh is the build"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- they cannot run locally
+
+## Build & preview: "npm test covers the stats server only"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- so it adds no dependency
+- the tray half needs PySide6, which the deploy runner does not have, and the
+  deploy workflow deliberately touches nothing under `.stats/`
+
+## Architecture: "src/about/<slug>.md — the hand-written About section"
 
 Until 2026-08-20 a project page rendered that project's GitHub README in the
 About slot. A README opens with badges and build flags, buries what the thing
 does, and changed the page shape whenever the repo was edited. Hand-written
 `src/about/<slug>.md` files replaced it.
 
-## Key behaviours: "A release with no notes falls back to the repo's `CHANGELOG.md`"
+## Architecture: "lib/about.mjs — reads and renders src/about/*.md"
 
-Measured 2026-08: 24 of 180 releases across the site's projects were cut with
-an empty body, including every OneUp release then published. Without the
-fallback the changelog page read "shipped without written notes" over and over.
+Moved verbatim from CLAUDE.md on 2026-09-27:
 
-## What this is: "`assets/dates.js` — rewrites a release date"
+- this is our own copy, so an internal link stays internal
+
+## Architecture: "lib/github.mjs — shared GitHub I/O"
+
+If `build.mjs` and `stats.mjs` kept separate matchers and they drifted, the
+private dashboard would report download numbers the public site does not show.
+
+## Architecture: "lib/ga.mjs — the read half of analytics"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- so no GA figure can reach the public site
+
+## What this is: "assets/dates.js — rewrites a release date"
 
 A build on a CI runner cannot know a visitor's locale. The page therefore
 ships `2026-08-19` — unambiguous, and it sorts. `assets/dates.js` asks
 `navigator.languages` and upgrades only what a human reads.
 
-## Key behaviours: "Demo videos are native `<video controls>`"
+## Key behaviours: "Release-note HTML is untrusted"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- (a fork's upstream writes some of it)
+
+## Key behaviours: "A release with no notes falls back to the repo's CHANGELOG.md"
+
+Measured 2026-08: 24 of 180 releases across the site's projects were cut with
+an empty body, including every OneUp release then published. Without the
+fallback the changelog page read "shipped without written notes" over and over.
+
+## Key behaviours: "marked and sanitize-html are build-time only"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- so nothing else on the page can drift
+
+## Key behaviours: "Demo videos are native <video controls>"
 
 Unrequested motion is a barrier. `preload="none"` plus a poster means a
 visitor who does not press play downloads nothing.
@@ -40,11 +87,21 @@ decorative.
 A cookie recording that you refused cookies is its own punchline. A visitor
 who never accepted therefore has no Google cookie at all.
 
-## Key behaviours: "`/privacy/` and `analytics.js` are one fact written twice"
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- it is an inline `<script>`, and the CSP forbids those
+
+## Key behaviours: "/privacy/ and analytics.js are one fact written twice"
 
 The page says in English what the script does in code, and English is the half
 no compiler checks. `assertAnalyticsContract()` exists so a privacy notice
 cannot quietly become a lie.
+
+## Key behaviours: "Security headers ship via <meta>"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- (GitHub Pages cannot set HTTP headers)
 
 ## Key behaviours: "An About page's claim to be unpublished must stay true"
 
@@ -58,12 +115,10 @@ The check warns in the build and fails in `local-CI.sh` because the daily rebuil
 to keep release notes fresh. Stopping it over a stale sentence would cost the whole
 site's freshness to report one page's drift.
 
-## Changelog: "The site deploys continuously, so dated sections stand in for versions"
+Moved verbatim from CLAUDE.md on 2026-09-27:
 
-`CHANGELOG.md` said from the start that dated sections stand in for versions, and nothing
-closed one, so every entry accumulated under `[Unreleased]`. The weekly post already runs
-on a timer and already commits, so it closes the section too — a cadence that exists
-beats one that must be remembered.
+- The copy is hand-written and the release history is not, so a page saying
+  "no download yet" outlives the release that gave it one.
 
 ## Key behaviours: "Download links point at matched release assets per OS"
 
@@ -71,12 +126,23 @@ Several companion files carry an OS name, and GitHub lists assets
 alphabetically, so `foo-windows.cdx.json` would sort ahead of `foo.exe` and
 become the Windows download.
 
-## Architecture: "`lib/github.mjs` — shared GitHub I/O"
+Moved verbatim from CLAUDE.md on 2026-09-27:
 
-If `build.mjs` and `stats.mjs` kept separate matchers and they drifted, the
-private dashboard would report download numbers the public site does not show.
+- so a source tarball is not mistaken for a Linux binary
 
-## Private stats dashboard: "`tray/ants-stats-tray.py` is an optional PySide6 tray icon"
+## Deploy: ".github/workflows/deploy.yml runs the build and publishes dist/"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- (to refresh release notes and changelogs)
+
+## Deploy: "The deploy job runs only on GitHub Pages infrastructure"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- so the failures that *are* our fault are caught before pushing
+
+## Private stats dashboard: "stats.mjs builds an owner-only dashboard"
 
 A tray icon needs a desktop toolkit, and the Node route to one is Electron.
 
@@ -87,32 +153,19 @@ world-readable. A password box would be defeated by View Source, because the
 numbers are already in the page, and a secret URL is only as secret as the
 URL. Being unpublished is the only privacy model that works here.
 
-## Private stats dashboard: "The port is `PORT` → `STATS_PORT` → 4321"
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- `build.mjs` copies that whole directory into `dist/`, which would publish it
+
+## Private stats dashboard: "The port is PORT → STATS_PORT → 4321"
 
 Binding 4321 after an unusable `PORT` would look healthy while nothing reached
 it. `STATS_PORT` keeps its older lenient behaviour because that path predates
 the rule.
 
-## Private stats dashboard: "The tray reads the port from the *unit's* environment"
-
 The server is started by systemd, so an override via a drop-in never reaches
 the tray's own environment. A tray that guessed would open a dead port while
 the server was fine.
-
-## Private stats dashboard: "The token is resolved per run, never once per process"
-
-`gh` keeps the token in the desktop keyring, which is still locked when the
-service starts at boot. A token resolved at import would leave a long-lived
-server permanently unauthenticated — traffic blank, every run capped at 60
-calls an hour, even after a manual refresh hours later.
-
-## Private stats dashboard: "Authentication is effectively required, but automatic"
-
-A full run needs roughly 90 API calls against an unauthenticated ceiling of 60
-an hour, and the traffic endpoints need push access or return 403. If a token
-is ever suggested it is classic scope `public_repo`, never full `repo`: every
-site repo is public, and `repo` would also grant control of the owner's
-private ones.
 
 ## Private stats dashboard: "Google Analytics is read, never written, and never snapshotted"
 
@@ -128,7 +181,37 @@ as the whole truth.
 A false zero poisons every future delta. The same discipline produced the
 weekly digest's literal "could not be read".
 
-## Private stats dashboard: "`.stats/` must stay self-contained"
+## Private stats dashboard: "The token is resolved per run, never once per process"
+
+`gh` keeps the token in the desktop keyring, which is still locked when the
+service starts at boot. A token resolved at import would leave a long-lived
+server permanently unauthenticated — traffic blank, every run capped at 60
+calls an hour, even after a manual refresh hours later.
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- importers rely on the live binding to see the update
+
+## Private stats dashboard: "Authentication is effectively required, but automatic"
+
+A full run needs roughly 90 API calls against an unauthenticated ceiling of 60
+an hour, and the traffic endpoints need push access or return 403. If a token
+is ever suggested it is classic scope `public_repo`, never full `repo`: every
+site repo is public, and `repo` would also grant control of the owner's
+private ones.
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- which keeps the call count under the unauthenticated ceiling so the rest
+  still fills in
+
+## Private stats dashboard: "History is append-only and local"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- because GitHub deletes traffic data after 14 days
+
+## Private stats dashboard: ".stats/ must stay self-contained"
 
 A relative path to `../src/assets/style.css` resolves when the file is opened
 from disk but 404s when `serve.mjs` serves it, silently dropping every colour
@@ -143,6 +226,10 @@ The OS column tints sit clear of the status language — amber means "look at
 this", teal "up", rose "down" — so a tinted column can never read as a
 warning.
 
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- the colour never competes with the numbers
+
 ## Private stats dashboard: "Sorting is progressive enhancement"
 
 Rendered text carries thousands separators, `d` suffixes and a delta line.
@@ -154,11 +241,56 @@ privacy modes and on a `file://` page — forgetting the sort is a far better
 failure than a dashboard that does not render. Refresh re-renders from a fresh
 run, so without this the reader's chosen order was thrown away every time.
 
-## Weekly blog post: "Three stages, and the split is the point"
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- so the page is complete if the script never runs
+
+## Weekly blog post: "A user timer (systemd/ants-weekly-post.timer, Wednesdays 09:00"
 
 The digest is where the token saving lives: the writer reads one compact file
 instead of hundreds of commits. The reviewer never saw the writing, so its
 checks are independent.
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- and the split is the point
+
+## Weekly blog post: "Gather — scripts/week-digest.mjs, no AI."
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- because a promoted preview carries nothing new
+
+## Weekly blog post: "Write, then review — two separate claude -p sessions"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- a wildcard before the subcommand would also approve `git -c`, which runs
+  commands
+
+## Weekly blog post: "Build and publish."
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- so nothing unreviewed goes live
+
+## Dependencies: "All dependencies are kept at their latest stable version"
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- for security as much as features
+- so a later release can be re-tested and the pin lifted
+
+## Changelog: "The site deploys continuously, so dated sections stand in for versions"
+
+`CHANGELOG.md` said from the start that dated sections stand in for versions, and nothing
+closed one, so every entry accumulated under `[Unreleased]`. The weekly post already runs
+on a timer and already commits, so it closes the section too — a cadence that exists
+beats one that must be remembered.
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- so no section stays open
 
 ---
 

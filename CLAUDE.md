@@ -33,7 +33,7 @@ npm test                # the stats server's port handling (Node + Python)
 `local-CI.sh` **is** the build: the `build` job in `.github/workflows/deploy.yml` calls
 `./local-CI.sh --ci`, and reads the Node version from `./local-CI.sh --print-node-major`.
 Change a build step or the Node version in the script, never in the workflow. Only the
-Pages steps (configure, upload, deploy) belong to the workflow; they cannot run locally.
+Pages steps (configure, upload, deploy) belong to the workflow.
 
 It checks two things beyond the build: that `dist/` is deploy-ready, and that no About page
 contradicts the release history. Both fail a plain `./local-CI.sh`, which is the pre-push
@@ -54,9 +54,8 @@ offline, the build still succeeds — each project falls back to static metadata
 There is no linter. `.editorconfig` enforces 2-space indent, LF, UTF-8, final newline.
 
 `npm test` covers the *stats server only* — the port contract below, and nothing else. It
-uses `node --test` and Python's `unittest`, so it adds no dependency; the site build has no
-tests. It is **local, not CI**: the tray half needs PySide6, which the deploy runner does
-not have, and the deploy workflow deliberately touches nothing under `.stats/`.
+uses `node --test` and Python's `unittest`; the site build has no
+tests. It is **local, not CI**.
 
 You almost never run the build by hand. Pushing to `main` is enough — see Deploy.
 
@@ -92,8 +91,7 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   page-assembly logic.
 
 - **`lib/about.mjs`** — reads and renders `src/about/*.md`. Data access and parsing only.
-  Its sanitiser allowlist is deliberately NOT `build.mjs`'s: this is our own copy, so an
-  internal link stays internal.
+  Its sanitiser allowlist is deliberately NOT `build.mjs`'s.
 
 - **`lib/templates.mjs`** — pure presentation: the `basePage()` HTML document shell, the
   `esc()` escaper, and `ORIGIN`. No data access or fetching here — keep that boundary.
@@ -104,7 +102,7 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
 
 - **`lib/ga.mjs`** — the *read* half of analytics: service-account auth (a JWT signed with
   `node:crypto`, no dependency) and the GA4 Data API calls the dashboard shows. Local only —
-  `build.mjs` never imports it, so no GA figure can reach the public site. It is the mirror
+  `build.mjs` never imports it. It is the mirror
   of `src/assets/analytics.js`, the *write* half, and neither can switch the other on.
 
 - **`src/assets/style.css`** — all styling. Re-skin by editing the `:root` design tokens at
@@ -121,7 +119,7 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   visitor *reads* — the About copy and the whole changelog — is on this site. Do not
   reintroduce an "on GitHub →" link for reading material.
 
-- **Release-note HTML is untrusted** (a fork's upstream writes some of it). It is rendered
+- **Release-note HTML is untrusted**. It is rendered
   with `marked` then run through `sanitize-html` with a tight allowlist (`sanitizeOptions`).
   Links get `rel="noopener noreferrer nofollow"` + `target="_blank"`; relative URLs are
   absolutized against the source repo. Do not loosen the allowlist or skip sanitisation.
@@ -135,8 +133,7 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   output is static HTML/CSS plus the hand-written progressive-enhancement scripts.
   The lightbox works fully without `lightbox.js` (✕, click-outside, Back) — keep it that
   way; it is loaded via `basePage({ lightbox: true })`. `dates.js` never touches the
-  `datetime` attribute and acts only on `<time data-localise>`, so nothing else on the page
-  can drift; it is loaded via `basePage({ dates: true })`. With no JavaScript there is
+  `datetime` attribute and acts only on `<time data-localise>`; it is loaded via `basePage({ dates: true })`. With no JavaScript there is
   nothing to track, so `analytics.js` correctly does nothing at all. Don't add further
   client JS lightly.
 
@@ -152,7 +149,7 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   tag, the consent bar and every third-party request vanish together** — that is the off
   switch, don't add another. Nothing loads until the visitor presses Accept; the choice is
   kept in `localStorage`, not a cookie. Google's own copy-paste snippet **cannot be used as
-  given** — it is an inline `<script>`, and the CSP forbids those. `googletagmanager.com` is
+  given**. `googletagmanager.com` is
   the one third-party origin allowed, because GA has no self-hostable tag; apply that same
   test before widening the list for anything else.
 
@@ -170,16 +167,14 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   switched back on or if the script fetches a host the CSP does not allow. **Adding a claim
   to the privacy page means adding its guard to `ANALYTICS_CLAIMS` in the same edit.**
 
-- **Security headers ship via `<meta>`** (GitHub Pages cannot set HTTP headers): a strict CSP
+- **Security headers ship via `<meta>`**: a strict CSP
   with no inline scripts or styles, `referrer: no-referrer`, `nosniff`. The self-hosted
   scripts are allowed by `script-src 'self'` and demo videos by `media-src 'self'`;
   **inline** `<script>`/`<style>` still break the CSP — never introduce them. The one
   third-party origin in the whole policy is `googletagmanager.com` in `script-src`, plus
   Google Analytics' collector in `connect-src`.
 
-- **An About page's claim to be unpublished must stay true.** The copy is hand-written
-  and the release history is not, so a page saying "no download yet" outlives the release
-  that gave it one. `build.mjs` compares each About page against the history it has just
+- **An About page's claim to be unpublished must stay true.** `build.mjs` compares each About page against the history it has just
   fetched and warns; `local-CI.sh` turns that warning into a failure (except under
   `--ci`, the daily rebuild). The phrases it
   recognises are `UNPUBLISHED_CLAIMS` in `build.mjs` — extend that list rather than adding
@@ -187,14 +182,14 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   check when one does.
 
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
-  deliberately conservative so a source tarball is not mistaken for a Linux binary), falling
+  deliberately conservative), falling
   back to `homepage` → Releases page → repo home. Companion files — signatures, checksum
   manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching.
 
 ## Deploy
 
 `.github/workflows/deploy.yml` runs the build and publishes `dist/` to GitHub Pages on every
-push to `main`, daily at ~05:00 UTC (to refresh release notes and changelogs), and on manual
+push to `main`, daily at ~05:00 UTC, and on manual
 dispatch. The repo is public, so pushing is the normal way to ship. Action SHAs are pinned
 (with the version in a trailing comment) — bump them deliberately, not casually.
 
@@ -202,8 +197,7 @@ The `deploy` job runs only on GitHub Pages infrastructure, so it cannot be repro
 locally. If it fails with **`Deployment failed, try again later`** while the `build` job is
 green, that is a transient Pages backend hiccup — **re-run the deploy job**
 (`gh run rerun <id> --failed`), don't hunt for a code cause. `local-CI.sh` checks deploy
-*readiness* (dist/ has `index.html`, `CNAME`, no stray symlinks), so the failures that *are*
-our fault are caught before pushing.
+*readiness* (dist/ has `index.html`, `CNAME`, no stray symlinks).
 
 ## Private stats dashboard (`npm run stats`)
 
@@ -222,8 +216,7 @@ by calling `generate()` itself.
 - `serve.mjs` binds `127.0.0.1` explicitly, never `0.0.0.0` — the dashboard must not be
   reachable from the local network. Keep the file allowlist (`FILES`) closed; don't turn it
   into a general static server rooted at the repo.
-- Do not add stats output to `src/assets/` — `build.mjs` copies that whole directory into
-  `dist/`, which would publish it. Do not "just add a login".
+- Do not add stats output to `src/assets/`. Do not "just add a login".
 
 Other invariants:
 
@@ -249,18 +242,16 @@ Other invariants:
 - **The token is resolved per run, never once per process.** `resolveAuth()` in
   `lib/github.mjs` re-checks while unauthenticated and caches success; `generate()` calls it
   first, and `serve.mjs` waits for a login before its startup run rather than firing blind.
-  `hasToken`/`tokenSource` are `export let` **on purpose** — importers rely on the live
-  binding to see the update. Don't turn them back into `const`.
+  `hasToken`/`tokenSource` are `export let` **on purpose**. Don't turn them back into `const`.
 
 - **Authentication is effectively required, but automatic.** `lib/github.mjs` resolves a
   token from `GITHUB_TOKEN`, else from `gh auth token` — so a developer already logged into
   the GitHub CLI needs no setup, and local `node build.mjs` runs authenticated too. If a
   token is ever suggested, it is classic scope `public_repo`, **not** full `repo`. With
-  neither, the run degrades: traffic is skipped, which keeps the call count under the
-  unauthenticated ceiling so the rest still fills in.
+  neither, the run degrades: traffic is skipped.
 
 - **History is append-only and local.** Download totals are stored as dated snapshots;
-  traffic is merged as per-day buckets, because GitHub deletes traffic data after 14 days.
+  traffic is merged as per-day buckets.
 
 - **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
   `site.css`, not linked. Any new asset the page references gets copied in and added to
@@ -269,15 +260,14 @@ Other invariants:
 - **Colour on the dashboard is wayfinding, not data.** Each section owns an `--accent`
   (teal → violet down the page) shared with its nav link, and the OS columns are tinted
   blue/magenta/green. Those hues deliberately sit clear of the status language — amber means
-  "look at this", teal "up", rose "down". Figures stay in text ink; the colour never
-  competes with the numbers.
+  "look at this", teal "up", rose "down". Figures stay in text ink.
 
 - **The sticky nav is progressive enhancement too.** The links are ordinary anchors that
   work without JavaScript; `dashboard.js` only adds the scroll-spy.
 
 - **Sorting is progressive enhancement.** `dashboard.js` turns each `table.sortable` header
   into a `<button>` and toggles `aria-sort`; every table also ships pre-sorted by its most
-  useful column, so the page is complete if the script never runs. Sort keys come from
+  useful column. Sort keys come from
   `data-sort` attributes emitted with each cell — don't switch to parsing the rendered text.
   Mark a column `data-nosort` when it holds no rankable value (Trend, Top referrers).
   **A chosen sort is remembered across reloads**, in `localStorage` under
@@ -290,7 +280,7 @@ Other invariants:
 
 A user timer (`systemd/ants-weekly-post.timer`, Wednesdays 09:00, catching up after a missed
 one) publishes the week's post with nobody at the keyboard. Install lines are in
-`systemd/ants-weekly-post.service`. Three stages, and the split is the point:
+`systemd/ants-weekly-post.service`. Three stages:
 
 - **Gather — `scripts/week-digest.mjs`, no AI.** Reads every project's local clone and
   GitHub since the newest post was committed: commits, releases and whether they carry
@@ -298,20 +288,17 @@ one) publishes the week's post with nobody at the keyboard. Install lines are in
   subjects with the body lines that carry a figure. Writes `.digest/<date>.md`
   (`.gitignore`d). **Keep new facts flowing through the digest** rather than telling a
   session to go and read histories. A source that could not be read says "could not be
-  read", never none. A tag on the same commit as an earlier one is flagged, because a
-  promoted preview carries nothing new.
+  read", never none. A tag on the same commit as an earlier one is flagged.
 
 - **Write, then review — two separate `claude -p` sessions**, prompts in
   `scripts/weekly-post/`. The reviewer never saw the writing, checks every figure against
   the digest or its commit, and ends `VERDICT: PASS` or `FAIL`; only PASS publishes. Both
   skip user-level settings and run under `dontAsk` holding exactly: read anything, edit
   `src/posts/**`, and `git log`/`git show` on each clone the digest names **with the path
-  spelled out** — a wildcard before the subcommand would also approve `git -c`, which runs
-  commands. Don't widen that list to make a run succeed.
+  spelled out**. Don't widen that list to make a run succeed.
 
 - **Build and publish.** `local-CI.sh`, then commit the one new post and push. Any failed
-  step stops with a desktop notification and leaves the draft uncommitted, so nothing
-  unreviewed goes live.
+  step stops with a desktop notification and leaves the draft uncommitted.
 
 It refuses a dirty tree, and skips a week whose newest post is under five days old or in
 which no project moved. `--dry-run` gathers the digest and stops, spending no tokens;
@@ -320,10 +307,9 @@ which no project moved. `--dry-run` gathers the digest and stops, spending no to
 ## Dependencies
 
 **All dependencies are kept at their latest stable version** (npm packages, pinned GitHub
-Actions, and the Node runtime, which tracks the newest LTS) — for security as much as
-features. The only time a dep may be held back is when a newer version explicitly breaks a
+Actions, and the Node runtime, which tracks the newest LTS). The only time a dep may be held back is when a newer version explicitly breaks a
 feature, and then it **must** be documented in [`docs/DEPENDENCY_POLICY.md`](docs/DEPENDENCY_POLICY.md) — including the exact
-version that broke us, so a later release can be re-tested and the pin lifted. Read that
+version that broke us. Read that
 file before bumping or pinning anything.
 
 ## Accessibility is a hard requirement
@@ -336,7 +322,7 @@ and not rely on colour alone to convey status. Verify contrast when touching col
 
 The site deploys continuously, so dated sections stand in for versions. Add entries under
 `## [Unreleased]`; `scripts/weekly-post.sh` closes them under the day's date when it
-publishes, so no section stays open. `scripts/close-changelog.mjs` does the closing and
+publishes. `scripts/close-changelog.mjs` does the closing and
 can be run by hand.
 
 ## History
