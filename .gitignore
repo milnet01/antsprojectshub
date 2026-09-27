@@ -19,3 +19,7 @@ __pycache__/
 # ROADMAP.md's next-ID cache. Derived, not source: its real value is the highest APHW-NNNN
 # in ROADMAP.md + CHANGELOG.md, so a fresh clone recovers it and git can't drift it.
 .roadmap-counter
+
+# The superpowers brainstorm tool's working files: its server state and the mockup
+# pages it served. Throwaway; the design they explored is the site itself.
+.superpowers/
