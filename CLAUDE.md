@@ -37,7 +37,8 @@ Pages steps (configure, upload, deploy) belong to the workflow.
 
 It checks two things beyond the build: that `dist/` is deploy-ready, and that no About page
 contradicts the release history. Both fail a plain `./local-CI.sh`, which is the pre-push
-gate. Under `--ci` the About check is reported and not fatal.
+gate. Under `--ci` the About check is reported and not fatal. The gate also runs
+`npm test`; `--ci` does not.
 
 The push hook runs it; running it by hand is for iterating. The hook is the machine-wide
 one (`core.hooksPath`). For a push touching only the paths in `ants.gate.docsGlob` it runs
@@ -55,7 +56,7 @@ There is no linter. `.editorconfig` enforces 2-space indent, LF, UTF-8, final ne
 
 `npm test` covers the *stats server only* — the port contract below, and nothing else. It
 uses `node --test` and Python's `unittest`; the site build has no
-tests. It is **local, not CI**.
+tests. It runs in the pre-push gate, **not in CI**.
 
 You almost never run the build by hand. Pushing to `main` is enough — see Deploy.
 

@@ -54,6 +54,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **The pre-push check now runs the stats server's tests**
+  `./local-CI.sh` runs `npm test` after the install. The daily
+  rebuild on GitHub (`--ci`) still skips it.
+
 - **Games Hub's About page says four games play from the keyboard, as of 1.1.0.**
 
 - **The weekly post's reviewer must show what it checked.**

@@ -7,6 +7,7 @@
 # calls `./local-CI.sh --ci` and reads its Node version from
 # `./local-CI.sh --print-node-major`, so the two cannot drift.
 #     Node check  ->  npm ci  ->  node build.mjs   (env: GITHUB_TOKEN)
+# The pre-push gate also runs `npm test` after the install; --ci does not.
 #
 # The workflow's deploy steps (configure-pages / upload-pages-artifact /
 # deploy-pages) are GitHub Pages infrastructure and cannot run locally. What we
@@ -99,6 +100,16 @@ if ! npm ci >"$npm_log" 2>&1; then
   exit 1
 fi
 cat "$npm_log"
+
+# The stats server's tests (npm test). Gate only: the tray half imports PySide6, which the
+# workflow's runner does not have, and the deploy job never touches the stats server.
+if [ "$mode" = gate ]; then
+  step "Stats server tests  ->  npm test"
+  if ! npm test; then
+    warn "npm test failed — see the output above."
+    exit 1
+  fi
+fi
 
 step "Build site  ->  node build.mjs"
 # GITHUB_TOKEN is used if set; the workflow passes the Actions token.
