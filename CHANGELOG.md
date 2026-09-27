@@ -54,6 +54,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Games Hub's About page says four games play from the keyboard, as of 1.1.0.**
+
 - **The weekly post's reviewer must show what it checked.**
   It prints one CLAIM line per figure with its source, and the
   publishing script refuses a PASS without them. Projects that could

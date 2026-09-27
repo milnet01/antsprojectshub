@@ -43,6 +43,10 @@ board, so being interrupted costs you nothing.
 being fitted to the games one at a time — Canasta and Sudoku have it, the other
 twelve ignore it for now.
 
+**Four games play from the keyboard.** In Chess, Reversi, Draughts and
+Minesweeper the arrow keys move a cursor round the board, and Space or Return
+plays the square under it. The other games still need a mouse.
+
 ## Getting it
 
 One file, nothing to install. On Linux it is an AppImage: allow it to run, then
