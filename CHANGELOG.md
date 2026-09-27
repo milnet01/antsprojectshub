@@ -74,6 +74,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Fixed
 
+- **A second changelog close on the same day merges its headings, and the date is local, not UTC.**
+
 - **Five About pages corrected by the projects' own sessions.**
   RetroArch no longer claims a stale commit count or two fixes that
   were upstream's own, and now says four of the fork's fixes were
@@ -112,32 +114,6 @@ so dated sections stand in for versions. Planned work lives in
   stands, and nothing links to them.
 
 ## 2026-09-21
-
-### Fixed
-
-- **Ants Terminal's on-site changelog was empty, and said so in 100 different
-  ways.** Its `CHANGELOG.md` is 1.29 MB, and GitHub's contents API refuses to
-  inline a file over 1 MB: it answers `200` with `encoding: "none"` and an
-  empty `content`, which the build could not tell apart from a repo that keeps
-  no changelog. So the fallback that fills in notes for a release cut with an
-  empty body had nothing to fall back to, for all 100 releases. Oversized files
-  are now read from `raw.githubusercontent.com`, which has no cap — one extra
-  request, for the one repo here that needs it. 165 of the 174 versions on that
-  page now carry their real notes; the 9 that do not are release candidates,
-  which genuinely have none of their own.
-
-- **A release note that only points at the repo's CHANGELOG.md is no longer
-  rendered as notes.** Ants Terminal's release tool writes one on every cut, in
-  two shapes ("See [CHANGELOG.md](…) for release notes." and "Full release
-  notes: CHANGELOG.md at this tag — <url>"). On 50 of its 106 releases the
-  pointer was the whole body, and on 8 more it trailed a real set of notes — so
-  the page read as a wall of links back to GitHub, which is the one thing it
-  exists to remove. The paragraph is now stripped, exactly as GitHub's own
-  "Full Changelog" compare trailer already was: a body that was nothing else
-  falls through to `CHANGELOG.md`, and a real note loses a redundant last line.
-  Judged per paragraph — delete the links to *this* repo's changelog and see
-  what is left — rather than matched against those two wordings, so a note that
-  cites the changelog while saying something keeps its substance.
 
 ### Added
 
@@ -409,6 +385,31 @@ so dated sections stand in for versions. Planned work lives in
   `run.bat`), and it opens in your browser.
 
 ### Fixed
+
+- **Ants Terminal's on-site changelog was empty, and said so in 100 different
+  ways.** Its `CHANGELOG.md` is 1.29 MB, and GitHub's contents API refuses to
+  inline a file over 1 MB: it answers `200` with `encoding: "none"` and an
+  empty `content`, which the build could not tell apart from a repo that keeps
+  no changelog. So the fallback that fills in notes for a release cut with an
+  empty body had nothing to fall back to, for all 100 releases. Oversized files
+  are now read from `raw.githubusercontent.com`, which has no cap — one extra
+  request, for the one repo here that needs it. 165 of the 174 versions on that
+  page now carry their real notes; the 9 that do not are release candidates,
+  which genuinely have none of their own.
+
+- **A release note that only points at the repo's CHANGELOG.md is no longer
+  rendered as notes.** Ants Terminal's release tool writes one on every cut, in
+  two shapes ("See [CHANGELOG.md](…) for release notes." and "Full release
+  notes: CHANGELOG.md at this tag — <url>"). On 50 of its 106 releases the
+  pointer was the whole body, and on 8 more it trailed a real set of notes — so
+  the page read as a wall of links back to GitHub, which is the one thing it
+  exists to remove. The paragraph is now stripped, exactly as GitHub's own
+  "Full Changelog" compare trailer already was: a body that was nothing else
+  falls through to `CHANGELOG.md`, and a real note loses a redundant last line.
+  Judged per paragraph — delete the links to *this* repo's changelog and see
+  what is left — rather than matched against those two wordings, so a note that
+  cites the changelog while saying something keeps its substance.
+
 
 - **A chosen table sort now survives a refresh**
   The dashboard threw the reader's sort away on every reload and snapped back to its own default. It is now remembered per table in localStorage. Audience & activity also ships pre-sorted by stars, highest first — the column it is actually read for.

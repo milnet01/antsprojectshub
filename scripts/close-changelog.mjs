@@ -10,7 +10,11 @@
 // shipped when it did not.
 //
 // Run twice in one day and the entries join the section already dated today
-// rather than opening a second one with the same heading.
+// rather than opening a second one with the same heading. Its ### blocks merge
+// too, new bullets first, in Keep a Changelog order
+// (~/.claude/standards/changelog-format.md § 4.1 and § 4.2).
+//
+// Today is the local date, as scripts/weekly-post.sh reads it with `date +%F`.
 //
 // Usage: node scripts/close-changelog.mjs [--check]
 //   --check  report what would happen; write nothing. Exits 0 either way.
@@ -23,7 +27,11 @@ import { readFileSync, writeFileSync } from "node:fs";
 const FILE = "CHANGELOG.md";
 const UNRELEASED = "## [Unreleased]";
 const check = process.argv.includes("--check");
-const today = process.env.WEEKLY_POST_TODAY || new Date().toISOString().slice(0, 10);
+const now = new Date();
+const pad = (n) => String(n).padStart(2, "0");
+const today = process.env.WEEKLY_POST_TODAY ||
+  `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+const ORDER = ["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"];
 
 const lines = readFileSync(FILE, "utf8").split("\n");
 
@@ -50,10 +58,44 @@ if (check) {
   process.exit(0);
 }
 
-const out = [...lines];
-// A section already dated today absorbs these entries instead of gaining a twin.
-if (next < out.length && out[next].trim() === `## ${today}`) out.splice(next, 1);
-out.splice(start + 1, 0, "", `## ${today}`);
+// Split a section body into its ### blocks, keyed by category, in the order seen.
+function blocks(body) {
+  const map = new Map();
+  let cur = null;
+  for (const l of body) {
+    const h = l.match(/^###\s+(.+?)\s*$/);
+    if (h) { cur = h[1]; if (!map.has(cur)) map.set(cur, []); continue; }
+    if (cur === null) {
+      if (l.trim()) { console.error(`close-changelog: text before the first ### heading: "${l}"`); process.exit(1); }
+      continue;
+    }
+    map.get(cur).push(l);
+  }
+  for (const [k, v] of map) {
+    while (v.length && !v[0].trim()) v.shift();
+    while (v.length && !v[v.length - 1].trim()) v.pop();
+  }
+  return map;
+}
 
+// A section already dated today absorbs these entries instead of gaining a twin.
+let end = next;
+const merged = blocks(body);
+if (next < lines.length && lines[next].trim() === `## ${today}`) {
+  end = lines.length;
+  for (let i = next + 1; i < lines.length; i++) {
+    if (lines[i].startsWith("## ")) { end = i; break; }
+  }
+  for (const [k, v] of blocks(lines.slice(next + 1, end))) {
+    merged.set(k, [...(merged.get(k) || []), ...v]);
+  }
+}
+
+const cats = [...ORDER.filter((c) => merged.has(c)),
+  ...[...merged.keys()].filter((c) => !ORDER.includes(c))];
+const section = ["", `## ${today}`, ""];
+for (const c of cats) section.push(`### ${c}`, "", ...merged.get(c), "");
+
+const out = [...lines.slice(0, start + 1), ...section, ...lines.slice(end)];
 writeFileSync(FILE, out.join("\n"));
 console.log(`close-changelog: closed ${UNRELEASED} as "## ${today}"`);
