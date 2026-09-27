@@ -40,11 +40,11 @@ contradicts the release history. Both fail a plain `./local-CI.sh`, which is the
 gate. Under `--ci` the About check is reported and not fatal.
 
 The push hook runs it; running it by hand is for iterating. The hook is the machine-wide
-one (`core.hooksPath`), and it skips the gate for a push it takes to be documentation
-only. Its default guess counts every `*.md`, including `src/about/` and `src/posts/`,
-which the build reads. **So each clone needs `ants.gate.docsGlob` set**, and a plain
-`./local-CI.sh` refuses to run until it is, printing the exact command. Git config is
-never committed, so a fresh clone starts without it.
+one (`core.hooksPath`). For a push touching only the paths in `ants.gate.docsGlob` it runs
+the gate's documentation mode. `local-CI.sh` has none, so every push runs the full gate.
+**Each clone sets `ants.gate.docsGlob`, and it never matches `src/about/` or
+`src/posts/`**, which the build reads. A plain `./local-CI.sh` refuses to run until it is
+set, printing the exact command. A fresh clone starts without it.
 
 Authentication avoids GitHub API rate limits: `GITHUB_TOKEN` if set (CI passes the Actions
 token automatically), otherwise the GitHub CLI's login via `gh auth token`. With neither, or
@@ -68,8 +68,8 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   file and nothing else. Fields: `status` is `live` · `beta` · `wip` · `soon`; `platforms`
   is any of `win` · `mac` · `linux` · `web`; `repo` is `owner/name` (null = unpublished);
   `isFork`/`upstream`/`homepage` drive header credit and download fallbacks. `category`
-  groups the project into a landing-page section (`engines` · `emulation` · `media` ·
-  `utilities`); `screenshots` is an array of `{src, alt}` rendered as a gallery on the
+  groups the project into a landing-page section (`engines` · `games` · `emulation` ·
+  `media` · `utilities`); `screenshots` is an array of `{src, alt}` rendered as a gallery on the
   project page (`src` relative to `assets/img/`, `alt` required — see
   `src/assets/img/shots/README.md`); `video` is an optional single `{src, poster, caption}`
   rendered as a Demo section above the gallery (both paths relative to `assets/video/`,

@@ -46,17 +46,19 @@ step() { printf '\n\033[1;34m==> %s\033[0m\n' "$1"; }
 ok()   { printf '\033[1;32m%s\033[0m\n' "$1"; }
 warn() { printf '\033[1;33m%s\033[0m\n' "$1" >&2; }
 
-# The machine-wide pre-push hook skips this whole script for a push it takes to be
-# documentation only, and its default guess counts every *.md — src/about/ and
-# src/posts/ included, though the build reads both. `ants.gate.docsGlob` narrows the
-# guess, but git config is per clone and never committed, so a fresh clone is back
-# on the default. Checked here because this is the one file every clone runs; a
-# setup step written down and checked by nothing does not survive a new clone.
-# Not under --ci: GitHub's runner has no hook to misjudge anything.
+# The machine-wide pre-push hook counts a push as documentation-only by
+# `ants.gate.docsGlob`, and runs a gate's documentation mode for one. This script
+# has no such mode, so today every push runs all of it. The glob still matters
+# the day a documentation mode is added: it must not count src/about/ or
+# src/posts/, which the build reads. Git config is per clone and never
+# committed, so a fresh clone starts without it. Checked here because this is
+# the one file every clone runs; a setup step written down and checked by
+# nothing does not survive a new clone. Not under --ci: GitHub's runner has no
+# hook.
 DOCS_GLOB='docs/*|README.md|CHANGELOG.md|ROADMAP.md|CLAUDE.md|LICENSE'
 if [ "$mode" = gate ] && [ "$(git config --get ants.gate.docsGlob || true)" != "$DOCS_GLOB" ]; then
-  warn "ants.gate.docsGlob is not set to this repo's value, so a push touching only About"
-  warn "pages or posts would skip this gate. Set it once, then re-run:"
+  warn "ants.gate.docsGlob is not set to this repo's value, which keeps About pages and"
+  warn "posts out of what counts as documentation. Set it once, then re-run:"
   warn "  git config ants.gate.docsGlob '$DOCS_GLOB'"
   exit 1
 fi

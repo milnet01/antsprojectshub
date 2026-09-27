@@ -17,6 +17,19 @@ Moved verbatim from CLAUDE.md on 2026-09-27:
 
 - they cannot run locally
 
+## Build & preview: "The push hook runs it"
+
+Until 2026-09-27 this rule said the hook "skips the gate for a push it takes to
+be documentation only" and "Its default guess counts every `*.md`". Neither was
+true then. The hook only chooses a documentation mode, which `local-CI.sh`
+lacks. Since `~/.claude` commit f071667 the hook has no default glob either.
+The glob stays set so that a documentation mode added later cannot skip the
+About pages or the posts.
+
+Moved verbatim from CLAUDE.md on 2026-09-27:
+
+- Git config is never committed, so
+
 ## Build & preview: "npm test covers the stats server only"
 
 Moved verbatim from CLAUDE.md on 2026-09-27:
