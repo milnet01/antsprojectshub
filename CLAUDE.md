@@ -46,8 +46,8 @@ the gate's documentation mode. `local-CI.sh` has none, so every push runs the fu
 `src/posts/`**, which the build reads. A plain `./local-CI.sh` refuses to run until it is
 set, printing the exact command. A fresh clone starts without it.
 
-Authentication avoids GitHub API rate limits: `GITHUB_TOKEN` if set (CI passes the Actions
-token automatically), otherwise the GitHub CLI's login via `gh auth token`. With neither, or
+The build authenticates with `GITHUB_TOKEN` if set (CI passes the Actions token
+automatically), otherwise with the GitHub CLI's login via `gh auth token`. With neither, or
 offline, the build still succeeds — each project falls back to static metadata from
 `projects.json`.
 
@@ -133,8 +133,7 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   output is static HTML/CSS plus the hand-written progressive-enhancement scripts.
   The lightbox works fully without `lightbox.js` (✕, click-outside, Back) — keep it that
   way; it is loaded via `basePage({ lightbox: true })`. `dates.js` never touches the
-  `datetime` attribute and acts only on `<time data-localise>`; it is loaded via `basePage({ dates: true })`. With no JavaScript there is
-  nothing to track, so `analytics.js` correctly does nothing at all. Don't add further
+  `datetime` attribute and acts only on `<time data-localise>`; it is loaded via `basePage({ dates: true })`. Don't add further
   client JS lightly.
 
 - **Demo videos are native `<video controls>`** — no player library, no JS, self-hosted
@@ -324,8 +323,3 @@ The site deploys continuously, so dated sections stand in for versions. Add entr
 `## [Unreleased]`; `scripts/weekly-post.sh` closes them under the day's date when it
 publishes. `scripts/close-changelog.mjs` does the closing and
 can be run by hand.
-
-## History
-
-Dated corrections, superseded wording, and the arguments that settled these rules are in
-[`docs/history/claude-md.md`](docs/history/claude-md.md).
