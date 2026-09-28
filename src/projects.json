@@ -192,13 +192,11 @@
       "status": "live",
       "repo": "milnet01/RetroArch",
       "platforms": [
-        "win",
-        "mac",
         "linux"
       ],
       "isFork": true,
       "upstream": "libretro/RetroArch",
-      "homepage": null,
+      "homepage": "https://www.retroarch.com/?page=platforms",
       "category": "emulation",
       "logo": "logos/retroarch.svg",
       "screenshots": [

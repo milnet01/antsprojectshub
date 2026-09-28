@@ -96,6 +96,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Fixed
 
+- **RetroArch's download button goes to official RetroArch, not to the fork's source**
+  The fork ships no builds of its own, so its button now reads "Download
+  from retroarch.com" and opens the official downloads page. The page
+  lists Linux only, where the fork is built and tested. Any fork with a
+  homepage now names the site its button leads to.
+
 - **LottoTracker and Local Web Server Manager About pages describe what each does today** (APHW-0019)
 
 - **The Pressless and RetroArch About pages say what is true today**

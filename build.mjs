@@ -563,7 +563,14 @@ function actionButtons(p, release) {
   // code, and a visitor who expected an installer should learn that from the button
   // rather than from the download.
   const fallback = p.homepage || sourceZipUrl(p.repo, hasRelease ? release.version : null);
-  const fallbackLabel = p.homepage ? "Download" : "Download source";
+  //
+  // A fork's homepage is its upstream's download page (RetroArch's points at retroarch.com):
+  // the fork ships no builds of its own, so the button names where it leads. A plain
+  // "Download" there would read as the fork's own build.
+  const homeHost = p.homepage ? new URL(p.homepage).hostname.replace(/^www\./, "") : "";
+  const fallbackLabel = p.homepage
+    ? p.isFork ? `Download from ${homeHost}` : "Download"
+    : "Download source";
   const buttons = [];
 
   if (hasWeb) {
