@@ -69,6 +69,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **A push that changes only documentation no longer rebuilds the whole site first.**
+  `local-CI.sh --docs` checks the documentation glob and skips the build,
+  since nothing the build or tests run reads those files.
+
 - **The stats page calls a download broken only when a release lost one** (APHW-0016)
   A project that has never shipped a file for an OS offers its source,
   which is how it is run, so it is listed as incomplete rather than broken.

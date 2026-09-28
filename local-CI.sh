@@ -22,6 +22,9 @@
 #                                            but not fatal, so the daily rebuild never
 #                                            stops over a stale sentence
 #          ./local-CI.sh --print-node-major  the Node major the workflow sets up
+#          ./local-CI.sh --docs              a push touching only DOCS_GLOB's paths:
+#                                            checks the glob, skips the build (below)
+#          ./local-CI.sh --docs-glob         the documentation glob, for git config
 # Token:   export GITHUB_TOKEN=<pat>   before running to avoid GitHub API rate
 #          limits (CI passes secrets.GITHUB_TOKEN automatically). Without it the
 #          build still succeeds via projects.json fallbacks — same as CI.
@@ -35,12 +38,17 @@ cd "$(dirname "$(readlink -f "$0")")"
 # reads it through --print-node-major before this script's build runs.
 readonly CI_NODE_MAJOR=24
 
+# What counts as documentation (see the glob check below for why it is narrow).
+DOCS_GLOB='docs/*|README.md|CHANGELOG.md|ROADMAP.md|CLAUDE.md|LICENSE'
+
 mode=gate
 case "${1:-}" in
   "") ;;
   --ci) mode=ci ;;
+  --docs) mode=docs ;;
+  --docs-glob) echo "$DOCS_GLOB"; exit 0 ;;
   --print-node-major) echo "$CI_NODE_MAJOR"; exit 0 ;;
-  *) echo "usage: $0 [--ci | --print-node-major]" >&2; exit 2 ;;
+  *) echo "usage: $0 [--ci | --docs | --docs-glob | --print-node-major]" >&2; exit 2 ;;
 esac
 
 step() { printf '\n\033[1;34m==> %s\033[0m\n' "$1"; }
@@ -48,20 +56,28 @@ ok()   { printf '\033[1;32m%s\033[0m\n' "$1"; }
 warn() { printf '\033[1;33m%s\033[0m\n' "$1" >&2; }
 
 # The machine-wide pre-push hook counts a push as documentation-only by
-# `ants.gate.docsGlob`, and runs a gate's documentation mode for one. This script
-# has no such mode, so today every push runs all of it. The glob still matters
-# the day a documentation mode is added: it must not count src/about/ or
-# src/posts/, which the build reads. Git config is per clone and never
-# committed, so a fresh clone starts without it. Checked here because this is
-# the one file every clone runs; a setup step written down and checked by
+# `ants.gate.docsGlob`, and runs --docs for one. The glob must not count
+# src/about/ or src/posts/, which the build reads. Git config is per clone and
+# never committed, so a fresh clone starts without it. Checked here because this
+# is the one file every clone runs; a setup step written down and checked by
 # nothing does not survive a new clone. Not under --ci: GitHub's runner has no
 # hook.
-DOCS_GLOB='docs/*|README.md|CHANGELOG.md|ROADMAP.md|CLAUDE.md|LICENSE'
-if [ "$mode" = gate ] && [ "$(git config --get ants.gate.docsGlob || true)" != "$DOCS_GLOB" ]; then
+if [ "$mode" != ci ] && [ "$(git config --get ants.gate.docsGlob || true)" != "$DOCS_GLOB" ]; then
   warn "ants.gate.docsGlob is not set to this repo's value, which keeps About pages and"
   warn "posts out of what counts as documentation. Set it once, then re-run:"
   warn "  git config ants.gate.docsGlob '$DOCS_GLOB'"
   exit 1
+fi
+
+# --docs: nothing below reads a DOCS_GLOB path. The build reads src/, and fetches
+# other projects' CHANGELOG.md from GitHub, never this repo's; npm test reads
+# test/ and the stats server. So the glob check above is the whole of what a
+# documentation-only push can break here. Checked 2026-09-28 by searching the
+# build, lib/, stats, scripts and tests for each path in the glob.
+if [ "$mode" = docs ]; then
+  step "Result"
+  ok "Documentation-only push: docsGlob checked. Not run, because nothing they check reads these paths: Node, npm ci, npm test, the build, the About and download checks, deploy readiness."
+  exit 0
 fi
 
 step "Check Node (the workflow sets up Node ${CI_NODE_MAJOR})"
