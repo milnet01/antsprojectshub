@@ -4,7 +4,7 @@
       "slug": "vestige-engine",
       "name": "Vestige Engine",
       "tagline": "A 3D game engine built from scratch.",
-      "blurb": "A modern 3D game engine written in C++ from the ground up — ray-traced rendering, dynamic lighting, physics, animation, audio and scripting, all driven by a modular engine loop. Built-in profiling and editor tools round it out.",
+      "blurb": "A 3D engine written in C++ from the ground up, for walking through spaces you build yourself. Realistic lighting and shadows, volumetric fog, a meadow of a million grass blades, physics, character animation, and 3D sound that is muffled by real walls. It comes with a built-in editor and profiling tools.",
       "status": "beta",
       "repo": "milnet01/Vestige",
       "platforms": [
@@ -463,7 +463,7 @@
       "slug": "fin-break",
       "name": "finbreak",
       "tagline": "Breaks your finances into categories — private and offline.",
-      "blurb": "A private, offline desktop app that breaks personal finances down into income and expenditure categories across multiple accounts — with charts, trends, automatic transfer detection, and password-protected PDF reports. Your data never leaves your machine.",
+      "blurb": "A private, offline desktop app that reads the statements your bank already gives you (CSV, OFX or PDF) and breaks your finances down into categories across multiple accounts, with charts, a balance forecast, automatic transfer and recurring-payment detection, and password-protected PDF reports. Your data never leaves your machine.",
       "status": "beta",
       "repo": "milnet01/finbreak",
       "platforms": [
@@ -483,27 +483,27 @@
       "screenshots": [
         {
           "src": "shots/finbreak-dashboard.png",
-          "alt": "The finbreak dashboard in dark theme with 'Previous month' selected and a net of R 10,533.21. Three donut charts across the top break down spending by category, income by source (Salary, Interest) and transfers (Cheque account to Savings). Below, panels list Spending R 21,551.79 (Rent/Mortgage R 9,500, Groceries R 3,524.50, Transport R 3,012.45 and more), Income R 32,085.00 and Transfers R 3,000.00, with a monthly recurring summary and an income-versus-spending bar chart along the bottom."
+          "alt": "The finbreak home dashboard in dark theme, with 'Previous month' selected. A one-line summary reads \"August looked like a normal month.\" above a net of R 10,533.21, with an Alerts button and an account picker at the top right. Three donut charts break down spending by category, income (Salary, Interest) and transfers (Cheque account to Savings). Below them, panels list Spending R 21,551.79 (Rent/Mortgage R 9,500, Groceries R 3,524.50, Transport R 3,012.45 and more), Income R 32,085.00 and Transfers R 3,000.00."
         },
         {
           "src": "shots/finbreak-transactions.png",
-          "alt": "The Transactions view in light theme: a searchable, sortable table of 306 transactions with Date, Amount, Currency, Description, Account and Category columns. Rows show South African merchants such as Shell, Pick n Pay, Ocean Basket, Bolt, KFC and Checkers automatically sorted into categories like Fuel, Groceries, Dining out and Ride-hailing, with income amounts in green and expenses in red."
+          "alt": "The Transactions view in light theme: a search box, a date-range filter and account and category pickers above a sortable table of 306 transactions with Date, Amount, Currency, Description, Account and Category columns. Rows show South African merchants such as Shell, Pick n Pay, Ocean Basket, Bolt, KFC and Checkers sorted into categories like Fuel, Groceries, Dining out and Ride-hailing, alongside a salary, interest and transfers to savings."
         },
         {
           "src": "shots/finbreak-categories.png",
-          "alt": "The Categories screen in dark theme showing the category tree. Expenditure branches into Bills & utilities (Electricity, Internet, Mobile), Entertainment (Dining out, Streaming), Groceries, Transport (Fuel, Ride-hailing) and more; Income branches into Gifts, Interest, Salary and Sales. Fields at the bottom let you add a category, move it under a parent, or delete the selected one."
+          "alt": "The Categories screen in dark theme showing the category tree. Expenditure branches into Bills & utilities (Electricity, Internet, Mobile), Entertainment (Dining out, Streaming), Transport (Fuel, Ride-hailing), Groceries, Insurance, Medical, Rent/Mortgage and more; Income branches into Gifts, Interest, Lottery, Salary, Sales and Other income. Fields at the bottom let you add a category, move it under a parent, or delete the selected one."
         },
         {
           "src": "shots/finbreak-recurring.png",
-          "alt": "The Recurring view in light theme with two tables. 'Suggested recurring items' lists payments finbreak has auto-detected — Outsurance, FNB Credit, Dis-Chem and City of Cape Town — awaiting Confirm or Dismiss. 'Confirmed recurring items' lists Vodacom, Spotify, Netflix, DStv, Afrihost Fibre and an Acme salary, each with its direction, monthly cadence, amount and next due date."
+          "alt": "The Recurring view in light theme with two tables. 'Suggested recurring items' lists payments finbreak has detected — Outsurance, an FNB credit, Dis-Chem and City of Cape Town — each with direction, monthly cadence, amount, next due date and times seen, awaiting Confirm or Dismiss. 'Confirmed recurring items' lists Vodacom, Spotify, a home loan, Netflix, DStv, Afrihost Fibre and an Acme salary."
         },
         {
           "src": "shots/finbreak-rules.png",
-          "alt": "The Rules screen in light theme: a table of auto-categorisation rules mapping a text pattern to a category — nando to Fast food, vodacom to Mobile, netflix to Streaming, uber to Ride-hailing, engen to Fuel, and checkers and woolworths to Groceries. Buttons let you Add, Edit, Delete or reorder rules and apply them to existing transactions."
+          "alt": "The Rules screen in light theme: a table of auto-categorisation rules mapping a text pattern to a category — nando to Fast food, vodacom to Mobile, netflix to Streaming, uber to Ride-hailing, engen to Fuel, and checkers and woolworths to Groceries. Buttons let you add, edit, delete or reorder rules, and 'Apply rules now' re-runs them over existing transactions."
         },
         {
           "src": "shots/finbreak-transfers.png",
-          "alt": "The Transfers view in dark theme showing automatic transfer detection. An empty 'Suggested transfers' pane sits above 'Confirmed transfers', a list of monthly R 3,000 movements from the Cheque account to Savings dating back through 2025, each with a date, amount and description. finbreak pairs these so a transfer is not double-counted as both income and expense."
+          "alt": "The Transfers view in dark theme. An empty 'Suggested transfers' table sits above 'Confirmed transfers', a list of monthly R 3,000 movements from the Cheque account to Savings going back to December 2025, each with a date, amount, direction and description. Pairing them stops a transfer being counted as both spending and income."
         }
       ]
     },

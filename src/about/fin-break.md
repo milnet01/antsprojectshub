@@ -3,7 +3,10 @@ instead — the CSV, OFX or PDF files your bank already gives you — and works 
 where your money went from those.
 
 There is no bank linking, no account to sign up for, and no financial data leaving
-your computer. Left at its defaults, the app never touches the internet at all.
+your computer. The one exception is an update check, and it is off by default:
+switch it on and finbreak looks for a newer version and installs it only after
+checking the download is genuinely signed. Leave it off and the app never touches
+the internet at all.
 
 ## What it does
 
@@ -14,8 +17,9 @@ is going, how many transactions are new, how many are duplicates you already hav
 and how many lines it could not read. Nothing is written until you press Import.
 
 **Files them itself.** It reads the account number printed on a statement and
-pre-selects the matching account, telling you why. Where it cannot be sure, it
-says so and leaves the choice to you rather than guessing.
+pre-selects the matching account, telling you why. If it has not seen the account
+before, it offers to create it. Where it cannot be sure, it says so and leaves the
+choice to you rather than guessing.
 
 **Sorts transactions into categories** — up to three levels deep — with built-in
 guesses for common shops and services, your own rules on top, and corrections it
@@ -27,10 +31,10 @@ account to savings is not counted as both spending and income.
 **Spots what repeats** — subscriptions, debit orders, your salary — and suggests
 them for you to confirm, so you can see at a glance what is on autopilot.
 
-**Projects where you are heading.** The forecast starts from a real closing
+**Projects where you are heading.** The Forecast tab starts from a real closing
 balance rather than an estimate, brings it up to date, and draws the line to the
-end of the month or 30, 60 or 90 days out. It names any account it left out and
-why.
+end of the month or 30, 60 or 90 days out, using the repeating money you have
+confirmed. It names any account it left out and why.
 
 **Checks the numbers add up.** Each account is marked ✓ when your imported
 transactions bridge one statement's closing balance to the next, or ⚠ with the
@@ -46,28 +50,37 @@ It stays quiet when a month is ordinary, says "so far" while one is still runnin
 and says nothing at all rather than guessing when there is not yet enough history
 to know what usual means.
 
-Below that, spending, income and transfers sit side by side, each opening down
-from a category to a single shop to the individual purchases. An alerts button
-lights up when something is worth a look — a new recurring charge, a category well
-above its usual, an expected debit that never posted.
+Below that, spending, income and transfers sit side by side. Each opens down from
+a category to a single shop to the individual purchases. An alerts button lights up
+when something is worth a look — a new recurring charge, a category well above its
+usual, an expected debit that never posted.
 
 ## Privacy and safety
 
-Your data sits in an encrypted, password-protected vault. Copied amounts and
-descriptions are cleared from the clipboard after a short while, repeated wrong
-unlock attempts are slowed down, and account numbers show as dots plus the last
-four digits so a glance or a screenshot never gives one away.
+Your data sits in an encrypted, password-protected vault. When you create it,
+finbreak shows you a recovery code once. Keep it somewhere safe: if you forget
+your master password, the code opens the vault and lets you choose a new one.
+finbreak keeps no copy, so losing both the code and the password still means
+losing the vault. You can decline the code, or replace or remove it later.
+
+Copied amounts and descriptions are cleared from the clipboard after a short
+while. Repeated wrong unlock attempts are slowed down. Account numbers show as dots
+plus the last four digits, so a glance or a screenshot never gives one away.
 
 You can export a PDF report — your choice of sections, accounts and period — and
-lock the file with its own password. Backups are encrypted, verified before you
-rely on them, and restorable even onto a new master password if you have forgotten
-the old one.
+lock the file with its own password. Backups are encrypted, checked before you
+rely on them, and can be restored onto a new master password.
 
 ## Where it stands
 
 An early preview that already does a great deal, with polish still coming. There
-are six colour themes plus a follow-your-system setting, and every table remembers
-the column widths and order you gave it.
+are six colour themes plus a follow-your-system setting. Every table remembers the
+column widths and order you gave it, and Window → Reset layout puts them all back
+in one click.
+
+On Linux it runs as a self-contained AppImage, or installs as a native package on
+openSUSE Tumbleweed and Fedora through the openSUSE Build Service. Packages for
+Debian and Ubuntu, a Flathub release and a macOS app are still to come.
 
 **Windows builds are not yet code-signed**, so SmartScreen will query it the first
 time — click *More info* → *Run anyway*. An application to a free signing
