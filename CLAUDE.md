@@ -54,7 +54,8 @@ offline, the build still succeeds — each project falls back to static metadata
 
 There is no linter. `.editorconfig` enforces 2-space indent, LF, UTF-8, final newline.
 
-`npm test` covers the *stats server only* — the port contract below, and nothing else. It
+`npm test` covers the *stats server only* — the port contract in
+`.claude/rules/stats-dashboard.md`, and nothing else. It
 uses `node --test` and Python's `unittest`; the site build has no
 tests. It runs in the pre-push gate, **not in CI**.
 
@@ -218,91 +219,20 @@ by calling `generate()` itself.
   into a general static server rooted at the repo.
 - Do not add stats output to `src/assets/`. Do not "just add a login".
 
-Other invariants:
-
-- **The port is `PORT` → `STATS_PORT` → 4321, resolved in `lib/port.mjs`.** `STATS_PORT` is
-  the packaged default in the unit file; `PORT` is how an external process manager overrides
-  it via a systemd drop-in, without editing a tracked file. A `PORT` that cannot be used is
-  fatal — `serve.mjs` exits non-zero naming the value. `STATS_PORT` keeps its older lenient
-  behaviour (a bad value still falls back) and must not change. **The tray reads the port
-  from the *unit's* environment** (`systemctl --user show ants-stats -p Environment`), never
-  from its own. `LWSM_MANAGED=1` drops the icon and logs to stdout instead — a presentation
-  hint only, never a reason to grant or skip anything.
-
-- **Google Analytics is read, never written, and never snapshotted.** The "Site visitors"
-  section calls the GA4 Data API through `lib/ga.mjs` at render time and keeps nothing. A GA
-  failure returns `null` and renders as "could not be read" — never as zeros, and never
-  enough to abort the run; the GitHub half of the page still builds. The section also states
-  in plain words that opt-in tracking makes every figure a floor rather than a total.
-
-- **A failed fetch is never recorded as zero.** Rate-limited or errored projects are shown
-  as "no data", excluded from totals, and kept out of `.stats/history.json`. Keep this
-  discipline in new metrics.
-
-- **The token is resolved per run, never once per process.** `resolveAuth()` in
-  `lib/github.mjs` re-checks while unauthenticated and caches success; `generate()` calls it
-  first, and `serve.mjs` waits for a login before its startup run rather than firing blind.
-  `hasToken`/`tokenSource` are `export let` **on purpose**. Don't turn them back into `const`.
-
-- **Authentication is effectively required, but automatic.** `lib/github.mjs` resolves a
-  token from `GITHUB_TOKEN`, else from `gh auth token` — so a developer already logged into
-  the GitHub CLI needs no setup, and local `node build.mjs` runs authenticated too. If a
-  token is ever suggested, it is classic scope `public_repo`, **not** full `repo`. With
-  neither, the run degrades: traffic is skipped.
-
-- **History is append-only and local.** Download totals are stored as dated snapshots;
-  traffic is merged as per-day buckets.
-
-- **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
-  `site.css`, not linked. Any new asset the page references gets copied in and added to
-  `FILES` too. The body class is `admin`, **not** `stats`.
-
-- **Colour on the dashboard is wayfinding, not data.** Each section owns an `--accent`
-  (teal → violet down the page) shared with its nav link, and the OS columns are tinted
-  blue/magenta/green. Those hues deliberately sit clear of the status language — amber means
-  "look at this", teal "up", rose "down". Figures stay in text ink.
-
-- **The sticky nav is progressive enhancement too.** The links are ordinary anchors that
-  work without JavaScript; `dashboard.js` only adds the scroll-spy.
-
-- **Sorting is progressive enhancement.** `dashboard.js` turns each `table.sortable` header
-  into a `<button>` and toggles `aria-sort`; every table also ships pre-sorted by its most
-  useful column. Sort keys come from
-  `data-sort` attributes emitted with each cell — don't switch to parsing the rendered text.
-  Mark a column `data-nosort` when it holds no rankable value (Trend, Top referrers).
-  **A chosen sort is remembered across reloads**, in `localStorage` under
-  `aph-sort:<data-table>`. Every sortable table carries a `data-table` name, and a new one
-  needs its own; the key is that name and never the table's position. A stored column index
-  that no longer names a sortable column is ignored. Every access is wrapped in
-  `try`/`catch`.
+**Everything else about the dashboard — the port, Google Analytics, failed fetches,
+authentication, history, the self-contained `.stats/` folder, colour, the nav and sorting —
+is in [`.claude/rules/stats-dashboard.md`](.claude/rules/stats-dashboard.md).** It loads by
+itself when you open `stats.mjs`, `serve.mjs`, `lib/ga.mjs`, `lib/port.mjs`, `tray/`, `test/`
+or `systemd/ants-stats*`. Read it by hand before creating a new file for the dashboard.
 
 ## Weekly blog post (`scripts/weekly-post.sh`)
 
-A user timer (`systemd/ants-weekly-post.timer`, Wednesdays 09:00, catching up after a missed
-one) publishes the week's post with nobody at the keyboard. Install lines are in
-`systemd/ants-weekly-post.service`. Three stages:
-
-- **Gather — `scripts/week-digest.mjs`, no AI.** Reads every project's local clone and
-  GitHub since the newest post was committed: commits, releases and whether they carry
-  downloads, tags, what `CHANGELOG.md` gained, roadmap lines marked done, and commit
-  subjects with the body lines that carry a figure. Writes `.digest/<date>.md`
-  (`.gitignore`d). **Keep new facts flowing through the digest** rather than telling a
-  session to go and read histories. A source that could not be read says "could not be
-  read", never none. A tag on the same commit as an earlier one is flagged.
-
-- **Write, then review — two separate `claude -p` sessions**, prompts in
-  `scripts/weekly-post/`. The reviewer never saw the writing, checks every figure against
-  the digest or its commit, and ends `VERDICT: PASS` or `FAIL`; only PASS publishes. Both
-  skip user-level settings and run under `dontAsk` holding exactly: read anything, edit
-  `src/posts/**`, and `git log`/`git show` on each clone the digest names **with the path
-  spelled out**. Don't widen that list to make a run succeed.
-
-- **Build and publish.** `local-CI.sh`, then commit the one new post and push. Any failed
-  step stops with a desktop notification and leaves the draft uncommitted.
-
-It refuses a dirty tree, and skips a week whose newest post is under five days old or in
-which no project moved. `--dry-run` gathers the digest and stops, spending no tokens;
-`--no-push` stops after the review and the build.
+A user timer publishes the week's post on Wednesdays with nobody at the keyboard: gather a
+digest, write and review it in two separate `claude -p` sessions, then build and push.
+**How it works, and what it must never be widened to do, is in
+[`.claude/rules/weekly-post.md`](.claude/rules/weekly-post.md).** It loads by itself when you
+open `scripts/weekly-post.sh`, `scripts/week-digest.mjs`, `scripts/weekly-post/` or
+`systemd/ants-weekly-post*`. Read it by hand before creating a new file for the pipeline.
 
 ## Dependencies
 

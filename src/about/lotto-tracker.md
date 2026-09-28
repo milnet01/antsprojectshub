@@ -1,9 +1,11 @@
-Buy a lottery ticket and your bank sends you a confirmation SMS. Then, usually,
-nothing — because checking a ticket means finding the SMS, finding the draw, and
-comparing six numbers by eye. Small wins go unnoticed, and unnoticed wins expire.
+Buy a lottery ticket and your bank sends you a confirmation SMS. The ticket
+covers a set number of draws, and when it runs out nothing tells you — you are
+simply no longer in the draw. Checking results by hand means finding the SMS,
+finding the draw, and comparing six numbers by eye.
 
-LottoTracker reads those SMSes, remembers every ticket, and checks them all
-against the real draw results.
+LottoTracker reads those SMSes and gives you one view of every ticket you have
+bought. It tells you when a ticket is about to run out, so you can buy the next
+one, and checks every entry against the real draw results.
 
 ## First, whether it is for you
 
@@ -20,17 +22,24 @@ teaching it your bank's wording is the only work.
 
 ## What it does
 
-- Pulls the lottery messages off an Android phone, by USB cable or over Wi-Fi.
-- Reads out the ticket reference, the numbers, the game, the start date, how many
+- **Warns you before a ticket runs out.** The tray icon warns once, two draws
+  before the end, naming the game and the last draw date.
+- Pulls the lottery messages off an Android phone, by USB cable or over Wi-Fi, and
+  reads out the ticket reference, the numbers, the game, the start date, how many
   draws you bought and what you paid.
 - Fetches the draw results, including for draws from before the 2026 handover.
 - Works out every draw you actually paid to enter, scores each line, expands
   Multiplay entries properly, and prices each win.
-- Flags what is still claimable, and when each prize expires.
+- **A page on your own computer**, opened from the tray icon, showing what you
+  spent against what you won for a year, the year so far, a month or the month so
+  far.
+- **Checks the bank's own payout messages** against its own figures, and shows the
+  two side by side.
+- Flags anything still claimable, and when each prize expires.
 
 **One ticket is usually several entries.** A "plus" game cannot be bought on its
 own — the lottery requires the base game, and runs a separate draw with its own
-prizes for each level. So a Lotto Plus 2 ticket is three entries with three
+prizes for each level. So a Lotto Plus 2 ticket (Lotto 5 Max since June 2026) is three entries with three
 chances, not one, and all three get checked. Which levels you paid for is worked
 out from the price, because the game name in the SMS only ever names the highest
 one — and since June 2026 it does not name it at all.
@@ -45,10 +54,10 @@ the one that can be.
 
 Worth being explicit about, because the code is public.
 
-The USB route filters **on the phone**: only messages containing `lotto` or
-`powerball` ever cross to the computer, and nothing else is read. That is a
+The USB route filters **on the phone**: only messages matching a short lottery
+keyword filter ever cross to the computer, and nothing else is read. That is a
 keyword filter rather than a sender filter, so a personal message mentioning the
-lottery would come across too — glance at the dump before sharing it anywhere.
+lottery could come across too — glance at the dump before sharing it anywhere.
 
 The message dump and the results cache are excluded from version control, and
 there is a checker that verifies this by comparing every tracked file against the
@@ -60,7 +69,9 @@ results pages.
 
 ## Where it stands
 
-In beta, on Linux, with no account, no API key and nothing paid. It needs Python
-and a couple of standard tools from your distribution to talk to the phone. The
+In beta, on Linux, with no account, no API key and nothing paid. There is no download yet —
+you run it from a copy of the source, which needs Python 3.9 or newer and a
+couple of standard tools from your distribution to talk to the phone; the
+repository's Setup section lists them. A packaged Linux version is planned. The
 tray icon needs one extra library — and it is the only thing that does, so
 everything works without it.

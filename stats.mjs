@@ -128,6 +128,13 @@ async function collectProject(p) {
   const missingAssets = (p.platforms || [])
     .filter((pl) => OS_KEYS.includes(pl))
     .filter((pl) => !latest || !pickAsset(latest.assets || [], pl));
+  // Of those, the ones an EARLIER release did ship. That is a regression — a release cut
+  // without its build — and it is the only kind that is broken. A project that has never
+  // shipped a file for an OS is source-only by design until it does, and its button says
+  // "Download source", which is true.
+  const lostAssets = missingAssets.filter((pl) =>
+    releases.some((r) => r !== latest && pickAsset(r.assets || [], pl))
+  );
 
   const traffic = hasToken ? await collectTraffic(p.repo) : null;
 
@@ -138,6 +145,8 @@ async function collectProject(p) {
     perRelease,
     unexplained: [...unexplained].sort((a, b) => b[1] - a[1]).slice(0, 3),
     missingAssets,
+    lostAssets,
+    releasesUrl: latest?.html_url || `https://github.com/${p.repo}/releases`,
     traffic,
     stars: repo.stargazers_count ?? 0,
     forks: repo.forks_count ?? 0,
@@ -180,9 +189,9 @@ async function collectTraffic(repo) {
 async function loadHistory() {
   try {
     const h = JSON.parse(await readFile(HISTORY, "utf8"));
-    return { version: 1, snapshots: [], traffic: {}, ...h };
+    return { version: 1, snapshots: [], traffic: {}, attention: {}, ...h };
   } catch {
-    return { version: 1, snapshots: [], traffic: {} };
+    return { version: 1, snapshots: [], traffic: {}, attention: {} };
   }
 }
 
@@ -1058,24 +1067,34 @@ function analyticsSection(ga, propertyId, blog) {
 // work and a project without screenshots are not the same kind of problem, and one flat list
 // gave them the same weight. The heading and the wording carry the split — the ⚠ and the amber
 // only reinforce something already legible in greyscale.
-function issuesSection(rows, health) {
+//
+// Each item names the fix, not just the fault, and carries a key per problem it reports so the
+// page can say how long each has been open (history.attention, below). `html` is a function of
+// that age label because the label is only known once history has been read.
+function attentionItems(rows, health) {
   const items = [];
   // `n` is how many things this line is really about, not how many lines there are: "no
   // screenshots" is one bullet covering thirteen projects, and a group heading reading "(1)"
   // said thirteen projects' worth of work was one thing to do.
-  const add = (now, rank, n, html) => items.push({ now, rank, n, html });
+  const add = (now, rank, n, keys, html) => items.push({ now, rank, n, keys, html });
+  const link = (url, text) => `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)}</a>`;
+  const osList = (pls) => pls.map((p) => OS_LABEL[p]).join(", ");
 
-  // Worst thing on the page: the site advertises a download it can't deliver, so the visitor
-  // gets a zip of source code instead of the app. Every one of these is losing a download today.
-  for (const r of rows.filter((x) => x.missingAssets.length)) {
+  // Worst thing on the page: a release went out without a build an earlier release had, so a
+  // button that used to start the app now hands the visitor source code. Every one of these is
+  // losing a download today.
+  for (const r of rows.filter((x) => x.lostAssets.length)) {
+    const tag = r.latestTag || "the latest release";
     add(
       true,
       1,
-      r.missingAssets.length,
-      `<strong>${esc(r.name)}</strong> claims ${r.missingAssets
-        .map((p) => OS_LABEL[p])
-        .join(", ")} but its latest release has no matching file — those download buttons
-       hand visitors the source code instead (or the project's homepage, where one is set).`
+      r.lostAssets.length,
+      r.lostAssets.map((pl) => `dl-lost:${r.slug}:${pl}`),
+      (since) =>
+        `<strong>${esc(r.name)}</strong>: ${esc(tag)} has no ${osList(r.lostAssets)} file, though
+         an earlier release had one — so that button now hands visitors
+         ${r.project.homepage ? "the project's homepage" : "the source code"} instead of the app.
+         Fix: attach the ${osList(r.lostAssets)} build to ${link(r.releasesUrl, tag)}. ${since}`
     );
   }
   // A live page failing the visitors least able to work around it. The build doesn't stop for
@@ -1086,9 +1105,12 @@ function issuesSection(rows, health) {
       true,
       2,
       health.missingAlt.length,
-      `<strong>Missing alt text</strong> on ${health.missingAlt.length} screenshot(s) — the
-       page ships a generic description instead, which tells a screen-reader visitor nothing:
-       ${health.missingAlt.map(esc).join("; ")}.`
+      health.missingAlt.map((s) => `alt:${s}`),
+      (since) =>
+        `<strong>Missing alt text</strong> on ${health.missingAlt.length} screenshot(s) — the
+         page ships a generic description instead, which tells a screen-reader visitor nothing:
+         ${health.missingAlt.map(esc).join("; ")}. Fix: give each an <code>alt</code> in
+         <code>src/projects.json</code> saying what it shows. ${since}`
     );
   }
   // Reachable only from GitHub. Costing you something, but nobody arrived expecting them.
@@ -1097,9 +1119,13 @@ function issuesSection(rows, health) {
       true,
       3,
       r.unexplained.length,
-      `<strong>${esc(r.name)}</strong> ships release files that are neither an OS download
-       nor a signature/checksum/source archive, so nobody can get them from the site:
-       ${r.unexplained.map(([n, c]) => `${esc(n)} (${num(c)})`).join(", ")}.`
+      r.unexplained.map(([n]) => `extra:${r.slug}:${n}`),
+      (since) =>
+        `<strong>${esc(r.name)}</strong> ships release files that are neither an OS download
+         nor a signature/checksum/source archive, so nobody can get them from the site:
+         ${r.unexplained.map(([n, c]) => `${esc(n)} (${num(c)})`).join(", ")}. Fix: put the OS in
+         the file name, or teach <code>ASSET_PAT</code> / <code>isCompanionFile</code> in
+         <code>lib/github.mjs</code> what it is. ${since}`
     );
   }
   // The weekly post did not go out. Nothing is lost that the next run won't cover, so it
@@ -1108,20 +1134,48 @@ function issuesSection(rows, health) {
   const run = health.weekly;
   if (run && !run.unreadable) {
     if (run.outcome === "stopped") {
-      add(true, 4, 1, `<strong>The weekly post stopped</strong>: ${esc(run.detail || "no reason recorded")}.`);
+      add(true, 4, 1, ["weekly:stopped"], (since) =>
+        `<strong>The weekly post stopped</strong>: ${esc(run.detail || "no reason recorded")}.
+         Fix: clear that, then run <code>scripts/weekly-post.sh</code>. ${since}`);
     } else if (Date.now() - new Date(run.at) > 8 * DAY) {
-      add(true, 4, 1, `<strong>The weekly post has not run for over a week</strong> — check
-       <code>systemctl --user status ants-weekly-post.timer</code>.`);
+      add(true, 4, 1, ["weekly:stale"], (since) =>
+        `<strong>The weekly post has not run for over a week</strong> — check
+         <code>systemctl --user status ants-weekly-post.timer</code>. ${since}`);
     }
   }
   // Nothing is broken below this line — a thinner page, and some tidying.
+  //
+  // A claimed OS no release has EVER shipped a file for. The button says "Download source",
+  // which is true, and for a project with no packaged build yet that is the documented way to
+  // run it — incomplete, not broken. A `homepage` answers it outright (an upstream download
+  // page, Flathub), so a project with one is not listed.
+  for (const r of rows) {
+    const never = r.missingAssets.filter((pl) => !r.lostAssets.includes(pl));
+    if (!never.length || r.project.homepage) continue;
+    add(
+      false,
+      3,
+      never.length,
+      never.map((pl) => `dl-never:${r.slug}:${pl}`),
+      (since) =>
+        `<strong>${esc(r.name)}</strong> has never shipped a ${osList(never)} file, so its button
+         offers the source code. Fix: attach a build to a release
+         (${link(r.releasesUrl, r.latestTag || "releases")}), set <code>homepage</code> in
+         <code>src/projects.json</code> to where the real download lives, or drop
+         ${osList(never)} from its <code>platforms</code>. ${since}`
+    );
+  }
   if (health.noShots.length) {
     add(
       false,
       4,
       health.noShots.length,
-      `<strong>No screenshots</strong> on ${health.noShots.length} project(s):
-       ${health.noShots.map(esc).join(", ")}.`
+      health.noShots.map((name) => `shots:${name}`),
+      (since, ageOf) =>
+        `<strong>No screenshots</strong> on ${health.noShots.length} project(s):
+         ${health.noShots.map((name) => `${esc(name)} ${ageOf(`shots:${name}`)}`).join(", ")}.
+         Fix: ask each project's session for 2–4 stills —
+         <code>src/assets/img/shots/README.md</code> has the rules.`
     );
   }
   if (health.orphanShots.length) {
@@ -1129,23 +1183,59 @@ function issuesSection(rows, health) {
       false,
       5,
       health.orphanShots.length,
-      `<strong>Unused image files</strong> (${health.orphanShots.length}) in
-       <code>src/assets/img/shots/</code>:
-       ${health.orphanShots.map(esc).join(", ")}.`
+      health.orphanShots.map((f) => `orphan:${f}`),
+      (since) =>
+        `<strong>Unused image files</strong> (${health.orphanShots.length}) in
+         <code>src/assets/img/shots/</code>:
+         ${health.orphanShots.map(esc).join(", ")}. Fix: list each in a project's
+         <code>screenshots</code>, or delete it. ${since}`
     );
   }
+  return items;
+}
 
+// When each open problem was first reported, key → ISO time. A problem that goes away is
+// dropped, so one that comes back starts again as new. A project whose fetch failed this run
+// reported nothing either way, so its download and release-file keys are carried over rather
+// than dropped: a failed fetch must not read as a fix, the same discipline the download
+// snapshots keep.
+function updateAttention(history, items, rows, now) {
+  const prev = history.attention || {};
+  const fetched = new Set(rows.filter((r) => r.ok).map((r) => r.slug));
+  const next = {};
+  for (const key of items.flatMap((i) => i.keys)) next[key] = prev[key] || new Date(now).toISOString();
+  for (const [key, at] of Object.entries(prev)) {
+    const [kind, slug] = key.split(":");
+    if (["dl-lost", "dl-never", "extra"].includes(kind) && !fetched.has(slug)) next[key] ??= at;
+  }
+  history.attention = next;
+}
+
+function issuesSection(rows, health, seen = {}, now = Date.now()) {
+  const items = attentionItems(rows, health);
   if (!items.length) return `<p class="note ok">Nothing needs attention. ✓</p>`;
+
+  const ageOf = (key) => {
+    const d = daysSince(seen[key], now);
+    if (d === null) return "";
+    const when = d === 0 ? "today" : d === 1 ? "yesterday" : `${d} days ago`;
+    return `<span class="age">(first noticed ${when})</span>`;
+  };
+  // An item covering several problems reports its oldest: that is how long it has been open.
+  const since = (keys) => {
+    const dated = keys.filter((k) => seen[k]).sort((a, b) => Date.parse(seen[a]) - Date.parse(seen[b]));
+    return dated.length ? ageOf(dated[0]) : "";
+  };
 
   // An empty group is left out rather than shown as a heading with nothing under it: "Broken
   // now (0)" is a thing to read and dismiss, and the good news is that it isn't there.
-  const group = (now, label) => {
-    const list = items.filter((i) => i.now === now).sort((a, b) => a.rank - b.rank);
+  const group = (isNow, label) => {
+    const list = items.filter((i) => i.now === isNow).sort((a, b) => a.rank - b.rank);
     if (!list.length) return "";
     const n = list.reduce((t, i) => t + i.n, 0);
-    return `<h3 class="issues-h${now ? " issues-h--now" : ""}">${label}
+    return `<h3 class="issues-h${isNow ? " issues-h--now" : ""}">${label}
       <span class="count">(${n})</span></h3>
-      <ul class="issues">${list.map((i) => `<li>${i.html}</li>`).join("")}</ul>`;
+      <ul class="issues">${list.map((i) => `<li>${i.html(since(i.keys), ageOf)}</li>`).join("")}</ul>`;
   };
 
   return group(true, "⚠ Broken now") + group(false, "Incomplete");
@@ -1229,7 +1319,7 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
     <div class="tiles">${tiles}</div></section>
 
   <section class="sec" data-sec="att" aria-labelledby="h-att"><h2 id="h-att">Needs attention</h2>
-    ${issuesSection(ok, health)}</section>
+    ${issuesSection(ok, health, history.attention, now)}</section>
 
   <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads</h2>
     <h3>All time, by operating system</h3>
@@ -1671,6 +1761,7 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .issues { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
 .issues li { color: var(--text-muted); font-size: .88rem; line-height: 1.5; }
 .issues strong { color: var(--text); }
+.issues .age { color: var(--text-dim); white-space: nowrap; }
 .note { background: var(--surface); border: 1px solid var(--surface-border);
   border-radius: var(--radius); padding: 12px 14px; color: var(--text-muted); font-size: .88rem; margin: 0; }
 .note.ok { color: var(--teal); }
@@ -1744,6 +1835,7 @@ export async function generate() {
   const base = baselineSnapshot(history, now);
   updateHistory(history, rows, now);
   const health = await contentHealth(projects);
+  updateAttention(history, attentionItems(rows.filter((r) => r.ok), health), rows, now);
 
   await mkdir(OUT, { recursive: true });
   await writeFile(HISTORY, JSON.stringify(history, null, 2));

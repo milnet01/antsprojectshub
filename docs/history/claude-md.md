@@ -11,6 +11,10 @@ it explains, as read, with markup and line breaks stripped. A reason
 A list headed "Moved verbatim from CLAUDE.md" holds clauses cut out of that
 rule, word for word, when all of its "why" moved here.
 
+Since 2026-09-28 most of the "Private stats dashboard" rules live in
+`.claude/rules/stats-dashboard.md`, and the "Weekly blog post" rules in
+`.claude/rules/weekly-post.md`. Their headings here keep the section names.
+
 ## Build & preview: "local-CI.sh is the build"
 
 Moved verbatim from CLAUDE.md on 2026-09-27:

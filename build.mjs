@@ -420,6 +420,13 @@ async function fetchReleases(repo) {
     }
   }
 
+  // Platforms an EARLIER release shipped a file for. Only downloadGap() reads it: a latest
+  // release missing one of these is a release cut without its build, which the source-zip
+  // fallback would otherwise hide from everyone but the visitor.
+  const shippedBefore = ["win", "mac", "linux"].filter((pl) =>
+    nonDraft.some((r) => r !== data && pickAsset(r.assets || [], pl))
+  );
+
   return {
     release: {
       version: data.tag_name,
@@ -427,6 +434,7 @@ async function fetchReleases(repo) {
       dateISO: data.published_at ? data.published_at.slice(0, 10) : "",
       assets,
       downloads,
+      shippedBefore,
     },
     history,
   };
@@ -1257,6 +1265,22 @@ function aboutDrift(p, aboutHtml, release) {
     + `but ${p.repo} has released ${release.version}`;
 }
 
+// A claimed OS whose button used to start a download and now falls back, because the latest
+// release was cut without that build. Advisory everywhere, never fatal: the fix is in the
+// other project's release, not in this repo, and a stop here would hold the whole site
+// hostage to it. A project that has never shipped a file for an OS is not reported — its
+// "Download source" button is the documented way to run it (see actionButtons).
+function downloadGap(p, release) {
+  if (!release || p.status === "soon") return null;
+  const lost = p.platforms.filter(
+    (pl) => release.shippedBefore?.includes(pl) && !pickAsset(release.assets, pl)
+  );
+  if (!lost.length) return null;
+  const to = p.homepage ? "the project's homepage" : "the source zip";
+  return `! download-gap: ${p.slug}: ${release.version} has no ${lost.join("/")} file, though an `
+    + `earlier release had one — that button now falls back to ${to}`;
+}
+
 // ------------------------------------------------------------------------ main
 async function main() {
   const data = JSON.parse(await readFile(join(ROOT, "src/projects.json"), "utf8"));
@@ -1322,6 +1346,8 @@ async function main() {
     histories.set(p.slug, history);
     const drift = aboutDrift(p, about.get(p.slug), release);
     if (drift) driftWarnings.push(drift);
+    const gap = downloadGap(p, release);
+    if (gap) driftWarnings.push(gap);
     await writeFile(
       join(DIST, "p", `${p.slug}.html`),
       projectPage(p, { aboutHtml: about.get(p.slug), release, history })

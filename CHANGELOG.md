@@ -11,6 +11,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **The pre-push check warns when a release loses a download** (APHW-0017)
+  It names the project and the missing OS when a newest release lacks a
+  file an earlier release had. It warns and does not block.
+
 - **MAME Curator wordmark logo.**
   A pixel-art arcade cabinet beside "MAME CURATOR" in Press Start 2P
   (SIL OFL 1.1, converted to outlines), supplied by MAME Curator's own
@@ -54,6 +58,14 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **The stats page calls a download broken only when a release lost one** (APHW-0016)
+  A project that has never shipped a file for an OS offers its source,
+  which is how it is run, so it is listed as incomplete rather than broken.
+  Every item in Needs attention now names its fix and says when it was
+  first noticed.
+
+- **Stats and weekly-post instructions load only when needed** (APHW-0018)
+
 - **The pre-push check now runs the stats server's tests**
   `./local-CI.sh` runs `npm test` after the install. The daily
   rebuild on GitHub (`--ci`) still skips it.
@@ -77,6 +89,8 @@ so dated sections stand in for versions. Planned work lives in
   later frame as the poster where the first one shows nothing.
 
 ### Fixed
+
+- **LottoTracker and Local Web Server Manager About pages describe what each does today** (APHW-0019)
 
 - **The Pressless and RetroArch About pages say what is true today**
   Pressless no longer claims a WordPress blog can be brought across: the import

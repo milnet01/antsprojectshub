@@ -17,13 +17,21 @@ projects.
 - **One row per project**, with a coloured light *and* the word `running`,
   `stopped` or `unknown` beside it. The word is always there, so colour is never
   the only thing telling you.
-- **Start, Stop and Restart** on every row.
-- **An Open button** — offered only for servers this app started itself. If
-  something else is sitting on that port, it will not send you to a page it cannot
-  vouch for.
+- **Start, Stop and Restart** on every row. The first time you start a project,
+  it shows exactly what it is about to run and asks you to confirm — and asks
+  again if that start script ever changes.
+- **An Open button**, in the browser you pick for that project (your default
+  unless you choose another). It is offered only for servers this app started
+  itself: if something else is sitting on that port, it will not send you to a
+  page it cannot vouch for.
 - **Rescan**, which looks again and folds in new projects without losing anything
-  you changed by hand.
-- **Eight colour themes**, two of them high-contrast, remembered between runs.
+  you changed by hand. A project you do not want listed can be hidden, and brought
+  back from the View menu.
+- **A Preferences window** for the folders to scan, how often it checks, and the
+  size cap on each project's log — and a profile you can export and import, which
+  saves your project list and every per-project choice.
+- **Eight colour themes**, two of them high-contrast, plus one that follows your
+  desktop's own light, dark and high-contrast setting.
 - **Keyboard driving** — `/` jumps to a filter box that narrows the list as you
   type, `Esc` clears it, the number keys jump to a project, and Enter starts or
   stops the one you are on.
@@ -39,13 +47,13 @@ under the project it is about, not in a corner of the window.
 
 ## What is not there yet
 
-No settings window — where to look for projects is a plain text file for now. No
-live output panel inside the app; the logs are on disk and you read them with your
-own tools. No tray icon, no start-on-login, no "what is using this port?" help.
+No live output panel inside the app; the logs are on disk and you read them with
+your own tools. No tray icon and no start-on-login yet — both are planned after
+version 1.0.0. No "what is using this port?" help.
 
-**And no download.** There is no package or AppImage yet — that is the last phase
-of the build, so for now you run it from a copy of the source, which needs Python
-and one tool to fetch its dependencies. A script puts it in your application
+**And no download.** There is no package yet — a packaged AppImage is planned for
+version 1.0.0 — so for now you run it from a copy of the source, which needs
+Python 3.13 or newer and a tool called `uv` to fetch its dependencies. A script puts it in your application
 launcher afterwards, writing only inside your own home folder and needing no
 password.
 

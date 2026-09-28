@@ -308,6 +308,10 @@ download, and make the weekly post's effort and health visible on the dashboard.
   into `src/projects.json`. The dashboard's "no screenshots" line is the
   measure of progress.
   Priority: 2.
+  Progress (2026-09-28): asked Pressless (live session) and demoreel
+  (mailbox message 116) for 2-4 stills each via
+  /mnt/Emulators/aph-handoff/<slug>/. Slipcase waits until the user
+  switches the MAME Curator session over to it.
   **Layman:** Most project pages have no pictures; ask each project's Claude session to supply them.
   Kind: feature.
   Source: user-2026-09-25.
@@ -380,6 +384,30 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Kind: feature.
   Source: user-2026-09-25.
   Lanes: stats.mjs.
+
+- ✅ [APHW-0016] **Needs attention separates a lost download from a project with no build yet.**
+  **Layman:** The stats page now calls a download broken only when a release lost a file an earlier one had, names the fix for every problem, and says how long each has been open.
+  Kind: enhancement.
+  Source: user-request-2026-09-28.
+  Lanes: stats.
+
+- ✅ [APHW-0017] **The build warns when a release loses a download an earlier release had.**
+  **Layman:** Before a push, the site check now points out any project whose newest release is missing a download its previous ones had. It warns and does not block.
+  Kind: feature.
+  Source: user-request-2026-09-28.
+  Lanes: build.
+
+- ✅ [APHW-0018] **The stats and weekly-post instructions load only when their files are opened.**
+  **Layman:** About 4.5 KB of instructions moved out of the file every session reads, into files Claude Code loads only when working on the dashboard or the weekly post.
+  Kind: optimize.
+  Source: user-request-2026-09-28 (rule 18a).
+  Lanes: docs.
+
+- ✅ [APHW-0019] **LottoTracker and Local Web Server Manager About pages corrected by their own sessions.**
+  **Layman:** Both pages now describe what each app does today, including features that had shipped since the pages were written.
+  Kind: doc-fix.
+  Source: peer-sessions-2026-09-28.
+  Lanes: content.
 
 ## How to add an item
 

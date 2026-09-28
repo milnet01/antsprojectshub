@@ -138,6 +138,21 @@ else
   ok "About copy agrees with the release history."
 fi
 
+step "Check downloads against earlier releases"
+# A release cut without a build an earlier release shipped leaves that OS's button falling
+# back to the source zip. Reported in both modes and fatal in neither: the fix is in the
+# other project's release, and stopping here would block every push to this site until it
+# lands. Under --ci each one becomes a warning annotation, so the pass still says it.
+if grep -q '^! download-gap:' "$build_log"; then
+  grep '^! download-gap:' "$build_log" >&2
+  warn "A release is missing a download an earlier release had (see above). Not fatal."
+  if [ "$mode" = ci ]; then
+    grep '^! download-gap:' "$build_log" | sed 's/^! download-gap: /::warning title=A release lost a download::/'
+  fi
+else
+  ok "Every download an earlier release shipped is still there."
+fi
+
 step "Check deploy readiness (what upload-pages-artifact / deploy-pages expect)"
 # The deploy job runs only on GitHub Pages infrastructure and can't be reproduced
 # here — but its *reproducible* precondition is that dist/ is a well-formed site
