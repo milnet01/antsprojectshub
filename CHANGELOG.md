@@ -78,6 +78,13 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Fixed
 
+- **The Pressless and RetroArch About pages say what is true today**
+  Pressless no longer claims a WordPress blog can be brought across: the import
+  runs only on the maintainer's computer, and one anyone can run is planned.
+  RetroArch now says its own setup, not the encryption library, skipped the
+  certificate check, names all four merged fixes, and notes a bug report fixed
+  upstream. Both corrections came from each project's own session.
+
 - **A second changelog close on the same day merges its headings, and the date is local, not UTC.**
 
 - **Five About pages corrected by the projects' own sessions.**

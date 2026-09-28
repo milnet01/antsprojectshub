@@ -76,5 +76,5 @@ before you begin.
 If a console window (a plain text window) opens alongside the browser, leave
 it open while you work: closing it stops Pressless.
 
-Bringing an existing WordPress blog across works, but for now it is a
-separate, technical step rather than a button in the app.
+You cannot bring an existing blog in yet. You start with an empty site and
+write from there. An import from WordPress that anyone can run is planned.

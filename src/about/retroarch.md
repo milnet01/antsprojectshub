@@ -27,9 +27,10 @@ written. Some of the most serious fixes do not have one yet.
 
 Among the more serious ones:
 
-- **A missing TLS certificate check.** The bundled encryption library accepted any
-  certificate at all, so the Online Updater, RetroAchievements and Cloud Sync could
-  be intercepted on the network — the classic man-in-the-middle hole.
+- **A missing TLS certificate check.** RetroArch set up its bundled encryption
+  library so that it accepted any certificate at all. The Online Updater,
+  RetroAchievements and Cloud Sync could all be intercepted on the network — the
+  classic man-in-the-middle hole.
 - **A path-traversal flaw in cloud sync**, where a crafted filename could write
   outside the folder it was meant to stay in.
 - **Cloud sync overwriting a save with a cut-off download.**
@@ -41,11 +42,14 @@ Among the more serious ones:
 
 The point of the fork is to get these fixes into official RetroArch, where they do
 the most good. On 26 September 2026 the libretro team merged four of them: the
-certificate check, the cloud-sync hardening (both the path traversal and the cut-off
-downloads) and a batch of crash and leak fixes. A fifth, which hardens the network
-command interface, was partly taken: the maintainer rewrote it and made its main
-change an opt-in setting. One more,
-which makes saving crash-safe, is still under review.
+certificate check, the cloud-sync fixes (the path traversal and the cut-off
+downloads), checks on untrusted data from replay files and home routers, and a
+batch of crash and leak fixes. A fifth, which hardens the network command
+interface, was partly taken: the maintainer rewrote it, fixed its memory-overflow
+bug their own way, and made locking the interface to your own machine an opt-in
+setting. A bug report from the fork has also been fixed upstream.
+
+One more change, which makes saving crash-safe, is still under review.
 
 ## Should you use it?
 
