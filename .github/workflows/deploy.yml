@@ -7,6 +7,16 @@ name: Build & deploy
 on:
   push:
     branches: [main]
+    # A push touching only these changes nothing the build reads, so there is no new
+    # site to deploy; the daily run still rebuilds. This is local-CI.sh's DOCS_GLOB,
+    # and local-CI.sh fails if the two lists ever differ.
+    paths-ignore:
+      - "docs/**"
+      - README.md
+      - CHANGELOG.md
+      - ROADMAP.md
+      - CLAUDE.md
+      - LICENSE
   schedule:
     - cron: "0 5 * * *" # daily ~05:00 UTC — refresh READMEs/releases
   workflow_dispatch:

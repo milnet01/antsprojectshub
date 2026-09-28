@@ -192,7 +192,7 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
 ## Deploy
 
 `.github/workflows/deploy.yml` runs the build and publishes `dist/` to GitHub Pages on every
-push to `main`, daily at ~05:00 UTC, and on manual
+push to `main` that changes more than the `ants.gate.docsGlob` paths, daily at ~05:00 UTC, and on manual
 dispatch. The repo is public, so pushing is the normal way to ship. Action SHAs are pinned
 (with the version in a trailing comment) — bump them deliberately, not casually.
 

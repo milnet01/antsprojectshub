@@ -69,6 +69,17 @@ if [ "$mode" != ci ] && [ "$(git config --get ants.gate.docsGlob || true)" != "$
   exit 1
 fi
 
+# The workflow's paths-ignore is the same list, so GitHub skips the pushes this
+# gate treats as documentation. Two copies drift, so they are compared here, where
+# every push and CI both run: `docs/*` is `docs/**` in the workflow's syntax.
+wf_glob="$(sed -n '/^ *paths-ignore:/,/^ *[a-z_]*:/{s/^ *- *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p}' \
+  .github/workflows/deploy.yml | sed 's#^docs/\*\*$#docs/*#' | paste -sd'|')"
+if [ "$wf_glob" != "$DOCS_GLOB" ]; then
+  warn "deploy.yml's paths-ignore ($wf_glob) differs from DOCS_GLOB ($DOCS_GLOB)."
+  warn "Make the two lists match, so GitHub and this gate agree on what is documentation."
+  exit 1
+fi
+
 # The weekly post closes CHANGELOG.md's [Unreleased] section with no one watching,
 # so a section it cannot close is caught here, at the push that broke it. Not
 # under --ci: the daily rebuild never closes the changelog.
@@ -84,7 +95,7 @@ fi
 # build, lib/, stats, scripts and tests for each path in the glob.
 if [ "$mode" = docs ]; then
   step "Result"
-  ok "Documentation-only push: docsGlob and CHANGELOG checked. Not run, because nothing they check reads these paths: the Node version check, npm ci, npm test, the build, the About and download checks, deploy readiness."
+  ok "Documentation-only push: docsGlob, the workflow's matching list and CHANGELOG checked. Not run, because nothing they check reads these paths: the Node version check, npm ci, npm test, the build, the About and download checks, deploy readiness."
   exit 0
 fi
 
