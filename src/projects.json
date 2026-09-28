@@ -159,7 +159,7 @@
       "slug": "perch",
       "name": "Perch",
       "tagline": "Remembers every window's size and spot, with snap layouts.",
-      "blurb": "A system-tray window manager that remembers where each window lives — position, size, monitor and virtual desktop — and restores it on reopen. Snap presets, named layouts, per-monitor profiles, a rules engine and global hotkeys, with backends for X11 and KWin/Wayland.",
+      "blurb": "A system-tray app that remembers where each window lives — position, size, monitor and virtual desktop — and restores it on reopen. Snap presets, named layouts, per-monitor profiles, a rules engine and global hotkeys, with backends for X11 and KWin/Wayland.",
       "status": "live",
       "repo": "milnet01/perch",
       "platforms": [
@@ -171,6 +171,10 @@
       "category": "utilities",
       "logo": "logos/perch.svg",
       "screenshots": [
+        {
+          "src": "shots/perch-tray-menu.png",
+          "alt": "Perch's right-click tray menu. Its greyed-out first line shows the active profile and layout, \"Perch — docked / coding\". Below are Layouts, Snap focused window, a Pause Perch checkbox, Reapply rules now, Configure Perch, Open config folder, Donate, Report an issue, About Perch and Quit Perch. The Snap focused window submenu is open beside it, listing Maximize on this monitor, left and right halves, the four quarters, Centre (keep size), Centre (60%) and a custom preset called \"Reading column\"."
+        },
         {
           "src": "shots/perch-layouts.png",
           "alt": "Perch's settings window on its Layouts page. A layout named \"coding\" is selected, described as \"Editor left, browser right\", and has two entries: the code editor takes 60% of the primary screen's width on the left, and Firefox the remaining 40% on the right."
@@ -512,7 +516,7 @@
       "slug": "oneup",
       "name": "OneUp",
       "tagline": "One-click openSUSE updates from a single window.",
-      "blurb": "A no-nonsense update dashboard for openSUSE (Tumbleweed and Leap) that runs the four updates you actually need — system packages, Flatpaks, firmware and leftover-package cleanup — the correct way, from one window. Each task is a toggle; check for updates read-only, roll back to a pre-update snapshot in one click, and let it check weekly in the background. It never runs as root — privileged work goes through your desktop's standard password prompt.",
+      "blurb": "A no-nonsense update dashboard for openSUSE (Tumbleweed and Leap) that runs the five updates you actually need — system packages, Flatpaks, firmware, leftover-package cleanup and cache cleanup — the correct way, from one window. Each task is a toggle. Check for updates read-only, roll back to a pre-update snapshot in one click, and let it check or even update weekly in the background. It never runs as root — privileged work goes through your desktop's standard password prompt.",
       "status": "live",
       "repo": "milnet01/OneUp",
       "platforms": [
@@ -526,11 +530,15 @@
       "screenshots": [
         {
           "src": "shots/oneup-dark.png",
-          "alt": "The OneUp dashboard in dark theme: five toggle cards — System packages (12 available), Flatpak apps (3 available), Firmware (up to date), Leftover packages and Package cache — each with a green on-switch, above Check for updates and Run selected updates buttons and a live log reading '15 update(s) available'"
+          "alt": "The OneUp window in dark theme after a read-only check, with Settings and About buttons at the top. Five task cards each have a switch turned on, drawn with a bar to show it is on: System packages (12 available), Flatpak apps (3 available), Firmware (up to date), Leftover packages and Package cache. Below are a Run selected updates button and a Check for updates button, the message '15 update(s) available — turn on what you want and hit Run.', a log listing the counts per task, and the last run's date and result."
         },
         {
           "src": "shots/oneup-light.png",
-          "alt": "The same OneUp update dashboard in light theme, showing it follows the desktop's light/dark setting — identical toggle cards, buttons and read-only check log on a white background"
+          "alt": "The same OneUp window and check result in light theme, showing it follows the desktop's light or dark setting: identical task cards with their switches on, buttons and log on a white background."
+        },
+        {
+          "src": "shots/oneup-settings-dark.png",
+          "alt": "OneUp's Settings window in dark theme, headed 'Background behaviours. Each is off until you turn it on.' Eight rows each explain an option beside its button: Weekly check (on), Passwordless (off), Automatic updates (off, and it needs the passwordless setting), Tray icon (off), Start at boot (off), Copy diagnostics, Text size (Normal) and High contrast (off)."
         }
       ]
     },
