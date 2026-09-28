@@ -298,7 +298,7 @@ const normalizeVersion = (v) => String(v).trim().replace(/^v/i, "").toLowerCase(
 // stable release and drives the download buttons and the version pill, so it is null
 // when a project has cut none — while `history` is every version the site can show and
 // may be populated from CHANGELOG.md alone. Two projects here are in exactly that state.
-async function fetchReleases(repo) {
+async function fetchReleases(repo, assetMatch = null) {
   // Relative links and images in a note resolve against the repo they were written in.
   // "HEAD" rather than a branch name because the default branch would cost another API
   // call to learn, and GitHub resolves HEAD to it for both hosts.
@@ -424,7 +424,7 @@ async function fetchReleases(repo) {
   // release missing one of these is a release cut without its build, which the source-zip
   // fallback would otherwise hide from everyone but the visitor.
   const shippedBefore = ["win", "mac", "linux"].filter((pl) =>
-    nonDraft.some((r) => r !== data && pickAsset(r.assets || [], pl))
+    nonDraft.some((r) => r !== data && pickAsset(r.assets || [], pl, assetMatch))
   );
 
   return {
@@ -580,7 +580,7 @@ function actionButtons(p, release) {
 
   // Direct per-OS download to the latest release's matching file (auto-updates each
   // build); platforms without a matching file share one fallback button.
-  const matched = desktop.map((pl) => ({ pl, asset: hasRelease ? pickAsset(release.assets, pl) : null }));
+  const matched = desktop.map((pl) => ({ pl, asset: hasRelease ? pickAsset(release.assets, pl, p.assetMatch) : null }));
   const direct = matched.filter((m) => m.asset);
   direct.forEach((m, i) => {
     const btn = ext(m.asset.url, `Download · ${PLATFORM[m.pl] || m.pl}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`, {
@@ -1280,7 +1280,7 @@ function aboutDrift(p, aboutHtml, release) {
 function downloadGap(p, release) {
   if (!release || p.status === "soon") return null;
   const lost = p.platforms.filter(
-    (pl) => release.shippedBefore?.includes(pl) && !pickAsset(release.assets, pl)
+    (pl) => release.shippedBefore?.includes(pl) && !pickAsset(release.assets, pl, p.assetMatch)
   );
   if (!lost.length) return null;
   const to = p.homepage ? "the project's homepage" : "the source zip";
@@ -1343,7 +1343,7 @@ async function main() {
     let history = [];
     if (isPublished(p)) {
       try {
-        ({ release, history } = await fetchReleases(p.repo));
+        ({ release, history } = await fetchReleases(p.repo, p.assetMatch));
         if (history.length) enriched++;
       } catch (err) {
         console.warn(`! ${p.slug}: release fetch failed (${err.message}) — using fallback`);

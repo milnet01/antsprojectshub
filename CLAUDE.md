@@ -184,7 +184,9 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
 
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative), falling
-  back to `homepage` → Releases page → repo home. Companion files — signatures, checksum
+  back to `homepage` → Releases page → repo home. A project whose release ships two builds
+  per OS names the one to link with `assetMatch` in `projects.json`, a regex the file must
+  also match. Companion files — signatures, checksum
   manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching.
 
 ## Deploy

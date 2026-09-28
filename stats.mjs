@@ -127,13 +127,13 @@ async function collectProject(p) {
   // matching asset is a download button silently falling back to the source code.
   const missingAssets = (p.platforms || [])
     .filter((pl) => OS_KEYS.includes(pl))
-    .filter((pl) => !latest || !pickAsset(latest.assets || [], pl));
+    .filter((pl) => !latest || !pickAsset(latest.assets || [], pl, p.assetMatch));
   // Of those, the ones an EARLIER release did ship. That is a regression — a release cut
   // without its build — and it is the only kind that is broken. A project that has never
   // shipped a file for an OS is source-only by design until it does, and its button says
   // "Download source", which is true.
   const lostAssets = missingAssets.filter((pl) =>
-    releases.some((r) => r !== latest && pickAsset(r.assets || [], pl))
+    releases.some((r) => r !== latest && pickAsset(r.assets || [], pl, p.assetMatch))
   );
 
   const traffic = hasToken ? await collectTraffic(p.repo) : null;
