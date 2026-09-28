@@ -17,7 +17,8 @@
 // Today is the local date, as scripts/weekly-post.sh reads it with `date +%F`.
 //
 // Usage: node scripts/close-changelog.mjs [--check]
-//   --check  report what would happen; write nothing. Exits 0 either way.
+//   --check  report what would happen; write nothing. Exits 1 where a real
+//            close would fail, 0 otherwise. local-CI.sh runs it on every push.
 //
 // WEEKLY_POST_TODAY overrides the date, matching scripts/weekly-post.sh, and is
 // only for testing the runner itself.
@@ -54,6 +55,7 @@ if (!body.some((l) => l.trim())) {
 }
 
 if (check) {
+  blocks(body); // exits 1 on text before the first ### heading, as a real close would
   console.log(`close-changelog: would close ${UNRELEASED} as "## ${today}"`);
   process.exit(0);
 }

@@ -69,14 +69,22 @@ if [ "$mode" != ci ] && [ "$(git config --get ants.gate.docsGlob || true)" != "$
   exit 1
 fi
 
+# The weekly post closes CHANGELOG.md's [Unreleased] section with no one watching,
+# so a section it cannot close is caught here, at the push that broke it. Not
+# under --ci: the daily rebuild never closes the changelog.
+if [ "$mode" != ci ]; then
+  step "Check CHANGELOG.md can be closed  ->  close-changelog --check"
+  node scripts/close-changelog.mjs --check
+fi
+
 # --docs: nothing below reads a DOCS_GLOB path. The build reads src/, and fetches
 # other projects' CHANGELOG.md from GitHub, never this repo's; npm test reads
-# test/ and the stats server. So the glob check above is the whole of what a
+# test/ and the stats server. So the two checks above are the whole of what a
 # documentation-only push can break here. Checked 2026-09-28 by searching the
 # build, lib/, stats, scripts and tests for each path in the glob.
 if [ "$mode" = docs ]; then
   step "Result"
-  ok "Documentation-only push: docsGlob checked. Not run, because nothing they check reads these paths: Node, npm ci, npm test, the build, the About and download checks, deploy readiness."
+  ok "Documentation-only push: docsGlob and CHANGELOG checked. Not run, because nothing they check reads these paths: the Node version check, npm ci, npm test, the build, the About and download checks, deploy readiness."
   exit 0
 fi
 

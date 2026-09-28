@@ -42,8 +42,8 @@ gate. Under `--ci` the About check is reported and not fatal. The gate also runs
 
 The push hook runs it; running it by hand is for iterating. The hook is the machine-wide
 one (`core.hooksPath`). For a push touching only the paths in `ants.gate.docsGlob` it runs
-`./local-CI.sh --docs`, which checks the glob and skips the build: nothing the gate runs
-reads those paths. **Each clone sets `ants.gate.docsGlob`, and it never matches `src/about/` or
+`./local-CI.sh --docs`, which checks the glob and that the weekly post can close
+`CHANGELOG.md`, and skips the build: nothing else the gate runs reads those paths. **Each clone sets `ants.gate.docsGlob`, and it never matches `src/about/` or
 `src/posts/`**, which the build reads. A plain `./local-CI.sh` refuses to run until it is
 set, printing the exact command. A fresh clone starts without it.
 
