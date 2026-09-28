@@ -69,6 +69,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Album Builder's page covers its latest release: a library in the player, eight languages, and restoring a deleted album.**
+  Two new Player screenshots, one of them in Arabic, show the new library.
+
 - **GitHub no longer rebuilds and redeploys the site for a push that changes only documentation.**
   The daily rebuild still runs. `local-CI.sh` fails if GitHub's list of
   documentation files and its own ever differ.
