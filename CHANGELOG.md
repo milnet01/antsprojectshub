@@ -11,6 +11,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Pressless's page shows its writing, setup, publish and error screens** (APHW-0011)
+  Four screenshots from the Pressless session, taken from v0.1.2 with made-up
+  content. They show the screens before styling, and will be retaken once
+  the screens are styled.
+
 - **demoreel's page shows it at work, and says how to install it** (APHW-0011)
   Three screenshots from demoreel's own session: a recording in a terminal, a
   frame of the video it made, and a --gpu still. The About page adds

@@ -639,7 +639,12 @@
       "homepage": null,
       "category": "utilities",
       "logo": "logos/pressless.svg",
-      "screenshots": []
+      "screenshots": [
+        { "src": "shots/pressless-1-editor.png", "alt": "The Pressless writing screen: title, categories, tags and address fields, a Publish button, and a writing box holding a short beach diary entry with simple marks for bold, a quotation, italics and a colour; below it, a small preview of the finished page headed Low tide" },
+        { "src": "shots/pressless-2-setup.png", "alt": "The first-run setup screen, Set up Pressless, asking for the site's GitHub repository, its name and address, an optional tag filter and a publishing key, with a Check with GitHub and save button; filled with made-up answers" },
+        { "src": "shots/pressless-3-published.png", "alt": "The writing screen just after publishing, with the message Published. Your site shows it within a few minutes. beside the Publish button" },
+        { "src": "shots/pressless-4-error.png", "alt": "A failed publish explained in plain words: GitHub would not accept your publishing key. Your site has not changed. Enter your publishing key again in Settings, then try again. A folded Show details link sits beneath" }
+      ]
     }
   ],
   "support": [
