@@ -28,6 +28,10 @@
         {
           "src": "shots/vestige-editor-material-demo.png",
           "alt": "The Vestige editor showing a material test scene: blocks of red brick, dark wood and pale stone standing on a pale floor marked with a placement grid, with tufts of grass between them."
+        },
+        {
+          "src": "shots/vestige-settings-accessibility.png",
+          "alt": "The Vestige editor with its Settings window open on the Accessibility tab, over the meadow scene. A sidebar lists the Display, Audio, Controls, Gameplay, Accessibility and Language tabs. The Accessibility tab has a UI scale of 1.0x, checkboxes for high contrast and reduced motion (both off) and subtitles (on), a subtitle size of medium and a colour-vision filter set to none. Below, under 'Post-process accessibility', switches for depth of field and motion blur each note '(effect not yet shipped — preference is saved)', and a fog switch is on."
         }
       ],
       "video": {
