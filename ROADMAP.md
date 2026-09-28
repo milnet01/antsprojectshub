@@ -302,23 +302,6 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Source: user-2026-09-25.
   Lanes: analytics.js, privacy page, build.mjs.
 
-- 📋 [APHW-0011] **Get screenshots from each project's own session.**
-  Running sessions are asked to supply screenshots with alt text, in the
-  shape `src/assets/img/shots/README.md` sets. This session wires them
-  into `src/projects.json`. The dashboard's "no screenshots" line is the
-  measure of progress.
-  Priority: 2.
-  Progress (2026-09-28): asked Pressless (live session) and demoreel
-  (mailbox message 116) for 2-4 stills each via
-  /mnt/Emulators/aph-handoff/<slug>/. Slipcase waits until the user
-  switches the MAME Curator session over to it.
-  Progress (2026-09-28): demoreel's three shots are live. Pressless is
-  still pending, and Slipcase waits for its session.
-  **Layman:** Most project pages have no pictures; ask each project's Claude session to supply them.
-  Kind: feature.
-  Source: user-2026-09-25.
-  Lanes: projects.json, assets/img/shots.
-
 - ✅ [APHW-0012] **Describe each published project to search engines.**
   Emit a `SoftwareApplication` JSON-LD block per project page: name,
   description, operating systems, latest version, download URL. JSON-LD is
@@ -410,6 +393,32 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Kind: doc-fix.
   Source: peer-sessions-2026-09-28.
   Lanes: content.
+
+## 0.1.0 — Screenshots from every project
+
+The site deploys on every push and cuts no tagged releases. A version block here
+names outstanding work only, by the user's choice (2026-09-28); shipped work
+stays in its phase block.
+
+- 📋 [APHW-0011] **Get screenshots from each project's own session.**
+  Running sessions are asked to supply screenshots with alt text, in the
+  shape `src/assets/img/shots/README.md` sets. This session wires them
+  into `src/projects.json`. The dashboard's "no screenshots" line is the
+  measure of progress.
+  Priority: 2.
+  Progress (2026-09-28): asked Pressless (live session) and demoreel
+  (mailbox message 116) for 2-4 stills each via
+  /mnt/Emulators/aph-handoff/<slug>/. Slipcase waits until the user
+  switches the MAME Curator session over to it.
+  Progress (2026-09-28): demoreel's three shots are live. Pressless is
+  still pending, and Slipcase waits for its session.
+  Progress (2026-09-28): Pressless's four shots and Album Builder's
+  two 0.9.0 Player shots are live. Still owed: Pressless's restyled
+  retakes, and Slipcase once its session exists.
+  **Layman:** Most project pages have no pictures; ask each project's Claude session to supply them.
+  Kind: feature.
+  Source: user-2026-09-25.
+  Lanes: projects.json, assets/img/shots.
 
 ## How to add an item
 
