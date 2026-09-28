@@ -69,6 +69,13 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **GitHub no longer rebuilds and redeploys the site for a push that changes only documentation.**
+  The daily rebuild still runs. `local-CI.sh` fails if GitHub's list of
+  documentation files and its own ever differ.
+
+- **A stuck GitHub build now stops after 10 minutes, and a stuck deploy after 15.**
+  Before, either could run for GitHub's six-hour default.
+
 - **A push that changes only documentation no longer rebuilds the whole site first.**
   `local-CI.sh --docs` checks the documentation glob and skips the build,
   since nothing the build or tests run reads those files.
