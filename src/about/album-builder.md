@@ -20,13 +20,24 @@ Point it at your recordings folder and it lists everything it finds. From there:
   works out which word lands when, rather than expecting you to time anything by
   hand.
 
-When you approve an album, it writes out everything you need: an M3U playlist, a
-folder of properly numbered tracks, and a report as both PDF and web page. The
-report comes in two flavours — the full one for you, and a stripped-back
-artist-facing version fit to send to someone else.
+When you approve an album, it writes out everything you need: a playlist, a
+folder of numbered shortcuts to the tracks in order, and a report as both PDF and
+web page. The report comes in two flavours: the full one for you, and a
+stripped-back artist-facing version fit to send to someone else. On Windows you
+get the playlist and the reports, but not the numbered folder.
 
 Your work is remembered between sessions, and the library refreshes itself when
 you add new recordings to the folder.
+
+## Just listening
+
+A second tab turns it into a music player. Play any song in your library, line
+songs up in an Up Next queue, shuffle or repeat, and save playlists. Volume
+levelling keeps loud and quiet recordings at an even level. On Linux, your
+keyboard's media keys and the desktop's media controls work too.
+
+It reads MP3, FLAC, Ogg, Opus, WAV, AAC, M4A, AIFF and WMA files. Five colour
+themes are built in.
 
 ## Getting it
 
@@ -45,6 +56,6 @@ to start with a message about `GLIBC_2.35`.
 
 ## Where it stands
 
-In beta and feature-complete through its fifth planned phase: curation, ordering,
-usage tracking, lyric syncing and the full export pipeline are all in. Built with
-Python and Qt, and MIT licensed.
+In beta. Curation, ordering, usage tracking, lyric syncing, the export pipeline
+and the player are all in. Next up: giving the player its own library view, and
+more languages. Built with Python and Qt, and MIT licensed.

@@ -218,7 +218,7 @@
       "slug": "album-builder",
       "name": "Album Builder",
       "tagline": "Curate albums from recordings, with lyric-sync and reports.",
-      "blurb": "A desktop tool for shaping albums out of a folder of recordings: per-track curation, drag-to-reorder, live preview with optional lyric syncing, cross-album reuse tracking, and export to M3U playlists, numbered folders and polished PDF/HTML reports.",
+      "blurb": "A desktop tool for shaping albums out of a folder of recordings: per-track curation, drag-to-reorder, live preview with optional lyric syncing, cross-album reuse tracking, a built-in music player, and export to M3U playlists, numbered folders (Linux) and polished PDF/HTML reports.",
       "status": "beta",
       "repo": "milnet01/album-builder",
       "platforms": [
