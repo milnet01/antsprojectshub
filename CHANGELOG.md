@@ -112,6 +112,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Fixed
 
+- **Perch's logo on the home page is now as large as the other projects' logos.**
+
 - **A changelog the weekly post cannot close is now caught at the push, not on Wednesday.**
   `close-changelog.mjs --check` now fails where a real close would, and
   `local-CI.sh` runs it on every push, documentation-only ones included.

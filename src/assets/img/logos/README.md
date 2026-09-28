@@ -19,6 +19,9 @@ project page and changelog page. Point at it from
   height, so a roughly 3:1 to 2:1 shape fills it best.
 - **It must read on a dark panel** tinted in the project's category colour: light
   lettering, or a dark mark with a light outline.
+- **An SVG's `width` and `height` are at least 600 or so.** The card only ever shrinks a
+  logo, never enlarges it, so a file declaring itself 93px wide stays 93px on the card
+  (Perch's did, until 2026-09-28). Scale both numbers up and leave the `viewBox` alone.
 - **Cropped to the drawing**, with only a thin even margin. On a page heading it is
   sized by width with a height cap, so empty space inside the file makes the name
   smaller.
