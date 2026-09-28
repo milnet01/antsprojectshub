@@ -246,7 +246,11 @@
         },
         {
           "src": "shots/album-builder-player.png",
-          "alt": "Album Builder's player tab in a dark theme: large fractal cover art for the song \"Paper Boats\" by Harbour Lights, with playback controls and a progress bar below it, and an \"Up Next\" queue on the right listing the playing song."
+          "alt": "Album Builder's Player tab in a dark theme, with an invented library. On the left, a searchable library lists ten songs by title and artist. In the middle is the song \"Paper Boats\" by Harbour Lights, with its colourful fractal cover art above the title, and playback controls, a time readout and a volume slider along the bottom. On the right is a lyrics panel, and below it Up Next and Playlists tabs, with Up Next showing \"Nothing queued\"."
+        },
+        {
+          "src": "shots/album-builder-player-arabic.png",
+          "alt": "The same Player tab with the app in Arabic. The whole window is mirrored right to left: the menus, tabs and headings are in Arabic, the library sits on the right, and the lyrics panel and Up Next are on the left. The song titles stay in English, and the play controls keep their usual left-to-right order."
         }
       ]
     },
