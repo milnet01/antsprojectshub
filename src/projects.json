@@ -580,7 +580,11 @@
       "homepage": null,
       "category": "utilities",
       "logo": "logos/demoreel.svg",
-      "screenshots": [],
+      "screenshots": [
+        { "src": "shots/demoreel-terminal-recording.png", "alt": "A terminal running demoreel record on the GTK demo app for six seconds; demoreel prints two status lines, then the path of the finished video" },
+        { "src": "shots/demoreel-recorded-frame.png", "alt": "A frame from that video: the GTK Demo app filling the whole picture, with no desktop, panel or other windows" },
+        { "src": "shots/demoreel-gpu-vkcube.png", "alt": "A still taken with --gpu: the Vulkan test cube, textured with the LunarG logo, drawn by the graphics card, which the default virtual display cannot do" }
+      ],
       "video": {
         "src": "demoreel-demo.mp4",
         "poster": "demoreel-demo-poster.jpg",

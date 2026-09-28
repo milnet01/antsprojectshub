@@ -11,6 +11,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **demoreel's page shows it at work, and says how to install it** (APHW-0011)
+  Three screenshots from demoreel's own session: a recording in a terminal, a
+  frame of the video it made, and a --gpu still. The About page adds
+  `demoreel shot`, and says it installs by copying one file until distro
+  packages arrive.
+
 - **The pre-push check warns when a release loses a download** (APHW-0017)
   It names the project and the missing OS when a newest release lacks a
   file an earlier release had. It warns and does not block.

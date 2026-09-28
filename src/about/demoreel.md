@@ -27,8 +27,11 @@ list of clicks and keystrokes so the video shows the app being *used* rather tha
 sitting still, records for the duration, then shuts everything down and leaves one
 file behind.
 
-It prints the path of the finished video and nothing else, so you can capture it
-into a variable without the app's own chatter stirred in.
+The only thing it writes to standard output is the finished video's path, so you
+can capture it into a variable without the app's own chatter stirred in.
+
+Or ask for one picture instead: `demoreel shot` saves a single PNG of the app,
+taken on the same private display.
 
 ## The refusals
 
@@ -63,3 +66,8 @@ thing.
 Live and in use, on Linux. It is a command-line tool with no window of its own,
 and it says plainly when something it needs is not installed rather than failing
 obscurely.
+
+For now it installs by copying one file: download it, make it executable, and put
+it on your path. It needs Python 3, and a few standard programs for the virtual
+display and the video. Distro packages for openSUSE, Debian and Ubuntu, Fedora
+and Arch are planned.

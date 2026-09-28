@@ -312,6 +312,8 @@ download, and make the weekly post's effort and health visible on the dashboard.
   (mailbox message 116) for 2-4 stills each via
   /mnt/Emulators/aph-handoff/<slug>/. Slipcase waits until the user
   switches the MAME Curator session over to it.
+  Progress (2026-09-28): demoreel's three shots are live. Pressless is
+  still pending, and Slipcase waits for its session.
   **Layman:** Most project pages have no pictures; ask each project's Claude session to supply them.
   Kind: feature.
   Source: user-2026-09-25.
