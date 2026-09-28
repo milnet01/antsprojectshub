@@ -25,6 +25,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Slowest of 100 runs to 2026-09-28: 98s, a cold start. Ten minutes covers a cold
+    # npm cache plus a slow GitHub API without reading a real stall as success.
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -53,6 +56,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # deploy-pages waits up to 10 minutes on Pages by itself (its `timeout` input), so
+    # the job allows more and that step's own clearer error is the one that fires.
+    # Slowest of 100 runs to 2026-09-28: 148s.
+    timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
