@@ -384,7 +384,17 @@
       "upstream": null,
       "homepage": null,
       "category": "emulation",
-      "screenshots": []
+      "logo": "logos/slipcase.svg",
+      "screenshots": [
+        {
+          "src": "shots/slipcase-before-after.png",
+          "alt": "Before and after: a flat, made-up game cover on the left, and the same cover rendered by Slipcase as a 3D DVD case on the right."
+        },
+        {
+          "src": "shots/slipcase-main-window.png",
+          "alt": "Slipcase's main window: a flat game cover loaded on the left, and its rendered 3D box with spine and reflection in the preview on the right."
+        }
+      ]
     },
     {
       "slug": "contact-list",

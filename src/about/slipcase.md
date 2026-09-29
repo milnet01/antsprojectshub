@@ -10,18 +10,26 @@ proper lighting and a soft shadow underneath.
 
 - **Knows what the box should look like.** Every case type is modelled at its real
   measurements in millimetres — a SNES cardboard box is 30 mm deep, a Blu-ray case
-  12.5 mm, a Game Boy box is small and surprisingly chunky. Around fifteen case
-  types are built in, covering everything from NES cartridge boxes and Genesis
-  clamshells through DVD and jewel cases to DS, 3DS, PSP and Vita.
+  12.5 mm, a Game Boy box is small and surprisingly chunky. Fifteen case types
+  are built in, covering everything from NES cartridge boxes and Genesis
+  clamshells through N64, DVD, Blu-ray and jewel cases to Game Boy Advance, DS,
+  3DS, PSP, Vita and Switch, plus a generic cartridge case.
 - **Builds a spine when your cover does not have one**, which most scraped cover
   art does not.
-- **Finds the artwork for you.** It can search the usual cover-art sources
-  directly, so you are not hunting for images by hand.
+- **Understands full scans.** If your image is a whole wrap-around scan — back,
+  spine and front in one picture — it finds the spine and uses it. It can also
+  split such a scan into three separate images. You can give it a back cover too.
+- **Finds the artwork for you.** It searches ScreenScraper, TheGamesDB and the
+  libretro thumbnail server directly, so you are not hunting for images by hand.
 - **Renders it cleanly.** Everything is drawn at double size and scaled back down,
-  which is what stops the edges of the box looking like a staircase.
+  which is what stops the edges of the box looking like a staircase. A soft
+  reflection under the box is on by default, and can be turned off.
+- **Spins the box.** It can turn the box round and save it as an animated PNG,
+  which keeps the transparent background, or as a GIF.
 - **Outputs what your frontend actually wants** — PNG with a transparent
   background, sized for RetroArch's thumbnail system or LaunchBox's larger 3D box
-  art, at the same viewing angle those libraries use.
+  art. The box is turned at 30 degrees by default, LaunchBox-style, and you can
+  change the angle.
 
 It processes a whole folder at a time, not one cover at a time.
 

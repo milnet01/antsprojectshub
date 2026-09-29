@@ -11,6 +11,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Slipcase has a logo, two screenshots and a corrected About page**
+  The About page now names all fifteen case types and the three art sources,
+  and adds the spin animation, back covers and full wrap-around scans. It
+  says the viewing angle is 30 degrees by default and adjustable, rather
+  than matching the libraries exactly.
+
 - **Pressless's page shows its writing, setup, publish and error screens** (APHW-0011)
   Four screenshots from the Pressless session, taken from v0.1.2 with made-up
   content. They show the screens before styling, and will be retaken once
