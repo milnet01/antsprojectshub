@@ -133,7 +133,11 @@ function cardCover(p) {
 }
 
 function renderCard(p, release) {
-  const fork = p.isFork ? `<span class="card__fork">· fork</span>` : "";
+  // Name the upstream's owner on the card, so the credit is where people look first.
+  const owner = p.upstream ? p.upstream.split("/")[0] : "";
+  const fork = p.isFork
+    ? `<span class="card__fork">· fork${owner ? ` of ${esc(owner)}` : ""}</span>`
+    : "";
   // Latest release version (stable-preferred, from fetchRelease) shown beside the status
   // pill — matches what the project page's download button offers. Absent for unpublished
   // or unreleased projects, so the card simply omits it.

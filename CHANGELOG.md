@@ -75,6 +75,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **A fork's card names whose project it is a fork of**
+  The landing-page cards for RetroArch, DOOM Ants and Rusty PSN now read
+  "fork of libretro", "fork of id-Software" and "fork of RainbowCookie32"
+  rather than just "fork".
+
 - **Album Builder's page covers its latest release: a library in the player, eight languages, and restoring a deleted album.**
   Two new Player screenshots, one of them in Arabic, show the new library.
 
