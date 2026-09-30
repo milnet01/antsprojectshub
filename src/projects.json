@@ -43,8 +43,8 @@
     {
       "slug": "ants-terminal",
       "name": "Ants Terminal",
-      "tagline": "A fast, modern terminal tuned for smoother coding sessions.",
-      "blurb": "A lightweight Qt6 terminal for Linux, built from scratch. Its standout feature is deep, fully-local integration with Claude Code to make AI-assisted development sessions faster and leaner — nothing is sent anywhere it doesn't need to be.",
+      "tagline": "A fast, modern terminal for Linux that makes Claude Code cheaper and easier to use.",
+      "blurb": "A terminal is the window where you type commands to your computer. This is a fast, good-looking one for Linux, built from scratch. Its party trick is working hand in hand with Claude Code, Anthropic's AI coding assistant: it answers many of Claude's everyday questions itself and hands back a short summary instead of a wall of text, so you spend less. Its tools run on your own computer and send nothing anywhere.",
       "status": "beta",
       "repo": "milnet01/ants-terminal",
       "platforms": [
@@ -374,7 +374,7 @@
       "slug": "slipcase",
       "name": "Slipcase",
       "tagline": "Turns flat 2D game covers into realistic 3D box renders.",
-      "blurb": "A desktop tool that turns a flat 2D cover image into a photorealistic 3D box render — front, spine, top edge and a soft shadow, at the real millimetre measurements of fifteen case types from NES cartridge boxes to Switch cases. It can find the artwork for you, invent a spine when your cover has none, do a whole folder at once, and spin the box as an animation. Output is transparent PNG sized for RetroArch or LaunchBox. It runs, and there is no packaged download yet — for now you run it from a copy of the source.",
+      "blurb": "A desktop tool that turns a flat 2D cover image into a photorealistic 3D box render — front, spine, top edge and a soft shadow, at the real millimetre measurements of fifteen case types from NES cartridge boxes to Switch cases. It can find the artwork for you, invent a spine when your cover has none, do a whole folder at once, and spin the box as an animation. Output is transparent PNG sized for RetroArch or LaunchBox. Version 1.1.0 is out as source only — a packaged build is still to come, so for now you run it from a copy of the source.",
       "status": "wip",
       "repo": "milnet01/Slipcase",
       "platforms": [

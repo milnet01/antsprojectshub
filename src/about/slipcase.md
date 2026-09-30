@@ -35,13 +35,14 @@ It processes a whole folder at a time, not one cover at a time.
 
 ## Where it stands
 
-**It runs, and there is no download yet.** It works and it has a test suite;
-what it does not have is a packaged build, which is the remaining work rather
-than a change of mind. For now you run it from a copy of the source.
+**It works, and so far it comes as source only.** Version 1.1.0 is out and it
+has a test suite; what it does not have is a packaged build, which is the
+remaining work rather than a change of mind. For now the button at the top gives
+you the source, and you run it from that copy.
 
 It is built with Python and Qt, and downloads images only from a fixed list of
 known art sources over HTTPS, with a size cap, because "fetch this URL and decode
 it as an image" is not a thing to leave open-ended.
 
-When it ships, it will be a Linux download like the rest. The repository is
+When the packaged build arrives, it will be a Linux download like the rest. The repository is
 public and linked at the top of this page.

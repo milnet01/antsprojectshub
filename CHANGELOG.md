@@ -75,6 +75,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Ants Terminal's tagline, card text and feature list are in plainer words**
+  The tagline now says what it is for: a terminal for Linux that makes
+  Claude Code cheaper and easier to use. The feature list drops programmer
+  terms, and says 11 colour themes where it said a dozen.
+
 - **A fork's card names whose project it is a fork of**
   The landing-page cards for RetroArch, DOOM Ants and Rusty PSN now read
   "fork of libretro", "fork of id-Software" and "fork of RainbowCookie32"
@@ -125,6 +130,12 @@ so dated sections stand in for versions. Planned work lives in
   later frame as the poster where the first one shows nothing.
 
 ### Fixed
+
+- **Slipcase's page no longer says there is no download, now that 1.1.0 is out**
+  Slipcase released 1.1.0 as source only. The page said "no download yet",
+  which the build check caught, and that stopped this week's post from
+  publishing. The page now says it comes as source, with a packaged build
+  still to come.
 
 - **Perch's logo on the home page is now as large as the other projects' logos.**
 

@@ -33,14 +33,14 @@ All of this happens on your own machine. None of it sends your work anywhere.
 
 ## It is also just a good terminal
 
-With Claude out of the picture entirely: full colour and Unicode, full-screen
-programs like `vim` and `htop`, programming-font ligatures, inline images,
-clickable links and file paths, a command palette, searchable history, a
-pop-out editor for long commands, a snippets library, a dozen colour themes with
-automatic dark/light switching, and small Lua plugins that run sandboxed and
-cannot freeze the window.
+With Claude out of the picture entirely, it is still a capable terminal: tabs,
+11 colour themes that can follow your desktop's light or dark setting, search,
+clickable links and file paths, pictures shown right in the window, a library of
+saved commands, a roomy pop-out editor for long ones, and small add-on plugins
+that are fenced off so they cannot freeze the window. Full-screen programs such
+as text editors and system monitors work as they should.
 
-It needs nothing but Qt6, which most Linux desktops already have, so it starts
+It needs nothing but Qt 6, a toolkit most Linux desktops already have, so it starts
 quickly and stays light.
 
 ## Getting it
