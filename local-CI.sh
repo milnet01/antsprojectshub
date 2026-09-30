@@ -173,6 +173,19 @@ else
   ok "About copy agrees with the release history."
 fi
 
+step "Check each project's status against its version"
+# A project at 1.0.0 or later is "live". Same shape as the About check above: advisory
+# in the build, fatal here, and a warning annotation under --ci.
+if grep -q '^! status-drift:' "$build_log"; then
+  grep '^! status-drift:' "$build_log" >&2
+  warn "A project at 1.0.0 or later is not marked live. Fix its status in src/projects.json before pushing."
+  [ "$mode" = ci ] || exit 1
+  grep '^! status-drift:' "$build_log" | sed 's/^! status-drift: /::warning title=Status contradicts the version::/'
+  advisory="$advisory — WITH A WARNING: a project at 1.0.0 or later is not marked live (see above)"
+else
+  ok "Every project at 1.0.0 or later is marked live."
+fi
+
 step "Check downloads against earlier releases"
 # A release cut without a build an earlier release shipped leaves that OS's button falling
 # back to the source zip. Reported in both modes and fatal in neither: the fix is in the

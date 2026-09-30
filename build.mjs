@@ -1276,6 +1276,17 @@ function aboutDrift(p, aboutHtml, release) {
     + `but ${p.repo} has released ${release.version}`;
 }
 
+// 1.0.0 means complete, so a project at or past it is `live` — the owner's rule. Slipcase
+// sat at `wip` with 1.1.0 out. A pre-release tag (1.0.0-rc1) does not count: one version
+// can be a beta while the project is not yet at 1.0.0. Below 1.0.0 the status is a
+// judgment and nothing is checked. Warns here and is fatal in local-CI.sh, as above.
+function statusDrift(p, release) {
+  const major = /^v?(\d+)\.\d+(?:\.\d+)?$/.exec(release?.version ?? "")?.[1];
+  if (!major || Number(major) < 1 || p.status === "live") return null;
+  return `! status-drift: ${p.slug}: status is "${p.status}" in src/projects.json, `
+    + `but ${p.repo} has released ${release.version} — 1.0.0 or later is "live"`;
+}
+
 // A claimed OS whose button used to start a download and now falls back, because the latest
 // release was cut without that build. Advisory everywhere, never fatal: the fix is in the
 // other project's release, not in this repo, and a stop here would hold the whole site
@@ -1357,6 +1368,8 @@ async function main() {
     histories.set(p.slug, history);
     const drift = aboutDrift(p, about.get(p.slug), release);
     if (drift) driftWarnings.push(drift);
+    const stale = statusDrift(p, release);
+    if (stale) driftWarnings.push(stale);
     const gap = downloadGap(p, release);
     if (gap) driftWarnings.push(gap);
     await writeFile(

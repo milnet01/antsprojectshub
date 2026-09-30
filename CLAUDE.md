@@ -35,9 +35,10 @@ npm test                # the stats server's port handling (Node + Python)
 Change a build step or the Node version in the script, never in the workflow. Only the
 Pages steps (configure, upload, deploy) belong to the workflow.
 
-It checks two things beyond the build: that `dist/` is deploy-ready, and that no About page
-contradicts the release history. Both fail a plain `./local-CI.sh`, which is the pre-push
-gate. Under `--ci` the About check is reported and not fatal. The gate also runs
+Beyond the build it checks that `dist/` is deploy-ready, that no About page contradicts
+the release history, and that every project at 1.0.0 or later is `live`. Each fails a
+plain `./local-CI.sh`, which is the pre-push gate. Under `--ci` the About and status
+checks are reported and not fatal. The gate also runs
 `npm test`; `--ci` does not.
 
 The push hook runs it; running it by hand is for iterating. The hook is the machine-wide
@@ -181,6 +182,10 @@ Data flows: `projects.json` + `src/about/*.md` → `build.mjs` → `dist/`.
   recognises are `UNPUBLISHED_CLAIMS` in `build.mjs` — extend that list rather than adding
   a second check. No About page states a version number, so nothing reads one; add that
   check when one does.
+
+- **A project at 1.0.0 or later is `live`.** 1.0.0 means complete; a single version may be
+  a pre-release, which does not count. `statusDrift()` in `build.mjs` warns and
+  `local-CI.sh` fails on it, as for the About check. Below 1.0.0 the status is a judgment.
 
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative), falling

@@ -9,6 +9,13 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- **The pre-push check stops a project at 1.0.0 or later that is not marked live**
+  1.0.0 means complete, so such a project is "live" on the site. Slipcase
+  showed "work in progress" with 1.1.0 out. A pre-release version such as
+  1.0.0-rc1 does not count.
+
 ### Changed
 
 - **Slipcase is listed as live, where it said work in progress**
