@@ -11,6 +11,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Slipcase has Windows and Mac downloads**
+  Slipcase 1.3.0 ships a portable Windows program and a Mac disk image beside
+  the Linux file. The page says how to get past the first-run warning on each,
+  since neither is signed, links the Intel Mac build, and says plainly that
+  the Mac build has not been tried by hand on a real Mac.
+
 - **The pre-push check stops a project at 1.0.0 or later that is not marked live**
   1.0.0 means complete, so such a project is "live" on the site. Slipcase
   showed "work in progress" with 1.1.0 out. A pre-release version such as

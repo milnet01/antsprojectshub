@@ -36,13 +36,26 @@ It processes a whole folder at a time, not one cover at a time.
 
 ## Where it stands
 
-**Live, with a Linux download.** The button at the top gives you one file, an
-AppImage, with everything it needs inside; there is nothing to install. Download
-it, make it executable, and run it.
+**Live, with downloads for Linux, Windows and Mac.** The buttons at the top give
+you one file for your system, with everything it needs inside.
 
-It needs a 64-bit Intel or AMD computer and a Linux system from about 2022 or
-newer — it is built on Ubuntu 22.04, and anything at least that recent should
-run it. Windows and Mac builds are planned and not out yet.
+- **Linux:** an AppImage. Download it, make it executable, and run it; there is
+  nothing to install. It needs a 64-bit Intel or AMD computer and a Linux system
+  from about 2022 or newer — it is built on Ubuntu 22.04.
+- **Windows:** a single portable program for 64-bit Windows. Double-click it;
+  nothing is installed. It is not signed, so the first time you run it Windows
+  shows a blue "Windows protected your PC" screen. Click **More info**, then
+  **Run anyway**.
+- **Mac:** a disk image; drag the app onto Applications. The button gives the
+  build for Apple silicon (M1 and later). For an older Intel Mac, use
+  [the Intel build](https://github.com/milnet01/Slipcase/releases/latest/download/Slipcase-macos-x86_64.dmg)
+  instead. It is not signed, so macOS blocks the first launch: try to open it
+  once, then go to System Settings, Privacy & Security, scroll down and click
+  **Open Anyway**.
+
+One honest caveat about the Mac build: nobody has tried it by hand on a real
+Mac yet. It is built on GitHub's Mac machines, where it passes its own
+self-check and the full test suite. If it misbehaves for you, please report it.
 
 It is built with Python and Qt, and downloads images only from a fixed list of
 known art sources over HTTPS, with a size cap, because "fetch this URL and decode
