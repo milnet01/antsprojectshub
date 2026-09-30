@@ -18,6 +18,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Slipcase has a Linux download, and its page says how to run it**
+  Slipcase 1.2.0 ships a single-file Linux build, so the button downloads it
+  where it offered the source. The page says what it needs: a 64-bit computer
+  and a Linux system from about 2022 or newer. Windows and Mac builds are
+  planned and not listed yet.
+
 - **Slipcase is listed as live, where it said work in progress**
   The owner's decision on 2026-09-30, after its 1.1.0 release. The page still
   says it comes as source only until a packaged build is attached.
