@@ -9,6 +9,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Changed
+
+- **Ants Terminal's page mentions split panes and remembered tabs**
+  Both were already in 0.7.111; its session confirmed them against that
+  release's code.
+
 ## 2026-09-30
 
 ### Added

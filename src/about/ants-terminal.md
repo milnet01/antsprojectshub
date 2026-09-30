@@ -33,7 +33,8 @@ All of this happens on your own machine. None of it sends your work anywhere.
 
 ## It is also just a good terminal
 
-With Claude out of the picture entirely, it is still a capable terminal: tabs,
+With Claude out of the picture entirely, it is still a capable terminal: tabs
+that can be split into side-by-side panes and are remembered between sessions,
 11 colour themes that can follow your desktop's light or dark setting, search,
 clickable links and file paths, pictures shown right in the window, a library of
 saved commands, a roomy pop-out editor for long ones, and small add-on plugins
