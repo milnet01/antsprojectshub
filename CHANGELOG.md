@@ -30,6 +30,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Ants Terminal's page covers what is new in 0.7.112**
+  The single-file download now updates itself, a welcome window offers
+  one-click setup the first time it opens, and each tab can have its own
+  colour.
+
 - **The "fork of" credit on a card is bigger and brighter**
   It was the smallest, dimmest text on the card, which worked against the
   credit it gives. It is now close to the size of the card's description.

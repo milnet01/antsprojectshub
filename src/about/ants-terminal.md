@@ -34,8 +34,8 @@ All of this happens on your own machine. None of it sends your work anywhere.
 ## It is also just a good terminal
 
 With Claude out of the picture entirely, it is still a capable terminal: tabs
-that can be split into side-by-side panes and are remembered between sessions,
-11 colour themes that can follow your desktop's light or dark setting, search,
+that can be split into side-by-side panes, given a colour each so you can tell
+them apart, and are remembered between sessions, 11 colour themes that can follow your desktop's light or dark setting, search,
 clickable links and file paths, pictures shown right in the window, a library of
 saved commands, a roomy pop-out editor for long ones, and small add-on plugins
 that are fenced off so they cannot freeze the window. Full-screen programs such
@@ -50,6 +50,15 @@ On openSUSE, Fedora or Mageia, add the repository once and install it like any
 other program — you then get updates automatically. On anything else, the
 AppImage is a single file: download it, make it executable, run it. Both routes
 are on the download buttons above.
+
+The AppImage keeps itself up to date. When a new version is out it tells you on
+the menu bar; one click downloads it, checks that it really came from this
+project, and swaps it in. Restart then, or carry on and get the new version next
+time you open it.
+
+The first time you open it, a welcome window explains what it can do and offers
+one-click setup for Claude Code. Anything that would change one of your own
+files is shown to you first. You can reopen it from Help, Show Welcome.
 
 Your settings live in `~/.config/ants-terminal/`, readable only by you. The only
 network connection it makes on its own is a check for a newer release when it
