@@ -11,6 +11,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Slipcase has a demo video**
+  A silent 38-second clip: a flat cover becomes a 3D box, the case type and
+  angle change, and the app saves an animation of the box swinging from side
+  to side. The page now says "swings" where it said the box turns round,
+  because that is what the animation does.
+
 - **Slipcase has Windows and Mac downloads**
   Slipcase 1.3.0 ships a portable Windows program and a Mac disk image beside
   the Linux file. The page says how to get past the first-run warning on each,

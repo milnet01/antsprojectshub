@@ -25,8 +25,8 @@ proper lighting and a soft shadow underneath.
 - **Renders it cleanly.** Everything is drawn at double size and scaled back down,
   which is what stops the edges of the box looking like a staircase. A soft
   reflection under the box is on by default, and can be turned off.
-- **Spins the box.** It can turn the box round and save it as an animated PNG,
-  which keeps the transparent background, or as a GIF.
+- **Animates the box.** It can swing the box from side to side and save that as
+  an animated PNG, which keeps the transparent background, or as a GIF.
 - **Outputs what your frontend actually wants** — PNG with a transparent
   background, sized for RetroArch's thumbnail system or LaunchBox's larger 3D box
   art. The box is turned at 30 degrees by default, LaunchBox-style, and you can

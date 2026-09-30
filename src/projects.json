@@ -374,7 +374,7 @@
       "slug": "slipcase",
       "name": "Slipcase",
       "tagline": "Turns flat 2D game covers into realistic 3D box renders.",
-      "blurb": "A desktop tool that turns a flat 2D cover image into a photorealistic 3D box render — front, spine, top edge and a soft shadow, at the real millimetre measurements of fifteen case types from NES cartridge boxes to Switch cases. It can find the artwork for you, invent a spine when your cover has none, do a whole folder at once, and spin the box as an animation. Output is transparent PNG sized for RetroArch or LaunchBox. It comes as a single download for Linux, Windows or Mac.",
+      "blurb": "A desktop tool that turns a flat 2D cover image into a photorealistic 3D box render — front, spine, top edge and a soft shadow, at the real millimetre measurements of fifteen case types from NES cartridge boxes to Switch cases. It can find the artwork for you, invent a spine when your cover has none, do a whole folder at once, and save an animation of the box swinging from side to side. Output is transparent PNG sized for RetroArch or LaunchBox. It comes as a single download for Linux, Windows or Mac.",
       "status": "live",
       "repo": "milnet01/Slipcase",
       "platforms": [
@@ -397,7 +397,12 @@
           "src": "shots/slipcase-main-window.png",
           "alt": "Slipcase's main window: a flat game cover loaded on the left, and its rendered 3D box with spine and reflection in the preview on the right."
         }
-      ]
+      ],
+      "video": {
+        "src": "slipcase-demo.mp4",
+        "poster": "slipcase-demo-poster.jpg",
+        "caption": "A silent 38-second video of Slipcase turning a flat game cover into a 3D box. The cover is a made-up game called Nebula Drift: yellow title lettering over a purple and blue nebula with a small white ship. The Slipcase window opens with nothing loaded, and the large preview area on the right says No preview. The pointer clicks Load Image; a small picture of the flat cover appears on the left and the title box fills in with Nebula Drift. The pointer clicks the blue Generate button and a 3D box appears in the preview: a PlayStation 2 style DVD case, turned at 30 degrees, with the cover on its front, the title running down its spine and a faint reflection underneath. The Platform list is opened and changed from PS2 to Switch, and the case type beside it changes to Switch Case. Generate is clicked again and the box is redrawn as a taller, slimmer Switch case with a pale spine and a red band at the top. The angle slider is dragged from 30 to 48 degrees and Generate is clicked a third time; the box is now turned further side-on, showing more of its spine. The pointer opens the File menu and chooses Export Animation. A small settings box appears: start angle 10 degrees, end angle 50 degrees, Bounce ticked, 24 frames, saved as an animated PNG. The pointer clicks OK. A progress bar along the bottom fills as the frames are drawn, counting from 1 to 24, then waits a few seconds while the file is written. A message says the animation was saved, and the pointer clicks OK. The last seven seconds leave the app and show the saved animation on its own, on a dark background, under the words The animation file Slipcase saved. The box swings smoothly from almost face-on to a sharp angle and back again, three times. Recorded with demoreel."
+      }
     },
     {
       "slug": "contact-list",
