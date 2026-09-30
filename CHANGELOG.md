@@ -24,6 +24,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **The "fork of" credit on a card is bigger and brighter**
+  It was the smallest, dimmest text on the card, which worked against the
+  credit it gives. It is now close to the size of the card's description.
+
 - **Slipcase has a Linux download, and its page says how to run it**
   Slipcase 1.2.0 ships a single-file Linux build, so the button downloads it
   where it offered the source. The page says what it needs: a 64-bit computer

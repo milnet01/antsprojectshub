@@ -470,9 +470,9 @@ a.card:hover .card__name {
   transition: color 0.18s var(--ease);
 }
 .card__fork {
-  font-size: 0.62rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--text-dim);
+  color: var(--text-muted);
   margin-left: 0.4rem;
 }
 .card__desc {
