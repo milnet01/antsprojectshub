@@ -11,6 +11,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Slipcase is listed as live, where it said work in progress**
+  The owner's decision on 2026-09-30, after its 1.1.0 release. The page still
+  says it comes as source only until a packaged build is attached.
+
 - **Slipcase's page says plainly that it can render the back of the box**
   New in Slipcase 1.1.0; the wording is its own session's.
 
