@@ -18,7 +18,8 @@ proper lighting and a soft shadow underneath.
   art does not.
 - **Understands full scans.** If your image is a whole wrap-around scan — back,
   spine and front in one picture — it finds the spine and uses it. It can also
-  split such a scan into three separate images. You can give it a back cover too.
+  split such a scan into three separate images. Give it a back cover, or a full
+  scan, and it can render the back of the box as well.
 - **Finds the artwork for you.** It searches ScreenScraper, TheGamesDB and the
   libretro thumbnail server directly, so you are not hunting for images by hand.
 - **Renders it cleanly.** Everything is drawn at double size and scaled back down,

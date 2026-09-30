@@ -11,6 +11,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Slipcase's page says plainly that it can render the back of the box**
+  New in Slipcase 1.1.0; the wording is its own session's.
+
 - **Ants Terminal's page mentions split panes and remembered tabs**
   Both were already in 0.7.111; its session confirmed them against that
   release's code.
