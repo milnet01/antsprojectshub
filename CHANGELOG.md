@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-09-30
+
 ### Added
 
 - **Slipcase has a logo, two screenshots and a corrected About page**
