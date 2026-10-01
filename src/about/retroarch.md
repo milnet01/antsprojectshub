@@ -49,6 +49,11 @@ interface, was partly taken: the maintainer rewrote it, fixed its memory-overflo
 bug their own way, and made locking the interface to your own machine an opt-in
 setting. A bug report from the fork has also been fixed upstream.
 
+Two more followed on 1 October 2026. The team merged a fix that keeps the
+certificate check switched on after the settings are reloaded or a per-game
+setting is applied. They also made the netplay password handling harder to
+guess, writing their own version of the fork's change and crediting it.
+
 One more change, which makes saving crash-safe, is still under review.
 
 ## Should you use it?

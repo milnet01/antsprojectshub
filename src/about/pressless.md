@@ -34,7 +34,8 @@ kind wants — so others may well follow later.
 ## What it does today
 
 - **Write with a handful of simple marks** — bold, a heading, a link, a
-  quotation — instead of buttons and hidden formatting.
+  quotation — instead of buttons and hidden formatting. A cheat sheet sits
+  below the writing box, with a page to print.
 - **Show you the real page while you type**, rendered by the same code that
   builds the live site, so what you see is what gets published.
 - **Save as you go.** Your words save themselves a moment after you stop
@@ -43,18 +44,31 @@ kind wants — so others may well follow later.
 - **Publish in one press.** If publishing fails, your files go back to how
   they were and you are told what to do next. Pressless refuses to replace
   your site with an empty one.
+- **Undo the last publish** in one step, when a change turns out wrong.
+- **Add photographs** from the editor. Pressless keeps your original
+  untouched and puts the picture where you were typing.
+- **Edit your other pages**, such as an About page, and the site's header,
+  footer and menu, in the same box.
+- **Start a new entry from a template.**
+- **Change a published entry's address** without breaking links people have
+  shared: the old address sends readers on to the new one.
+- **Throw an entry away**, after being asked first; Undo brings it back.
+- **Show a number that keeps itself up to date**, such as the years since a
+  date, worked out each time you publish.
+- **Update itself.** It looks for a new version when it starts and installs
+  only a release signed by its maintainer.
+- **A look of its own**, light or dark to match your computer.
 - **Explain every problem in plain words** — what happened, what it means for
   your site, and what to do about it.
 
 ## Still to come
 
-- **Put back yesterday's version** when a change turns out wrong.
-- **Add photographs** from the editor, resized for the web for you.
-- **Edit your other pages**, such as an About page, in the same box.
-- **Start a new entry from a template.**
 - **Show how the site is being read** — how many people, and roughly where
   from.
-- **Update itself.**
+- **Bring in an existing WordPress blog**, with an import anyone can run.
+- **A plain starter site** for someone beginning from nothing.
+- **Offer to add Pressless to the Start Menu and the desktop** the first time
+  it opens.
 
 ## Where it stands
 

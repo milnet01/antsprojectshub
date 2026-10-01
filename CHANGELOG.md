@@ -30,6 +30,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless's page lists what 0.6.1 can do: undo, photographs, other pages, templates and self-update.**
+
+- **RetroArch's page records two more fixes taken upstream on 1 October 2026.**
+
 - **Ants Terminal's page covers what is new in 0.7.112**
   The single-file download now updates itself, a welcome window offers
   one-click setup the first time it opens, and each tab can have its own
