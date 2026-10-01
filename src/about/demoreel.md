@@ -1,8 +1,25 @@
-Some places want a video of an app actually running. Flathub's submission
-checklist is the case that prompted this, and it will not be the last.
+demoreel records a video of an app running, without filming your desktop.
 
-The obvious way to make one is to record your screen. That turns out to be the
-wrong answer, for two reasons found the hard way.
+You name an app. demoreel opens it out of sight, records it, and gives you back
+a video file of that app, or one picture of it. Nothing else from your screen
+gets in: no other windows, no notifications, no magnifier lens sliding around.
+It can then trim the video, join clips and add a line of text.
+
+It is for anyone who needs a short video of a Linux desktop app — for a project
+page, an app store listing or a bug report — without setting up a screen
+recorder. You can run it yourself at a terminal. It is also built to be driven
+by Claude Code, so you can ask for a demo video and get one without touching a
+recording tool yourself.
+
+The video is silent: demoreel records pictures only. Its messages are in
+English.
+
+## Why not just record the screen
+
+Some places want a video of an app actually running; Flathub's submission
+checklist is the case that prompted this. The obvious way to make one is to
+record your screen. That turns out to be the wrong answer, for two reasons
+found the hard way.
 
 **It films your desktop.** Whatever else is open — and whatever is private — goes
 into a file destined for a public pull request.

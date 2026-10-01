@@ -30,6 +30,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **demoreel's page opens by saying what it is for**
+  A new opening, from the demoreel session, says in plain words what
+  demoreel does, who it is for, that it can trim and join clips and add a
+  line of text, and that Claude Code can drive it. The story of why
+  screen recording failed now sits under its own heading.
+
 - **Pressless's page shows its new look**
   Seven new screenshots replace the four plain ones: the writing screen
   in light and dark, the list of your writing in three looks, a page
