@@ -628,7 +628,7 @@
       "slug": "local-web-server-manager",
       "name": "Local Web Server Manager",
       "tagline": "See which of your local web servers are actually running.",
-      "blurb": "If you keep several web projects in one folder, each starts a different way, on a different port, and nothing tells you which are running. This scans your projects folder, works out how each one starts and which port it wants, and gives you a window with a row per project: a status light, a Start/Stop button, its live output and a link to open it. It runs each project's own start script and never edits your projects. Early days, but it runs: the window opens, the lights are live, and Start, Stop, Restart and Open work — driven from the keyboard if you prefer, with eight colour themes including two high-contrast ones. There is no download yet, so for now you run it from a copy of the source.",
+      "blurb": "If you keep several web projects in one folder, each starts a different way, on a different port, and nothing tells you which are running. This scans your projects folder, works out how each one starts and which port it wants, and gives you a window with a row per project: a status light, a Start/Stop button, its live output and a link to open it. It runs each project's own start script and never edits your projects. Early days, but it runs: the window opens, the lights are live, and Start, Stop, Restart and Open work — driven from the keyboard if you prefer, with eight colour themes including two high-contrast ones. Its first release is the source code only, so for now you run it from that; a packaged download is planned.",
       "status": "wip",
       "repo": "milnet01/LocalWebServerManager",
       "platforms": [

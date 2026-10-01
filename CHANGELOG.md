@@ -30,6 +30,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Local Web Server Manager's page reflects its first release**
+  The page no longer says nothing has been released. It now says the
+  first release is the source code only, with a packaged download still
+  planned, and that its keyboard focus ring is thick enough to follow
+  under a magnifier.
+
 - **Ants Terminal's page catches up with its latest release**
   A new Roadmap screenshot shows the window's tidy columns, and a new
   line describes it. The page now names both network checks the terminal

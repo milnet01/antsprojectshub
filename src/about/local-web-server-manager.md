@@ -40,7 +40,7 @@ projects.
 
 **It is built to be readable.** Text scales with your system setting, and a text
 size control takes it further — 100% to 200% on top of whatever your desktop
-already asked for. The keyboard focus outline is visible, every colour is checked
+already asked for. The keyboard focus ring is thick enough to follow under a magnifier, every colour is checked
 against a contrast standard, and screen readers are told when a project changes
 state — once, rather than once a second. When something fails, the message appears
 under the project it is about, not in a corner of the window.
@@ -51,8 +51,9 @@ No live output panel inside the app; the logs are on disk and you read them with
 your own tools. No tray icon and no start-on-login yet — both are planned after
 version 1.0.0. No "what is using this port?" help.
 
-**And no download.** There is no package yet — a packaged AppImage is planned for
-version 1.0.0 — so for now you run it from a copy of the source, which needs
+**And no packaged download.** Its first release is the source code only — a
+packaged AppImage is planned for version 1.0.0 — so for now you run it from that
+source, which needs
 Python 3.13 or newer and a tool called `uv` to fetch its dependencies. A script puts it in your application
 launcher afterwards, writing only inside your own home folder and needing no
 password.
@@ -60,8 +61,8 @@ password.
 ## Where it stands
 
 Early days, but it runs — the window opens, the lights are live, and Start, Stop,
-Restart and Open all work. Nothing has been released, so nothing is promised to
-keep working from one day to the next.
+Restart and Open all work. The first release is out, but it is an early one, so
+nothing is promised to keep working from one release to the next.
 
 It targets KDE Plasma on Linux. Remembering and restoring the window's position
 needs KWin specifically, because under Wayland an application is not allowed to
