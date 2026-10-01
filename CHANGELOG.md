@@ -30,6 +30,13 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless's page shows its new look**
+  Seven new screenshots replace the four plain ones: the writing screen
+  in light and dark, the list of your writing in three looks, a page
+  being edited, and first-run setup. The page now describes the theme
+  picker and the dimmed dark preview, and puts running the whole site,
+  so Pressless can replace WordPress, first in the list of plans.
+
 - **Pressless's page lists what 0.6.1 can do: undo, photographs, other pages, templates and self-update.**
 
 - **RetroArch's page records two more fixes taken upstream on 1 October 2026.**

@@ -38,6 +38,8 @@ kind wants — so others may well follow later.
   below the writing box, with a page to print.
 - **Show you the real page while you type**, rendered by the same code that
   builds the live site, so what you see is what gets published.
+- **Dim the preview in a dark look**, so a bright site does not glare at
+  night, with a tick box to see its true colours.
 - **Save as you go.** Your words save themselves a moment after you stop
   typing. A change to an entry that is already live waits in a separate copy
   until you publish it.
@@ -57,14 +59,21 @@ kind wants — so others may well follow later.
   date, worked out each time you publish.
 - **Update itself.** It looks for a new version when it starts and installs
   only a release signed by its maintainer.
-- **A look of its own**, light or dark to match your computer.
+- **Choose how Pressless looks** from a picker in its top bar: light,
+  dark, two high-contrast looks, and playful looks inspired by games,
+  films and TV. Your choice is remembered.
 - **Explain every problem in plain words** — what happened, what it means for
   your site, and what to do about it.
 
 ## Still to come
 
-- **Show how the site is being read** — how many people, and roughly where
-  from.
+- **Run your whole site, not only your writing**: build your own
+  homepage, add and remove pages, change the site's colours, fonts and
+  layout, and put music, downloads and documents on it, so Pressless can
+  replace WordPress entirely.
+- **Show how the site is being read**: how many people, and from which
+  countries, each with its flag. The optional Google sign-in it needs
+  is already in.
 - **Bring in an existing WordPress blog**, with an import anyone can run.
 - **A plain starter site** for someone beginning from nothing.
 - **Offer to add Pressless to the Start Menu and the desktop** the first time

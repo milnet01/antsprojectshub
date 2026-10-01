@@ -662,7 +662,7 @@
       "slug": "pressless",
       "name": "Pressless",
       "tagline": "Write and publish your own website from your own computer.",
-      "blurb": "A writing app that runs on your own machine and opens in your normal browser: you type an entry, see it exactly as it will look, and click once to publish it to your own free website — GitHub Pages today, with other hosts likely to follow. No accounts, no monthly fee and no service in between — every entry stays an ordinary text file in an ordinary folder, readable with Pressless closed, deleted or never installed. It is deliberately not a host: it never talks to your visitors and is not reachable from the internet. Writing, previewing and publishing work today; undo, photographs and a visitor dashboard are still to come.",
+      "blurb": "A writing app that runs on your own machine and opens in your normal browser: you type an entry, see it exactly as it will look, and click once to publish it to your own free website — GitHub Pages today, with other hosts likely to follow. No accounts, no monthly fee and no service in between — every entry stays an ordinary text file in an ordinary folder, readable with Pressless closed, deleted or never installed. It is deliberately not a host: it never talks to your visitors and is not reachable from the internet. Writing, previewing, publishing, undo and photographs work today; a visitor dashboard and running the whole site are still to come.",
       "status": "beta",
       "repo": "milnet01/Pressless",
       "platforms": [
@@ -675,10 +675,13 @@
       "category": "utilities",
       "logo": "logos/pressless.svg",
       "screenshots": [
-        { "src": "shots/pressless-1-editor.png", "alt": "The Pressless writing screen: title, categories, tags and address fields, a Publish button, and a writing box holding a short beach diary entry with simple marks for bold, a quotation, italics and a colour; below it, a small preview of the finished page headed Low tide" },
-        { "src": "shots/pressless-2-setup.png", "alt": "The first-run setup screen, Set up Pressless, asking for the site's GitHub repository, its name and address, an optional tag filter and a publishing key, with a Check with GitHub and save button; filled with made-up answers" },
-        { "src": "shots/pressless-3-published.png", "alt": "The writing screen just after publishing, with the message Published. Your site shows it within a few minutes. beside the Publish button" },
-        { "src": "shots/pressless-4-error.png", "alt": "A failed publish explained in plain words: GitHub would not accept your publishing key. Your site has not changed. Enter your publishing key again in Settings, then try again. A folded Show details link sits beneath" }
+        { "src": "shots/pressless-1-editor-light.png", "alt": "Writing an entry in Pressless: the title, categories, tags and address on the left above the writing box, the finished page shown live on the right, with Press to site, Undo the last press and Add a photograph buttons" },
+        { "src": "shots/pressless-2-editor-dark.png", "alt": "The same entry in Pressless's dark look, with the preview dimmed so the bright page does not glare, and a tick box above it to show the preview in its true colours" },
+        { "src": "shots/pressless-3-writing-list-light.png", "alt": "Pressless's list of your writing: drafts, entries on your site, your pages and your templates, each in its own card, with a Theme picker in the top bar" },
+        { "src": "shots/pressless-4-writing-list-dark.png", "alt": "The same list in Pressless's dark look" },
+        { "src": "shots/pressless-5-writing-list-high-contrast.png", "alt": "The list in the high-contrast light look, chosen from the Theme picker in the top bar: black text and outlines on white" },
+        { "src": "shots/pressless-6-page-editor-light.png", "alt": "Editing the site's About page in the same box, with the finished page shown beside it" },
+        { "src": "shots/pressless-7-setup-light.png", "alt": "The first-run setup page, Set up Pressless, asking for the site's GitHub repository, its name and address, an optional tag to leave out and a publishing key, with a Check with GitHub and save button" }
       ]
     }
   ],
