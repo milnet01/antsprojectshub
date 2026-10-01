@@ -60,6 +60,10 @@ so dated sections stand in for versions. Planned work lives in
   Both were already in 0.7.111; its session confirmed them against that
   release's code.
 
+### Fixed
+
+- **The pre-push check no longer passes quietly when GitHub cannot be reached; it names the checks it skipped.** (APHW-0020)
+
 ## 2026-09-30
 
 ### Added

@@ -324,6 +324,9 @@ async function fetchReleases(repo, assetMatch = null) {
     fetchChangelogSections(repo, notesBase),
   ]);
   const nonDraft = Array.isArray(list) ? list.filter((r) => !r.draft) : [];
+  // ghJson answers null for a failed request, never []. Without this flag a project
+  // GitHub could not be asked about reads exactly like one that has cut no release.
+  const listFailed = !Array.isArray(list);
 
   // GitHub appends "**Full Changelog**: <compare URL>" to notes generated from its own
   // Releases UI — 52 of them across this site's projects, each rendering as a bare URL
@@ -408,7 +411,7 @@ async function fetchReleases(repo, assetMatch = null) {
   history.sort((a, b) => (b.dateISO || "").localeCompare(a.dateISO || ""));
 
   const data = pickLatestRelease(nonDraft);
-  if (!data || !data.tag_name) return { release: null, history };
+  if (!data || !data.tag_name) return { release: null, history, listFailed };
 
   const assets = Array.isArray(data.assets)
     ? data.assets.map((a) => ({ name: a.name, url: a.browser_download_url }))
@@ -1358,8 +1361,10 @@ async function main() {
     let history = [];
     if (isPublished(p)) {
       try {
-        ({ release, history } = await fetchReleases(p.repo, p.assetMatch));
+        let listFailed;
+        ({ release, history, listFailed } = await fetchReleases(p.repo, p.assetMatch));
         if (history.length) enriched++;
+        if (listFailed) console.warn(`! ${p.slug}: release fetch failed (no release list from GitHub) — using fallback`);
       } catch (err) {
         console.warn(`! ${p.slug}: release fetch failed (${err.message}) — using fallback`);
       }

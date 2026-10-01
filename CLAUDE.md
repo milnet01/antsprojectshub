@@ -39,7 +39,10 @@ Beyond the build it checks that `dist/` is deploy-ready, that no About page cont
 the release history, and that every project at 1.0.0 or later is `live`. Each fails a
 plain `./local-CI.sh`, which is the pre-push gate. Under `--ci` the About and status
 checks are reported and not fatal. The gate also runs
-`npm test`; `--ci` does not.
+`npm test`; `--ci` does not. A project whose release list GitHub did not return has
+nothing for those checks to compare, so the gate declares them skipped in
+`$ANTS_GATE_SKIPPED` and the hook writes no passed record; with that variable unset, it
+fails.
 
 The push hook runs it; running it by hand is for iterating. The hook is the machine-wide
 one (`core.hooksPath`). For a push touching only the paths in `ants.gate.docsGlob` it runs

@@ -394,7 +394,7 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Source: peer-sessions-2026-09-28.
   Lanes: content.
 
-- 📋 [APHW-0020] **The gate declares the checks it could not run when a release fetch fails.**
+- ✅ [APHW-0020] **The gate declares the checks it could not run when a release fetch fails.**
   With a release fetch failed, `aboutDrift`, `statusDrift` and
   `downloadGap` return null, so a full gate run exits 0 having run none
   of them, and the shared hook records the tree as passed. Once the
@@ -403,6 +403,14 @@ download, and make the weekly post's effort and health visible on the dashboard.
   then, conforming means exiting non-zero, which blocks every push on
   one API blip. Waiting on the shared hook patch.
   Priority: 2.
+  Resolved (2026-10-01): the premise was narrower than the real gap. A
+  failed request returns null from ghJson, so fetchReleases read it as
+  "no releases" and printed nothing; the `release fetch failed` line
+  fired only on a thrown error. fetchReleases now returns `listFailed`
+  and the build warns on it. Proved with GITHUB_TOKEN=bogus: the old
+  gate exited 0 with nothing declared; the new one declares 19
+  projects with the variable set, exits 1 with it unset, and a normal
+  run declares nothing. Site output is unchanged.
   **Layman:** If GitHub cannot be reached during a push, the site check will say which checks it skipped, instead of passing quietly.
   Kind: fix.
   Source: peer-claude-config-2026-10-01 (local-gate.md § 7.1 field pass).

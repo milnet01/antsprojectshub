@@ -155,6 +155,30 @@ build_log="$(mktemp -t local-ci-build.XXXXXX)"
 trap 'rm -f "$npm_log" "$build_log"' EXIT
 node build.mjs 2>&1 | tee "$build_log"
 
+# A project whose release fetch failed has no release, and the three checks below then
+# find nothing to compare: they pass having checked nothing. So the gate says so
+# (local-gate.md § 7.1). Under the pre-push hook each skipped project goes to
+# $ANTS_GATE_SKIPPED, the push goes through, and the hook writes no passed record. Run
+# any other way there is no one to declare to, so the gate fails. Not under --ci: the
+# daily rebuild writes no passed record.
+advisory=""
+failed_fetch="$(sed -n 's/^! \([^:]*\): release fetch failed.*/\1/p' "$build_log")"
+if [ -n "$failed_fetch" ] && [ "$mode" = gate ]; then
+  step "Declare the checks a failed release fetch skipped"
+  for slug in $failed_fetch; do
+    warn "Skipped for $slug: the About, status and download checks (its release fetch failed)."
+  done
+  if [ -z "${ANTS_GATE_SKIPPED:-}" ]; then
+    warn "Nothing to declare the skip to (ANTS_GATE_SKIPPED is unset), so this is a failure."
+    warn "Re-run when GitHub is reachable, or push, so the hook can record the skip."
+    exit 1
+  fi
+  for slug in $failed_fetch; do
+    echo "release checks for $slug (fetch failed)" >> "$ANTS_GATE_SKIPPED"
+  done
+  advisory=" — WITH CHECKS SKIPPED for: $(echo $failed_fetch | tr ' ' ',')"
+fi
+
 step "Check About copy against the release history"
 # build.mjs only warns on these. The daily rebuild exists to keep release notes fresh
 # and must not stop over a stale sentence — but a person about to publish should be.
@@ -162,7 +186,6 @@ step "Check About copy against the release history"
 # Under --ci the check is downgraded, never silenced: each contradiction becomes a
 # GitHub warning annotation on the run's summary page, and the final line says the
 # pass carries one. A non-fatal check that says nothing would be a green that lies.
-advisory=""
 if grep -q '^! about-drift:' "$build_log"; then
   grep '^! about-drift:' "$build_log" >&2
   warn "An About page contradicts the release history. Fix src/about/ before pushing."
