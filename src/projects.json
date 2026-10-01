@@ -62,7 +62,7 @@
         },
         {
           "src": "shots/ants-terminal-roadmap.png",
-          "alt": "The built-in Roadmap dialog for a project — filterable, card-based roadmap items grouped by status, with search and kind filters"
+          "alt": "The Roadmap window on its Next tab: each section of the project's plan sits on one line, with its release number, title, kind and target date in tidy columns, and one section opened to show its sub-sections"
         },
         {
           "src": "shots/ants-terminal-review-changes.png",

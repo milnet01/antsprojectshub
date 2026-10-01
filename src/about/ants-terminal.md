@@ -11,7 +11,7 @@ of the output. Checking what changed in your code, searching your files, reading
 long to-do list: each one is a wall of text you pay for.
 
 Ants Terminal answers a lot of those questions itself and hands Claude a short,
-tidy summary instead. It ships more than 90 built-in tools that replace the expensive
+tidy summary instead. It ships dozens of built-in tools that replace the expensive
 long-hand commands — *where is this function defined*, *what changed on this
 branch*, *what did the last test run say* — and a counter in the bottom bar keeps
 a running total of what they have saved you this session.
@@ -28,6 +28,9 @@ the terminal is connected.
 - **Browse and resume past sessions** without leaving the terminal.
 - **Set permissions visually**, rather than hand-editing a settings file.
 - **Paste a screenshot** and the file lands in the prompt ready to send.
+- **Follow the plan.** If a project keeps a roadmap, a Roadmap button opens it
+  in a searchable window, lined up in tidy columns, and it remembers which
+  sections you had open.
 
 All of this happens on your own machine. None of it sends your work anywhere.
 
@@ -60,9 +63,11 @@ The first time you open it, a welcome window explains what it can do and offers
 one-click setup for Claude Code. Anything that would change one of your own
 files is shown to you first. You can reopen it from Help, Show Welcome.
 
-Your settings live in `~/.config/ants-terminal/`, readable only by you. The only
-network connection it makes on its own is a check for a newer release when it
-starts. Everything else that goes online — the AI chat, and sending code to an AI
+Your settings live in `~/.config/ants-terminal/`, readable only by you. On its
+own it makes only two small network checks: when it starts, it asks GitHub
+whether a newer release exists, and, if GitHub's gh tool is installed and your
+project lives on GitHub, it asks whether that project is public or private so
+it can show it in the bottom bar. Everything else that goes online — the AI chat, and sending code to an AI
 for review — is off until you switch it on.
 
 ## Where it stands

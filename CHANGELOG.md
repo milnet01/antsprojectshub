@@ -30,6 +30,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Ants Terminal's page catches up with its latest release**
+  A new Roadmap screenshot shows the window's tidy columns, and a new
+  line describes it. The page now names both network checks the terminal
+  makes on its own, and says "dozens" of built-in tools rather than a
+  number that changes.
+
 - **demoreel's page opens by saying what it is for**
   A new opening, from the demoreel session, says in plain words what
   demoreel does, who it is for, that it can trim and join clips and add a
