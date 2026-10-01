@@ -9,7 +9,9 @@ on:
     branches: [main]
     # A push touching only these changes nothing the build reads, so there is no new
     # site to deploy; the daily run still rebuilds. This is local-CI.sh's DOCS_GLOB,
-    # and local-CI.sh fails if the two lists ever differ.
+    # and local-CI.sh fails if the two lists ever differ. The checks local-CI.sh --docs
+    # runs for these paths need not run here: the pre-push gate runs them, and this
+    # workflow only builds and deploys.
     paths-ignore:
       - "docs/**"
       - README.md
@@ -51,6 +53,8 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ steps.pins.outputs.node }}
+          # npm's download cache, never measured: the locked install takes seconds
+          # either way, so keeping it is harmless and dropping it would gain nothing.
           cache: npm
       - name: Install and build (local-CI.sh)
         run: ./local-CI.sh --ci

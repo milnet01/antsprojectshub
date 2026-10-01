@@ -394,6 +394,20 @@ download, and make the weekly post's effort and health visible on the dashboard.
   Source: peer-sessions-2026-09-28.
   Lanes: content.
 
+- 📋 [APHW-0020] **The gate declares the checks it could not run when a release fetch fails.**
+  With a release fetch failed, `aboutDrift`, `statusDrift` and
+  `downloadGap` return null, so a full gate run exits 0 having run none
+  of them, and the shared hook records the tree as passed. Once the
+  shared hook sets `ANTS_GATE_SKIPPED`, `local-CI.sh` gate mode writes
+  those three legs to it on any `release fetch failed` line. Until
+  then, conforming means exiting non-zero, which blocks every push on
+  one API blip. Waiting on the shared hook patch.
+  Priority: 2.
+  **Layman:** If GitHub cannot be reached during a push, the site check will say which checks it skipped, instead of passing quietly.
+  Kind: fix.
+  Source: peer-claude-config-2026-10-01 (local-gate.md § 7.1 field pass).
+  Lanes: build.
+
 ## 0.1.0 — Screenshots from every project
 
 The site deploys on every push and cuts no tagged releases. A version block here
