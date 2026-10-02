@@ -34,6 +34,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Contact List's page says its buttons and fields work with screen readers**
+
 - **Perch's Rules screenshot no longer cuts its text off**
 
 - **Pressless's gallery is trimmed to seven pictures, with one dark example**

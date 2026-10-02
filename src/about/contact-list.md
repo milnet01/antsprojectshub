@@ -39,6 +39,8 @@ pushed, so a sync can't quietly empty anything.
 You can set the timezone, date format, theme, layout, list-or-card view, phone
 region, page size and sort order, and it remembers all of it.
 
+Its buttons and fields carry labels a screen reader can read aloud.
+
 ## Getting it
 
 One self-contained file per system — an AppImage for Linux, an `.exe` for
