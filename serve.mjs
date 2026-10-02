@@ -36,13 +36,19 @@ try {
 const REFRESH_HOURS = Number(process.env.STATS_REFRESH_HOURS) || 24;
 const AUTH_WAIT_MIN = Number(process.env.STATS_AUTH_WAIT_MINUTES ?? 15);
 
-const TYPES = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript" };
+const TYPES = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "text/javascript",
+  ".svg": "image/svg+xml",
+};
 const FILES = {
   "/": "dashboard.html",
   "/dashboard.html": "dashboard.html",
   "/site.css": "site.css",
   "/dashboard.css": "dashboard.css",
   "/dashboard.js": "dashboard.js",
+  "/favicon.svg": "favicon.svg",
 };
 
 const stamp = () => new Date().toISOString().replace("T", " ").slice(0, 19);

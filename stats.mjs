@@ -1284,6 +1284,7 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Ants Projects Hub — private stats</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="dashboard.css">
 <script src="dashboard.js" defer></script>
@@ -1440,6 +1441,48 @@ function releasesTable(rows) {
 // data-sort attributes written at generation time — parsing them back out of the rendered
 // text would break on thousands separators ("1,146"), units ("84d") and the delta line
 // under each number ("14 ▲ +5").
+// The tab icon: the site's ant (src/assets/img/favicon.svg) with a violet glow and a
+// bar-chart badge, so the private page is told apart from the public site at a glance.
+// The badge differs in shape as well as colour, so it does not rely on hue alone.
+const ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Private stats">
+  <defs>
+    <linearGradient id="ant" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5eead4"/>
+      <stop offset="0.55" stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#a855f7" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#0b0b14"/>
+  <rect width="64" height="64" rx="15" fill="url(#glow)"/>
+  <g fill="none" stroke="#5eead4" stroke-width="2.4" stroke-linecap="round" opacity="0.95">
+    <path d="M30 14 C 25 7, 21 7, 18 10"/>
+    <path d="M34 14 C 39 7, 43 7, 46 10"/>
+    <path d="M27 27 C 18 23, 14 21, 9 23"/>
+    <path d="M27 31 C 17 31, 13 32, 8 35"/>
+    <path d="M27 35 C 18 39, 14 42, 10 46"/>
+    <path d="M37 27 C 46 23, 50 21, 55 23"/>
+  </g>
+  <g fill="url(#ant)">
+    <circle cx="32" cy="18" r="6.6"/>
+    <ellipse cx="32" cy="30" rx="5.6" ry="6.6"/>
+    <ellipse cx="32" cy="45" rx="10.5" ry="13"/>
+  </g>
+  <circle cx="30" cy="17" r="1.1" fill="#0b0b14" opacity="0.55"/>
+  <circle cx="34" cy="17" r="1.1" fill="#0b0b14" opacity="0.55"/>
+  <rect x="36" y="36" width="26" height="26" rx="7" fill="#0b0b14"/>
+  <rect x="38.5" y="38.5" width="21" height="21" rx="5" fill="#a855f7"/>
+  <g fill="#ffffff">
+    <rect x="42" y="50" width="3.6" height="6" rx="1"/>
+    <rect x="47.2" y="45" width="3.6" height="11" rx="1"/>
+    <rect x="52.4" y="41.5" width="3.6" height="14.5" rx="1"/>
+  </g>
+</svg>
+`;
+
 const JS = `(function () {
   // Numeric when the key parses as a number, otherwise a case-insensitive text compare.
   function key(cell) {
@@ -1846,6 +1889,7 @@ export async function generate() {
   await copyFile(join(ROOT, "src/assets/style.css"), join(OUT, "site.css"));
   await writeFile(join(OUT, "dashboard.css"), CSS);
   await writeFile(join(OUT, "dashboard.js"), JS);
+  await writeFile(join(OUT, "favicon.svg"), ICON);
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   await writeFile(
     PAGE,

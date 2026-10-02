@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **The private stats page has its own tab icon: the site's ant with a bar-chart badge**
+
 - **Demo videos for RetroDB, Perch, Rolodex and Contact List**
 
 - **Slipcase has a demo video**
