@@ -54,7 +54,18 @@ certificate check switched on after the settings are reloaded or a per-game
 setting is applied. They also made the netplay password handling harder to
 guess, writing their own version of the fork's change and crediting it.
 
-One more change, which makes saving crash-safe, is still under review.
+Four smaller fixes were merged the same day:
+
+- **Cloud sync login** no longer sends the same fixed value every time, which
+  closes a known weakness in that login method.
+- **Screenshots** no longer read leftover memory when no screenshot folder is set.
+- **Core options** no longer write past the end of memory when a core has more
+  option categories than options.
+- **OpenGL** now tells the graphics driver that menu and text drawing data changes
+  every frame, which is the correct hint.
+
+Two more changes are still under review: one makes saving crash-safe, and one
+makes scanning a folder of games use about half the CPU.
 
 ## Should you use it?
 

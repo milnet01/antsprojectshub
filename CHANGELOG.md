@@ -30,6 +30,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **RetroArch fork: four more fixes merged upstream, and a scan speed-up under review**
+
 - **Local Web Server Manager's page reflects its first release**
   The page no longer says nothing has been released. It now says the
   first release is the source code only, with a packaged download still
@@ -86,6 +88,8 @@ so dated sections stand in for versions. Planned work lives in
   release's code.
 
 ### Fixed
+
+- **Ants Terminal's self-update manifest is no longer reported as an unclassified release file**
 
 - **The pre-push check no longer passes quietly when GitHub cannot be reached; it names the checks it skipped.** (APHW-0020)
 
