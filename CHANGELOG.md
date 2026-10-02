@@ -30,6 +30,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless: visitor numbers can switch between Google Analytics sites from Settings**
+
 - **Pressless: the visitor dashboard has shipped, with three new screenshots**
   It moves from "Still to come" to what Pressless does today.
 

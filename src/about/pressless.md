@@ -63,6 +63,9 @@ kind wants — so others may well follow later.
   site, each day's readers, which countries they are in, how they found
   you, and which pages they read most. If Google cannot be reached, it
   shows the last numbers it had and says how old they are.
+  If you look after more than one site in Google Analytics, you can switch
+  which one Pressless shows from Settings, without signing in to Google
+  again.
 - **Update itself.** It looks for a new version when it starts and installs
   only a release signed by its maintainer.
 - **Choose how Pressless looks** from a picker in its top bar: light,
