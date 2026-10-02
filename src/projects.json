@@ -678,13 +678,10 @@
         { "src": "shots/pressless-1-editor-light.png", "alt": "Writing an entry in Pressless: the title, categories, tags and address on the left above the writing box, the finished page shown live on the right, with Press to site, Undo the last press and Add a photograph buttons" },
         { "src": "shots/pressless-2-editor-dark.png", "alt": "The same entry in Pressless's dark look, with the preview dimmed so the bright page does not glare, and a tick box above it to show the preview in its true colours" },
         { "src": "shots/pressless-3-writing-list-light.png", "alt": "Pressless's list of your writing: drafts, entries on your site, your pages and your templates, each in its own card, with a Theme picker in the top bar" },
-        { "src": "shots/pressless-4-writing-list-dark.png", "alt": "The same list in Pressless's dark look" },
         { "src": "shots/pressless-5-writing-list-high-contrast.png", "alt": "The list in the high-contrast light look, chosen from the Theme picker in the top bar: black text and outlines on white" },
         { "src": "shots/pressless-6-page-editor-light.png", "alt": "Editing the site's About page in the same box, with the finished page shown beside it" },
         { "src": "shots/pressless-7-setup-light.png", "alt": "The first-run setup page, Set up Pressless, asking for the site's GitHub repository, its name and address, an optional tag to leave out and a publishing key, with a Check with GitHub and save button" },
-        { "src": "shots/pressless-8-visitors-light.png", "alt": "Pressless's visitor page: 152 people read the site in the last 4 weeks, a bar chart of readers per day, and tables of countries with flags, how readers found the site, and the most-read pages" },
-        { "src": "shots/pressless-9-visitors-dark.png", "alt": "The same visitor page in Pressless's dark look" },
-        { "src": "shots/pressless-10-visitors-phone.png", "alt": "The visitor page on a phone-sized screen, with the tables stacked one under another" }
+        { "src": "shots/pressless-8-visitors-light.png", "alt": "Pressless's visitor page: 152 people read the site in the last 4 weeks, a bar chart of readers per day, and tables of countries with flags, how readers found the site, and the most-read pages" }
       ]
     }
   ],

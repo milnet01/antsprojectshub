@@ -30,6 +30,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless's gallery is trimmed to seven pictures, with one dark example**
+
 - **Pressless: visitor numbers can switch between Google Analytics sites from Settings**
 
 - **Pressless: the visitor dashboard has shipped, with three new screenshots**
