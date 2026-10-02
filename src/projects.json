@@ -114,7 +114,12 @@
           "src": "shots/retrodb-dashboard.png",
           "alt": "The dashboard, with tabs for Overview, Systems, Playing, Added and Status, \"Random Game\" and \"Scan Library\" buttons, a \"Collection Health\" panel showing 100% overall, with smaller rings at 100% for box art and descriptions and 0% for achievements, and summary tiles for 5 systems, 39 games, 0 missing metadata and 39 complete."
         }
-      ]
+      ],
+      "video": {
+        "src": "retrodb-demo.mp4",
+        "poster": "retrodb-demo-poster.jpg",
+        "caption": "A silent 38-second tour of RetroDB, a web app for managing a retro game collection. It opens on the dashboard, labelled \"Your collection at a glance, then search and open a game\": a dark neon page of summary cards: 193 systems, about 5,500 games, how many still need details, storage used and estimated play time. The pointer clicks Library in the sidebar, and a list of games appears, each with its box art, genre, developer, year and age-rating badges. \"Metal Gear Solid\" is typed into the search box, and the list narrows to the Metal Gear games. Clicking the first opens its detail window: cover art, PlayStation and 1998 tags, rating badges from many countries, a short story summary, the developer and publisher (Konami), five screenshots and a video player. The scene then fades to the settings page, labelled \"Seven themes, switched in one click\", where the theme cards are clicked one after another: Matrix turns the app green with falling code, Retro Amber turns it orange, Midnight Ocean turns it blue, and Blade Runner gives it a darker blue look. The tour ends back on the game library, now in the Blade Runner theme."
+      }
     },
     {
       "slug": "mame-curator",
@@ -185,13 +190,18 @@
         },
         {
           "src": "shots/perch-rules.png",
-          "alt": "Perch's Rules page, noting that rules are checked from top to bottom and the first match wins. A table lists three example rules: one maximises the browser, one sizes the terminal to half the screen's width and height, and one sends the music player to virtual desktop 2."
+          "alt": "Perch's Rules page, noting that rules are checked from top to bottom, the first match wins, and a row can be dragged to change the order. A table lists five example rules, each with the window it matches and where it goes: the browser fills the big screen, the terminal goes on the left, chat goes on the laptop screen, the editor takes a set size when docked, and small settings dialogs are centred."
         },
         {
           "src": "shots/perch-general.png",
           "alt": "Perch's General settings page. Checkboxes to start Perch at login and to restore each window's remembered position when it reopens are ticked; showing a notification on restore is not. Below are a theme choice, set to light, and a button to run the setup wizard again. A sidebar on the left lists the other pages: Windows, Rules, Layouts, Profiles, Hotkeys, Exclusions and Import / Export."
         }
-      ]
+      ],
+      "video": {
+        "src": "perch-demo.mp4",
+        "poster": "perch-demo-poster.jpg",
+        "caption": "A silent 31-second tour of Perch, using made-up windows and settings. It opens on Perch's tray menu, listing Layouts, Snap focused window, Pause Perch, Reapply rules now, Configure Perch and more. The Preferences window then opens on its General page. The Windows page lists the open windows Perch is tracking, with each one's app, title, screen, size and position. A new \"Team chat\" window appears in the list, then moves to the right half of the laptop screen, and its row updates to the new position. The Rules page shows five rules, such as \"Browser fills the big screen\" and \"Terminal on the left\", each with the window it matches and where that window goes. The Layouts page shows a \"coding\" layout that puts the editor on the left and the terminal on the right. The Profiles page shows a \"docked\" profile tied to a two-screen setup. The Hotkeys page shows keyboard shortcuts for two saved window positions. The video then fades to black."
+      }
     },
     {
       "slug": "retroarch",
@@ -438,7 +448,12 @@
           "src": "shots/contact-list-new-contact.png",
           "alt": "The empty New Contact form, with fields for type, name, email, phone, a photo upload, notes and tags."
         }
-      ]
+      ],
+      "video": {
+        "src": "contact-list-demo.mp4",
+        "poster": "contact-list-demo-poster.jpg",
+        "caption": "A silent 30-second tour of Contact List, using made-up contacts. It opens on the main list of twelve people and companies, each with a coloured initial, email and phone, with three favourites starred at the top. Clicking the \"family\" tag narrows the list to three relatives, then \"All\" brings everyone back. Typing \"garden\" in the search box finds two contacts: one whose note mentions a community garden, and a garden centre. Opening the first, Amara Okafor, shows her email, phone, note, birthday and tags. The Birthdays page then lists five upcoming birthdays with the date, the age each person turns and how many days away it is. The tour ends on the empty New Contact form."
+      }
     },
     {
       "slug": "rolodex",
@@ -470,7 +485,12 @@
           "src": "shots/rolodex-edit.png",
           "alt": "The Edit Entry window. Each field has a label, a value, a Hide switch for secrets, a button to generate a new password, and a drag handle for reordering."
         }
-      ]
+      ],
+      "video": {
+        "src": "rolodex-demo.mp4",
+        "poster": "rolodex-demo-poster.jpg",
+        "caption": "A silent 33-second tour of Rolodex, a password and account keeper, filled with made-up accounts. It opens on an entry called Fastmail, showing an email address, a hidden password, a hidden two-factor setup key, a six-digit sign-in code with a countdown ring, and a web address, each with a coloured stripe and an icon for its type. The hidden values are revealed for a few seconds, then hidden again. Next the Steam entry is opened. Then \"office\" is typed into the search box, the list narrows to one match, and the Office VPN entry opens. The search is cleared and the Bookshop entry is selected. Finally the Password Health window opens, listing every password from weakest to strongest and flagging two that are reused, before it closes and the tour returns to Fastmail."
+      }
     },
     {
       "slug": "rusty-psn",

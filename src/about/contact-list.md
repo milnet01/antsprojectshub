@@ -1,6 +1,6 @@
 Everyone's contacts live somewhere they do not control — a phone account, a mail
 provider, whatever synced them last. Contact List keeps them on your own computer,
-in a single file, and syncs with Google only if and when you ask it to.
+in one database file with your photos beside it, and syncs with Google only if and when you ask it to.
 
 It runs as a small local web page. Start it and it sits in your system tray;
 click the icon and choose *Open Contact List* when you want it. It does not
@@ -8,8 +8,8 @@ ambush you with a browser tab.
 
 ## What it does
 
-**People and companies**, each with as many emails and phone numbers as they
-actually have, free-form notes, and a photo — uploaded, pulled in by Google sync,
+**People and companies**, each with an email and a phone number (any extras
+from imports or Google are kept as well), free-form notes, and a photo — uploaded, pulled in by Google sync,
 or a coloured initial if there is neither.
 
 **Custom fields.** Add a birthday, an address, a locker number, anything, to any
@@ -26,8 +26,11 @@ the same person loses nothing from either.
 
 **Upcoming birthdays** on their own page, with the age each person is turning.
 
-**Import and export** as CSV — with a column-matching screen that remembers your
-choices — and as vCard, with custom fields surviving the round trip.
+**Import and export.** Import from CSV, with a column-matching screen that
+remembers your choices, and export the main fields as CSV. Import and export
+vCard, with custom fields surviving the round trip. Its vCard files follow the
+standard format, so names, phone numbers, emails, birthdays, addresses and
+company names land where other address books expect them.
 
 **Google Contacts sync**, optional and two-way: pull your contacts in, push local
 edits and new ones back, newest edit wins on a conflict. Deletions are never
@@ -46,9 +49,8 @@ you past it.
 
 Your contacts, photos and settings live under `~/.config/contact-list/`.
 
-If your desktop has no system tray at all — GNOME, unless you have added an
-extension for it — the app opens your browser at startup instead, rather than
-leaving you no way to reach it.
+If the tray icon can't start, the app opens your browser instead, so you are
+never left with no way in.
 
 ## Where it stands
 

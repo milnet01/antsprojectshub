@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Demo videos for RetroDB, Perch, Rolodex and Contact List**
+
 - **Slipcase has a demo video**
   A silent 38-second clip: a flat cover becomes a 3D box, the case type and
   angle change, and the app saves an animation of the box swinging from side
@@ -29,6 +31,8 @@ so dated sections stand in for versions. Planned work lives in
   1.0.0-rc1 does not count.
 
 ### Changed
+
+- **Perch's Rules screenshot no longer cuts its text off**
 
 - **Pressless's gallery is trimmed to seven pictures, with one dark example**
 
@@ -98,6 +102,9 @@ so dated sections stand in for versions. Planned work lives in
   release's code.
 
 ### Fixed
+
+- **Contact List's About page now matches the app**
+  It now says photos are stored beside the contacts file, extra phone numbers and emails come from imports, and CSV export covers the main fields only. It also says vCard files follow the standard format.
 
 - **Ants Terminal's self-update manifest is no longer reported as an unclassified release file**
 
