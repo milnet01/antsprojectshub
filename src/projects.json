@@ -662,7 +662,7 @@
       "slug": "pressless",
       "name": "Pressless",
       "tagline": "Write and publish your own website from your own computer.",
-      "blurb": "A writing app that runs on your own machine and opens in your normal browser: you type an entry, see it exactly as it will look, and click once to publish it to your own free website — GitHub Pages today, with other hosts likely to follow. No accounts, no monthly fee and no service in between — every entry stays an ordinary text file in an ordinary folder, readable with Pressless closed, deleted or never installed. It is deliberately not a host: it never talks to your visitors and is not reachable from the internet. Writing, previewing, publishing, undo and photographs work today; a visitor dashboard and running the whole site are still to come.",
+      "blurb": "A writing app that runs on your own machine and opens in your normal browser: you type an entry, see it exactly as it will look, and click once to publish it to your own free website — GitHub Pages today, with other hosts likely to follow. No accounts, no monthly fee and no service in between — every entry stays an ordinary text file in an ordinary folder, readable with Pressless closed, deleted or never installed. It is deliberately not a host: it never talks to your visitors and is not reachable from the internet. Writing, previewing, publishing, undo, photographs and a visitor dashboard work today; running the whole site is still to come.",
       "status": "beta",
       "repo": "milnet01/Pressless",
       "platforms": [
@@ -681,7 +681,10 @@
         { "src": "shots/pressless-4-writing-list-dark.png", "alt": "The same list in Pressless's dark look" },
         { "src": "shots/pressless-5-writing-list-high-contrast.png", "alt": "The list in the high-contrast light look, chosen from the Theme picker in the top bar: black text and outlines on white" },
         { "src": "shots/pressless-6-page-editor-light.png", "alt": "Editing the site's About page in the same box, with the finished page shown beside it" },
-        { "src": "shots/pressless-7-setup-light.png", "alt": "The first-run setup page, Set up Pressless, asking for the site's GitHub repository, its name and address, an optional tag to leave out and a publishing key, with a Check with GitHub and save button" }
+        { "src": "shots/pressless-7-setup-light.png", "alt": "The first-run setup page, Set up Pressless, asking for the site's GitHub repository, its name and address, an optional tag to leave out and a publishing key, with a Check with GitHub and save button" },
+        { "src": "shots/pressless-8-visitors-light.png", "alt": "Pressless's visitor page: 152 people read the site in the last 4 weeks, a bar chart of readers per day, and tables of countries with flags, how readers found the site, and the most-read pages" },
+        { "src": "shots/pressless-9-visitors-dark.png", "alt": "The same visitor page in Pressless's dark look" },
+        { "src": "shots/pressless-10-visitors-phone.png", "alt": "The visitor page on a phone-sized screen, with the tables stacked one under another" }
       ]
     }
   ],

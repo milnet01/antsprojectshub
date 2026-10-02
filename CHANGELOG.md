@@ -30,6 +30,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless: the visitor dashboard has shipped, with three new screenshots**
+  It moves from "Still to come" to what Pressless does today.
+
+- **RetroArch fork: the faster folder scan is now merged upstream**
+  Crash-safe saving is still under review.
+
 - **RetroArch fork: four more fixes merged upstream, and a scan speed-up under review**
 
 - **Local Web Server Manager's page reflects its first release**

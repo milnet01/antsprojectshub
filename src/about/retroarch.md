@@ -64,8 +64,10 @@ Four smaller fixes were merged the same day:
 - **OpenGL** now tells the graphics driver that menu and text drawing data changes
   every frame, which is the correct hint.
 
-Two more changes are still under review: one makes saving crash-safe, and one
-makes scanning a folder of games use about half the CPU.
+Scanning a folder of games now uses about half the CPU when many cores are
+installed (merged 2 October 2026).
+
+One more change is still under review: it makes saving crash-safe.
 
 ## Should you use it?
 

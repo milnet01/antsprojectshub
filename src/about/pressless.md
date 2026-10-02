@@ -57,6 +57,12 @@ kind wants — so others may well follow later.
 - **Throw an entry away**, after being asked first; Undo brings it back.
 - **Show a number that keeps itself up to date**, such as the years since a
   date, worked out each time you publish.
+- **See who is reading.** Connect Pressless to your Google Analytics once,
+  and a "Who is reading" card appears at the top of your writing. Open it
+  for the last 7 days, 4 weeks or 12 months: how many people read your
+  site, each day's readers, which countries they are in, how they found
+  you, and which pages they read most. If Google cannot be reached, it
+  shows the last numbers it had and says how old they are.
 - **Update itself.** It looks for a new version when it starts and installs
   only a release signed by its maintainer.
 - **Choose how Pressless looks** from a picker in its top bar: light,
@@ -71,9 +77,6 @@ kind wants — so others may well follow later.
   homepage, add and remove pages, change the site's colours, fonts and
   layout, and put music, downloads and documents on it, so Pressless can
   replace WordPress entirely.
-- **Show how the site is being read**: how many people, and from which
-  countries, each with its flag. The optional Google sign-in it needs
-  is already in.
 - **Bring in an existing WordPress blog**, with an import anyone can run.
 - **A plain starter site** for someone beginning from nothing.
 - **Offer to add Pressless to the Start Menu and the desktop** the first time
