@@ -1659,8 +1659,11 @@ const CSS = `/* Private dashboard — layers on the site's tokens.
    wears the same one. The status language is left alone — amber still means "look at
    this", teal "up", rose "down" — so the accents deliberately avoid carrying meaning.
    Accents run teal → violet down the page, so scroll position has a colour. */
+/* Read only on the owner's 4K monitor at 100% scaling, never a phone: every rem on the
+   page scales from this base, and the column is measured in rem so it widens with it. */
+html { font-size: 150%; }
 body.admin { background: var(--bg); color: var(--text); font-family: var(--font); }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 60px; }
+.wrap { max-width: 98rem; margin: 0 auto; padding: 20px 20px 60px; }
 .head h1 { margin: 0 0 4px; font-size: 1.6rem; }
 .sub { color: var(--text-muted); margin: 0 0 6px; font-size: .85rem; }
 
@@ -1676,7 +1679,9 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
 /* Sticky bar. Stays put while the page scrolls under it; the tint is a translucent
    wash over --bg so the tables read through it while scrolling past. */
 .topnav { position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
-  flex-wrap: wrap; gap: 6px 18px; padding: 9px 20px;
+  flex-wrap: wrap; gap: 6px 18px;
+  /* Side padding lines the bar's contents up with .wrap's centred column. */
+  padding: 9px max(20px, calc((100% - 98rem) / 2 + 20px));
   background: linear-gradient(180deg, rgba(94,234,212,.10), rgba(196,181,253,.06)), var(--bg);
   border-bottom: 1px solid var(--surface-border);
   backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); }
@@ -1693,7 +1698,7 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
 .topnav__list a.is-current { color: var(--accent); border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 14%, transparent); font-weight: 600; }
 /* Anchor jumps must clear the sticky bar. */
-.sec h2 { scroll-margin-top: 62px; }
+.sec h2 { scroll-margin-top: 4rem; }
 
 .btn-refresh { font: inherit; font-size: .82rem; color: var(--bg); background: var(--teal);
   border: 0; border-radius: 999px; padding: 6px 15px; cursor: pointer; font-weight: 600; }
