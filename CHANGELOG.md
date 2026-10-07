@@ -9,6 +9,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Changed
+
+- **RetroArch's page lists the seven fixes accepted upstream on 2 and 5 October**
+
 ## 2026-10-07
 
 ### Added

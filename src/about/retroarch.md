@@ -67,6 +67,25 @@ Four smaller fixes were merged the same day:
 Scanning a folder of games now uses about half the CPU when many cores are
 installed (merged 2 October 2026).
 
+Three more were accepted the same day:
+
+- **Turbo Bind**, a menu setting, no longer reads past the end of its list.
+- **Menu start-up, screenshots and replays** now stop cleanly when memory runs
+  out, instead of crashing.
+- **Cloud sync to S3** now handles save names containing &, = or ?.
+
+Four more followed on 5 October 2026:
+
+- **The Ozone and XMB menus** no longer read past the end of the menu list when
+  the selection is out of range.
+- **Replay files** are checked more carefully when loaded, so a damaged one
+  cannot crash RetroArch.
+- **A download that starts on a secure https address** is refused if it is
+  redirected to plain http.
+- **RetroArch's Linux app-store listing** now includes its recent releases.
+
+Some of these the maintainer committed directly, credited to the fork.
+
 One more change is still under review: it makes saving crash-safe.
 
 ## Should you use it?
