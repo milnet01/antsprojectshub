@@ -71,6 +71,15 @@ const AUTH_LABEL = {
 };
 
 const num = (n) => (n ?? 0).toLocaleString("en-GB");
+// A two-letter country code as its flag emoji (regional indicator letters). Decorative —
+// the country's name follows it — so hidden from screen readers. GA's "(not set)" and
+// anything else that is not a code gets no flag.
+const flag = (code) =>
+  /^[A-Z]{2}$/.test(code || "")
+    ? `<span class="country-flag" aria-hidden="true">${String.fromCodePoint(
+        ...[...code].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
+      )}</span>`
+    : "";
 const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
 const daysSince = (iso, now) => (iso ? Math.floor((now - Date.parse(iso)) / DAY) : null);
 const dayKey = (ts) => new Date(ts).toISOString().slice(0, 10);
@@ -1035,7 +1044,7 @@ function analyticsSection(ga, propertyId, blog) {
           .map(
             (r) => `<tr>
             <th scope="row" data-sort="${esc(r.country || "zzz")}">${
-              r.country ? esc(r.country) : '<span class="dim">Not yet resolved</span>'
+              r.country ? flag(r.countryId) + esc(r.country) : '<span class="dim">Not yet resolved</span>'
             }</th>
             <td class="n" data-sort="${r.activeUsers}">${num(r.activeUsers)}</td>
             <td class="n" data-sort="${r.sessions}">${num(r.sessions)}</td>
@@ -1785,6 +1794,7 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .tbl td.os { background: color-mix(in srgb, var(--os) 7%, transparent); }
 .strong { font-weight: 700; }
 .dim { color: var(--text-dim); }
+.country-flag { font-size: 1.25em; margin-right: .45em; vertical-align: -.1em; }
 .warn { color: var(--amber); }
 .repo { display: block; font-weight: 400; font-size: .8rem; color: var(--text-dim); }
 

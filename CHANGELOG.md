@@ -9,6 +9,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- **The private stats page shows each visitor country's flag beside its name**
+
 ### Changed
 
 - **RetroArch's page lists the seven fixes accepted upstream on 2 and 5 October**
