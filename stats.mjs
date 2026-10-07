@@ -374,6 +374,10 @@ function sparkline(values) {
 // Wide tables keep their column widths and let this wrapper scroll instead of crushing on a
 // narrow screen. It is focusable and labelled because a plain overflow container can be
 // scrolled only by dragging — no keyboard, and nothing announced.
+// Side-by-side blocks. The page is read only on a wide monitor, so tables that are each
+// narrower than the column share a row instead of stacking.
+const cols = (...blocks) =>
+  `<div class="cols">${blocks.map((b) => `<div class="col">${b}</div>`).join("")}</div>`;
 const scrollTable = (label, html) =>
   `<div class="tbl-scroll" tabindex="0" role="region" aria-label="${esc(label)}, scrollable">${html}</div>`;
 
@@ -1060,16 +1064,13 @@ function analyticsSection(ga, propertyId, blog) {
       up to 48 hours to finish processing, so the most recent day can still rise.</p>
     <div class="tiles">${tiles}</div>
     ${trend}
-    <h3>Top pages</h3>
-    ${pages}
-    <h3>Where visitors came from</h3>
-    ${sources}
-    <h3>Countries</h3>
-    ${countries}
-    <h3>Download clicks</h3>
-    ${clicksTable(blog.clicks, blog.projects)}
-    <h3>Blog posts</h3>
-    ${blogTable(blog.posts, blog.views, blog.now)}`;
+    ${cols(
+      `<h3>Top pages</h3>${pages}`,
+      `<h3>Where visitors came from</h3>${sources}
+       <h3>Countries</h3>${countries}
+       <h3>Download clicks</h3>${clicksTable(blog.clicks, blog.projects)}
+       <h3>Blog posts</h3>${blogTable(blog.posts, blog.views, blog.now)}`
+    )}`;
 }
 
 // Ranked by what it costs you, worst first, and split in two: a download button that doesn't
@@ -1332,20 +1333,21 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
     ${issuesSection(ok, health, history.attention, now)}</section>
 
   <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads</h2>
-    <h3>All time, by operating system</h3>
-    ${downloadsTable(rows, history, base)}
-    <h3>The last 7 and 30 days</h3>
-    ${recentDownloads(rows, history, now)}</section>
+    ${cols(
+      `<h3>All time, by operating system</h3>${downloadsTable(rows, history, base)}`,
+      `<h3>The last 7 and 30 days</h3>${recentDownloads(rows, history, now)}`
+    )}</section>
 
   <section class="sec" data-sec="ga" aria-labelledby="h-ga"><h2 id="h-ga">Site visitors</h2>
     ${analyticsSection(ga, propertyId, { posts, views: postViews, now, clicks, projects })}</section>
 
   <section class="sec" data-sec="tr" aria-labelledby="h-tr"><h2 id="h-tr">Repo traffic</h2>
-    <h3>Last 14 days, live from GitHub</h3>
-    ${trafficSection(ok)}
-    <h3>The longer record, from your archive</h3>
-    ${archiveTraffic(rows, history, now)}</section>
+    ${cols(
+      `<h3>Last 14 days, live from GitHub</h3>${trafficSection(ok)}`,
+      `<h3>The longer record, from your archive</h3>${archiveTraffic(rows, history, now)}`
+    )}</section>
 
+  <div class="cols cols--tail">
   <section class="sec" data-sec="act" aria-labelledby="h-act"><h2 id="h-act">Audience &amp; activity</h2>
     ${activityTable(ok, now)}</section>
 
@@ -1362,6 +1364,7 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
     }
     ${weeklyLine(health.weekly, now)}
   </section>
+  </div>
 
   <footer class="foot">Local file — never published. Regenerate with
     <code>npm run stats</code>.</footer>
@@ -1663,7 +1666,7 @@ const CSS = `/* Private dashboard — layers on the site's tokens.
    page scales from this base, and the column is measured in rem so it widens with it. */
 html { font-size: 150%; }
 body.admin { background: var(--bg); color: var(--text); font-family: var(--font); }
-.wrap { max-width: 98rem; margin: 0 auto; padding: 20px 20px 60px; }
+.wrap { max-width: 136rem; margin: 0 auto; padding: 20px 20px 60px; }
 .head h1 { margin: 0 0 4px; font-size: 1.6rem; }
 .sub { color: var(--text-muted); margin: 0 0 6px; font-size: .85rem; }
 
@@ -1681,7 +1684,7 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
 .topnav { position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
   flex-wrap: wrap; gap: 6px 18px;
   /* Side padding lines the bar's contents up with .wrap's centred column. */
-  padding: 9px max(20px, calc((100% - 98rem) / 2 + 20px));
+  padding: 9px max(20px, calc((100% - 136rem) / 2 + 20px));
   background: linear-gradient(180deg, rgba(94,234,212,.10), rgba(196,181,253,.06)), var(--bg);
   border-bottom: 1px solid var(--surface-border);
   backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); }
@@ -1744,6 +1747,16 @@ h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
 .tbl tbody:last-child tr:last-child > * { border-bottom: 0; }
 /* Wide tables scroll rather than crush. Focusable, so the region is keyboard-reachable. */
 .tbl-scroll { overflow-x: auto; }
+/* Two blocks per row; minmax(0, …) lets a wide table scroll inside its half instead of
+   pushing the grid wider than the column. */
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem;
+  align-items: start; }
+/* The last three sections, kept in source order (activity, releases, content) so keyboard and
+   screen-reader order are unchanged. Releases is far taller than activity, so it takes the
+   whole right side and content fills the space under activity; the 1fr row takes the slack. */
+.cols--tail { grid-template-rows: auto 1fr; }
+.cols--tail > [data-sec="rel"] { grid-column: 2; grid-row: 1 / span 2; }
+.cols--tail > [data-sec="cnt"] { grid-column: 1; grid-row: 2; }
 /* A note above a table sits flush against the caption's first line, because .note carries no
    bottom margin and a caption has no top padding. Two tables lead with one, so the gap belongs
    to the pair rather than to either. */

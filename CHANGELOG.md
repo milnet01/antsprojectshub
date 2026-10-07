@@ -15,6 +15,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **The private stats page sets its tables side by side in two columns, so far less scrolling**
+
 - **The private stats page is sized for a 4K monitor: larger text, a wider centred column, and the top bar lined up with it**
 
 - **RetroArch's page lists the seven fixes accepted upstream on 2 and 5 October**
