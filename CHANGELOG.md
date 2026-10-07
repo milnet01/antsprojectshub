@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-10-07
+
 ### Added
 
 - **The private stats page has its own tab icon: the site's ant with a bar-chart badge**
