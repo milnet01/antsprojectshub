@@ -15,6 +15,14 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **finbreak is now live: its page calls it stable, lists the release's fixes, and no longer promises a Flathub release**
+
+- **DOOM Ants' page shows Classic mode's new sharp menu, with a screenshot**
+
+- **RetroArch's page lists the quit-confirmation fix and the changes still under review**
+
+- **Album Builder's page lists its recent Windows, small-screen and translation fixes**
+
 - **Perch's page explains how rules place windows, and that pixel positions now count from the named monitor's edge**
 
 - **The private stats page sets its tables side by side in two columns, so far less scrolling**

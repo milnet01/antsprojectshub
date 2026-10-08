@@ -19,7 +19,9 @@ like to play. That part is in progress.
 You switch between them from the in-game menu, mid-game.
 
 - **Classic** — the original 1997 software renderer, pixel for pixel, now with
-  widescreen support.
+  widescreen support. Its menus use the same sharp style as Solid and Ultra,
+  drawn over a dimmed view of the game, and its Video menu shows only the
+  settings that apply to it.
 - **Solid** — the same DOOM world drawn on the graphics card, with dynamic lights
   and contact shadows.
 - **Ultra** — a full path tracer. Ray-traced lighting and shadows, HD physically
@@ -43,7 +45,9 @@ anywhere; Solid and Ultra need a working Vulkan driver.
 Playable, and honestly early. The engine runs, all three renderers work, and the
 path-traced mode already looks like something the original could not have
 imagined. What is still moving is everything that makes Ultra consistent — the
-target is a solid 60 frames a second floor while looking like that.
+target is a solid 60 frames a second floor while looking like that. The latest
+release also fixes a long list of rendering, sound and stability problems across
+the 3D modes, and hardens the game against damaged or malicious map files.
 
 The original code is © id Software and this inherits its GPL v2 licence. This is
 a fork of their released source, and all the credit for DOOM itself is theirs.

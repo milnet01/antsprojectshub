@@ -357,6 +357,10 @@
           "alt": "Classic DOOM gameplay in a widescreen view — a marine facing a computer-room level over a blue floor"
         },
         {
+          "src": "shots/doom-ants-classic-menu.png",
+          "alt": "Classic mode's Video menu, now drawn in the same sharp style as Solid and Ultra, over a dimmed game view"
+        },
+        {
           "src": "shots/doom-ants-raytraced.png",
           "alt": "The same DOOM level with hardware ray tracing — realistic shadows and dynamic lighting darkening the room"
         }
@@ -515,7 +519,7 @@
       "name": "finbreak",
       "tagline": "Breaks your finances into categories — private and offline.",
       "blurb": "A private, offline desktop app that reads the statements your bank already gives you (CSV, OFX or PDF) and breaks your finances down into categories across multiple accounts, with charts, a balance forecast, automatic transfer and recurring-payment detection, and password-protected PDF reports. Your data never leaves your machine.",
-      "status": "beta",
+      "status": "live",
       "repo": "milnet01/finbreak",
       "platforms": [
         "linux",

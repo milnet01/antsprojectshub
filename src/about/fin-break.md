@@ -73,14 +73,24 @@ rely on them, and can be restored onto a new master password.
 
 ## Where it stands
 
-An early preview that already does a great deal, with polish still coming. There
-are six colour themes plus a follow-your-system setting. Every table remembers the
+Stable, with more still planned. This is finbreak's first stable release. Your
+vault, your backups and your saved import settings will keep working with every
+update in this series.
+
+The latest release is mostly fixes. PDF reports always print on a light,
+easy-to-read page. When a bank file holds several accounts, finbreak names each
+account's type in words, such as "Savings", instead of the bank's code. Importing
+several statements with the same layout asks about the columns only once. And the
+Linux download no longer crashes when you start typing, and a failed update now
+says why.
+
+There are six colour themes plus a follow-your-system setting. Every table remembers the
 column widths and order you gave it, and Window → Reset layout puts them all back
 in one click.
 
 On Linux it runs as a self-contained AppImage, or installs as a native package on
 openSUSE Tumbleweed and Fedora through the openSUSE Build Service. Packages for
-Debian and Ubuntu, a Flathub release and a macOS app are still to come.
+Debian and Ubuntu and a macOS app are still to come.
 
 **Windows builds are not yet code-signed**, so SmartScreen will query it the first
 time — click *More info* → *Run anyway*. An application to a free signing

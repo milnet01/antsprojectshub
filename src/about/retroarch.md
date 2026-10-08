@@ -86,7 +86,22 @@ Four more followed on 5 October 2026:
 
 Some of these the maintainer committed directly, credited to the fork.
 
-One more change is still under review: it makes saving crash-safe.
+One more was merged on 7 October 2026:
+
+- **The quit button combination** on a controller now asks for confirmation when
+  Confirm Quit is on, instead of quitting at once.
+
+Still under review:
+
+- **Saving** made crash-safe.
+- **Secure connections** show an on-screen notice when a certificate is refused,
+  or when certificate checking is turned off.
+- **Replay files** free their memory after a failed read, and a damaged replay is
+  refused instead of being saved into a savestate.
+- **Seven small crash and memory-leak fixes** found by code scanners, covering the
+  PipeWire microphone, the content information menu, GLCore and slang shaders,
+  savestate and playlist thumbnails, and images returned by the AI translation
+  service.
 
 ## Should you use it?
 

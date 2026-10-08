@@ -62,6 +62,10 @@ to start with a message about `GLIBC_2.35`.
 ## Where it stands
 
 In beta. Curation, ordering, usage tracking, lyric syncing, the export pipeline,
-the player with its own library, and eight languages are all in. Next up: adding
+the player with its own library, and eight languages are all in. Recent fixes:
+the Windows download no longer closes itself a moment after opening, the window
+fits smaller screens such as 1280 pixels wide, translations are better in every
+language, and closing the app no longer waits on your desktop's media controls.
+Next up: adding
 music by dropping files onto the window, which copies them in and leaves the
 originals untouched. Built with Python and Qt, and MIT licensed.
