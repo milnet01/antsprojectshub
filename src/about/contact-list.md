@@ -51,8 +51,10 @@ you past it.
 
 Your contacts, photos and settings live under `~/.config/contact-list/`.
 
-If the tray icon can't start, the app opens your browser instead, so you are
-never left with no way in.
+If the tray icon fails to start, the app opens your browser instead, so you're
+never left with no way to reach it. This is not yet tested on GNOME. GNOME has
+no tray unless you add the AppIndicator and KStatusNotifierItem Support
+extension. On GNOME, add that extension, or open http://localhost:5002 yourself.
 
 ## Where it stands
 

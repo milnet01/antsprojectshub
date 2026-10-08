@@ -15,6 +15,10 @@ switches to your desk setup.
 - **Named layouts** — flip the whole screen between your "coding", "media" and
   "writing" arrangements in one click.
 - **Rules** — *always open Firefox on monitor 2, maximised*, and it just happens.
+  A rule puts the window on the monitor it names, in the right spot, and the
+  window stays put when its title changes. Pixel positions in a rule count from
+  that monitor's own edge, so a rule written for a second monitor in an
+  earlier release may need its numbers adjusted.
 - **Docked and laptop profiles**, so windows land differently at your desk than
   they do on the train.
 - **An exclusions list** — name a splash screen or a small dialog, and Perch

@@ -15,11 +15,17 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Perch's page explains how rules place windows, and that pixel positions now count from the named monitor's edge**
+
 - **The private stats page sets its tables side by side in two columns, so far less scrolling**
 
 - **The private stats page is sized for a 4K monitor: larger text, a wider centred column, and the top bar lined up with it**
 
 - **RetroArch's page lists the seven fixes accepted upstream on 2 and 5 October**
+
+### Fixed
+
+- **Contact List's page no longer claims the browser fallback works on GNOME, which is untested**
 
 ## 2026-10-07
 
