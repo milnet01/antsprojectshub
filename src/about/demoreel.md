@@ -11,8 +11,12 @@ recorder. You can run it yourself at a terminal. It is also built to be driven
 by Claude Code, so you can ask for a demo video and get one without touching a
 recording tool yourself.
 
-The video is silent: demoreel records pictures only. Its messages are in
-English.
+The video is silent: demoreel records pictures only.
+
+It speaks sixteen languages. Every message it prints can appear in your own
+language, and each language has a short page on installing demoreel and making a
+first recording. The translations are drafts for now; the README says how a
+native speaker can help confirm one.
 
 ## Why not just record the screen
 
@@ -44,6 +48,11 @@ list of clicks and keystrokes so the video shows the app being *used* rather tha
 sitting still, records for the duration, then shuts everything down and leaves one
 file behind.
 
+The recording lasts exactly as long as you asked, even on a busy computer. If the
+app resizes its own window partway through, demoreel puts it back to fill the
+frame. Scripted typing can be read from a file, so what you type never shows in
+the list of running programs.
+
 The only thing it writes to standard output is the finished video's path, so you
 can capture it into a variable without the app's own chatter stirred in.
 
@@ -63,6 +72,8 @@ somebody else's pull request.
 server on a headless kiosk compositor that can reach the card. Same window sizing,
 same scripted actions, same single file out — and the same privacy property, since
 that compositor is started fresh for the run with nothing of your session on it.
+`demoreel check` tells you beforehand whether recording from the graphics card
+will actually work on your machine.
 
 **It waits for the app to draw** before it starts recording, if you ask it to. A
 GPU app can sit on a black screen for several seconds while it builds its
