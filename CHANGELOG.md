@@ -15,6 +15,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **RetroArch's page lists three more fixes accepted upstream on 8 October**
+
 - **demoreel's page says it speaks sixteen languages, and covers its recording fixes**
 
 - **finbreak is now live: its page calls it stable, lists the release's fixes, and no longer promises a Flathub release**

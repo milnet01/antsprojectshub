@@ -91,6 +91,12 @@ One more was merged on 7 October 2026:
 - **The quit button combination** on a controller now asks for confirmation when
   Confirm Quit is on, instead of quitting at once.
 
+Three more followed on 8 October 2026:
+
+- **A PipeWire microphone** that fails to open no longer crashes RetroArch.
+- **Two small memory leaks** are gone: one in the shader loader, one in the
+  save-state thumbnail code.
+
 Still under review:
 
 - **Saving** made crash-safe.
@@ -98,10 +104,7 @@ Still under review:
   or when certificate checking is turned off.
 - **Replay files** free their memory after a failed read, and a damaged replay is
   refused instead of being saved into a savestate.
-- **Seven small crash and memory-leak fixes** found by code scanners, covering the
-  PipeWire microphone, the content information menu, GLCore and slang shaders,
-  savestate and playlist thumbnails, and images returned by the AI translation
-  service.
+- **Four more small crash and memory-leak fixes** found by code scanners.
 
 ## Should you use it?
 
