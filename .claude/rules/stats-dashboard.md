@@ -75,3 +75,15 @@ dashboard".
   that no longer names a sortable column is ignored. Every access is wrapped in
   `try`/`catch`.
 
+
+## Moved from CLAUDE.md (2026-10-08)
+
+- **`lib/ga.mjs`** — the *read* half of analytics: service-account auth (a JWT signed with
+  `node:crypto`, no dependency) and the GA4 Data API calls the dashboard shows. Local only —
+  `build.mjs` never imports it. It is the mirror
+  of `src/assets/analytics.js`, the *write* half, and neither can switch the other on.
+
+`npm test` covers the *stats server only* — the port contract in
+`.claude/rules/stats-dashboard.md`, and nothing else. It
+uses `node --test` and Python's `unittest`; the site build has no
+tests. It runs in the pre-push gate, **not in CI**.
