@@ -15,6 +15,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Album Builder's page covers adding music by dragging songs onto the window, with a screenshot**
+
 - **RetroArch's page lists three more fixes accepted upstream on 8 October**
 
 - **demoreel's page says it speaks sixteen languages, and covers its recording fixes**

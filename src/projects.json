@@ -261,6 +261,10 @@
         {
           "src": "shots/album-builder-player-arabic.png",
           "alt": "The same Player tab with the app in Arabic. The whole window is mirrored right to left: the menus, tabs and headings are in Arabic, the library sits on the right, and the lyrics panel and Up Next are on the left. The song titles stay in English, and the play controls keep their usual left-to-right order."
+        },
+        {
+          "src": "shots/album-builder-add-music.png",
+          "alt": "Adding a song whose name you already have: a message says one song was added, both copies are kept, and the new copy was saved as \"02 - Slow Tide (2).mp3\"."
         }
       ]
     },

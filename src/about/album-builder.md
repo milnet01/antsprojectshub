@@ -66,6 +66,13 @@ the player with its own library, and eight languages are all in. Recent fixes:
 the Windows download no longer closes itself a moment after opening, the window
 fits smaller screens such as 1280 pixels wide, translations are better in every
 language, and closing the app no longer waits on your desktop's media controls.
-Next up: adding
-music by dropping files onto the window, which copies them in and leaves the
-originals untouched. Built with Python and Qt, and MIT licensed.
+Going back to an older copy of the app no longer wipes your settings, and on
+Windows the main tabs are readable again.
+
+New: adding music. Drag songs or whole folders onto the window, or use
+*File → Add Music...*, and they are copied into your music folder and appear in
+the library straight away. Your original files stay exactly where they were. If a
+song has the same name as one you already have, both are kept: the new copy gets a
+number, and a message tells you which ones.
+
+Built with Python and Qt, and MIT licensed.
