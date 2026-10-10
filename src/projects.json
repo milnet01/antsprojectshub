@@ -619,7 +619,24 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/groundwork-2-essentials.png",
+          "alt": "Groundwork's Essentials page, headed 'What a desktop needs for things to work.' Each row has a tick box, a status and a plain description. 'Bring the system up to date' is ticked. Media codecs and Flatpak and Flathub say 'already done'. The NVIDIA graphics driver, Sound firmware and Broadcom Wi-Fi rows are greyed out and say 'not needed here', each with the reason, such as 'No NVIDIA graphics card was found.'"
+        },
+        {
+          "src": "shots/groundwork-3-extras.png",
+          "alt": "Groundwork's Nice to have page, headed 'Extras. Each one is its own choice.' A list of apps, each with a tick box, a status and a one-line description: Google Chrome, Brave, VLC, Discord, Spotify, Steam and Build tools say 'already done'; Zoom and Bottles are ticked and say 'not done'; VSCodium is not done and not ticked."
+        },
+        {
+          "src": "shots/groundwork-4-ready-to-apply.png",
+          "alt": "Groundwork's Ready to apply page, headed 'These run in this order after one password.' It lists three jobs with what each does: bring the system up to date, install Zoom, and install Bottles. Back, Apply and Cancel buttons sit at the bottom."
+        },
+        {
+          "src": "shots/groundwork-1-checking.png",
+          "alt": "Groundwork's welcome page: 'Groundwork sets up this computer the way you want. Each page offers a level of choices, from essentials to extras. Nothing changes until you press Apply.' A language menu is set to English, and the line 'Checking this computer…' shows it is looking at the machine before offering anything."
+        }
+      ]
     },
     {
       "slug": "lotto-tracker",
