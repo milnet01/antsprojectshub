@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Groundwork has a page: its first release sets up a fresh openSUSE install, with an AppImage download**
+
 - **Pressless has a privacy policy page, linked from its project page**
 
 - **The private stats page shows each visitor country's flag beside its name**

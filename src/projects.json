@@ -606,6 +606,22 @@
       ]
     },
     {
+      "slug": "groundwork",
+      "name": "Groundwork",
+      "tagline": "Sets up a fresh openSUSE install the way you want, in one sitting.",
+      "blurb": "Groundwork checks the computer first, then offers choices level by level: essentials (system updates, media codecs, Flatpak and Flathub, and drivers only where your hardware needs them), system setup (snapshots, firewall, firmware updates, laptop power), configuration (computer name, remote login, the clock for dual-boot) and extras (popular apps, gaming, developer tools, a backup tool, fonts). Nothing changes until you press Apply, and it asks for your password once. A single AppImage for Tumbleweed and Leap 16.",
+      "status": "beta",
+      "repo": "milnet01/Groundwork",
+      "platforms": [
+        "linux"
+      ],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null,
+      "category": "utilities",
+      "screenshots": []
+    },
+    {
       "slug": "lotto-tracker",
       "name": "LottoTracker",
       "tagline": "Catches the lottery win sitting unnoticed in your inbox.",
