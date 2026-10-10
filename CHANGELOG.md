@@ -19,6 +19,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Slipcase's page covers its safer cover downloads and steadier search window**
+
 - **Album Builder's page covers finding songs you have twice**
 
 - **finbreak's page covers its Windows update fix and what existing Windows users need to do once**

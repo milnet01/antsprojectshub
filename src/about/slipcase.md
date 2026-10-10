@@ -57,6 +57,13 @@ One honest caveat about the Mac build: nobody has tried it by hand on a real
 Mac yet. It is built on GitHub's Mac machines, where it passes its own
 self-check and the full test suite. If it misbehaves for you, please report it.
 
+**Safer downloads, steadier search.** This update makes cover downloads safer
+and the search window steadier. Cover-art searches and image downloads now have
+firm limits on size and time, so a slow or misbehaving server can no longer hold
+a download open. Clicking quickly through search results no longer freezes the
+window, and a preview from an earlier search no longer shows up beside a newer
+result.
+
 It is built with Python and Qt, and downloads images only from a fixed list of
 known art sources over HTTPS, with a size cap, because "fetch this URL and decode
 it as an image" is not a thing to leave open-ended.
