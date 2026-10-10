@@ -18,6 +18,8 @@ files were never inside the app, and there is no export button because there is
 nothing to export from.
 
 There is no Pressless account to make and no Pressless password to lose.
+What it does with your information, including what it reads from Google and
+GitHub, is in [Pressless's privacy policy](/p/pressless/privacy.html).
 
 ## It is not a host
 

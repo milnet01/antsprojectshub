@@ -25,7 +25,7 @@ import {
   setAnalyticsId,
 } from "./lib/templates.mjs";
 import { loadPosts, excerpt } from "./lib/posts.mjs";
-import { loadAbout } from "./lib/about.mjs";
+import { loadAbout, loadPolicies } from "./lib/about.mjs";
 import {
   ghJson,
   ghRaw,
@@ -82,6 +82,7 @@ const sourceZipUrl = (repo, tag) =>
 // than a second flat file, so a project can grow further pages later without the /p/
 // directory turning into a pile of <slug>-<thing>.html.
 const changelogPath = (p) => `/p/${p.slug}/changelog.html`;
+const policyPath = (p) => `/p/${p.slug}/privacy.html`;
 
 // Release dates read as "14 August 2026" — spelled out, because 08/14 and 14/08 are the
 // same six characters and mean different days either side of the Atlantic.
@@ -1177,6 +1178,24 @@ async function assertAnalyticsContract() {
 // nobody can read is the same as no privacy notice. It describes what the site actually
 // does — one analytics tag, opt-in — and is the only page that would need editing if
 // that ever changed.
+// An app's own privacy policy, from src/policies/<slug>.md. Not the site's /privacy/
+// notice: this one describes what the app does on the user's computer.
+function appPolicyPage(p, html) {
+  return basePage({
+    title: `${p.name} privacy policy`,
+    description: `What ${p.name} does with your information.`,
+    canonical: `${ORIGIN}${policyPath(p)}`,
+    section: "projects",
+    back: { href: `/p/${p.slug}.html`, label: p.name },
+    content: `<article class="post">
+      <header class="post__head">
+        <h1>${esc(p.name)} privacy policy</h1>
+      </header>
+      <div class="prose post__body">${html}</div>
+    </article>`,
+  });
+}
+
 function privacyPage() {
   return basePage({
     title: "Privacy",
@@ -1316,6 +1335,7 @@ async function main() {
   // not halfway through generating it, which would leave a half-built site behind.
   const posts = await loadPosts(join(ROOT, "src/posts"));
   const about = await loadAbout(join(ROOT, "src/about"), projects);
+  const policies = await loadPolicies(join(ROOT, "src/policies"), projects);
   const bySlug = new Map(projects.map((p) => [p.slug, p]));
 
   await rm(DIST, { recursive: true, force: true });
@@ -1390,6 +1410,14 @@ async function main() {
     }
   }
 
+  // App privacy policies. Written for every project that has one, published or not:
+  // the page must stay up even if a release fetch fails.
+  for (const p of projects) {
+    if (!policies.has(p.slug)) continue;
+    await mkdir(join(DIST, "p", p.slug), { recursive: true });
+    await writeFile(join(DIST, "p", p.slug, "privacy.html"), appPolicyPage(p, policies.get(p.slug)));
+  }
+
   // Grouped rather than printed in the loop, so they are not lost among fetch warnings.
   for (const w of driftWarnings) console.warn(w);
 
@@ -1440,6 +1468,7 @@ async function main() {
         .filter((p) => (histories.get(p.slug) || []).length > 1)
         .map((p) => `${ORIGIN}${changelogPath(p)}`)
     )
+    .concat(projects.filter((p) => policies.has(p.slug)).map((p) => `${ORIGIN}${policyPath(p)}`))
     .concat(posts.length ? [`${ORIGIN}/blog/`] : [])
     .concat(posts.map((post) => `${ORIGIN}${post.url}`))
     .concat([`${ORIGIN}/privacy/`]);

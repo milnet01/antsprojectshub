@@ -2,6 +2,7 @@
 paths:
   - "src/projects.json"
   - "src/about/**"
+  - "src/policies/**"
   - "src/assets/img/**"
   - "src/assets/video/**"
 ---
@@ -31,6 +32,12 @@ Loaded by itself when a session reads one of the files above. Moved verbatim fro
   slug. **Every project needs one, `soon` ones included**; a missing file fails the build
   with the slug named. `src/about/README.md` owns what goes in one and the house style.
   Plain markdown, no header block, headings start at `##`.
+
+- **`src/policies/<slug>.md`** — optional: an app's own privacy policy, published at
+  `/p/<slug>/privacy.html` and listed in the sitemap. Most projects have none; an app that
+  asks for a Google sign-in needs one on this domain. It is the app's text, not the site's
+  `/privacy/` notice, so keep its wording; the project's About page links to it by hand.
+  Plain markdown, headings start at `##`.
 
 - **An About page's claim to be unpublished must stay true.** `build.mjs` compares each About page against the history it has just
   fetched and warns; `local-CI.sh` turns that warning into a failure (except under

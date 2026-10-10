@@ -11,9 +11,15 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Pressless has a privacy policy page, linked from its project page**
+
 - **The private stats page shows each visitor country's flag beside its name**
 
 ### Changed
+
+- **RetroArch's page lists every remaining fix as accepted upstream, and its "still under review" list is gone**
+
+- **UT Ants' page covers the torches added to Arcane Temple's darkest rooms, with two before-and-after pictures**
 
 - **Album Builder's page covers adding music by dragging songs onto the window, with a screenshot**
 

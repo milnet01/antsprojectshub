@@ -386,7 +386,16 @@
       "homepage": null,
       "category": "games",
       "logo": "logos/ut-ants.png",
-      "screenshots": []
+      "screenshots": [
+        {
+          "src": "shots/ut-ants-added-torch-3.jpg",
+          "alt": "Arcane Temple's upper hall, before and after. Left: the far end of the hall is lit but the near walls and ceiling are almost black. Right: the same view with an added torch on the right-hand wall, lighting the stonework and ceiling around it."
+        },
+        {
+          "src": "shots/ut-ants-added-torch-5.jpg",
+          "alt": "Arcane Temple's pillared passage, before and after. Left: dim stone pillars with no light between them. Right: the same spot with an added torch burning on a stone block between two pillars."
+        }
+      ]
     },
     {
       "slug": "slipcase",

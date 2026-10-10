@@ -69,6 +69,14 @@ no weapons and no monsters yet. Windows and Linux are both built and tested on
 every single change — not one first and the other later — and the tests pass
 on a machine that has never had Unreal Tournament installed.
 
+**Dark rooms get a torch of their own.** Our lighting is now physically
+accurate, which left a few rooms in Arcane Temple much darker than the
+original game showed them. Where a room was under half the original's
+brightness, we add a torch, a copy of one the map already uses, so it
+looks as if it was always there. Four rooms in Arcane Temple got one.
+An option when starting the game turns every added torch off, and the
+map then looks exactly as it did before.
+
 The whole thing is measured against twelve things you could observe by playing
 it, written down before any code was. The last of them is the honest one: the
 live Monster Hunt server runs on this instead of UT99, and nobody wants to

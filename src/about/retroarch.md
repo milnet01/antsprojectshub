@@ -91,25 +91,57 @@ One more was merged on 7 October 2026:
 - **The quit button combination** on a controller now asks for confirmation when
   Confirm Quit is on, instead of quitting at once.
 
-Three more followed on 8 October 2026:
+Seven more followed on 8 October 2026:
 
 - **A PipeWire microphone** that fails to open no longer crashes RetroArch.
 - **Two small memory leaks** are gone: one in the shader loader, one in the
   save-state thumbnail code.
+- **The Content Information screen** no longer crashes when the loaded game has
+  no file path.
+- **The modern OpenGL driver** no longer carries on with a broken shader when
+  building it fails without an error message.
+- **A game added to the top of a playlist** no longer picks up the thumbnail
+  settings of the entry it replaced.
+- **The AI translation service** now checks the size of the image a translation
+  server sends back, instead of trusting it.
 
-Still under review:
+On 8 and 9 October 2026 the team accepted the rest. Every fix this fork has
+sent upstream is now either merged or was replaced by the maintainers' own
+version.
 
-- **Saving** made crash-safe.
-- **Secure connections** show an on-screen notice when a certificate is refused,
-  or when certificate checking is turned off.
-- **Replay files** free their memory after a failed read, and a damaged replay is
-  refused instead of being saved into a savestate.
-- **Four more small crash and memory-leak fixes** found by code scanners.
+- **Saving is crash-safe.** Save states, game saves and the disc index are now
+  written to a temporary file first and swapped in only when the write has
+  finished. A crash or power cut mid-save no longer leaves a damaged save.
+- **Secure connections** now say so on screen when a certificate is refused, or
+  when certificate checking has been turned off.
+- **Run-ahead** now copies the game core only into a private temporary folder,
+  so another program on the machine cannot swap it out.
+- **Pressing Ctrl+C a second time** now quits RetroArch straight away instead
+  of sometimes hanging.
+- **Running out of memory** now makes RetroArch fail safely, instead of
+  crashing or carrying on in a broken state. Eight fixes cover the OpenGL and
+  Vulkan shader chains, Vulkan buffers, the keyboard lookup table, OpenGL
+  start-up, the Windows companion window's Add Files dialog, PlayStation 3
+  texture uploads, and a helper that grows drawing buffers.
+- **Replay files** no longer leak memory when one is damaged or cut short, and
+  replay checkpoints are now stored the same way on every kind of processor.
+- **Screenshots from games that rotate the screen** no longer write past the
+  end of their memory.
+- **Display and sound:** no crash when a custom display mode has a zero size,
+  no colour smear down the left edge of the NTSC TV filter, and the bare-screen
+  video driver stops cleanly when it cannot set up the screen. MIDI on Windows
+  now cleans up when a device fails to open.
+- **Menus:** animations cope with an out-of-range setting, and a settings
+  slider in the desktop menu no longer keeps resetting itself.
+- **Battery level on older Linux laptops** is now read. Before, it never was.
+- **Five crashes found by a code scan** are fixed: on the 3DS, PS2 and Vita
+  versions, in the network controller test, and in naming an emergency save.
 
 ## Should you use it?
 
 **No — use the official RetroArch.** Upstream ships builds for every platform, gets
-updated constantly, and now carries the most serious of these fixes itself.
+updated constantly, and now carries every one of these fixes itself, some in
+the team's own version.
 
 The fork is built and tested on Linux only. It exists so fixes can be tried in
 something real before they go upstream. If you want to read the work or take a
