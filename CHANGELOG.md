@@ -19,6 +19,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Album Builder's page covers finding songs you have twice**
+
 - **finbreak's page covers its Windows update fix and what existing Windows users need to do once**
 
 - **RetroArch's page lists every remaining fix as accepted upstream, and its "still under review" list is gone**

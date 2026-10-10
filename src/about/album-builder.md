@@ -75,4 +75,10 @@ the library straight away. Your original files stay exactly where they were. If 
 song has the same name as one you already have, both are kept: the new copy gets a
 number, and a message tells you which ones.
 
+Find songs you have twice. A new menu item, *File → Find Duplicates...*, shows
+two lists. The first is exact copies: the same file saved more than once. The
+second is likely copies: songs with the same title and artist, such as a song
+saved again from a different download. It only lists them. Album Builder never
+deletes a song, so you remove the copies you don't want in your file manager.
+
 Built with Python and Qt, and MIT licensed.
