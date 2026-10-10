@@ -17,6 +17,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **finbreak's page covers its Windows update fix and what existing Windows users need to do once**
+
 - **RetroArch's page lists every remaining fix as accepted upstream, and its "still under review" list is gone**
 
 - **UT Ants' page covers the torches added to Arcane Temple's darkest rooms, with two before-and-after pictures**

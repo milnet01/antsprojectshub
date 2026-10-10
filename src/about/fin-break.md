@@ -77,7 +77,15 @@ Stable, with more still planned. This is finbreak's first stable release. Your
 vault, your backups and your saved import settings will keep working with every
 update in this series.
 
-The latest release is mostly fixes. PDF reports always print on a light,
+**Windows updates fixed.** On Windows, clicking *Update now* used to download
+the new version and then close finbreak without installing it. That is fixed.
+If you already use finbreak on Windows, download the newest release by hand once
+and put it in place of your old finbreak.exe, in the same folder. That release
+has the fixed update step. finbreak also now tidies away the leftover download
+files those failed updates left in that folder. Separately, installing finbreak
+on Fedora no longer shows a false "Transaction failed" message.
+
+The release before it was mostly fixes. PDF reports always print on a light,
 easy-to-read page. When a bank file holds several accounts, finbreak names each
 account's type in words, such as "Savings", instead of the bank's code. Importing
 several statements with the same layout asks about the columns only once. And the
