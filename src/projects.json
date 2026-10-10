@@ -619,6 +619,7 @@
       "upstream": null,
       "homepage": null,
       "category": "utilities",
+      "logo": "logos/groundwork.svg",
       "screenshots": [
         {
           "src": "shots/groundwork-2-essentials.png",
