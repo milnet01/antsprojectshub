@@ -74,9 +74,9 @@
         }
       ],
       "video": {
-        "src": "ants-terminal-demo.mp4",
-        "poster": "ants-terminal-demo-poster.jpg",
-        "caption": "A silent 25-second clip of Ants Terminal in its dark theme. It opens on a plain prompt, moves into its own source folder and clears the screen, then lists the first twenty source files. Finally it prints the words 'colour and Unicode' in green, blue and magenta, followed by a tick, a lambda and a sparkle. Recorded with demoreel."
+        "src": "ants-terminal-trailer.mp4",
+        "poster": "ants-terminal-trailer-poster.jpg",
+        "caption": "A 32-second trailer for Ants Terminal, with background music and soft clicks but no speech; everything it says is written on screen. It is styled like a computer terminal: green and white monospaced lettering over a dark background of faint scrolling text. It opens with \"Your terminal looks dated. Plain text, one window.\", then the Ants Terminal logo, a pale blue ant, and \"A fast, good-looking terminal for Linux\". Two clips of the app follow, each with a caption below. \"Colour and symbols, crisp and clear\": a build command runs in a project called stargazer, printing green ticks beside each compile and link step, 42 tests passed, and \"Done in 0.8s\" followed by a sparkle, a lambda, a star and a moon. \"Switch themes in one click\": with the same output on screen, the colour theme is changed from the menu and the whole window recolours, from a purple-grey look to a darker one with orange file names. Three lines follow: \"Eleven built-in colour themes\", \"Split panes, side by side\" and \"Built for Claude Code\". It ends on the logo with \"Free and fully open source\", \"Download it free at antsprojectshub.co.za\", and links to support the project on GitHub Sponsors, Patreon and Paybru."
       }
     },
     {
@@ -266,7 +266,12 @@
           "src": "shots/album-builder-add-music.png",
           "alt": "Adding a song whose name you already have: a message says one song was added, both copies are kept, and the new copy was saved as \"02 - Slow Tide (2).mp3\"."
         }
-      ]
+      ],
+      "video": {
+        "src": "album-builder-trailer.mp4",
+        "poster": "album-builder-trailer-poster.jpg",
+        "caption": "A 48-second trailer for Album Builder, with background music and soft clicks but no speech; everything it says is written on screen. It is styled like a record sleeve: serif lettering over warm orange, pink and purple light, with a vinyl record turning in the corner. It opens with \"A folder full of songs. Which ones make the album?\", then the Album Builder logo and \"Pick, order and approve your album\". Seven clips of the app follow, each with a caption below, using made-up songs and artists. \"Tick songs into your album\": songs in the library list are ticked, and each joins a numbered Album order list beside it. \"Find any song fast\": \"harbour\" is typed into the search box and the library narrows to the songs by Harbour Lights. \"Optional: lyrics follow the music\": a song called Lanterns on the Water plays, and its lyrics scroll with the current line highlighted. \"Spot songs you have twice\": a window lists songs that appear more than once in the library. \"Approve it when it's right\": a box asks to approve the album Night Drive, saying it will export a playlist and a printable report and lock the album from edits, and Approve and generate report is clicked. \"Locked in, tracks numbered\": the album order now shows six numbered tracks, with a Reopen for editing button. \"A printable report, ready to share\": the report for Night Drive shows its cover, the approval date, six tracks and their total running time, and a table of each track's title, artist, composer and length. Three lines follow: \"Drag songs into order\", \"A music player built in\" and \"Playlist and report, made for you\". Then \"Linux · Windows\" and \"Download, open and go: nothing else to install\". It ends on the logo with \"Free and fully open source\", \"Download it free at antsprojectshub.co.za\", and links to support the project on GitHub Sponsors, Patreon and Paybru."
+      }
     },
     {
       "slug": "snatch",
