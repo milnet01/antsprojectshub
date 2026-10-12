@@ -21,6 +21,8 @@ so dated sections stand in for versions. Planned work lives in
 
 - **RetroArch's page lists four more fixes accepted upstream on 10 October**
 
+- **demoreel's page covers recording sound and laying music under a film**
+
 - **Slipcase's page covers its safer cover downloads and steadier search window**
 
 - **Album Builder's page covers finding songs you have twice**

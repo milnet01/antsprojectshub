@@ -11,7 +11,16 @@ recorder. You can run it yourself at a terminal. It is also built to be driven
 by Claude Code, so you can ask for a demo video and get one without touching a
 recording tool yourself.
 
-The video is silent: demoreel records pictures only.
+Sound is there when you ask for it. Add `--audio` to a recording and the app's
+own sound goes into the video, in step with the picture. Without it, videos stay
+silent. A recorded app is never heard on your speakers: each recording gets its
+own private sound output that nothing plays, so two recordings at once never
+hear each other either.
+
+Finished films keep the sound of the clips they are made from, through cuts and
+fades. You can also lay one music track under a whole film: it repeats to fill
+the film, fades in and out, and sits quietly under the clips. You can make it
+softer or louder for a stretch, or leave the clips' sound out.
 
 It speaks sixteen languages. Every message it prints can appear in your own
 language, and each language has a short page on installing demoreel and making a
