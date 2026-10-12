@@ -20,14 +20,17 @@ It is one program with two halves, and the **Esc** key swaps between them.
 The rendering is the part most of the work has gone into. Realistic materials that
 respond to light the way real surfaces do, shadows from the sun and the nearest
 lamps, bounced light so a red wall tints the floor beside it, volumetric fog and
-god rays through windows, and around a million individually simulated blades of
-grass that cast their own shadows.
+god rays through windows, clouds overhead, and around a million individually
+simulated blades of grass that cast their own shadows. The demo meadow ships with
+its trees, pond lilies, shrubs and rocks.
 
-Underneath that: a full physics engine with cloth, skeletal animation for
+Underneath that: a full physics engine with cloth, which hangs and settles the
+same on the graphics card as on the processor, skeletal animation for
 characters, and characters that can find their own way around a scene. The 3D
 audio is aware of the room. A sound is muffled by a real wall between you and it,
 each space gets its own echo worked out from its shape, and footsteps and impacts
-sound like the surface they hit.
+sound like the surface they hit. Background soundscapes change with the place
+and the time of day, and spoken lines come with captions.
 
 There is also a visual scripting editor, for wiring behaviour together as a diagram
 of connected nodes. Scripts built there do not run inside a scene yet.
@@ -49,13 +52,16 @@ every case.
 It works, and it is genuinely early. The engine hits its target of 60 frames a
 second on mid-range hardware. Quality presets and a render-scale setting let older
 graphics cards keep up. The parts that make a scene look and sound right are built:
-lighting, shadows, physics, audio, animation, weather, vegetation.
+lighting, shadows, physics, audio, animation, weather, vegetation. The in-game
+menus work too, including graphics settings players can change.
 
 What is missing is most of the game-making layer. There is no networking and no
-multiplayer. Scripts do not run yet. The in-game menus are laid out but not filled
-in, though the editor has a full settings window. It is also not a Unity or Unreal
+multiplayer. Scripts do not run yet. It is also not a Unity or Unreal
 competitor and is not trying to be: no asset store, no scripting language, no
 marketplace.
+
+The interface is in English, French, German, Spanish, Italian and Brazilian
+Portuguese.
 
 Accessibility is built in rather than bolted on: colour-blind modes, subtitles,
 fully remappable controls, a reduce-motion setting and photosensitive safety limits.

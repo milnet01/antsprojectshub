@@ -38,7 +38,9 @@ All of this happens on your own machine. None of it sends your work anywhere.
 
 With Claude out of the picture entirely, it is still a capable terminal: tabs
 that can be split into side-by-side panes, given a colour each so you can tell
-them apart, and are remembered between sessions, 11 colour themes that can follow your desktop's light or dark setting, search,
+them apart, and come back after a restart, a shutdown or a log-out. A side
+panel lists every open tab by its full name; sort it four ways, or jump to any
+tab with Go to Tab. There are 11 colour themes that can follow your desktop's light or dark setting, search,
 clickable links and file paths, pictures shown right in the window, a library of
 saved commands, a roomy pop-out editor for long ones, and small add-on plugins
 that are fenced off so they cannot freeze the window. Full-screen programs such

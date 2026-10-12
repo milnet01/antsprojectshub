@@ -9,42 +9,79 @@ your website. This page says what it does with your information.
   to your own website and what Pressless sends to GitHub and Google to do
   the jobs you ask of it.
 
-## Google
+## Google user data
 
-If you choose to see your visitor numbers in Pressless, you sign in with
-Google. Pressless then asks Google for one thing: permission to read your
-Google Analytics reports. It cannot change your Analytics settings or
-see anything else in your Google account.
+Signing in with Google is optional. It is used only to show you your own
+website's visitor numbers inside Pressless.
 
-With that permission, Pressless reads:
+### What Google user data Pressless accesses
 
-- the list of Analytics properties your account can see, so you can
-  choose your site;
-- the web streams of the property you choose, to find the id your
-  site's counting code needs;
-- your site's visitor numbers: how many people visited, from which
-  countries, which pages they read and for how long, and how they found
-  your site.
+Pressless asks Google for one permission: to read your Google Analytics
+data (`https://www.googleapis.com/auth/analytics.readonly`). It cannot
+change anything in your Analytics or your Google account, and it cannot
+see your email, contacts, files or anything else.
 
-These numbers are shown to you in Pressless and nowhere else. Pressless
-keeps the latest numbers in a file in its own folder on your computer,
-so it does not have to ask Google again every time. That file is never
-put in your website's folder, so it is never published.
+With that permission it reads:
 
-Google's sign-in gives Pressless a key. Pressless keeps that key in your
-computer's own password store (Windows Credential Manager, or your Linux
-desktop's keyring), not in an ordinary file.
+- the names and ids of the Analytics accounts and properties your Google
+  account can see, so you can choose your site;
+- the web data streams of the property you choose, to find the
+  measurement id your site's counting code needs;
+- your site's visitor figures: how many people visited, from which
+  countries, on which days, which pages they read and for how long, and
+  how they found your site (for example, a search engine or a link).
 
-You can stop this at any time. In Pressless's Settings, follow the link
-to change or turn off visitor numbers, then choose Turn off visitor
-numbers. Pressless asks Google to cancel the key and forgets which
-property you chose. You can also remove Pressless's
-access on Google's own page: https://myaccount.google.com/permissions
+These are totals. Google Analytics does not give Pressless the names,
+email addresses or internet addresses of your visitors.
 
-Pressless's use of information it receives from Google APIs follows the
-Google API Services User Data Policy, including its Limited Use
-requirements. It does not sell this information, use it for
-advertising, or share it with anyone.
+### How Pressless uses it
+
+Only to show these figures to you, inside Pressless, on your own
+computer, and to fill in your site's measurement id. Pressless does not
+use Google user data for advertising, does not sell it, and does not use
+it to train any AI or machine-learning model.
+
+### Who it is shared with
+
+No one. Pressless has no server, and its makers never receive any of
+your data. Pressless talks to Google only to ask for the figures above,
+and it does not send Google user data to anyone else.
+
+### How it is protected
+
+- Everything Pressless sends to or receives from Google travels over an
+  encrypted connection (HTTPS).
+- The key Google gives Pressless when you sign in is kept in your
+  computer's own password store: Windows Credential Manager, or your
+  Linux desktop's keyring. On a Linux computer with no keyring, it is
+  kept in a file in Pressless's own folder that only your user account
+  can read.
+- The visitor figures are kept in one file in Pressless's own folder
+  (`Pressless-data`). That folder is never part of your website, so the
+  figures are never published.
+
+### How long it is kept, and how to delete it
+
+- **Visitor figures:** Pressless keeps only the latest answer for each
+  time span you look at, and replaces it when it asks Google again. It
+  never keeps a history.
+- **Turning it off:** in Pressless, open Settings, follow the link to
+  your visitor numbers, and choose **Turn off visitor numbers**.
+  Pressless tells Google to cancel its key, so it can no longer read
+  anything, and forgets which property you chose.
+- **Deleting what is left:** the visitor figures stay in the file
+  `insights.json` in the `Pressless-data` folder until you delete it.
+  Delete that file, or the whole `Pressless-data` folder, to remove them.
+  Deleting the folder also removes your Pressless settings.
+- You can also remove Pressless's access from Google's side at any time:
+  <https://myaccount.google.com/permissions>.
+- To ask anything about your data, open an issue at
+  <https://github.com/milnet01/Pressless/issues>.
+
+Pressless's use and transfer of information received from Google APIs
+adheres to the
+[Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy),
+including the Limited Use requirements.
 
 ## GitHub
 

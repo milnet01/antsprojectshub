@@ -19,6 +19,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless's privacy page spells out, point by point, what Google data it reads, how it uses, shares and protects it, and how long it keeps it**
+
+- **Ants Terminal's page covers its tab side panel and tabs that come back after a restart**
+
+- **Vestige's page covers its working in-game menus, five more languages, soundscapes, captions and a fuller demo meadow**
+
 - **Pressless's page covers starting with no website at all, and its steadier buttons and Windows update fix**
 
 - **Pressless's page shows its new sign-in-with-a-code setup screen, and lists opening your site in one click**
