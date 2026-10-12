@@ -83,6 +83,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Fixed
 
+- **A project whose GitHub copy takes no issue reports no longer shows a "Report an issue" button that leads nowhere (RetroArch, Hell's Gate)**
+
 - **Contact List's page no longer claims the browser fallback works on GNOME, which is untested**
 
 ## 2026-10-07
