@@ -4,35 +4,39 @@ automatically. If you are running games somewhere other than the console, nothin
 does that for you.
 
 Rusty PSN asks Sony's update service directly. Give it a game's serial number and
-it lists every update ever published for it, then downloads the ones you pick.
+it lists every update ever published for it, with sizes, then downloads the ones
+you pick.
 
 It comes as both a window with buttons and a command-line tool, so it fits whether
 you want to click through a list or script the whole thing.
 
-## What this fork is
+## Whose work it is
 
-The original is [RainbowCookie32's rusty-psn](https://github.com/RainbowCookie32/rusty-psn),
-and it works well. This is my copy, with the changes I wanted on top.
+Rusty PSN is [RainbowCookie32's tool](https://github.com/RainbowCookie32/rusty-psn).
+Looking up a game's updates on Sony's servers, downloading them and checking them
+is their work. Their MIT licence and copyright notice are kept, unchanged. This
+copy adds:
 
-The two that matter:
-
-- **A sane folder layout.** The original saves everything as
-  `<serial> - <title>/`, which sorts a collection by serial number — an order
-  nothing in the world is arranged in. This filed it by title, with the serial as
-  a subfolder underneath.
+- **Batch downloads.** Import a list of games and fetch their updates in one go.
+- **Console firmware downloads.**
+- **RPCS3 support.** It scans an RPCS3 library to find which games have updates,
+  and installs them there.
+- **A folder layout option** that files by title, with the serial as a subfolder
+  underneath. The original layout, serial first, is still the default.
+- **Extra safety checks** on where downloaded files may go.
 - **A fix for the command-line version pinning a CPU core** while it waited for a
   download, which it did by asking "are you done yet?" as fast as it possibly
   could.
 
-Beyond that: bringing the Rust codebase up to a current edition, tidying
-duplicated parsing code, fixing a settings path that reset to the wrong place, and
-putting a linter in the build.
+PS Vita support is written but still being tested. Underneath, the code has moved
+to a current edition of Rust.
 
 ## Where it stands
 
-**Not published yet.** The work is real but it is not packaged for download,
-which is what stands between here and a release.
+**Not published yet.** There is no public copy of these changes, and nothing to
+download. It builds and runs on Linux. Windows and Mac builds are set up, as they
+were in the original, but have not been tried since these changes. A first release
+needs a public repository, those two builds confirmed, and a final hand check of
+the window app.
 
-Written in Rust. All the original credit belongs to RainbowCookie32 — this fork
-exists because the tool was good enough to be worth adjusting rather than
-replacing.
+Written in Rust.
