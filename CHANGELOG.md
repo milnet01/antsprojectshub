@@ -27,6 +27,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless's privacy page and project page: turning off visitor numbers now deletes the Google key and the saved figures from your computer**
+
 - **Vestige's page now says plainly what its free download can show today: cloth, sound, moving characters, weather and language choice are built or planned but not yet in the demo**
 
 - **Slipcase's page describes its box animation correctly: the box turns from almost face-on to a sharp angle and back**

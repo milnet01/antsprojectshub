@@ -70,6 +70,9 @@ kind wants — so others may well follow later.
   If you look after more than one site in Google Analytics, you can switch
   which one Pressless shows from Settings, without signing in to Google
   again.
+  Turning visitor numbers off deletes the Google key and the saved figures
+  from your computer, even when Google cannot be reached. A Privacy link on
+  the visitor-numbers page and in Settings opens Pressless's privacy policy.
 - **Update itself.** It looks for a new version when it starts and installs
   only a release signed by its maintainer.
 - **Choose how Pressless looks** from a picker in its top bar: light,
