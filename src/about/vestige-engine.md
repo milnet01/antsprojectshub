@@ -70,7 +70,9 @@ choice is not yet remembered between starts. The editor itself is in English.
 The editor's Settings window has accessibility settings: reduced motion, keys you
 can remap, and a colour-vision filter that shows the scene as people with three
 kinds of colour blindness see it. The game's own Settings pages for these are
-still empty.
+still empty. A photosensitive safe mode in the editor's Settings (off by
+default) caps how bright bloom and particle flashes can get, with sliders for
+flash strength, camera shake and strobe speed.
 
 **macOS is not supported and will not be.** Apple caps OpenGL at 4.1 and Vestige
 needs 4.5. Vulkan is on the long-term roadmap, and would change that answer.
