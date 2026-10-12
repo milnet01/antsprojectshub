@@ -406,7 +406,7 @@
       "slug": "slipcase",
       "name": "Slipcase",
       "tagline": "Turns flat 2D game covers into realistic 3D box renders.",
-      "blurb": "A desktop tool that turns a flat 2D cover image into a photorealistic 3D box render — front, spine, top edge and a soft shadow, at the real millimetre measurements of fifteen case types from NES cartridge boxes to Switch cases. It can find the artwork for you, invent a spine when your cover has none, do a whole folder at once, and save an animation of the box swinging from side to side. Output is transparent PNG sized for RetroArch or LaunchBox. It comes as a single download for Linux, Windows or Mac.",
+      "blurb": "A desktop tool that turns a flat 2D cover image into a photorealistic 3D box render — front, spine, top edge and a soft shadow, at the real millimetre measurements of fifteen case types from NES cartridge boxes to Switch cases. It can find the artwork for you, invent a spine when your cover has none, do a whole folder at once, and save an animation of the box turning to an angle and back. Output is transparent PNG sized for RetroArch or LaunchBox. It comes as a single download for Linux, Windows or Mac.",
       "status": "live",
       "repo": "milnet01/Slipcase",
       "platforms": [

@@ -27,6 +27,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Slipcase's page describes its box animation correctly: the box turns from almost face-on to a sharp angle and back**
+
 - **Pressless's privacy page spells out, point by point, what Google data it reads, how it uses, shares and protects it, and how long it keeps it, including what stays on your computer after you turn it off**
 
 - **Ants Terminal's page covers its tab side panel and tabs that come back after a restart**
