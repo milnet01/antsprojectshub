@@ -19,6 +19,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **RetroArch's page lists four more fixes accepted upstream on 10 October**
+
 - **Slipcase's page covers its safer cover downloads and steadier search window**
 
 - **Album Builder's page covers finding songs you have twice**

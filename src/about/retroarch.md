@@ -137,6 +137,17 @@ version.
 - **Five crashes found by a code scan** are fixed: on the 3DS, PS2 and Vita
   versions, in the network controller test, and in naming an emergency save.
 
+Four more were merged on 10 October 2026:
+
+- **Shader errors on the PlayStation Vita** no longer overrun their buffer, and
+  every error is kept instead of only the last one.
+- **A shader that fails to compile on the PlayStation Vita** no longer leaks
+  memory.
+- **With the Vulkan video driver**, a menu element reaching past the top of the
+  screen is now drawn in the right place.
+- **Vulkan shader presets that use earlier frames** no longer copy a frame
+  before it is ready.
+
 ## Should you use it?
 
 **No — use the official RetroArch.** Upstream ships builds for every platform, gets
