@@ -13,6 +13,8 @@ so dated sections stand in for versions. Planned work lives in
 
 - **Pressless's page plays its new trailer, with music, hosted on this site**
 
+- **Slipcase's and OneUp's pages play their new trailers too; Slipcase's replaces its older silent demo**
+
 - **Groundwork has a page: its first release sets up a fresh openSUSE install, with an AppImage download, four screenshots and its logo**
 
 - **Pressless has a privacy policy page, linked from its project page**
