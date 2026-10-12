@@ -26,6 +26,9 @@ So the file has to be small and self-explanatory:
 
 - **H.264 in MP4**, which every browser plays without a fallback encode.
 - **Silent.** Drop the audio track entirely (`-an`); the caption carries the meaning.
+  A YouTube trailer, such as `pressless-trailer`, keeps its music. The music carries
+  no meaning, so the caption still describes everything on screen. Scale a trailer
+  to 1280×720 and encode it with `-crf 26` and AAC at 96k.
 - **Short and lean** — a ~30 s tour at ~1600×1000 fits in well under a megabyte, and
   the visitor pays for none of it until they press play (`preload="none"`).
 - **Metadata up front** so playback can start before the download finishes:

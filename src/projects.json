@@ -753,7 +753,12 @@
         { "src": "shots/pressless-6-page-editor-light.png", "alt": "Editing the site's About page in the same box, with the finished page shown beside it" },
         { "src": "shots/pressless-7-setup-github-light.png", "alt": "Setup's Sign in to GitHub page: four numbered steps (press Next, open the link and type the code on GitHub, click Authorize, come back and press Next again), a short code to type, the GitHub address to type it at, and a Next button" },
         { "src": "shots/pressless-8-visitors-light.png", "alt": "Pressless's visitor page: 152 people read the site in the last 4 weeks, a bar chart of readers per day, and tables of countries with flags, how readers found the site, and the most-read pages" }
-      ]
+      ],
+      "video": {
+        "src": "pressless-trailer.mp4",
+        "poster": "pressless-trailer-poster.jpg",
+        "caption": "A 42-second trailer for Pressless, with background music and soft clicks but no speech; everything it says is written on screen. It is set on a page of lined paper. It opens with the words \"You want a website. Without renting one.\", then the Pressless logo and the line \"Write it. Press it. It's live.\" Five short clips of the app follow, each framed like a window with a caption below. \"Start from a ready-made site\": in Pressless's dark look, a box is ticked to start with a starter site, and the Meadow look is chosen, then Harbour. \"Give it a title\": \"A morning at the market\" is typed into the Title box and New entry is pressed. \"See the real page as you write\": the sentence \"The fish stalls open at six. Gulls wait on every roof.\" is typed into the writing box, and the finished page beside it, a navy-and-white site called Seaside Notes, fills in with the same words. \"One press puts it on your site\": Press to site is clicked, and a line appears: \"Published. Your site shows it within a few minutes.\" \"Pick how Pressless looks\": the Theme menu in the top bar is switched from following the computer to Light, and the whole app turns from dark to light. Three lines follow: \"Three starter looks to begin from\", \"Your words stay files on your computer\" and \"Free hosting on GitHub Pages\". Then \"Linux · Windows\" and \"Early beta: download, unpack and go\". It ends on the logo with \"Free and fully open source\", \"Download it free at antsprojectshub.co.za\", and links to support the project on GitHub Sponsors, Patreon and Paybru. The site shown is made-up demo content."
+      }
     }
   ],
   "support": [
