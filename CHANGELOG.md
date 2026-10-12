@@ -29,7 +29,7 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
-- **Rusty PSN's page credits RainbowCookie32's work plainly, lists what this copy adds, and shows three screenshots; it now says it builds on Linux only so far**
+- **Rusty PSN's page credits RainbowCookie32's work plainly, lists what this copy adds, its logo and four screenshots; it now says it builds on Linux only so far**
 
 - **Pressless's privacy page and project page: turning off visitor numbers now deletes the Google key and the saved figures from your computer**
 

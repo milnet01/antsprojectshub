@@ -540,9 +540,11 @@
       "upstream": "RainbowCookie32/rusty-psn",
       "homepage": null,
       "category": "emulation",
+      "logo": "logos/rusty-psn.svg",
       "screenshots": [
         { "src": "shots/rusty-psn-1-update-list.png", "alt": "Rusty PSN's window listing every update Sony has published for LittleBigPlanet on PS3: thirteen updates, from v01.02 upwards, each with its size and a Download button, and Download all and Download latest buttons at the top" },
         { "src": "shots/rusty-psn-2-download-in-progress.png", "alt": "Two PS3 games in the list, LittleBigPlanet and Uncharted 2, with Uncharted 2 marked as downloading; the bar along the bottom shows one active download at 30 percent, its speed and the time left" },
+        { "src": "shots/rusty-psn-3-rpcs3-library-scan.png", "alt": "The RPCS3 Library window over the update list: three installed PS3 games, with Uncharted 2 marked Up to date at version 01.09, LittleBigPlanet marked Update available from 01.18 to 01.30, and an Update All Outdated button" },
         { "src": "shots/rusty-psn-4-settings.png", "alt": "Rusty PSN's Settings window: download folder with Pick folder and Reset buttons, a folder structure choice showing the serial-first layout, maximum downloads at once, theme, notifications, and RPCS3 folder settings" }
       ]
     },
