@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Hell's Gate has a page: our openSUSE build support for this native PC port of Dante's Inferno, merged into the main project**
+
 - **Pressless's page plays its new trailer, with music, hosted on this site**
 
 - **Slipcase's and OneUp's pages play their new trailers too; Slipcase's replaces its older silent demo**

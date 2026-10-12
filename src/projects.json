@@ -234,6 +234,20 @@
       ]
     },
     {
+      "slug": "hells-gate",
+      "name": "Hell's Gate",
+      "tagline": "Dante's Inferno, rebuilt to run natively on PC, now buildable on openSUSE.",
+      "blurb": "Hell's Gate turns the Xbox 360 game Dante's Inferno into a native Windows and Linux program, with no emulator. We added openSUSE Tumbleweed build support, and the author merged it into the main project.",
+      "status": "wip",
+      "repo": "milnet01/hells-gate-recomp",
+      "platforms": ["win", "linux"],
+      "isFork": true,
+      "upstream": "florinp93/hells-gate-recomp",
+      "homepage": null,
+      "category": "games",
+      "screenshots": []
+    },
+    {
       "slug": "album-builder",
       "name": "Album Builder",
       "tagline": "Curate albums from recordings, with lyric-sync and reports.",
