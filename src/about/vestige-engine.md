@@ -35,8 +35,9 @@ background sound can change with the place and the time of day, and spoken lines
 can carry captions. The demo scene does not use it yet, and the editor's sound
 tools are still to come.
 
-There is also a visual scripting editor, for wiring behaviour together as a diagram
-of connected nodes. Scripts built there do not run inside a scene yet.
+There is also an early visual scripting editor, for wiring behaviour together as
+connected nodes. It is not finished: scripts built there do not run inside a scene
+yet.
 
 ## Getting a look at it
 
