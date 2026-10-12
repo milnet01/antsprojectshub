@@ -13,24 +13,27 @@ for building and inhabiting 3D scenes.
 It is one program with two halves, and the **Esc** key swaps between them.
 
 - **The editor** is where you arrange a scene — place objects, light them, set up
-  physics and sound, and undo it all when you change your mind.
+  physics, and undo it all when you change your mind.
 - **Walkthrough mode** drops you inside it. W A S D and the mouse, Shift to run.
   Xbox and PlayStation controllers work too.
 
 The rendering is the part most of the work has gone into. Realistic materials that
 respond to light the way real surfaces do, shadows from the sun and the nearest
 lamps, bounced light so a red wall tints the floor beside it, volumetric fog and
-god rays through windows, clouds overhead, and around a million individually
-simulated blades of grass that cast their own shadows. The demo meadow ships with
-its trees, pond lilies, shrubs and rocks.
+god rays through windows, and around a million individually simulated blades of
+grass that cast their own shadows. The demo meadow ships with its trees, pond
+lilies, shrubs and rocks. It sits under a real cloudy sky, with the sunlight
+matched to it. Moving clouds, weather and time of day are planned.
 
-Underneath that: a full physics engine with cloth, which hangs and settles the
-same on the graphics card as on the processor, skeletal animation for
-characters, and characters that can find their own way around a scene. The 3D
-audio is aware of the room. A sound is muffled by a real wall between you and it,
-each space gets its own echo worked out from its shape, and footsteps and impacts
-sound like the surface they hit. Background soundscapes change with the place
-and the time of day, and spoken lines come with captions.
+Underneath that: a full physics engine and skeletal animation for characters.
+Its cloth simulation hangs and settles the same on the graphics card as on the
+processor. It is not yet in the free demo scene. It can map where a character is
+able to walk in a scene. Characters that walk those paths by themselves come next.
+
+Its sound system is built: walls muffle sounds, each space can have its own echo,
+background sound can change with the place and the time of day, and spoken lines
+can carry captions. The demo scene does not use it yet, and the editor's sound
+tools are still to come.
 
 There is also a visual scripting editor, for wiring behaviour together as a diagram
 of connected nodes. Scripts built there do not run inside a scene yet.
@@ -51,17 +54,18 @@ every case.
 
 It works, and it is genuinely early. The engine hits its target of 60 frames a
 second on mid-range hardware. Quality presets and a render-scale setting let older
-graphics cards keep up. The parts that make a scene look and sound right are built:
-lighting, shadows, physics, audio, animation, weather, vegetation. The in-game
-menus work too, including graphics settings players can change.
+graphics cards keep up. The parts that make a scene look right are built: lighting,
+shadows, physics, animation, vegetation. The sound system is built too, though
+the demo scene does not use it yet. The in-game menus work, including graphics
+settings players can change.
 
 What is missing is most of the game-making layer. There is no networking and no
 multiplayer. Scripts do not run yet. It is also not a Unity or Unreal
 competitor and is not trying to be: no asset store, no scripting language, no
 marketplace.
 
-The interface is in English, French, German, Spanish, Italian and Brazilian
-Portuguese.
+The game menus are translated into nine languages, chosen in the editor's
+settings. The editor itself is in English.
 
 Accessibility is built in rather than bolted on: colour-blind modes, subtitles,
 fully remappable controls, a reduce-motion setting and photosensitive safety limits.

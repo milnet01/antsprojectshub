@@ -4,7 +4,7 @@
       "slug": "vestige-engine",
       "name": "Vestige Engine",
       "tagline": "A 3D game engine built from scratch.",
-      "blurb": "A 3D engine written in C++ from the ground up, for walking through spaces you build yourself. Realistic lighting and shadows, volumetric fog, a meadow of a million grass blades, physics, character animation, and 3D sound that is muffled by real walls. It comes with a built-in editor and profiling tools.",
+      "blurb": "A 3D engine written in C++ from the ground up, for walking through spaces you build yourself. Realistic lighting and shadows, volumetric fog, a meadow of a million grass blades, physics and character animation. It comes with a built-in editor and profiling tools.",
       "status": "beta",
       "repo": "milnet01/Vestige",
       "platforms": [
