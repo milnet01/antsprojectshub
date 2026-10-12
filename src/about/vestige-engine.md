@@ -12,8 +12,8 @@ for building and inhabiting 3D scenes.
 
 It is one program with two halves, and the **Esc** key swaps between them.
 
-- **The editor** is where you arrange a scene — place objects, light them, set up
-  physics, and undo it all when you change your mind.
+- **The editor** is where you arrange a scene — place objects, light them,
+  and undo it all when you change your mind.
 - **Walkthrough mode** drops you inside it. W A S D and the mouse, Shift to run.
   Xbox and PlayStation controllers work too.
 
@@ -64,11 +64,13 @@ multiplayer. Scripts do not run yet. It is also not a Unity or Unreal
 competitor and is not trying to be: no asset store, no scripting language, no
 marketplace.
 
-The game menus are translated into nine languages, chosen in the editor's
-settings. The editor itself is in English.
+The game menus are in nine languages, chosen in the editor's settings. The
+choice is not yet remembered between starts. The editor itself is in English.
 
-Accessibility is built in rather than bolted on: colour-blind modes, subtitles,
-fully remappable controls, a reduce-motion setting and photosensitive safety limits.
+The editor's Settings window has accessibility settings: reduced motion, keys you
+can remap, and a colour-vision filter that shows the scene as people with three
+kinds of colour blindness see it. The game's own Settings pages for these are
+still empty.
 
 **macOS is not supported and will not be.** Apple caps OpenGL at 4.1 and Vestige
 needs 4.5. Vulkan is on the long-term roadmap, and would change that answer.
