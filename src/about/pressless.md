@@ -83,7 +83,6 @@ kind wants — so others may well follow later.
   layout, and put music, downloads and documents on it, so Pressless can
   replace WordPress entirely.
 - **Bring in an existing WordPress blog**, with an import anyone can run.
-- **A plain starter site** for someone beginning from nothing.
 - **Offer to add Pressless to the Start Menu and the desktop** the first time
   it opens.
 
@@ -98,14 +97,16 @@ Pressless keeps everything in a folder called `Pressless-data`, right beside
 the program. So put the program where you want your writing to live before
 you first start it.
 
-The first time, it asks for your site's GitHub repository, your site's name and
-address, and a publishing key from GitHub. It checks them with
-GitHub before saving anything, and keeps the key where only your own computer
-account can read it. So you need a GitHub account and a GitHub Pages site
-before you begin.
+Pressless can now start someone with no website at all. Setup walks you
+through GitHub step by step and signs you in with a short code, with no keys
+to copy. You pick one of three starter looks, and your site is live.
 
 If a console window (a plain text window) opens alongside the browser, leave
 it open while you work: closing it stops Pressless.
 
-You cannot bring an existing blog in yet. You start with an empty site and
+You cannot bring an existing blog in yet. You start from a starter look and
 write from there. An import from WordPress that anyone can run is planned.
+
+Recent fixes: the buttons and boxes now keep still while you work, so nothing
+jumps about as you save or publish. And on Windows, a fault that stopped
+Update now from installing the new version is fixed.

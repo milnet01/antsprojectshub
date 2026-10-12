@@ -19,6 +19,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless's page covers starting with no website at all, and its steadier buttons and Windows update fix**
+
 - **RetroArch's page lists four more fixes accepted upstream on 10 October**
 
 - **demoreel's page covers recording sound and laying music under a film**
