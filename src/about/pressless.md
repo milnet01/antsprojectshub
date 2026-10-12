@@ -49,6 +49,8 @@ kind wants — so others may well follow later.
   they were and you are told what to do next. Pressless refuses to replace
   your site with an empty one.
 - **Undo the last publish** in one step, when a change turns out wrong.
+- **Open your site in one click.** View your site sits in the top bar, and
+  appears again after you publish and at the end of setup.
 - **Add photographs** from the editor. Pressless keeps your original
   untouched and puts the picture where you were typing.
 - **Edit your other pages**, such as an About page, and the site's header,

@@ -751,7 +751,7 @@
         { "src": "shots/pressless-3-writing-list-light.png", "alt": "Pressless's list of your writing: drafts, entries on your site, your pages and your templates, each in its own card, with a Theme picker in the top bar" },
         { "src": "shots/pressless-5-writing-list-high-contrast.png", "alt": "The list in the high-contrast light look, chosen from the Theme picker in the top bar: black text and outlines on white" },
         { "src": "shots/pressless-6-page-editor-light.png", "alt": "Editing the site's About page in the same box, with the finished page shown beside it" },
-        { "src": "shots/pressless-7-setup-light.png", "alt": "The first-run setup page, Set up Pressless, asking for the site's GitHub repository, its name and address, an optional tag to leave out and a publishing key, with a Check with GitHub and save button" },
+        { "src": "shots/pressless-7-setup-github-light.png", "alt": "Setup's Sign in to GitHub page: four numbered steps (press Next, open the link and type the code on GitHub, click Authorize, come back and press Next again), a short code to type, the GitHub address to type it at, and a Next button" },
         { "src": "shots/pressless-8-visitors-light.png", "alt": "Pressless's visitor page: 152 people read the site in the last 4 weeks, a bar chart of readers per day, and tables of countries with flags, how readers found the site, and the most-read pages" }
       ]
     }

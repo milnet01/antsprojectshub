@@ -21,6 +21,8 @@ so dated sections stand in for versions. Planned work lives in
 
 - **Pressless's page covers starting with no website at all, and its steadier buttons and Windows update fix**
 
+- **Pressless's page shows its new sign-in-with-a-code setup screen, and lists opening your site in one click**
+
 - **RetroArch's page lists four more fixes accepted upstream on 10 October**
 
 - **demoreel's page covers recording sound and laying music under a film**
