@@ -68,6 +68,9 @@ const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
 const releasesUrl = (repo) => `https://github.com/${repo}/releases`;
 const repoUrl = (repo) => `https://github.com/${repo}`;
 const issuesUrl = (repo) => `https://github.com/${repo}/issues`;
+// A fork can have its issue tracker switched off on GitHub, and then the link is a dead
+// end. `issuesOff` is set only when GitHub said so; an unanswered request keeps the button.
+const issueButton = (p) => (p.issuesOff ? "" : ext(issuesUrl(p.repo), "Report an issue", "btn btn--ghost"));
 // GitHub's own source archive for a repo — a real file, served immediately, rather than
 // a page a visitor has to read and click through. `refs/tags/<tag>.zip` pins a released
 // version; bare `HEAD.zip` tracks the default branch and is what a repo with no release
@@ -607,7 +610,7 @@ function actionButtons(p, release) {
     buttons.push(ext(fallback, fallbackLabel, `btn ${primary}`, { project: p.slug, platform: p.homepage ? "homepage" : "source" }));
   }
 
-  buttons.push(ext(issuesUrl(p.repo), "Report an issue", "btn btn--ghost"));
+  buttons.push(issueButton(p));
   return `<div class="actions">${buttons.join("")}</div>`;
 }
 
@@ -976,7 +979,7 @@ function changelogPage(p, history) {
       <p class="detail-tagline">Every release, newest first — ${n} in total.</p>
       <div class="actions">
         <a class="btn btn--primary" href="/p/${esc(p.slug)}.html">Back to ${esc(p.name)}</a>
-        ${ext(issuesUrl(p.repo), "Report an issue", "btn btn--ghost")}
+        ${issueButton(p)}
       </div>
     </section>
     <div class="changelog">
@@ -1381,8 +1384,12 @@ async function main() {
     let history = [];
     if (isPublished(p)) {
       try {
-        let listFailed;
-        ({ release, history, listFailed } = await fetchReleases(p.repo, p.assetMatch));
+        let listFailed, repoInfo;
+        [{ release, history, listFailed }, repoInfo] = await Promise.all([
+          fetchReleases(p.repo, p.assetMatch),
+          ghJson(`/repos/${p.repo}`),
+        ]);
+        p.issuesOff = repoInfo?.has_issues === false;
         if (history.length) enriched++;
         if (listFailed) console.warn(`! ${p.slug}: release fetch failed (no release list from GitHub) — using fallback`);
       } catch (err) {
