@@ -635,7 +635,7 @@
       "slug": "groundwork",
       "name": "Groundwork",
       "tagline": "Sets up a fresh openSUSE install the way you want, in one sitting.",
-      "blurb": "Groundwork checks the computer first, then offers choices level by level: essentials (system updates, media codecs, Flatpak and Flathub, and drivers only where your hardware needs them), system setup (snapshots, firewall, firmware updates, laptop power), configuration (computer name, remote login, the clock for dual-boot) and extras (popular apps, gaming, developer tools, a backup tool, fonts). Nothing changes until you press Apply, and it asks for your password once. A single AppImage for Tumbleweed and Leap 16.",
+      "blurb": "Groundwork checks the computer first, then offers choices level by level: essentials (system updates, media codecs, Flatpak and Flathub, and drivers only where your hardware needs them), system setup (snapshots, firewall, firmware updates, laptop power), configuration (computer name, remote login, the clock for dual-boot) and extras (popular apps, gaming, developer tools, a backup tool, fonts). Nothing changes until you press Apply, and it asks for your password once. It also looks after the computer afterwards: it keeps the desktop responsive when memory runs out, offers a safe keyboard restart for a frozen machine, and starts sooner. A single AppImage for Tumbleweed and Leap 16.",
       "status": "beta",
       "repo": "milnet01/Groundwork",
       "platforms": [
@@ -649,7 +649,7 @@
       "screenshots": [
         {
           "src": "shots/groundwork-2-essentials.png",
-          "alt": "Groundwork's Essentials page, headed 'What a desktop needs for things to work.' Each row has a tick box, a status and a plain description. 'Bring the system up to date' is ticked. Media codecs and Flatpak and Flathub say 'already done'. The NVIDIA graphics driver, Sound firmware and Broadcom Wi-Fi rows are greyed out and say 'not needed here', each with the reason, such as 'No NVIDIA graphics card was found.'"
+          "alt": "Groundwork's Essentials page in its dark theme, headed 'What a desktop needs for things to work.' Each item checks itself first, and says what it found. Each row has an on/off switch, what it found and a plain description. 'Bring the system up to date' says no updates were waiting. Media codecs, Flatpak and Flathub, and Video acceleration on AMD graphics say 'already done'. The NVIDIA graphics driver, Sound firmware and Broadcom Wi-Fi rows are greyed out and say 'not needed here', each with the reason, such as 'No NVIDIA graphics card was found.'"
         },
         {
           "src": "shots/groundwork-3-extras.png",
