@@ -31,7 +31,8 @@ Groundwork also keeps a computer running well once it is set up:
 It can also set up virtual machines, game controllers and GameMode, video
 acceleration on AMD graphics, NumLock on at login,
 [Ants Terminal](/p/ants-terminal.html) as the terminal, and
-[OneUp](/p/oneup.html), a one-window update app. Media codecs come from Packman's full repository, so
+[OneUp](/p/oneup.html), a one-window update app. OneUp and Ants Terminal
+are offered on Tumbleweed and Leap 16. Media codecs come from Packman's full repository, so
 videos and music play everywhere, in the browser too.
 
 ## Where it stands
