@@ -3,7 +3,8 @@ demoreel records a video of an app running, without filming your desktop.
 You name an app. demoreel opens it out of sight, records it, and gives you back
 a video file of that app, or one picture of it. Nothing else from your screen
 gets in: no other windows, no notifications, no magnifier lens sliding around.
-It can then trim the video, join clips and add a line of text.
+It can then trim the video, join clips, add text, and turn clips into a short
+trailer.
 
 It is for anyone who needs a short video of a Linux desktop app — for a project
 page, an app store listing or a bug report — without setting up a screen
@@ -26,6 +27,23 @@ It speaks sixteen languages. Every message it prints can appear in your own
 language, and each language has a short page on installing demoreel and making a
 first recording. The translations are drafts for now; the README says how a
 native speaker can help confirm one.
+
+## Making a trailer
+
+demoreel can make a short trailer from its own recordings, written as a
+plain-text list of scenes:
+
+- Show the app as a neat floating window with rounded corners and a soft
+  shadow, over a slowly moving gradient in your own colours.
+- Push in slowly on a scene, or glide in on the part of the app that matters.
+- Change scenes with wipes, slides and dissolves, not only fades.
+- Slow a clip down, speed it up, or freeze on one moment.
+- Put several lines of text on screen at once, each sliding into place.
+- Let a logo grow gently into view as it fades in.
+- Play a click or a whoosh at the exact moment it belongs, mixed with the
+  music.
+- Script a drag, for moving an item or widening a pane, as well as clicks and
+  keys.
 
 ## Why not just record the screen
 
