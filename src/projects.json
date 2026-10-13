@@ -716,9 +716,9 @@
         { "src": "shots/demoreel-gpu-vkcube.png", "alt": "A still taken with --gpu: the Vulkan test cube, textured with the LunarG logo, drawn by the graphics card, which the default virtual display cannot do" }
       ],
       "video": {
-        "src": "demoreel-demo.mp4",
-        "poster": "demoreel-demo-poster.jpg",
-        "caption": "A silent 21-second clip of demoreel recording a demo of itself. In a dark terminal, the command 'demoreel record -o cube.mp4 -d 4 --gpu --app-log app.log -- vkcube' is typed and run. demoreel reports that it is recording private screen :3 for four seconds, then prints the finished video's path. That video is then played back below the terminal: a grey cube with teal LunarG logos, spinning. Nothing from the real desktop appears, because the terminal and the cube each ran on a private screen of their own."
+        "src": "demoreel-trailer.mp4",
+        "poster": "demoreel-trailer-poster.jpg",
+        "caption": "A 47-second trailer for demoreel, with music, in a dark green terminal style. It opens on two lines: 'You need an app video. Your whole desktop gets filmed.' The demoreel logo follows, with the line 'Record any app, never your desktop'. A terminal runs 'demoreel record -o calc.mp4 -d 3 --app-log app.log -- kcalc'; demoreel says it is recording, then prints the finished file's path. Caption: 'One command records any app'. KDE's calculator, filling the whole picture, has 4, 5, ×, 1, 2 and = clicked in turn by demoreel. Caption: 'It clicks and types for you'. The same sum plays in a rounded window with a soft shadow, over a slowly moving coloured background. Caption: 'A framed window, ready to share'. A smooth zoom closes in on the answer, 540. Caption: 'Zoom in on what matters'. The demoreel logo grows into view, and 'Record any app' and 'and make it a film' slide up beneath it. Caption: 'Titles that slide into place'. One calculator scene slides away to the next. Caption: 'Smooth changes between scenes'. Three lines follow: 'Your desktop never appears', 'Trim, caption and join clips' and 'Add music and sounds'. Then 'Linux', above 'openSUSE · Debian · Ubuntu · Fedora · Arch'. It ends on the logo with 'Free and fully open source', 'Download it free at antsprojectshub.co.za', and links to GitHub Sponsors, Patreon and Paybru. demoreel recorded and edited every calculator scene itself."
       }
     },
     {

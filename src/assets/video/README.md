@@ -36,8 +36,7 @@ So the file has to be small and self-explanatory:
 - **Poster** = a frame of the video itself. Prefer the first frame, so nothing shifts
   when playback starts: `ffmpeg -i out.mp4 -frames:v 1 -q:v 3 poster.jpg`. Where the
   first frame shows nothing (an empty terminal before a command is typed), take one
-  that shows what the video is about instead — add `-ss <seconds>` before `-i`, as
-  `demoreel-demo` does. A still that says nothing costs more than the jump on play.
+  that shows what the video is about instead — add `-ss <seconds>` before `-i`. A still that says nothing costs more than the jump on play.
   Use JPEG, not a quantised PNG —
   these UIs are dark, and palette quantisation bands the near-black backgrounds
   badly (measured on `finbreak-tour`; the plain PNG is clean but 2× the size).

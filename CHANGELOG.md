@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **demoreel's page plays its new trailer, with music, in place of its older silent demo**
+
 - **demoreel's page describes its new trailer-making: framed windows, zooms, transitions, sliding titles and sounds**
 
 - **Hell's Gate has a page: our openSUSE build support for this native PC port of Dante's Inferno, merged into the main project**
