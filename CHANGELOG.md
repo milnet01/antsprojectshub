@@ -33,6 +33,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **OneUp's page describes its latest fixes: easier-to-read blue in the light theme, no stutter during big downloads, messages over the window**
+
 - **Vestige's page plays its new trailer, with music, in place of its silent meadow fly-through; Pressless's page plays its remade trailer, which shows more of the app**
 
 - **Groundwork's page describes its new release: it now looks after the computer once it is set up, and shows a fresh Essentials screenshot in the dark theme; it also names openSUSE Slowroll, which it supports**

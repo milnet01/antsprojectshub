@@ -109,3 +109,10 @@ updates are waiting.
 Live and stable, on openSUSE Tumbleweed and Leap. It follows your desktop's
 light or dark setting. The engine underneath also runs on its own in a terminal;
 the window just drives it.
+
+**The latest update is all fixes.** In the light theme, blue links and outlined
+buttons are now a darker blue that's easy to read. The window no longer stutters
+during a big download. Small messages open over OneUp instead of in a corner of
+the screen, and a window you moved stays where you put it. Offline, the firmware
+step no longer reports "up to date" from an old firmware list. It also includes
+clearer warnings and a few smaller window and engine tidy-ups.
