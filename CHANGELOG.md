@@ -31,7 +31,7 @@ so dated sections stand in for versions. Planned work lives in
 
 - **Vestige's page plays its new trailer, with music, in place of its silent meadow fly-through; Pressless's page plays its remade trailer, which shows more of the app**
 
-- **Groundwork's page describes its new release: it now looks after the computer once it is set up, and shows a fresh Essentials screenshot in the dark theme**
+- **Groundwork's page describes its new release: it now looks after the computer once it is set up, and shows a fresh Essentials screenshot in the dark theme; it also names openSUSE Slowroll, which it supports**
 
 - **Rusty PSN's page credits RainbowCookie32's work plainly, lists what this copy adds, its logo and four screenshots; it now says it builds on Linux only so far**
 

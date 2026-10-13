@@ -37,6 +37,6 @@ videos and music play everywhere, in the browser too.
 ## Where it stands
 
 It is still in beta. It comes as a single AppImage file that runs
-without installing anything, on Tumbleweed and Leap 16. It speaks English and
-fourteen other languages, each marked as a draft until a fluent speaker has
-checked it.
+without installing anything, on Tumbleweed, Slowroll and Leap 16. It speaks
+English and fourteen other languages, each marked as a draft until a fluent
+speaker has checked it.
