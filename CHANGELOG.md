@@ -33,6 +33,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **OneUp's page notes its newest release: nothing changes in the app, but new versions reach you sooner**
+
 - **OneUp's page describes its latest fixes: easier-to-read blue in the light theme, no stutter during big downloads, messages over the window**
 
 - **Vestige's page plays its new trailer, with music, in place of its silent meadow fly-through; Pressless's page plays its remade trailer, which shows more of the app**
