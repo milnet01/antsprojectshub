@@ -9,6 +9,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- **Groundwork's page plays its new trailer, with music, hosted on this site**
+
 ## 2026-10-14
 
 ### Added

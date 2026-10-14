@@ -663,7 +663,12 @@
           "src": "shots/groundwork-1-checking.png",
           "alt": "Groundwork's welcome page: 'Groundwork sets up this computer the way you want. Each page offers a level of choices, from essentials to extras. Nothing changes until you press Apply.' A language menu is set to English, and the line 'Checking this computer…' shows it is looking at the machine before offering anything."
         }
-      ]
+      ],
+      "video": {
+        "src": "groundwork-trailer.mp4",
+        "poster": "groundwork-trailer-poster.jpg",
+        "caption": "A 43-second trailer for Groundwork, with music, in a dark green terminal style. It opens on two lines: 'A fresh openSUSE install. Hours of forum commands.' The Groundwork logo follows, with the line 'Set up openSUSE in one window'. Groundwork's welcome page opens its Colours list (Follow the desktop, Light, Dark, two high-contrast choices, Midnight, Emerald, Nord, Dracula and more), and Tokyo Night is picked. Caption: 'Pick colours easy on your eyes'. The Essentials page lists system updates, media codecs, Flatpak and Flathub, and drivers; each says whether it is already done, or not needed here, such as an NVIDIA driver on a computer with no NVIDIA card. 'Bring the system up to date' is switched on. Caption: 'Each item checks itself first'. A page of upkeep choices follows: RAM protection, an emergency keyboard escape, a size limit on the system log and a shorter wait at the boot menu are already done, and 'Smoother spinning hard drives' and 'Calmer wake from hibernation' are switched on. Caption: 'Keep the computer running smoothly'. On the extras, Zoom, Bottles and Virtual machines are switched on, beside Spotify and Steam, which are already done. Caption: 'Add the apps you want'. The 'Ready to apply' page lists the chosen items in the order they will run, after one password. Caption: 'One password, and it's done'. Three lines follow: 'Codecs, drivers and Flathub sorted', 'Safe to run again' and 'Stops memory freezes'. Then 'Tumbleweed · Slowroll · Leap 16', above 'openSUSE · one AppImage for 64-bit PCs'. It ends on the logo with 'Free and fully open source', 'Download it free at antsprojectshub.co.za', and links to GitHub Sponsors, Patreon and Paybru."
+      }
     },
     {
       "slug": "lotto-tracker",
