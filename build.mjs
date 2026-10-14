@@ -32,6 +32,8 @@ import {
   assetPlatform,
   pickAsset,
   pickLatestRelease,
+  LINUX_PACKAGES,
+  linuxPackages,
   hasToken,
 } from "./lib/github.mjs";
 
@@ -428,6 +430,9 @@ async function fetchReleases(repo, assetMatch = null) {
     for (const a of Array.isArray(r.assets) ? r.assets : []) {
       const pl = assetPlatform(a.name);
       if (pl) downloads[pl] += a.download_count || 0;
+      // The same total split by package format, for the one-button-per-distro case.
+      const fmt = pl === "linux" && LINUX_PACKAGES.find((f) => f.pat.test(a.name));
+      if (fmt) downloads[fmt.key] = (downloads[fmt.key] || 0) + (a.download_count || 0);
     }
   }
 
@@ -592,16 +597,23 @@ function actionButtons(p, release) {
   // Direct per-OS download to the latest release's matching file (auto-updates each
   // build); platforms without a matching file share one fallback button.
   const matched = desktop.map((pl) => ({ pl, asset: hasRelease ? pickAsset(release.assets, pl, p.assetMatch) : null }));
-  const direct = matched.filter((m) => m.asset);
+  // A Linux release of one package per distro family becomes one button per family
+  // (see linuxPackages). Each still reports platform "linux", so the stats see one OS.
+  const direct = matched.filter((m) => m.asset).flatMap((m) => {
+    const split = m.pl === "linux" && linuxPackages(release.assets, p.assetMatch);
+    return split
+      ? split.map((f) => ({ pl: m.pl, asset: f.asset, label: f.label, count: f.key }))
+      : [{ ...m, label: PLATFORM[m.pl] || m.pl, count: m.pl }];
+  });
   direct.forEach((m, i) => {
-    const btn = ext(m.asset.url, `Download · ${PLATFORM[m.pl] || m.pl}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`, {
+    const btn = ext(m.asset.url, `Download · ${m.label}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`, {
       project: p.slug,
       platform: m.pl,
     });
-    // Cumulative all-time downloads for this OS. A freshly-cut release genuinely has
-    // none yet, and printing "0 downloads" under the button reads worse than printing
-    // nothing at all — so the count appears only once there is one.
-    const n = release.downloads?.[m.pl] ?? 0;
+    // Cumulative all-time downloads for this OS, or this package format. A freshly-cut
+    // release genuinely has none yet, and printing "0 downloads" under the button reads
+    // worse than printing nothing at all — so the count appears only once there is one.
+    const n = release.downloads?.[m.count] ?? 0;
     const count = n > 0 ? `<span class="dl__count">${esc(dlCountLabel(n))}</span>` : "";
     buttons.push(`<span class="dl">${btn}${count}</span>`);
   });

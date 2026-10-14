@@ -130,7 +130,8 @@ offline, the build still succeeds — each project falls back to static metadata
   deliberately conservative), falling
   back to `homepage` → Releases page → repo home. A project whose release ships two builds
   per OS names the one to link with `assetMatch` in `projects.json`, a regex the file must
-  also match. Companion files — signatures, checksum
+  also match. A Linux release with both a `.deb` and an `.rpm` and no AppImage or Flatpak
+  gets one button per distro family (`linuxPackages`). Companion files — signatures, checksum
   manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching.
 
 The About-page and 1.0.0 checks are in [`content.md`](content.md).

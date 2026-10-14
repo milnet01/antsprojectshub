@@ -122,7 +122,22 @@ Live and in use, on Linux. It is a command-line tool with no window of its own,
 and it says plainly when something it needs is not installed rather than failing
 obscurely.
 
-For now it installs by copying one file: download it, make it executable, and put
-it on your path. It needs Python 3, and a few standard programs for the virtual
-display and the video. Distro packages for openSUSE, Debian and Ubuntu, Fedora
-and Arch are planned.
+It installs like any other program. The buttons above download the package for
+Debian and Ubuntu, or for Fedora and openSUSE. Arch users will find a PKGBUILD in
+the [latest release](https://github.com/milnet01/demoreel/releases/latest). The
+package brings in every program demoreel needs from your distro's own
+repositories, and installs the manual page, tab completion and translations.
+
+To get each new version with your system's updates, add demoreel's
+[repository on the openSUSE Build Service](https://download.opensuse.org/repositories/home:/milnet:/demoreel/).
+It serves openSUSE Tumbleweed and Leap 16.0, Fedora 43 and 44, Debian 12 and 13,
+Ubuntu 22.04, 24.04 and 26.04, Arch and Mageia 10.
+
+Every release can be checked: its tag is signed, its files are listed with their
+checksums, and each file has a GitHub build record. The project's
+[SECURITY.md](https://github.com/milnet01/demoreel/blob/HEAD/SECURITY.md) gives
+the three commands.
+
+On openSUSE, recording an app that uses the graphics card needs ffmpeg's video
+library from Packman, a community repository. `demoreel check` names the package
+to install.
