@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-10-14
+
 ### Added
 
 - **demoreel's page plays its new trailer, with music, in place of its older silent demo**
