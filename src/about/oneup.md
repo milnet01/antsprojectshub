@@ -117,6 +117,16 @@ the screen, and a window you moved stays where you put it. Offline, the firmware
 step no longer reports "up to date" from an old firmware list. It also includes
 clearer warnings and a few smaller window and engine tidy-ups.
 
-The newest release changes nothing in the app itself. Its download page on GitHub
-lists what changed again. A stuck build of the download now fails within half an
-hour instead of sitting for hours, so new versions reach you sooner.
+**The newest update fixes four things.** Pressing Stop while packages download
+is now reported as a stop, not a failure. The signing-key hint appears only when
+there really is a signing-key problem, not whenever a package has "gpg" or "key"
+in its name. The download figure now reaches the end when some packages were
+downloaded before. A run that updated only Flatpak apps no longer says nothing
+was needed.
+
+OneUp's openSUSE package has a new address: its own project on the openSUSE
+Build Service,
+[home:milnet:oneup](https://download.opensuse.org/repositories/home:/milnet:/oneup/).
+If you added the older home:milnet repository, it keeps getting OneUp updates
+until the next major version, so nobody is cut off. To move, remove it and add
+the new one.

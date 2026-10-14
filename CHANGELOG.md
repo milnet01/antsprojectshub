@@ -15,6 +15,8 @@ so dated sections stand in for versions. Planned work lives in
 
 - **demoreel installs as a package: its page has one download button for Debian and Ubuntu and one for Fedora and openSUSE, and says how to get updates from its repository**
 
+- **OneUp's page describes its latest fixes and its new openSUSE repository address**
+
 ## 2026-10-14
 
 ### Added
