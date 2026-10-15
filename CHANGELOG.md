@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **RetroDB's page describes its 21 languages, its no-Python download, starting it from a pinned icon, its Quick Fixes panel and its nine age-rating systems**
+
 - **Groundwork's page plays its new trailer, with music, hosted on this site**
 
 - **demoreel installs as a package: its page has one download button for Debian and Ubuntu and one for Fedora and openSUSE, and says how to get updates from its repository**

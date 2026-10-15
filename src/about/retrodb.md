@@ -17,8 +17,9 @@ your browser, and point it at your ROM folders.
   have set up for that system, RetroArch included.
 - **Tracks achievements and trophies** from RetroAchievements, Steam, Xbox, and
   PlayStation — including local RPCS3 trophies.
-- **Age ratings from around the world** (ESRB, PEGI, CERO, USK and more), mapped
-  against each other so you can filter by whichever one you actually recognise.
+- **Age ratings from around the world**: nine rating systems, including ESRB,
+  PEGI, CERO, USK and China's. They are mapped against each other, so you can
+  filter by whichever one you actually recognise.
 - **Organises the collection** with tags, custom lists, a wishlist, and
   collector trophies you unlock by hitting milestones.
 - **Brings in what you already own.** Import from CLZ, or from your Steam, Xbox
@@ -29,19 +30,26 @@ your browser, and point it at your ROM folders.
 - **Sharpens old artwork** with an optional AI upscaler for low-resolution
   covers and screenshots.
 - **Shows you what you have** through a twelve-tab analytics dashboard with
-  charts, leaderboards, and PNG or CSV export.
+  charts, leaderboards, and PNG or CSV export. A Quick Fixes panel on the home
+  page counts games missing box art and broken ROM paths, and finds duplicate
+  ROMs.
 - **Estimates how long each game takes to finish**, so you can pick something
   that fits the evening you actually have.
 
 There is also a Museum — an interactive encyclopedia of the consoles themselves —
 and seven themes to look at it all through, including Cyberpunk, Matrix and a
-vector starfield. The interface comes in English and several other languages.
+vector starfield. The interface comes in 21 languages, and screen readers
+announce the progress of long jobs aloud.
 
 ## What you will need
 
-RetroDB is free and needs Python 3.10 or newer. Extract it, run `python
-install.py`, start it, and a setup wizard walks you through the rest at
-`http://localhost:5000`.
+RetroDB is free. The download buttons give you the usual version, which needs
+Python 3.10 or newer: extract it and run `python install.py`. Each release on
+GitHub also has a version that needs no Python, in the files ending
+`-CPU-Standalone.zip`.
+
+Once it is installed, you can start it from a pinned icon, with no terminal. A
+setup wizard then walks you through the rest at `http://localhost:5000`.
 
 **One thing to know up front:** the metadata scrapers, the achievement trackers
 and the AI features each need their own account or API key, which you create on
