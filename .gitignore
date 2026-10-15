@@ -23,3 +23,8 @@ __pycache__/
 # The superpowers brainstorm tool's working files: its server state and the mockup
 # pages it served. Throwaway; the design they explored is the site itself.
 .superpowers/
+
+# Owner-only reference files that must never be published, such as the DNS record backup
+# (.private/dns-records-backup-2026-08-24.md). Every push publishes the site, so they stay
+# out of git.
+.private/
