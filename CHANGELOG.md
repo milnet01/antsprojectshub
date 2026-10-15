@@ -41,6 +41,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Fixed
 
+- **Local Web Server Manager's description no longer says it shows each project's live output: the app keeps that output in log files instead**
+
 - **Games Hub's page no longer says Large mode is only in two games: it reaches all fourteen**
 
 - **Album Builder's page no longer says Windows can never make the numbered song folder: it can, with Developer Mode turned on**
