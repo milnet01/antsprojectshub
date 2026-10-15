@@ -59,7 +59,8 @@ failed=0
 for check in "$@"; do
   path=${check%%=*} text=${check#*=}
   # The query string asks the CDN for a fresh copy rather than one cached before the deploy.
-  if curl -fsS "$origin/${path#/}?ship=${sha:0:7}" | grep -qF -- "$text"; then
+  # Fetch the whole page first: piped into grep -q, curl fails when grep stops reading early.
+  if body=$(curl -fsS "$origin/${path#/}?ship=${sha:0:7}") && grep -qF -- "$text" <<<"$body"; then
     say "live: /${path#/} shows \"$text\""
   else
     say "NOT live: /${path#/} does not show \"$text\""
