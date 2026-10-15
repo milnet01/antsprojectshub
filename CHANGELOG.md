@@ -25,6 +25,8 @@ so dated sections stand in for versions. Planned work lives in
 
 - **Pressless's page describes editing your whole site: pages, menus, header and footer, with new screenshots of the page editor and the page list**
 
+- **Pressless's privacy policy explains its optional anonymous usage reports: what they hold, where they go, how to turn them off, and that they are deleted after two months**
+
 ## 2026-10-14
 
 ### Added
