@@ -27,6 +27,8 @@ so dated sections stand in for versions. Planned work lives in
 
 - **Pressless's privacy policy explains its optional anonymous usage reports: what they hold, where they go, how to turn them off, and that they are deleted after two months**
 
+- **Pressless's page says Google has approved it, and notes a fix to the replace-your-site warning**
+
 ## 2026-10-14
 
 ### Added

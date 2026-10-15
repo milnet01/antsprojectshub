@@ -128,6 +128,6 @@ it open while you work: closing it stops Pressless.
 You cannot bring an existing blog in yet. You start from a starter look and
 write from there. An import from WordPress that anyone can run is planned.
 
-Recent fixes: the buttons and boxes now keep still while you work, so nothing
-jumps about as you save or publish. And on Windows, a fault that stopped
-Update now from installing the new version is fixed.
+Google has approved Pressless, so setting up visitor numbers no longer warns
+that Google is still checking the app. And after you agree to replace an old
+site on GitHub, Pressless no longer shows the warning asking you to do it again.
