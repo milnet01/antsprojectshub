@@ -35,7 +35,10 @@ teaching it your bank's wording is the only work.
   far.
 - **Checks the bank's own payout messages** against its own figures, and shows the
   two side by side.
-- Flags anything still claimable, and when each prize expires.
+- **Lists the wins the bank has not yet paid**: unpaid, partly paid or payment
+  unknown, soonest deadline first, with the date each prize expires.
+- A lottery text from a sender the bank doesn't use is flagged on the page, never
+  trusted silently.
 
 **One ticket is usually several entries.** A "plus" game cannot be bought on its
 own — the lottery requires the base game, and runs a separate draw with its own

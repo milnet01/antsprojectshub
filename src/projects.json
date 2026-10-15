@@ -688,7 +688,7 @@
       "screenshots": [
         {
           "src": "shots/lotto-tracker-top.png",
-          "alt": "Lotto Tracker's dark page, using invented tickets. Below a notice that one entry cannot be checked, it lists two winning lines, each with the ticket's numbers beside the numbers drawn as coloured balls, the prize amount and the date by which it can be claimed, then the tickets that still have draws to come."
+          "alt": "Lotto Tracker's dark page, using invented tickets. Below a notice that one of seven entries cannot be checked, a Not yet paid section lists one win: the ticket's numbers beside the numbers drawn as coloured balls, Division 9, R15.00, marked unpaid, and the date it expires, 345 days away. Below that, Still outstanding lists the tickets with draws to come and the one entry that cannot be checked, because no results source publishes its pool."
         },
         {
           "src": "shots/lotto-tracker-entries.png",

@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Lotto Tracker's page shows its new Not yet paid list, with a fresh screenshot, and says a lottery text from an unknown sender is flagged**
+
 - **Local Web Server Manager's page describes its newest release: a timer on a starting project, a check that a running site answers, a first-run confirmation, a backup of its project list, and support for projects run as system services**
 
 - **Games Hub's page describes the gold light that shows whose turn it is**
