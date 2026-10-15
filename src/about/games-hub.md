@@ -39,9 +39,17 @@ highest totals.
 **Minesweeper and Sudoku can be paused**, which stops the clock and covers the
 board, so being interrupted costs you nothing.
 
-**There is a Large mode** in the toolbar for bigger, higher-contrast play. It is
-being fitted to the games one at a time — Canasta and Sudoku have it, the other
-twelve ignore it for now.
+**The Large switch in the toolbar makes every game easier to read.** Eleven games
+spell out how play stands in large words on the table itself. Canasta draws bigger
+cards and bigger dialogs, Sudoku draws bolder pencil marks, and Pinball enlarges its
+score strip. On the board games the keyboard cursor gets thicker, and on 2048, Chess
+and Minesweeper the numbers and labels grow.
+
+**In Hearts, Canasta, Chess, Draughts and Reversi, a soft gold light settles on
+whoever's turn it is**, so you can see whose move it is without reading anything.
+When the turn passes, one light fades out as the next fades in. It has a gold
+outline as well as a glow, so it does not depend on seeing the colour, and it grows
+stronger with Large switched on.
 
 **Four games play from the keyboard.** In Chess, Reversi, Draughts and
 Minesweeper the arrow keys move a cursor round the board, and Space or Return

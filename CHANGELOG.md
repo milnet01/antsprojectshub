@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Games Hub's page describes the gold light that shows whose turn it is**
+
 - **RetroDB's and Contact List's pages play their new trailers, with music, in place of their silent tours**
 
 - **Album Builder's page plays its remade trailer, which also shows dragging in a folder, songs already on an album, playlists, shuffle and repeat, eight languages and five colour themes**
@@ -36,6 +38,8 @@ so dated sections stand in for versions. Planned work lives in
 - **Pressless's page says Google has approved it, and notes a fix to the replace-your-site warning**
 
 ### Fixed
+
+- **Games Hub's page no longer says Large mode is only in two games: it reaches all fourteen**
 
 - **Album Builder's page no longer says Windows can never make the numbered song folder: it can, with Developer Mode turned on**
 
