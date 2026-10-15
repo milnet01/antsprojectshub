@@ -14,9 +14,9 @@ projects.
 
 - **It finds your projects for you** — which ones run a web server, how each one
   starts, and which port each wants.
-- **One row per project**, with a coloured light *and* the word `running`,
-  `stopped` or `unknown` beside it. The word is always there, so colour is never
-  the only thing telling you.
+- **One row per project**, with a coloured light *and* a word for what its server
+  is doing: `running`, `starting`, `stopped`, `failed`, `port blocked` and more.
+  The word is always there, so colour is never the only thing telling you.
 - **Start, Stop and Restart** on every row. The first time you start a project,
   it shows exactly what it is about to run and asks you to confirm — and asks
   again if that start script ever changes.
@@ -37,6 +37,15 @@ projects.
   stops the one you are on.
 - **A log per project**, written to a private file and capped in size so a chatty
   server cannot fill your disk.
+
+**It tells the truth about every project, even in awkward cases.** A project that
+is starting shows how long it has been starting, and says when it is slow. You can
+ask the app to check that a running site actually answers, not just that something
+is listening: right-click a project and choose "Check that the site answers", and
+its row shows the answer in plain words, such as "OK", "redirects", "not found" or
+"server error". The first time you run it, the app asks you to confirm the projects
+it found before starting anything. It keeps a backup of its project list, finds
+ports from more places, and handles projects that run as system services.
 
 **It is built to be readable.** Text scales with your system setting, and a text
 size control takes it further — 100% to 200% on top of whatever your desktop
