@@ -31,6 +31,10 @@ so dated sections stand in for versions. Planned work lives in
 
 - **Pressless's page says Google has approved it, and notes a fix to the replace-your-site warning**
 
+### Fixed
+
+- **Album Builder's page no longer says Windows can never make the numbered song folder: it can, with Developer Mode turned on**
+
 ## 2026-10-14
 
 ### Added

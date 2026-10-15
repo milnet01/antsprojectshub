@@ -24,8 +24,10 @@ any time) and it lists everything it finds. From there:
 When you approve an album, it writes out everything you need: a playlist, a
 folder of numbered shortcuts to the tracks in order, and a report as both PDF and
 web page. The report comes in two flavours: the full one for you, and a
-stripped-back artist-facing version fit to send to someone else. On Windows you
-get the playlist and the reports, but not the numbered folder.
+stripped-back artist-facing version fit to send to someone else. On Windows the
+numbered folder needs Developer Mode turned on, and a USB stick formatted FAT or
+exFAT cannot hold it on any system. Without it you still get the playlist and the
+reports.
 
 Your work is remembered between sessions, and the library refreshes itself when
 you add new recordings to the folder. Deleting an album is not final either: File →
