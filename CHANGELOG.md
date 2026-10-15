@@ -11,6 +11,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **RetroDB's and Contact List's pages play their new trailers, with music, in place of their silent tours**
+
+- **Album Builder's page plays its remade trailer, which also shows dragging in a folder, songs already on an album, playlists, shuffle and repeat, eight languages and five colour themes**
+
 - **RetroDB's page describes its 21 languages, its no-Python download, starting it from a pinned icon, its Quick Fixes panel and its nine age-rating systems**
 
 - **Groundwork's page plays its new trailer, with music, hosted on this site**
