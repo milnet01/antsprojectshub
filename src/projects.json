@@ -779,9 +779,9 @@
       "screenshots": [
         { "src": "shots/pressless-1-editor-light.png", "alt": "Writing an entry in Pressless: the title, categories, tags and address on the left above the writing box, the finished page shown live on the right, with Press to site, Undo the last press and Add a photograph buttons" },
         { "src": "shots/pressless-2-editor-dark.png", "alt": "The same entry in Pressless's dark look, with the preview dimmed so the bright page does not glare, and a tick box above it to show the preview in its true colours" },
-        { "src": "shots/pressless-3-writing-list-light.png", "alt": "Pressless's list of your writing: drafts, entries on your site, your pages and your templates, each in its own card, with a Theme picker in the top bar" },
+        { "src": "shots/pressless-3-writing-list-light.png", "alt": "Pressless's list of your writing: a draft, the entries on your site, and Your pages, with a Carry on with link to the last page opened. Two pages have changes not on the site yet, and the header, footer and navigation are listed too, above a box to start a new page" },
         { "src": "shots/pressless-5-writing-list-high-contrast.png", "alt": "The list in the high-contrast light look, chosen from the Theme picker in the top bar: black text and outlines on white" },
-        { "src": "shots/pressless-6-page-editor-light.png", "alt": "Editing the site's About page in the same box, with the finished page shown beside it" },
+        { "src": "shots/pressless-6-page-editor-light.png", "alt": "Editing the site's Home page on the page itself: the finished page on the right, with its paragraph picked and a Drag handle beside it, and on the left the tools for that section: Bold, Italic, Link, add a section below it, move it up or down, or remove it" },
         { "src": "shots/pressless-7-setup-github-light.png", "alt": "Setup's Sign in to GitHub page: four numbered steps (press Next, open the link and type the code on GitHub, click Authorize, come back and press Next again), a short code to type, the GitHub address to type it at, and a Next button" },
         { "src": "shots/pressless-8-visitors-light.png", "alt": "Pressless's visitor page: 152 people read the site in the last 4 weeks, a bar chart of readers per day, and tables of countries with flags, how readers found the site, and the most-read pages" }
       ],
