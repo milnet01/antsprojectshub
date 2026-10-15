@@ -28,7 +28,12 @@ npx serve dist          # preview at http://localhost:3000
 ./local-CI.sh           # reproduce the CI build job locally before pushing
 npm run stats           # private stats dashboard → .stats/ (never published)
 npm test                # the stats server's port handling (Node + Python)
+scripts/ship.sh 'p/<slug>.html=<new text>'   # push, wait for the deploy, check the live page
 ```
+
+Ship committed content with `scripts/ship.sh` rather than a bare `git push`. It prints a
+few lines, keeps the gate's full output in `.ship.log`, and exits non-zero if the push, the
+deploy or a live-page check fails.
 
 `local-CI.sh` **is** the build: the `build` job in `.github/workflows/deploy.yml` calls
 `./local-CI.sh --ci`, and reads the Node version from `./local-CI.sh --print-node-major`.
