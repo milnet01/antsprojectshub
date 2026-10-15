@@ -25,6 +25,12 @@ whole connection, audio-only extraction for music and podcasts, and cookie impor
 from Firefox or Chrome so it can reach age-restricted or members-only videos you
 already have access to.
 
+Search can keep only recent videos: pick last hour, today, this week, this month
+or this year, and you still get a full page of results. Click a search result and
+its upload date appears beside it. A Log button shows where the diagnostic log
+lives, handy for bug reports. Audio formats no longer show "None" for frame rate,
+and playlists in search results no longer show question marks.
+
 ## Getting it
 
 One file per platform, and everything is inside it. You do not need Python,

@@ -37,7 +37,20 @@ videos and music play everywhere, in the browser too.
 
 ## Where it stands
 
-It is still in beta. It comes as a single AppImage file that runs
-without installing anything, on Tumbleweed, Slowroll and Leap 16. It speaks
+It is still in beta. It installs as an openSUSE package, from its own
+repository for Tumbleweed, Slowroll and Leap 16.0. Add the repository for your
+system, then install it with zypper. On Tumbleweed:
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/milnet:/groundwork/openSUSE_Tumbleweed/home:milnet:groundwork.repo
+sudo zypper install groundwork
+```
+
+On Slowroll or Leap 16.0, replace `openSUSE_Tumbleweed` with
+`openSUSE_Slowroll` or `openSUSE_Leap_16.0`. The AppImage is still there for
+anyone who prefers it: a single file that runs without installing anything.
+
+On an older Leap, the message it shows now names Slowroll too, beside Leap 16
+and Tumbleweed. It speaks
 English and fourteen other languages, each marked as a draft until a fluent
 speaker has checked it.

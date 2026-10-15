@@ -148,6 +148,11 @@ Four more were merged on 10 October 2026:
 - **Vulkan shader presets that use earlier frames** no longer copy a frame
   before it is ready.
 
+One more was merged on 11 October 2026. Three helpers that remove items from a
+list no longer crash when they are given no rule for which items to remove. They
+now do nothing, as their sister helpers already did, and three new tests check
+it.
+
 ## Should you use it?
 
 **No — use the official RetroArch.** Upstream ships builds for every platform, gets

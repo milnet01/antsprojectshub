@@ -17,6 +17,12 @@ so dated sections stand in for versions. Planned work lives in
 
 - **OneUp's page describes its latest fixes and its new openSUSE repository address**
 
+- **Groundwork installs as an openSUSE package: its page says how to add its repository**
+
+- **Snatch's page describes its search by upload date and its new Log button**
+
+- **RetroArch's page lists another fix merged into the official project**
+
 ## 2026-10-14
 
 ### Added
