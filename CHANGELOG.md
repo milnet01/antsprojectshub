@@ -23,6 +23,8 @@ so dated sections stand in for versions. Planned work lives in
 
 - **RetroArch's page lists another fix merged into the official project**
 
+- **Pressless's page describes editing your whole site: pages, menus, header and footer**
+
 ## 2026-10-14
 
 ### Added

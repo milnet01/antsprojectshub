@@ -18,6 +18,8 @@ files were never inside the app, and there is no export button because there is
 nothing to export from.
 
 There is no Pressless account to make and no Pressless password to lose.
+Pressless asks before sending anonymous usage reports, which never include
+your writing or your site's address.
 What it does with your information, including what it reads from Google and
 GitHub, is in [Pressless's privacy policy](/p/pressless/privacy.html).
 
@@ -32,6 +34,20 @@ Today that service is GitHub Pages, because it is free, fast and does not go
 away. Only the very last step knows which host it is talking to — everything
 before it builds a plain folder of pages, which is what every host of this
 kind wants — so others may well follow later.
+
+## Shape your whole site
+
+Pressless now lets you shape your whole site, not just your journal. You edit a
+page by typing straight onto it, as it will look, and add ready-made sections:
+headings, paragraphs, pictures, columns, buttons, video, music and downloads.
+Drag a section into place with the mouse, or move it between columns.
+
+Add, rename and remove pages, and the menu keeps up by itself. A renamed page's
+old address still works. Change the header, footer and menu in the same editor,
+without code.
+
+Pages can also hold ready-made interactive pieces: a picture slideshow,
+questions that fold open, a picture that enlarges, a countdown.
 
 ## What it does today
 
@@ -53,8 +69,10 @@ kind wants — so others may well follow later.
   appears again after you publish and at the end of setup.
 - **Add photographs** from the editor. Pressless keeps your original
   untouched and puts the picture where you were typing.
-- **Edit your other pages**, such as an About page, and the site's header,
-  footer and menu, in the same box.
+- **Remember your choices between visits**, such as the last page you
+  opened. They stay on your computer.
+- **Show a page's code in colour**, in colours that stay readable in every
+  theme.
 - **Start a new entry from a template.**
 - **Change a published entry's address** without breaking links people have
   shared: the old address sends readers on to the new one.
@@ -83,9 +101,7 @@ kind wants — so others may well follow later.
 
 ## Still to come
 
-- **Run your whole site, not only your writing**: build your own
-  homepage, add and remove pages, change the site's colours, fonts and
-  layout, and put music, downloads and documents on it, so Pressless can
+- **Change the site's colours, fonts and layout**, so Pressless can
   replace WordPress entirely.
 - **Bring in an existing WordPress blog**, with an import anyone can run.
 - **Offer to add Pressless to the Start Menu and the desktop** the first time
