@@ -11,6 +11,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Ants Terminal's page plays its new trailer, which shows the Claude Code features, with the first trailer kept below it**
+  A project page can now show more than one video, each under its own heading.
+
 - **Ants Terminal's page says each Claude state has its own colour, matching the dot on its tab, and that roadmaps for all projects live in one shared store**
 
 - **Games Hub's page plays its new trailer, a quick run through all fourteen games with their own sounds, ending on Large play**

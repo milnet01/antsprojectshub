@@ -1,7 +1,7 @@
 # Demo videos
 
 Drop a project's demo video here, then point at it from `src/projects.json` under
-that project's `video` object. One video per project, maximum:
+that project's `video` object:
 
 ```json
 "video": {
@@ -16,6 +16,9 @@ that project's `video` object. One video per project, maximum:
   so under WCAG 1.2.1 the caption *is* the accessible alternative — it must describe
   what the video shows, in order, well enough that someone who never plays it knows
   what happened. The site owner is partially sighted; write it properly.
+- When one video can't show everything, `video` may be an array of these objects instead,
+  each with a `title` ("Trailer: colours and themes") that heads it on the page. They play
+  in the order listed, so put the newest first.
 - It renders as a **Demo** section at the very top of the project page, above the
   screenshots, with a "Demo" entry in the jump nav.
 

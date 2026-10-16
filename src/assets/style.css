@@ -802,6 +802,14 @@ a.card:hover .card__name {
 .demo {
   margin: 0;
 }
+.demo + .demo {
+  margin-top: 2.5rem;
+}
+.demo__title {
+  margin: 0 0 0.8rem;
+  font-size: 1.15rem;
+  color: var(--text);
+}
 .demo__video {
   display: block;
   width: 100%;

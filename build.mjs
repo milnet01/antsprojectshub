@@ -676,26 +676,35 @@ function renderScreenshots(p) {
     </section>`;
 }
 
-// Optional demo video (one per project): { src, poster, caption }, both paths relative
-// to assets/video/. Native <video controls> — no player library, no JS. It never
-// autoplays: motion the visitor didn't ask for is a barrier, and a poster keeps the
-// layout stable. The screencasts are silent, so `caption` IS the text alternative
-// (WCAG 1.2.1 video-only) — it is required and rendered visibly under the player.
+// Optional demo video: { src, poster, caption, title }, both paths relative to
+// assets/video/, or an array of them when one video can't show everything. Native
+// <video controls> — no player library, no JS. It never autoplays: motion the visitor
+// didn't ask for is a barrier, and a poster keeps the layout stable. The screencasts are
+// silent, so `caption` IS the text alternative (WCAG 1.2.1 video-only) — it is required
+// and rendered visibly under the player. `title` heads each video when there are several.
 function renderVideo(p) {
-  const v = p.video;
-  if (!v?.src) return "";
-  const url = `/assets/video/${esc(v.src)}`;
-  const poster = v.poster ? ` poster="/assets/video/${esc(v.poster)}"` : "";
-  return `<section class="demo-sec" id="demo" aria-labelledby="demo-h">
-      <h2 class="section-label" id="demo-h">Demo</h2>
-      <figure class="demo">
-        <video class="demo__video" src="${url}"${poster} controls preload="none" playsinline aria-label="${esc(
-    p.name
-  )} demo video">
+  const vids = [].concat(p.video || []).filter((v) => v?.src);
+  if (!vids.length) return "";
+  const figures = vids
+    .map((v) => {
+      const url = `/assets/video/${esc(v.src)}`;
+      const poster = v.poster ? ` poster="/assets/video/${esc(v.poster)}"` : "";
+      const title = vids.length > 1 && v.title ? v.title : "";
+      const head = title ? `<h3 class="demo__title">${esc(title)}</h3>\n        ` : "";
+      const label = title ? `${title} (${p.name})` : `${p.name} demo video`;
+      return `<figure class="demo">
+        ${head}<video class="demo__video" src="${url}"${poster} controls preload="none" playsinline aria-label="${esc(
+        label
+      )}">
           <p>Your browser can't play this video. <a href="${url}">Download it (MP4)</a> instead.</p>
         </video>
         <figcaption class="demo__cap">${esc(v.caption)}</figcaption>
-      </figure>
+      </figure>`;
+    })
+    .join("\n      ");
+  return `<section class="demo-sec" id="demo" aria-labelledby="demo-h">
+      <h2 class="section-label" id="demo-h">Demo</h2>
+      ${figures}
     </section>`;
 }
 
