@@ -352,7 +352,12 @@
           "src": "shots/games-hub-canasta.png",
           "alt": "A four-player Canasta game in progress on a deep red table, with the player's hand of large cards at the bottom, both teams' melds laid out in the middle, the stock and discard pile in the centre, and the two team scores in the top corners."
         }
-      ]
+      ],
+      "video": {
+        "src": "games-hub-trailer.mp4",
+        "poster": "games-hub-trailer-poster.jpg",
+        "caption": "A 58-second trailer for Games Hub, with background music and the games' own sounds but no speech; everything it says is written on screen. It is set on a green card-table felt, with light lettering. It opens with \"Classic card and board games. Small, cramped, hard to read.\", then the Games Hub logo and \"Fourteen classic games, made easy to see.\" A quick run of clips follows, one per game, each sliding in from the right with a caption below. \"Fourteen games, one window\": the start screen's grid of game tiles. \"Chess, played from the keyboard\": a chess board with a cursor on it. \"Reversi: flip the board\": black and white discs on a green board. \"Draughts, with kings\": white and red pieces on a brown and cream board. \"Minesweeper: clear the field\": a grey field opens up to show numbered squares. \"Klondike solitaire\", \"Spider: solitaire, harder\", \"FreeCell: every deal solvable\" and \"Pyramid: pairs make thirteen\": the four patience games, with large cards on green and blue tables. \"Sudoku: fill the grid\": a number grid being filled in. \"Hearts: avoid the tricks\": cards played to the middle of a blue table. \"Canasta, with a soft turn light\": a four-player game on a red table, with a gold glow marking whose turn it is. \"Snake: eat and grow\": a green snake on a dark grid. \"2048: slide and merge\": numbered tiles slide and join. \"Pinball\": balls bounce around a pinball table. \"Large play: bigger, bolder, easier\": the Large button is clicked in Reversi, and a big line under the board says whose turn it is and the score. Three lines follow: \"Large play, for easier reading\", \"A light shows whose turn\" and \"Board games play by keyboard\". Then \"Linux · Windows\" and \"One file, nothing to install\". It ends on the logo with \"Free and fully open source\", \"Download it free at antsprojectshub.co.za\", and links to support the project on GitHub Sponsors, Patreon and Paybru."
+      }
     },
     {
       "slug": "doom-ants",
