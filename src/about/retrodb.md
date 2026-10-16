@@ -68,5 +68,8 @@ is built for a home network: other computers and phones in the house can open it
 at your machine's address. To reach it from outside your home, there is a guide
 for putting it behind a proper reverse proxy.
 
-RetroDB does not distribute or host ROM files, and is not affiliated with any
+We do not condone piracy. RetroDB does not distribute or host ROM files. Only
+use games you own, copied from your own discs and cartridges; the law on making
+such copies differs from country to country, so check yours. Game names and art
+shown on this page belong to their owners. RetroDB is not affiliated with any
 console manufacturer or publisher. MIT licensed.

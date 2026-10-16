@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **RetroDB's page says we do not condone piracy: use only games you own, and game names and art belong to their owners**
+
 - **Ants Terminal's page lists the features it was missing, including demoreel, which now comes with it**
   Also the model badge, Background Tasks, messages between sessions, cc-job,
   Broadcast Input, past-command jumps, the command palette, the SSH Manager,
