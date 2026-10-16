@@ -14,6 +14,23 @@ Nothing changes until you press Apply, and it asks for your password once.
 Each choice is an on/off switch. Colour themes, dark and high contrast among
 them, follow the desktop's light or dark unless you choose one.
 
+Two switches are for developers. "Tools for Claude Code" installs ripgrep, Git
+and code checkers. "tree-sitter" installs tree-sitter with grammars for common
+languages. Tumbleweed and Slowroll get more grammars than Leap, which lacks
+some. Switching on Ants Terminal switches tree-sitter off, since Ants Terminal
+includes it, and the row says why.
+
+## Preparing a drive for openSUSE
+
+Groundwork can lay out a drive before you install openSUSE: a whole drive, or
+the free space beside Windows. It then lists what to choose for each partition
+in the installer. A drive in use cannot be chosen. Nothing is written until
+you switch on "I understand".
+
+On a live system, started from a USB stick or a disc, Groundwork does not
+check or set anything up, since nothing there lasts a restart. Its first page
+says so.
+
 ## Looking after the computer afterwards
 
 Groundwork also keeps a computer running well once it is set up:
@@ -54,3 +71,6 @@ On an older Leap, the message it shows now names Slowroll too, beside Leap 16
 and Tumbleweed. It speaks
 English and fourteen other languages, each marked as a draft until a fluent
 speaker has checked it.
+
+Groundwork is an independent project, not an official openSUSE or SUSE
+product, and is not endorsed by the openSUSE Project or SUSE.

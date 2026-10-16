@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Groundwork's page describes its new release: it can lay out a drive for installing openSUSE, has two developer switches, and says it is an independent project, not an official openSUSE or SUSE product**
+
 - **RetroDB's page says we do not condone piracy: use only games you own, and game names and art belong to their owners**
 
 - **Ants Terminal's page lists the features it was missing, including demoreel, which now comes with it**
