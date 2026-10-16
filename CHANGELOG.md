@@ -11,6 +11,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Ants Terminal's page lists the features it was missing, including demoreel, which now comes with it**
+  Also the model badge, Background Tasks, messages between sessions, cc-job,
+  Broadcast Input, past-command jumps, the command palette, the SSH Manager,
+  ligatures, session recording and export, and Project Audit.
+
 - **Ants Terminal's page plays its new trailer, which shows the Claude Code features, with the first trailer kept below it**
   A project page can now show more than one video, each under its own heading.
 

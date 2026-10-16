@@ -35,6 +35,15 @@ the terminal is connected.
   sections you had open. Roadmaps for all your projects live in one shared
   store, so Claude reads and updates them through the built-in tools instead
   of editing the file by hand.
+- **See which model it is using.** A small badge shows the model — Haiku,
+  Sonnet or Opus — and how hard it is set to think.
+- **See what it left running.** A Background Tasks button lists the commands
+  Claude started in the background.
+- **Let sessions leave each other notes.** Claude sessions on different
+  projects can message each other, and the bottom bar shows when the session
+  in your tab has unread ones.
+- **Keep long jobs alive.** A long command started with the included `cc-job`
+  keeps running when you restart the terminal.
 
 All of this happens on your own machine. None of it sends your work anywhere.
 
@@ -49,6 +58,16 @@ clickable links and file paths, pictures shown right in the window, a library of
 saved commands, a roomy pop-out editor for long ones, and small add-on plugins
 that are fenced off so they cannot freeze the window. Full-screen programs such
 as text editors and system monitors work as they should.
+
+There is more for heavy users. Broadcast Input types into every pane of a tab
+at once. You can jump between past commands, copy the last one's output, or run
+it again. A command palette runs any action by name. It saves your SSH
+connections, draws programming-font ligatures, records sessions, and exports
+everything a tab has shown as text or HTML. Tools, Project Audit runs popular
+code-checking tools and shows the results in one window.
+
+It also comes with [demoreel](/p/demoreel.html), which records short demo
+videos of an app on a hidden screen, without filming your desktop.
 
 It needs nothing but Qt 6, a toolkit most Linux desktops already have, so it starts
 quickly and stays light.
