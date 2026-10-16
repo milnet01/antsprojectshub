@@ -22,7 +22,9 @@ the terminal is connected.
 ## Working alongside Claude
 
 - **See what it is doing.** The bottom bar shows Claude's status — thinking,
-  editing, searching — and how full its memory is getting.
+  editing, searching — and how full its memory is getting. Each state has its
+  own colour, the same as the dot on its tab, so you can tell what every
+  session is doing at a glance.
 - **See what it changed before you keep it.** A Review Changes button opens a
   file-by-file view of every edit.
 - **Browse and resume past sessions** without leaving the terminal.
@@ -30,7 +32,9 @@ the terminal is connected.
 - **Paste a screenshot** and the file lands in the prompt ready to send.
 - **Follow the plan.** If a project keeps a roadmap, a Roadmap button opens it
   in a searchable window, lined up in tidy columns, and it remembers which
-  sections you had open.
+  sections you had open. Roadmaps for all your projects live in one shared
+  store, so Claude reads and updates them through the built-in tools instead
+  of editing the file by hand.
 
 All of this happens on your own machine. None of it sends your work anywhere.
 

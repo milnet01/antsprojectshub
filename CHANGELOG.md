@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Ants Terminal's page says each Claude state has its own colour, matching the dot on its tab, and that roadmaps for all projects live in one shared store**
+
 - **Games Hub's page plays its new trailer, a quick run through all fourteen games with their own sounds, ending on Large play**
 
 - **Lotto Tracker's page shows its new Not yet paid list, with a fresh screenshot, and says a lottery text from an unknown sender is flagged**
