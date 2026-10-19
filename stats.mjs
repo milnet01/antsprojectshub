@@ -42,9 +42,10 @@ const OS_KEYS = ["win", "mac", "linux"];
 const OS_LABEL = { win: "Windows", mac: "macOS", linux: "Linux" };
 const DAY = 86400000;
 
-// The sticky nav, and the accent each section wears. [key, heading id, nav label] — the key
-// ties a nav link to its section so CSS can give both the same --accent (see the CSS block),
-// and the scroll-spy can light the right link. Order is the page order.
+// The sticky nav, whose links become tabs, and the accent each section wears. [key, heading
+// id, nav label] — the key ties a nav link to its section so CSS can give both the same
+// --accent (see the CSS block), and dashboard.js can show that section as the link's tab.
+// Order is the page order.
 const NAV = [
   ["att", "h-att", "Attention"],
   ["dl", "h-dl", "Downloads"],
@@ -1669,30 +1670,65 @@ const JS = `(function () {
     });
   }
 
-  // Light up the nav link for whatever section you're looking at. Pure enhancement — the
-  // links are ordinary anchors and jump to the right place with or without this.
+  // Tabs. Without this script the nav's links are ordinary anchors down one long page; with
+  // it each link shows its own section and hides the rest. The summary tiles and the banners
+  // sit outside every section, so they show above whichever tab is open. The open tab is
+  // kept in the URL's # part, which "Refresh now" keeps across its reload, and in
+  // localStorage for a fresh visit; the # part wins. A tab's # is "#tab-<key>", which names
+  // no element, so the browser has nothing to jump to and the tiles stay in view; the links
+  // keep their heading targets until this script rewrites them. Any older # naming
+  // something inside a section (a heading, from a visit without this script) opens that
+  // section's tab and is swapped for the tab form.
+  var TAB_KEY = "aph-tab";
   var links = Array.prototype.slice.call(document.querySelectorAll(".topnav__list a[data-sec]"));
-  if (links.length && window.IntersectionObserver) {
-    var byKey = {};
-    links.forEach(function (a) { byKey[a.getAttribute("data-sec")] = a; });
-    var seen = {};
-    // Top margin clears the sticky bar; the -55% bottom means a section counts as "current"
-    // once it reaches the upper part of the viewport, rather than the moment it peeks in.
-    var obs = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (e) { seen[e.target.getAttribute("data-sec")] = e.isIntersecting; });
-        var current = null;
-        links.forEach(function (a) {
-          var k = a.getAttribute("data-sec");
-          if (seen[k] && !current) current = k;
-          a.classList.remove("is-current");
-        });
-        if (current) byKey[current].classList.add("is-current");
-      },
-      { rootMargin: "-62px 0px -55% 0px" }
-    );
-    Array.prototype.forEach.call(document.querySelectorAll("section[data-sec]"), function (s) {
-      obs.observe(s);
+  var panes = {};
+  Array.prototype.forEach.call(document.querySelectorAll("section[data-sec]"), function (s) {
+    panes[s.getAttribute("data-sec")] = s;
+  });
+  if (links.length) {
+    var fromHash = function () {
+      var m = /^#tab-(.+)$/.exec(location.hash);
+      if (m) return panes[m[1]] ? m[1] : null;
+      var el = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
+      var sec = el && el.closest("section[data-sec]");
+      return sec ? sec.getAttribute("data-sec") : null;
+    };
+    var show = function (k, save) {
+      links.forEach(function (a) {
+        var on = a.getAttribute("data-sec") === k;
+        a.classList.toggle("is-current", on);
+        if (on) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+      Object.keys(panes).forEach(function (p) { panes[p].hidden = p !== k; });
+      if (save) {
+        try { localStorage.setItem(TAB_KEY, k); } catch (e) {}
+      }
+    };
+    var start = fromHash();
+    if (!start) {
+      try { start = localStorage.getItem(TAB_KEY); } catch (e) {}
+    }
+    // A remembered tab that no longer exists opens the first.
+    if (!start || !panes[start]) start = links[0].getAttribute("data-sec");
+    document.body.classList.add("tabbed");
+    links.forEach(function (a) { a.setAttribute("href", "#tab-" + a.getAttribute("data-sec")); });
+    show(start, false);
+    if (location.hash && !/^#tab-/.test(location.hash) && fromHash()) {
+      history.replaceState(null, "", "#tab-" + start);
+      window.scrollTo(0, 0);
+    }
+    links.forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        show(a.getAttribute("data-sec"), true);
+        history.replaceState(null, "", a.getAttribute("href"));
+        window.scrollTo(0, 0);
+      });
+    });
+    window.addEventListener("hashchange", function () {
+      var k = fromHash();
+      if (k) show(k, true);
     });
   }
 
@@ -1801,11 +1837,15 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
   border: 1px solid transparent; }
 .topnav__list a:hover { color: var(--text); background: var(--surface); }
 .topnav__list a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-/* Current section: its own accent, plus a filled pill so it reads without the colour. */
+/* Open tab: its own accent, plus a filled pill so it reads without the colour. */
 .topnav__list a.is-current { color: var(--accent); border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 14%, transparent); font-weight: 600; }
 /* Anchor jumps must clear the sticky bar. */
 .sec h2 { scroll-margin-top: 4rem; }
+/* Tabs (dashboard.js adds .tabbed): one section shows at a time, so the last three no longer
+   share a grid and each takes the full column. */
+.sec[hidden] { display: none; }
+.tabbed .cols--tail { display: block; }
 
 .btn-refresh { font: inherit; font-size: .82rem; color: var(--bg); background: var(--teal);
   border: 0; border-radius: 999px; padding: 6px 15px; cursor: pointer; font-weight: 600; }

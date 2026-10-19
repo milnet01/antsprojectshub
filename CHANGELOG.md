@@ -75,6 +75,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **The private stats page shows one section at a time, as tabs along the top bar, with the summary figures above every tab; it reopens the tab you last had open**
+
 - **Project pages are centred down to the screenshots, and the first screenshot is shown large with the rest as thumbnails under it; the status shows once, beside the platforms**
 
 - **The screenshot viewer stops at the first and last screenshot instead of jumping round to the other end**
