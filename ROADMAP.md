@@ -1,6 +1,6 @@
 <!-- ants-roadmap-format: 1 -->
 <!-- Generated from the Ants Terminal roadmap store. Edit it with roadmap_log; hand edits are discarded by the next write. -->
-<!-- ants-roadmap-id-high-water: APHW=21 -->
+<!-- ants-roadmap-id-high-water: APHW=23 -->
 # Ants Projects Hub — Roadmap
 
 > **What this is:** the planned work for
@@ -294,6 +294,20 @@ answers than the page asks of it.
   it.
 
 ---
+
+- 💭 [APHW-0022] **Bigger screenshot previews: three across, filling the page width.**
+  Offered 2026-10-19 with three other site ideas; the user picked the
+  other three and not this one. Ask before building it.
+  **Layman:** Make the screenshot previews on project pages bigger and easier to see.
+  Kind: ux.
+  Source: site-ideas-offered-2026-10-19.
+
+- 💭 [APHW-0023] **A real logo for Hell's Gate, whose card still shows a plain monogram.**
+  Noticed 2026-10-19 on the live home page. The logo would come from the
+  hells-gate-recomp project's session; not yet asked for.
+  **Layman:** Give Hell's Gate a proper logo instead of the plain letter H.
+  Kind: ux.
+  Source: site-ideas-offered-2026-10-19.
 
 ## P03 — Pictures, clicks and the weekly post (target: 2026-10)
 
