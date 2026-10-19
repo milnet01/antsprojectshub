@@ -11,6 +11,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **The private stats page's first tab is now Notifications: it lists open issues and pull requests on each project, your own open pull requests to the projects you forked, and which projects are live, beta, wip and soon; the Content tab is gone**
+
+- **Rusty PSN's page links its public GitHub repository and says there is no release yet**
+
 - **Each download button on a project page says the file's type and size, and the button for your own computer's system comes first, marked "Your system"**
 
 - **A "How to install" fold-out under the download buttons, with what to do for each file, including how to get past the Windows and macOS warnings for apps they have not checked**

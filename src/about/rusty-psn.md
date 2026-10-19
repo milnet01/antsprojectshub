@@ -33,10 +33,9 @@ to a current edition of Rust.
 
 ## Where it stands
 
-**Not published yet.** There is no public copy of these changes, and nothing to
+**No release yet.** The changes are public on GitHub, but there is nothing to
 download. It builds and runs on Linux. Windows and Mac builds are set up, as they
 were in the original, but have not been tried since these changes. A first release
-needs a public repository, those two builds confirmed, and a final hand check of
-the window app.
+needs those two builds confirmed, and a final hand check of the window app.
 
 Written in Rust.

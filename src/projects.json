@@ -553,7 +553,7 @@
       "tagline": "Download PS3 & PS4 game updates straight from Sony.",
       "blurb": "A Rust tool that fetches PS3 and PS4 game updates directly from Sony's servers, with both a graphical app and a command-line interface. My fork of RainbowCookie32's rusty-psn.",
       "status": "soon",
-      "repo": null,
+      "repo": "milnet01/rusty-psn",
       "platforms": ["linux"],
       "isFork": true,
       "upstream": "RainbowCookie32/rusty-psn",

@@ -47,13 +47,12 @@ const DAY = 86400000;
 // --accent (see the CSS block), and dashboard.js can show that section as the link's tab.
 // Order is the page order.
 const NAV = [
-  ["att", "h-att", "Attention"],
+  ["att", "h-att", "Notifications"],
   ["dl", "h-dl", "Downloads"],
   ["ga", "h-ga", "Visitors"],
   ["tr", "h-tr", "Repo traffic"],
   ["act", "h-act", "Audience"],
   ["rel", "h-rel", "Releases"],
-  ["cnt", "h-cnt", "Content"],
 ];
 
 // Release files that legitimately aren't OS downloads, so listing them as "a missing
@@ -92,10 +91,18 @@ const dayKey = (ts) => new Date(ts).toISOString().slice(0, 10);
 // inside the 60/hour ceiling so the rest of the dashboard still fills in.
 async function collectProject(p) {
   const base = { slug: p.slug, name: p.name, repo: p.repo, project: p };
-  const [repoRes, relRes, prRes] = await Promise.all([
+  // A fork's own pull requests are the ones sent to the project it came from, so ask that
+  // repo for the open ones this account wrote. Search, not the pulls list: a big upstream
+  // has more open pull requests than one page holds.
+  const owner = p.repo.split("/")[0];
+  const [repoRes, relRes, openRes, upRes] = await Promise.all([
     ghRequest(`/repos/${p.repo}`),
     ghRequest(`/repos/${p.repo}/releases?per_page=100`),
-    ghRequest(`/repos/${p.repo}/pulls?state=open&per_page=100`),
+    // GitHub's issues list holds pull requests too; they are split apart below.
+    ghRequest(`/repos/${p.repo}/issues?state=open&per_page=100`),
+    p.upstream
+      ? ghRequest(`/search/issues?q=is:pr+is:open+author:${owner}+repo:${p.upstream}&per_page=100`)
+      : null,
   ]);
 
   // Did the numbers actually arrive? A rate-limited or failed fetch must never be treated
@@ -107,7 +114,17 @@ async function collectProject(p) {
   const repo = repoRes.data || {};
   const releases = (Array.isArray(relRes.data) ? relRes.data : []).filter((r) => !r.draft);
   const latest = pickLatestRelease(releases);
-  const openPrs = Array.isArray(prRes.data) ? prRes.data.length : 0;
+  const pr = (x) => ({ n: x.number, title: x.title, url: x.html_url });
+  const open = Array.isArray(openRes.data) ? openRes.data : [];
+  const prList = open.filter((x) => x.pull_request).map(pr);
+  const issueList = open.filter((x) => !x.pull_request).map(pr);
+  const openPrs = prList.length;
+  // null when the search failed, so a failure is never read as "none open".
+  const upstreamPrs = !upRes
+    ? []
+    : upRes.ok
+      ? (upRes.data.items || []).map(pr)
+      : null;
 
   // All-time downloads per OS across every non-draft release. `other` catches assets whose
   // filename matches no OS pattern — invisible to the site's download buttons, so a real
@@ -164,6 +181,9 @@ async function collectProject(p) {
     // GitHub's open_issues_count counts pull requests as issues; subtract them back out.
     issues: Math.max(0, (repo.open_issues_count ?? 0) - openPrs),
     prs: openPrs,
+    prList,
+    issueList,
+    upstreamPrs,
     pushedAt: repo.pushed_at || null,
     archived: Boolean(repo.archived),
     latestTag: latest?.tag_name || null,
@@ -335,6 +355,7 @@ async function contentHealth(projects) {
   const isUsed = (f) => used.has(`shots/${f}`);
   return {
     byStatus: tally(projects, (p) => p.status),
+    namesByStatus: projects.reduce((o, p) => ((o[p.status || "—"] ||= []).push(p.name), o), {}),
     byCategory: tally(projects, (p) => p.category),
     noRepo: projects.filter((p) => !p.repo).map((p) => p.name),
     noShots: projects.filter((p) => isPublished(p) && !(p.screenshots || []).length).map((p) => p.name),
@@ -1274,6 +1295,27 @@ function attentionItems(rows, health) {
          <code>screenshots</code>, or delete it. ${since}`
     );
   }
+  // Open issues and pull requests are not faults, so they get a group of their own (`now: null`): ones
+  // others have sent to the project wait on you, and a fork's own sent to the original wait
+  // on its maintainer.
+  const prLinks = (list) => list.map((x) => link(x.url, `#${x.n} ${x.title}`)).join("; ");
+  const all = [...rows, ...(health.unreleased || [])];
+  for (const r of all.filter((x) => x.issueList.length)) {
+    add(null, 0, r.issueList.length, [`issue:${r.slug}`], (since) =>
+      `<strong>${esc(r.name)}</strong> has ${r.issueList.length} open issue(s) logged:
+       ${prLinks(r.issueList)}. ${since}`);
+  }
+  for (const r of all.filter((x) => x.prList.length)) {
+    add(null, 1, r.prList.length, [`pr:${r.slug}`], (since) =>
+      `<strong>${esc(r.name)}</strong> has ${r.prList.length} open pull request(s) waiting for
+       you: ${prLinks(r.prList)}. ${since}`);
+  }
+  for (const r of all.filter((x) => x.upstreamPrs?.length)) {
+    add(null, 2, r.upstreamPrs.length, [`pr-up:${r.slug}`], (since) =>
+      `<strong>${esc(r.name)}</strong>: ${r.upstreamPrs.length} of your pull request(s) to
+       ${esc(r.project.upstream)} are open, waiting for its maintainer:
+       ${prLinks(r.upstreamPrs)}. ${since}`);
+  }
   return items;
 }
 
@@ -1285,18 +1327,19 @@ function attentionItems(rows, health) {
 function updateAttention(history, items, rows, now) {
   const prev = history.attention || {};
   const fetched = new Set(rows.filter((r) => r.ok).map((r) => r.slug));
+  const searchFailed = new Set(rows.filter((r) => r.ok && r.upstreamPrs === null).map((r) => r.slug));
   const next = {};
   for (const key of items.flatMap((i) => i.keys)) next[key] = prev[key] || new Date(now).toISOString();
   for (const [key, at] of Object.entries(prev)) {
     const [kind, slug] = key.split(":");
-    if (["dl-lost", "dl-never", "extra"].includes(kind) && !fetched.has(slug)) next[key] ??= at;
+    if (["dl-lost", "dl-never", "extra", "issue", "pr", "pr-up"].includes(kind) && !fetched.has(slug)) next[key] ??= at;
+    if (kind === "pr-up" && searchFailed.has(slug)) next[key] ??= at;
   }
   history.attention = next;
 }
 
 function issuesSection(rows, health, seen = {}, now = Date.now()) {
   const items = attentionItems(rows, health);
-  if (!items.length) return `<p class="note ok">Nothing needs attention. ✓</p>`;
 
   const ageOf = (key) => {
     const d = daysSince(seen[key], now);
@@ -1321,7 +1364,38 @@ function issuesSection(rows, health, seen = {}, now = Date.now()) {
       <ul class="issues">${list.map((i) => `<li>${i.html(since(i.keys), ageOf)}</li>`).join("")}</ul>`;
   };
 
-  return group(true, "⚠ Broken now") + group(false, "Incomplete");
+  return (
+    (items.some((i) => i.now !== null) ? "" : `<p class="note ok">Nothing needs fixing. ✓</p>`) +
+    group(true, "⚠ Broken now") +
+    group(false, "Incomplete") +
+    group(null, "Open issues and pull requests") +
+    siteContent(health, now)
+  );
+}
+
+// What used to be its own Content tab: every project by status, by name, so "3 wip" says
+// which three. Statuses in the order a project moves through them; anything else after.
+const STATUS_ORDER = ["live", "beta", "wip", "soon"];
+
+function siteContent(health, now) {
+  const statuses = Object.keys(health.namesByStatus).sort(
+    (a, b) => (STATUS_ORDER.indexOf(a) + 1 || 99) - (STATUS_ORDER.indexOf(b) + 1 || 99)
+  );
+  const rows = statuses
+    .map((st) => {
+      const names = health.namesByStatus[st];
+      return `<li><strong>${esc(st)}</strong> (${names.length}): ${names.map(esc).join(", ")}</li>`;
+    })
+    .join("");
+  return `<h3>Site content</h3>
+    <ul class="issues">${rows}</ul>
+    <p class="chips">${tallyList(health.byCategory)}</p>
+    ${
+      health.noRepo.length
+        ? `<p class="note">Unpublished (no repo yet): ${health.noRepo.map(esc).join(", ")}.</p>`
+        : ""
+    }
+    ${weeklyLine(health.weekly, now)}`;
 }
 
 function tallyList(obj) {
@@ -1402,7 +1476,7 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
   <section aria-labelledby="h-sum"><h2 id="h-sum" class="sr-only">Summary</h2>
     <div class="tiles">${tiles}</div></section>
 
-  <section class="sec" data-sec="att" aria-labelledby="h-att"><h2 id="h-att">Needs attention</h2>
+  <section class="sec" data-sec="att" aria-labelledby="h-att"><h2 id="h-att">Notifications</h2>
     ${issuesSection(ok, health, history.attention, now)}</section>
 
   <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads</h2>
@@ -1427,17 +1501,6 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
 
   <section class="sec" data-sec="rel" aria-labelledby="h-rel"><h2 id="h-rel">Recent releases</h2>
     ${releasesTable(ok)}</section>
-
-  <section class="sec" data-sec="cnt" aria-labelledby="h-cnt"><h2 id="h-cnt">Site content</h2>
-    <p class="chips">${tallyList(health.byStatus)}</p>
-    <p class="chips">${tallyList(health.byCategory)}</p>
-    ${
-      health.noRepo.length
-        ? `<p class="note">Unpublished (no repo yet): ${health.noRepo.map(esc).join(", ")}.</p>`
-        : ""
-    }
-    ${weeklyLine(health.weekly, now)}
-  </section>
   </div>
 
   <footer class="foot">Local file — never published. Regenerate with
@@ -1831,7 +1894,6 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
 [data-sec="tr"]  { --accent: #7dd3fc; }
 [data-sec="act"] { --accent: #93c5fd; }
 [data-sec="rel"] { --accent: #a5b4fc; }
-[data-sec="cnt"] { --accent: #c4b5fd; }
 
 /* Sticky bar. Stays put while the page scrolls under it; the tint is a translucent
    wash over --bg so the tables read through it while scrolling past. */
@@ -1856,7 +1918,7 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
   background: color-mix(in srgb, var(--accent) 14%, transparent); font-weight: 600; }
 /* Anchor jumps must clear the sticky bar. */
 .sec h2 { scroll-margin-top: 4rem; }
-/* Tabs (dashboard.js adds .tabbed): one section shows at a time, so the last three no longer
+/* Tabs (dashboard.js adds .tabbed): one section shows at a time, so the last two no longer
    share a grid and each takes the full column. */
 .sec[hidden] { display: none; }
 .tabbed .cols--tail { display: block; }
@@ -1909,12 +1971,6 @@ h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
    pushing the grid wider than the column. */
 .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem;
   align-items: start; }
-/* The last three sections, kept in source order (activity, releases, content) so keyboard and
-   screen-reader order are unchanged. Releases is far taller than activity, so it takes the
-   whole right side and content fills the space under activity; the 1fr row takes the slack. */
-.cols--tail { grid-template-rows: auto 1fr; }
-.cols--tail > [data-sec="rel"] { grid-column: 2; grid-row: 1 / span 2; }
-.cols--tail > [data-sec="cnt"] { grid-column: 1; grid-row: 2; }
 /* A note above a table sits flush against the caption's first line, because .note carries no
    bottom margin and a caption has no top padding. Two tables lead with one, so the gap belongs
    to the pair rather than to either. */
@@ -2043,6 +2099,16 @@ export async function generate() {
     }
   }
   rows.sort((a, b) => b.total - a.total);
+  // A project not released yet can still have a public repo with issues and pull requests.
+  // Fetched for Notifications only: it has no downloads, so it stays out of every table.
+  const unreleased = [];
+  for (const p of projects.filter((x) => x.repo && !isPublished(x))) {
+    try {
+      unreleased.push(await collectProject(p));
+    } catch (err) {
+      console.warn(`! ${p.slug}: stats fetch failed (${err.message}) — skipped`);
+    }
+  }
 
   // Google Analytics, in parallel with nothing — it is four calls against a different API
   // and a failure here must not touch the GitHub figures. collectAnalytics returns null
@@ -2072,7 +2138,8 @@ export async function generate() {
   // Read by attentionItems, so a dead GA credential is on the tab that opens first, not only
   // inside the Visitors tab.
   health.gaDown = Boolean(propertyId && !ga);
-  updateAttention(history, attentionItems(rows.filter((r) => r.ok), health), rows, now);
+  health.unreleased = unreleased.filter((r) => r.ok);
+  updateAttention(history, attentionItems(rows.filter((r) => r.ok), health), [...rows, ...unreleased], now);
 
   await mkdir(OUT, { recursive: true });
   await writeFile(HISTORY, JSON.stringify(history, null, 2));
