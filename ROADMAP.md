@@ -1,6 +1,6 @@
 <!-- ants-roadmap-format: 1 -->
 <!-- Generated from the Ants Terminal roadmap store. Edit it with roadmap_log; hand edits are discarded by the next write. -->
-<!-- ants-roadmap-id-high-water: APHW=23 -->
+<!-- ants-roadmap-id-high-water: APHW=24 -->
 # Ants Projects Hub — Roadmap
 
 > **What this is:** the planned work for
@@ -179,6 +179,20 @@ Nothing here changes what is measured, only what the eye lands on.
   **Layman:** The build rules say the site trusts only one outside website, but pictures may come from any secure website; the rule should say so.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 site-build.md loop 2 lane a.
+
+- 📋 [APHW-0024] **site-build.md says ants.gate.docsGlob never matches src/about/ or src/posts/, but the build also reads src/policies/.**
+  Found outside the gated change (b9f2948, download changes), so filed, not fixed.
+  [Q2] .claude/rules/site-build.md, The pre-push gate: "Each clone sets
+  `ants.gate.docsGlob`, and it never matches `src/about/` or `src/posts/`,
+  which the build reads", and "nothing else the gate runs reads those paths".
+  build.mjs also reads src/policies/<slug>.md (loadPolicies; content.md lists
+  it). Today's DOCS_GLOB in local-CI.sh matches none of src/, and the gate
+  refuses any clone value that differs from DOCS_GLOB, so the risk is only to
+  someone editing DOCS_GLOB by the rule's list. Fix: name src/policies/ too,
+  or say "nothing under src/ the build reads".
+  **Layman:** The build rules list the folders the "docs only" shortcut must never skip, and one folder the site builds pages from is missing from that list.
+  Kind: doc-fix.
+  Source: review-contract-2026-10-19 site-build.md loop 4 lane d.
 
 ## P02 — What the numbers actually say (target: TBD)
 
