@@ -114,19 +114,19 @@
       "screenshots": [
         {
           "src": "shots/retrodb-library.png",
-          "alt": "The RetroDB library page in its dark neon theme, filled with invented games: a sidebar menu on the left, a big glowing \"All Games\" heading reading \"39 games across all systems\", a search box with system and type dropdowns, filter buttons for genre, series, publisher, developer, players, perspective, dimension, rating, source, achievements and bonus discs, an A-to-Z jump bar, and the first game card, \"Aqua Rampart\" for the Sega Mega Drive, showing its red cover art, genre, developer, publisher, year, age-rating badges, an \"In Progress\" status and two review scores."
+          "alt": "The RetroDB library page in its dark neon theme, filled with invented games: a sidebar menu on the left, a search box with system and type dropdowns, filter buttons for genre, series, publisher, developer, players, perspective, dimension, rating, source, achievements and bonus discs, an A-to-Z jump bar, and four game cards in two columns, Aqua Rampart, Bramble Brigade, Cinder Circus and Cobalt Crown, each with its cover art, system tag, genre, developer, publisher, year, age-rating badges and two review scores, a \"Played\" tag on three of them, and a round Play button in its top-right corner."
         },
         {
           "src": "shots/retrodb-game.png",
-          "alt": "One game's page, \"Paper Planet\" for the Sony PlayStation, with a blurred moonlit backdrop behind a row of Play, Clear, Edit, Scrape and Delete buttons, a blue cover picture, tags for the year 1997, 4 players, the Europe region and two scores, a play-status dropdown set to \"Not Started\", a one-line description, the publisher, developer and genre, Teen and PEGI 12 age-rating badges, and a strip of three pixel-art gameplay screenshots underneath."
+          "alt": "One game's page, \"Paper Planet\" for the Sony PlayStation, with Play, Clear, Edit, Scrape and Delete buttons beside its glowing title, a blue cover picture, tags for the year 1994, 2 players, the Japan region and scores of 77 and 96, a play-status dropdown set to \"Not Started\", a one-line description, the publisher, the developer and the Beat-em-up and Adventure genres, Everyone and PEGI 7 age-rating badges, and below them a Screenshots card with three gameplay pictures beside an \"Also Known As\" card listing its Japanese, US and Spanish titles."
         },
         {
           "src": "shots/retrodb-systems.png",
-          "alt": "The \"Gaming Systems\" page with a \"5 consoles detected\" badge, a search box and type and feature filters, and a grid of console cards: the Nintendo 64 and Game Boy Advance in full view with their logos, 7 games each, a console or handheld tag and a RetroAchievements tag, and the Sega Mega Drive and PlayStation cards starting below."
+          "alt": "The \"Gaming Systems\" page with a \"6 consoles detected\" badge, a search box and type and feature filters, and a grid of console cards: the Game Boy Advance, Nintendo 64 and Sega Mega Drive in full view with their logos, 6 or 7 ROMs each, a handheld or console tag and a RetroAchievements tag, and the Sega Saturn, PlayStation and Super Nintendo cards starting below."
         },
         {
           "src": "shots/retrodb-dashboard.png",
-          "alt": "The dashboard, with tabs for Overview, Systems, Playing, Added and Status, \"Random Game\" and \"Scan Library\" buttons, a \"Collection Health\" panel showing 100% overall, with smaller rings at 100% for box art and descriptions and 0% for achievements, and summary tiles for 5 systems, 39 games, 0 missing metadata and 39 complete."
+          "alt": "The dashboard, with tabs for Overview, Systems, Playing, Added and Status, \"Random Game\" and \"Scan Library\" buttons, a \"Collection Health\" panel at 100%, rated Excellent, with smaller rings at 100% for box art and descriptions and 0% for achievements, and tiles for 6 systems, 40 games, 0 missing metadata, 40 complete, 11.1 GB of storage, a 32.5% completion rate, 0 achievements and 0 hours of playtime."
         }
       ],
       "video": {

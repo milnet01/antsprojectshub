@@ -75,6 +75,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **RetroDB's screenshots are fresh, from version 3.26.0, each with a new description of what it shows**
+
 - **Vestige's Linux download button now gives the AppImage, which runs with a double-click, instead of the archive**
 
 - **The private stats page lists "Google Analytics could not be read" under Needs attention, the tab that opens first**
