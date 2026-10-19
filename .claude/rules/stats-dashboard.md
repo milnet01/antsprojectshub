@@ -23,7 +23,8 @@ dashboard".
   the packaged default in the unit file; `PORT` is how an external process manager overrides
   it via a systemd drop-in, without editing a tracked file. A `PORT` that cannot be used is
   fatal — `serve.mjs` exits non-zero naming the value. `STATS_PORT` keeps its older lenient
-  behaviour (a bad value still falls back) and must not change. **The tray reads the port
+  behaviour (a value that is not a number, or is zero, falls back; any other number is used
+  unchecked) and must not change. **The tray reads the port
   from the *unit's* environment** (`systemctl --user show ants-stats -p Environment`), never
   from its own. `LWSM_MANAGED=1` drops the icon and logs to stdout instead — a presentation
   hint only, never a reason to grant or skip anything.
@@ -65,7 +66,7 @@ dashboard".
   are ordinary anchors: without JavaScript every section shows on one long page and a link
   jumps to its section. `dashboard.js` turns them into tabs that show one section at a
   time, marking the open tab's link with `aria-current`. The summary tiles and the banners
-  stay above every tab. The open tab is remembered in the URL's `#` part, so "Refresh now"
+  from `gapBanner()` and `incompleteBanner()` stay above every tab. The open tab is remembered in the URL's `#` part, so "Refresh now"
   reopens it, and in `localStorage` under `aph-tab`, so a fresh visit does; the `#` part
   wins. A remembered tab that no longer exists opens the first. Every `localStorage`
   access is wrapped in `try`/`catch`.

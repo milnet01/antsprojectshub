@@ -1,6 +1,6 @@
 <!-- ants-roadmap-format: 1 -->
 <!-- Generated from the Ants Terminal roadmap store. Edit it with roadmap_log; hand edits are discarded by the next write. -->
-<!-- ants-roadmap-id-high-water: APHW=24 -->
+<!-- ants-roadmap-id-high-water: APHW=25 -->
 # Ants Projects Hub — Roadmap
 
 > **What this is:** the planned work for
@@ -193,6 +193,20 @@ Nothing here changes what is measured, only what the eye lands on.
   **Layman:** The build rules list the folders the "docs only" shortcut must never skip, and one folder the site builds pages from is missing from that list.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 site-build.md loop 4 lane d.
+
+- 📋 [APHW-0025] **stats-dashboard.md says section accents run teal → violet and sit clear of the status language, but Needs attention wears the status amber.**
+  Found outside the gated change (865ea34, dashboard tabs), so filed, not fixed.
+  [Q1] .claude/rules/stats-dashboard.md, Colour bullet: "Each section owns an
+  `--accent` (teal → violet down the page)" and "Those hues deliberately sit
+  clear of the status language — amber means "look at this"". The CSS in
+  stats.mjs has `[data-sec="att"] { --accent: var(--amber); }`, and the comment
+  above the CSS block repeats the rule's claim. A conformer could recolour
+  Attention to match the rule, or give a new section a status hue believing the
+  rule allows it. Decide whether amber on Attention is intended: if so, name
+  the exception in the bullet and the CSS comment; if not, change the code.
+  **Layman:** The dashboard's colour rule says section colours never reuse the warning amber, but the "Needs attention" section does; one of the two should change.
+  Kind: doc-fix.
+  Source: review-contract-2026-10-19 stats-dashboard.md loop 1 lanes a and b.
 
 ## P02 — What the numbers actually say (target: TBD)
 

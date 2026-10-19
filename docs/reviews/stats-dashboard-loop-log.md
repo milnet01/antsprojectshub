@@ -1,0 +1,9 @@
+# Review loop log — .claude/rules/stats-dashboard.md
+
+Rows for [`.claude/rules/stats-dashboard.md`](../../.claude/rules/stats-dashboard.md), one per
+`review-contract` loop, oldest first. Kept here because the rules file loads by itself into
+sessions, so a log inside it would be paid for on every turn.
+
+| Loop | Date | Lanes | Q1 | Q2 | Q3 | Q4 | Verified / fixed / dismissed | Outcome |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 2026-10-19 | 2 (neutral-lane), every lane held every question; both arrived holding only the global CLAUDE.md, no project files and no git snapshot | 2 | 0 | 1 | — | 3 / 2 / 0, 1 filed | Gate armed by 865ea34 (the tabs bullet, which replaced the scroll-spy bullet). Q3, both lanes: "the banners stay above every tab" did not say which; `stats.mjs` emits three `note banner`s, and the GA read-failure one renders inside Site visitors — now "the banners from `gapBanner()` and `incompleteBanner()`". Q1, outside the change, fixed as an exempt record: "a bad value still falls back" for `STATS_PORT`, but `resolvePort` returns `99999` and `-5` as given (run 2026-10-19) — now names the cases that fall back. Q1, both lanes, outside the change and filed as APHW-0025: the Colour bullet says accents run teal → violet clear of the status language, but Needs attention wears `--amber`. Open questions resolved clean: the tab's `#` and `aph-tab` value (only `dashboard.js` binds to it); `serve.mjs` exits 1 on `PORT=abc` (run); the tray queries `systemctl --user` with `ants-stats.service`; `waitForAuth()`; the sort-header `<button>`; an out-of-range stored sort index is ignored; `npm test` also runs the tray's port tests, which changes nothing a conformer builds. |
