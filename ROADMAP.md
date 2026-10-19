@@ -1,6 +1,6 @@
 <!-- ants-roadmap-format: 1 -->
 <!-- Generated from the Ants Terminal roadmap store. Edit it with roadmap_log; hand edits are discarded by the next write. -->
-<!-- ants-roadmap-id-high-water: APHW=25 -->
+<!-- ants-roadmap-id-high-water: APHW=27 -->
 # Ants Projects Hub — Roadmap
 
 > **What this is:** the planned work for
@@ -228,6 +228,23 @@ Nothing here changes what is measured, only what the eye lands on.
   **Layman:** The dashboard's colour rule says section colours never reuse the warning amber, but the "Needs attention" section does; one of the two should change.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 stats-dashboard.md loop 1 lanes a and b.
+
+- 📋 [APHW-0026] **macOS buttons that link an Apple Silicon-only build do not say so (Slipcase, Snatch, Rolodex).**
+  Slipcase's assetMatch picks macos-arm64.dmg, Snatch ships only
+  Snatch-arm64.dmg, Rolodex only rolodex-macos-arm64. The button meta
+  line (fileType/fileSize in build.mjs) could add "Apple Silicon" when
+  the file name says arm64. Found 2026-10-19; not raised with the user yet.
+  **Layman:** Someone with an older Intel Mac can download a Mac file that will not run on their computer.
+  Kind: ux.
+  Source: session-2026-10-19.
+
+- 📋 [APHW-0027] **README.md's one-stop list omits two GitHub links site-build.md now lists.**
+  site-build.md (contract review 2026-10-19) lists an unreleased
+  project's "Follow development on GitHub" link and the footer profile
+  link; README.md's visitor summary names neither. Low stakes.
+  **Layman:** The README's short list of links that go to GitHub is missing two small ones.
+  Kind: doc-fix.
+  Source: session-2026-10-19.
 
 ## P02 — What the numbers actually say (target: TBD)
 
