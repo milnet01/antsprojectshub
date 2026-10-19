@@ -643,8 +643,8 @@ function actionButtons(p, release) {
 // src is relative to assets/img/, alt is required for accessibility. Thumbnails sit
 // in a responsive grid (all visible — scales from 2 to 20+ shots); clicking one opens
 // a full-screen :target lightbox with a ✕ close, backdrop-click close, and ‹ / › prev-
-// next (wrap-around). No JS, so ESC can't close it — the visible controls and the
-// browser Back button do. Empty/absent screenshots → no section at all.
+// next (stopping at the first and last shot). lightbox.js adds Escape and the arrow
+// keys; without it the visible controls and the browser Back button do. Empty/absent screenshots → no section at all.
 function renderScreenshots(p) {
   const shots = Array.isArray(p.screenshots) ? p.screenshots : [];
   if (!shots.length) return "";
@@ -659,17 +659,19 @@ function renderScreenshots(p) {
     })
     .join("");
 
-  // One lightbox panel per shot. Prev/next wrap around, so navigation always works
-  // (even with 2 shots); with a single shot the arrows are omitted.
+  // One lightbox panel per shot. Prev/next stop at the ends, as in RetroDB's own
+  // viewer: the first shot has no ‹ and the last has no ›.
   const boxes = shots
     .map((s, i) => {
       const src = `/assets/img/${esc(s.src)}`;
       const alt = esc(s.alt || `${p.name} screenshot`);
       const nav =
-        n > 1
-          ? `<a class="lightbox__nav lightbox__prev" href="#${lbId((i - 1 + n) % n)}" aria-label="Previous screenshot">‹</a>` +
-            `<a class="lightbox__nav lightbox__next" href="#${lbId((i + 1) % n)}" aria-label="Next screenshot">›</a>`
-          : "";
+        (i > 0
+          ? `<a class="lightbox__nav lightbox__prev" href="#${lbId(i - 1)}" aria-label="Previous screenshot">‹</a>`
+          : "") +
+        (i < n - 1
+          ? `<a class="lightbox__nav lightbox__next" href="#${lbId(i + 1)}" aria-label="Next screenshot">›</a>`
+          : "");
       return `<div class="lightbox" id="${lbId(i)}" role="dialog" aria-label="Screenshot ${i + 1} of ${n}: ${alt}">
           <a class="lightbox__backdrop" href="#screenshots" aria-label="Close screenshot viewer" tabindex="-1"></a>
           <figure class="lightbox__inner">

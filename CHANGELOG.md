@@ -61,6 +61,10 @@ so dated sections stand in for versions. Planned work lives in
 
 - **Pressless's page says Google has approved it, and notes a fix to the replace-your-site warning**
 
+### Changed
+
+- **The screenshot viewer stops at the first and last screenshot instead of jumping round to the other end**
+
 ### Fixed
 
 - **Local Web Server Manager's description no longer says it shows each project's live output: the app keeps that output in log files instead**
