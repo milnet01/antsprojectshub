@@ -92,9 +92,10 @@ offline, the build still succeeds — each project falls back to static metadata
 - **Demo videos are native `<video controls>`** — no player library, no JS, self-hosted
   under `/assets/video/`, `preload="none"` with a poster, and they **never autoplay**. The
   `caption` is the accessible alternative: never make it optional, and never swap it for a
-  decorative one-liner. It sits under the video in a native `<details>` fold-out, closed
-  until the visitor opens it, so a long caption does not push the page down (the user's
-  decision, 2026-10-19). Its `<summary>` says what opening it gives.
+  decorative one-liner. It sits under the video in a native `<details>` fold-out inside the
+  figure's `<figcaption>`, closed until the visitor opens it, so a long caption does not
+  push the page down (the user's decision, 2026-10-19). Its `<summary>` says what opening
+  it gives and, where a page has several videos, which one.
 
 - **Analytics is opt-in, and the measurement ID has exactly one home.** The GA4 ID lives in
   `src/projects.json` (`analytics.measurementId`) and nowhere else: the build reads it,
