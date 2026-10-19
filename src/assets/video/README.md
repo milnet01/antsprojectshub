@@ -20,7 +20,8 @@ that project's `video` object:
   each with a `title` ("Trailer: colours and themes") that heads it on the page. They play
   in the order listed, so put the newest first.
 - It renders as a **Demo** section at the very top of the project page, above the
-  screenshots, with a "Demo" entry in the jump nav.
+  screenshots, with a "Demo" entry in the jump nav. The caption sits under the video in
+  a fold-out, closed until the visitor opens it.
 
 ## Making the file
 

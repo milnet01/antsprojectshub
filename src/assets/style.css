@@ -803,7 +803,8 @@ a.card:hover .card__name {
 /* ---- Demo video: native <video controls>, no player library ----
    The intrinsic aspect ratio comes from the file itself, so the box never jumps once
    the poster loads. The caption below is the text alternative for a silent screencast,
-   so it stays at body size and full contrast — it is content, not a footnote. */
+   so once opened it reads at body size and full contrast — it is content, not a
+   footnote. It sits in a closed <details> fold-out (the .reveal button styles). */
 .demo {
   margin: 0;
 }
@@ -824,10 +825,13 @@ a.card:hover .card__name {
   background: var(--surface);
 }
 .demo__cap {
-  margin-top: 0.8rem;
+  margin-top: 0.4rem;
   max-width: 68ch;
-  color: var(--text-muted);
+  color: var(--text);
   line-height: 1.6;
+}
+.demo__cap p {
+  margin: 0.4rem 0 0;
 }
 
 /* ---- Screenshots: responsive thumbnail columns (no JS) ----

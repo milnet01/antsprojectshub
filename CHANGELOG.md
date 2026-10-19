@@ -71,6 +71,8 @@ so dated sections stand in for versions. Planned work lives in
 
 - **The screenshot viewer stops at the first and last screenshot instead of jumping round to the other end**
 
+- **The written description of each video now sits under it in a "Read what the video shows" fold-out, so pages are shorter; opened, it reads in brighter text**
+
 ### Fixed
 
 - **Local Web Server Manager's description no longer says it shows each project's live output: the app keeps that output in log files instead**

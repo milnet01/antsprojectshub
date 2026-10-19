@@ -726,7 +726,9 @@ function renderScreenshots(p) {
 // <video controls> — no player library, no JS. It never autoplays: motion the visitor
 // didn't ask for is a barrier, and a poster keeps the layout stable. The screencasts are
 // silent, so `caption` IS the text alternative (WCAG 1.2.1 video-only) — it is required
-// and rendered visibly under the player. `title` heads each video when there are several.
+// and sits under the player in a no-JS <details> fold-out inside the <figcaption>, closed
+// until opened, so a long one does not push the page down. `title` heads each video when
+// there are several, and names it in the fold-out's summary.
 function renderVideo(p) {
   const vids = [].concat(p.video || []).filter((v) => v?.src);
   if (!vids.length) return "";
@@ -743,7 +745,12 @@ function renderVideo(p) {
       )}">
           <p>Your browser can't play this video. <a href="${url}">Download it (MP4)</a> instead.</p>
         </video>
-        <figcaption class="demo__cap">${esc(v.caption)}</figcaption>
+        <figcaption class="demo__cap"><details class="reveal">
+          <summary class="reveal__btn"><span class="reveal__more">${esc(
+            title ? `Read what “${title}” shows` : "Read what the video shows"
+          )}</span><span class="reveal__less">Hide the description</span></summary>
+          <p>${esc(v.caption)}</p>
+        </details></figcaption>
       </figure>`;
     })
     .join("\n      ");
