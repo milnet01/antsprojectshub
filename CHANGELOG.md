@@ -75,6 +75,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Vestige's Linux download button now gives the AppImage, which runs with a double-click, instead of the archive**
+
+- **The private stats page lists "Google Analytics could not be read" under Needs attention, the tab that opens first**
+
 - **The private stats page shows one section at a time, as tabs along the top bar, with the summary figures above every tab; it reopens the tab you last had open**
 
 - **Project pages are centred down to the screenshots, and the first screenshot is shown large with the rest as thumbnails under it; the status shows once, beside the platforms**

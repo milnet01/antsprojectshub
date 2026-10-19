@@ -11,6 +11,7 @@
         "win",
         "linux"
       ],
+      "assetMatch": "\\.(AppImage|zip)$",
       "isFork": false,
       "upstream": null,
       "homepage": null,

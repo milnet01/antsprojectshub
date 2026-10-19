@@ -1234,6 +1234,20 @@ function attentionItems(rows, health) {
          ${osList(never)} from its <code>platforms</code>. ${since}`
     );
   }
+  // Visitor figures that could not be read. The Visitors tab says why and what to check;
+  // this line is here so nobody has to open that tab to learn the figures are missing.
+  if (health.gaDown) {
+    add(
+      true,
+      9,
+      1,
+      ["ga:read"],
+      (since) =>
+        `<strong>Google Analytics could not be read</strong>, so the Visitors tab shows no
+         figures: ${esc(gaError || "unknown error")}. Fix: the Visitors tab says what to check.
+         ${since}`
+    );
+  }
   if (health.noShots.length) {
     add(
       false,
@@ -2055,6 +2069,9 @@ export async function generate() {
   const base = baselineSnapshot(history, now);
   updateHistory(history, rows, now);
   const health = await contentHealth(projects);
+  // Read by attentionItems, so a dead GA credential is on the tab that opens first, not only
+  // inside the Visitors tab.
+  health.gaDown = Boolean(propertyId && !ga);
   updateAttention(history, attentionItems(rows.filter((r) => r.ok), health), rows, now);
 
   await mkdir(OUT, { recursive: true });
