@@ -1145,6 +1145,64 @@ a.card:hover .card__name {
   margin: 1rem 0 0;
 }
 
+/* ---- Just released: the three newest releases, above the log band ----
+   Each reuses the card's logo panel, shrunk to a thumbnail beside the name. */
+.fresh {
+  --accent: var(--teal);
+  margin: 0 0 1.75rem;
+}
+.fresh .section-label {
+  margin-top: 0;
+}
+.fresh__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fresh__item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  height: 100%;
+  padding: 0.6rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1.5px solid var(--surface-border);
+  color: var(--text);
+  transition: border-color 0.18s var(--ease), transform 0.18s var(--ease);
+}
+.fresh__item:hover {
+  text-decoration: none;
+  border-color: var(--teal);
+  transform: translateY(-3px);
+}
+.fresh__item .card__cover {
+  flex: 0 0 96px;
+  border-radius: 10px;
+  border-bottom: 0;
+}
+.fresh__item .card__cover--logo img {
+  max-width: 84%;
+  max-height: 84%;
+}
+.fresh__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.fresh__name {
+  font-weight: 750;
+  color: #fff;
+}
+.fresh__meta {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
 /* ---- Blog index ---- */
 .blog-head {
   padding-block: clamp(1.75rem, 5vw, 2.75rem) 0.5rem;

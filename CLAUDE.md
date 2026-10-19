@@ -11,8 +11,8 @@ site for Anthony Schemel's projects. It is a small Node build-time static-site g
 
 The only client-side JavaScript is hand-written, and each piece is progressive enhancement:
 
-- `assets/lightbox.js` — keyboard shortcuts for the screenshot lightbox, loaded only on
-  gallery pages.
+- `assets/lightbox.js` — keyboard shortcuts and swiping for the screenshot lightbox,
+  loaded only on gallery pages.
 - `assets/dates.js` — rewrites a release date into the reader's own locale format, loaded
   only on project pages that have one.
 - `assets/analytics.js` — the cookie consent bar, and the Google Analytics tag it gates.

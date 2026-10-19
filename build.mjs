@@ -483,6 +483,35 @@ function renderLogBand(posts) {
     </section>`;
 }
 
+// The three newest releases, so a returning visitor sees what changed without opening
+// every project. Each links straight to that project's "What's new". The daily build
+// keeps it current; a project whose release list GitHub did not return is left out.
+function renderFresh(projects, releases) {
+  const fresh = projects
+    .map((p) => ({ p, r: releases.get(p.slug) }))
+    .filter(({ r }) => r && r.dateISO)
+    .sort((a, b) => b.r.dateISO.localeCompare(a.r.dateISO))
+    .slice(0, 3);
+  if (!fresh.length) return "";
+  const items = fresh
+    .map(
+      ({ p, r }) => `        <li><a class="fresh__item" href="/p/${esc(p.slug)}.html#whatsnew">
+          ${cardCover(p)}
+          <span class="fresh__text"><span class="fresh__name">${esc(p.name)}</span>
+          <span class="fresh__meta">${esc(r.version)} · <time datetime="${esc(r.dateISO)}">${esc(
+        dateLabel(r.dateISO)
+      )}</time></span></span>
+        </a></li>`
+    )
+    .join("\n");
+  return `    <section class="fresh" aria-labelledby="fresh-h">
+      <h2 class="section-label" id="fresh-h">Just released</h2>
+      <ul class="fresh__list">
+${items}
+      </ul>
+    </section>`;
+}
+
 function landingPage(projects, support, releases, posts) {
   const stats = computeStats(projects);
   const present = CATEGORY_ORDER.filter((c) => projects.some((p) => p.category === c));
@@ -521,6 +550,7 @@ ${cards}
         <div class="stat"><b>3</b><span>Desktop OSes</span></div>
       </div>
     </section>
+${renderFresh(projects, releases)}
 ${renderLogBand(posts)}
     ${jump}
 ${groups}

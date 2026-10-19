@@ -11,6 +11,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **The home page opens with the three newest releases, each linking to what changed in it**
+
+- **On a phone or tablet, swipe left or right to move between screenshots**
+
 - **The private stats page counts openSUSE installs and updates of each project, for the last day, week and 30 days**
 
 - **RetroDB's download buttons now give the version with Python built in, so there is nothing else to install; a line under them offers the smaller downloads for people who already have Python**
