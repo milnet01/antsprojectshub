@@ -194,7 +194,7 @@ Nothing here changes what is measured, only what the eye lands on.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 site-build.md loop 4 lane d.
 
-- 📋 [APHW-0025] **stats-dashboard.md says section accents run teal → violet and sit clear of the status language, but Needs attention wears the status amber.**
+- 📋 [APHW-0025] **stats-dashboard.md: four rules outside the tabs change disagree with the code (accent colours, tray port source, rules-file paths, FILES vs TYPES).**
   Found outside the gated change (865ea34, dashboard tabs), so filed, not fixed.
   [Q1] .claude/rules/stats-dashboard.md, Colour bullet: "Each section owns an
   `--accent` (teal → violet down the page)" and "Those hues deliberately sit
@@ -204,6 +204,27 @@ Nothing here changes what is measured, only what the eye lands on.
   Attention to match the rule, or give a new section a status hue believing the
   rule allows it. Decide whether amber on Attention is intended: if so, name
   the exception in the bullet and the CSS comment; if not, change the code.
+  Added from loop 2 (same run, same gate), each outside the change:
+  [Q1] Port bullet: "The tray reads the port from the *unit's* environment
+  ... never from its own." tray/ants-stats-tray.py resolve_port() loops
+  `for source in (unit_env, own_env)` and accepts only 1024-65535, while
+  serve.mjs uses any non-zero STATS_PORT unchecked. The comment above
+  unit_environment() states the "never ours" intent, so code and rule
+  diverge; decide which is canonical. Both lanes.
+  [Q3] Frontmatter `paths:` omits lib/github.mjs, yet the token bullet
+  ("`hasToken`/`tokenSource` are `export let` on purpose") governs that
+  file, so a session editing only it never loads the rule. CLAUDE.md's
+  list of auto-load triggers omits it too. Fix: add lib/github.mjs to
+  both. Both lanes.
+  [Q3] `.stats/` bullet: "Any new asset ... gets copied in and added to
+  `FILES` too." serve.mjs sends `TYPES[ext]` as content-type and TYPES
+  covers .html/.css/.js/.svg only; measured 2026-10-19, Node's writeHead
+  throws ERR_HTTP_INVALID_HEADER_VALUE on an undefined header, so a
+  .png added per the rule would fail. Fix: "...and its extension to
+  TYPES if new." Lane b.
+  Also, code collateral (not a doc fix): the lib/port.mjs header comment
+  says an unusable STATS_PORT "still falls back to 4321"; only a
+  non-number or zero does.
   **Layman:** The dashboard's colour rule says section colours never reuse the warning amber, but the "Needs attention" section does; one of the two should change.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 stats-dashboard.md loop 1 lanes a and b.
