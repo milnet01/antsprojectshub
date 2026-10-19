@@ -11,6 +11,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Each download button on a project page says the file's type and size, and the button for your own computer's system comes first, marked "Your system"**
+
+- **A "How to install" fold-out under the download buttons, with what to do for each file, including how to get past the Windows and macOS warnings for apps they have not checked**
+
+- **A "View source" button next to "Report an issue" on every project page**
+
 - **The home page opens with the three newest releases, each linking to what changed in it**
 
 - **On a phone or tablet, swipe left or right to move between screenshots**
@@ -68,6 +74,8 @@ so dated sections stand in for versions. Planned work lives in
 - **Pressless's page says Google has approved it, and notes a fix to the replace-your-site warning**
 
 ### Changed
+
+- **Project pages are centred down to the screenshots, and the first screenshot is shown large with the rest as thumbnails under it; the status shows once, beside the platforms**
 
 - **The screenshot viewer stops at the first and last screenshot instead of jumping round to the other end**
 

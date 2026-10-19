@@ -15,6 +15,8 @@ The only client-side JavaScript is hand-written, and each piece is progressive e
   loaded only on gallery pages.
 - `assets/dates.js` — rewrites a release date into the reader's own locale format, loaded
   only on project pages that have one.
+- `assets/download.js` — puts the download button for the visitor's own system first,
+  loaded only on project pages with a release.
 - `assets/analytics.js` — the cookie consent bar, and the Google Analytics tag it gates.
 
 `dist/` is generated. Never hand-edit it; it is `.gitignore`d and rebuilt in CI.

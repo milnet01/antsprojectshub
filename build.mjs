@@ -420,7 +420,7 @@ async function fetchReleases(repo, assetMatch = null) {
   if (!data || !data.tag_name) return { release: null, history, listFailed };
 
   const assets = Array.isArray(data.assets)
-    ? data.assets.map((a) => ({ name: a.name, url: a.browser_download_url }))
+    ? data.assets.map((a) => ({ name: a.name, url: a.browser_download_url, size: a.size || 0 }))
     : [];
   // All-time downloads per OS: sum download_count across every non-draft release, assigning
   // each asset to at most one OS via the same conservative matcher the buttons use (first
@@ -569,18 +569,89 @@ ${groups}
 
 // `dl` marks a download button for src/assets/analytics.js, which reports a click on
 // one as a `download_click` event naming the project and what was fetched. Only after
-// the visitor has accepted analytics; the attributes themselves send nothing.
-function ext(url, label, cls = "btn", dl = null) {
+// the visitor has accepted analytics; the attributes themselves send nothing. `meta` is a
+// second, smaller line inside the button (a download's file type and size), so a screen
+// reader hears it as part of the link's name.
+function ext(url, label, cls = "btn", dl = null, meta = "") {
   const mark = dl
     ? ` data-dl-project="${esc(dl.project)}" data-dl-platform="${esc(dl.platform)}"`
     : "";
+  const sub = meta ? `<span class="btn__meta">${esc(meta)}</span>` : "";
   return `<a class="${cls}" href="${esc(
     url
-  )}" target="_blank" rel="noopener noreferrer"${mark}>${esc(label)}</a>`;
+  )}" target="_blank" rel="noopener noreferrer"${mark}>${esc(label)}${sub}</a>`;
 }
 
 // All-time GitHub download count for one OS's binaries, shown under its download button.
 const dlCountLabel = (n) => `${n.toLocaleString("en-US")} download${n === 1 ? "" : "s"}`;
+
+// A download's type, from its file name — GitHub's own content_type calls an AppImage
+// `application/octet-stream`, so it cannot tell the install notes apart. Longest suffix
+// first, so `.tar.gz` is not read as `.gz`. A name with no dot at all is a bare program
+// (Rolodex ships those); anything else unrecognised gets no type, and so no note.
+const FILE_TYPES = [
+  [/\.appimage$/i, "AppImage"],
+  [/\.flatpak$/i, "Flatpak"],
+  [/\.tar\.(gz|xz|bz2|zst)$/i, "TAR"],
+  [/\.zip$/i, "ZIP"],
+  [/\.exe$/i, "EXE"],
+  [/\.msi$/i, "MSI"],
+  [/\.dmg$/i, "DMG"],
+  [/\.pkg$/i, "PKG"],
+  [/\.deb$/i, "DEB"],
+  [/\.rpm$/i, "RPM"],
+];
+function fileType(name) {
+  const hit = FILE_TYPES.find(([pat]) => pat.test(name));
+  if (hit) return hit[1];
+  return name.includes(".") ? "" : "Program";
+}
+
+// Decimal megabytes (1 MB = 1,000,000 bytes). Whole numbers above 10 MB,
+// where a decimal place is noise; a file under 1 MB (a .deb of a script) shows in KB.
+function fileSize(bytes) {
+  if (!bytes) return "";
+  if (bytes < 1e6) return `${Math.max(1, Math.round(bytes / 1e3))} KB`;
+  const mb = bytes / 1e6;
+  return `${mb < 10 ? mb.toFixed(1) : Math.round(mb)} MB`;
+}
+
+// "How to install", one note per OS and file type. {file} becomes the file's own name, and
+// a `backticked` command is shown as code.
+// Each Windows and macOS note says what the system's warning for an app it has not checked
+// looks like and how to get past it; "if", because a release signed by Microsoft or Apple
+// shows none. A type with no note here gets no line.
+const WIN_WARN = "If Windows shows “Windows protected your PC”, choose More info, then Run anyway.";
+const MAC_WARN = "If macOS says it cannot verify the app, open System Settings → Privacy & Security and choose Open Anyway.";
+const INSTALL_NOTES = {
+  "win:EXE": `Run the file. ${WIN_WARN}`,
+  "win:MSI": `Run the installer. ${WIN_WARN}`,
+  "win:ZIP": `Right-click the zip, choose Extract All, then run the program inside. ${WIN_WARN}`,
+  "mac:DMG": `Open the file and drag the app into Applications. ${MAC_WARN}`,
+  "mac:PKG": `Open the file and follow the installer. ${MAC_WARN}`,
+  "mac:ZIP": `Double-click the zip to unpack it, then open the app inside. ${MAC_WARN}`,
+  "mac:Program": "In Terminal, run `chmod +x {file}`, then `./{file}`. " + MAC_WARN,
+  "linux:AppImage": "Make the file runnable: right-click it, open Properties, and allow it to run as a program, or run `chmod +x {file}`. Then double-click it.",
+  "linux:DEB": "Open it with your software installer, or run `sudo apt install ./{file}`.",
+  "linux:RPM": "On openSUSE, run `sudo zypper install ./{file}`. On Fedora, run `sudo dnf install ./{file}`.",
+  "linux:ZIP": "Extract the zip, then run the program inside.",
+  "linux:TAR": "Extract the archive, then run the program inside.",
+  "linux:Program": "In a terminal, run `chmod +x {file}`, then `./{file}`.",
+};
+
+// The fold-out under the download buttons: one line per download that has a note, named
+// by the same label its button carries. Closed by default, so it costs one line.
+function installHelp(direct) {
+  const items = direct.flatMap((m) => {
+    const note = INSTALL_NOTES[`${m.pl}:${fileType(m.asset.name)}`];
+    if (!note) return [];
+    const html = esc(note.replaceAll("{file}", m.asset.name)).replace(/`([^`]+)`/g, "<code>$1</code>");
+    return [`<li><strong>${esc(m.label)}:</strong> ${html}</li>`];
+  });
+  return items.length
+    ? `<details class="reveal install"><summary class="reveal__btn">How to install</summary><ul>${items.join("")}</ul></details>`
+    : "";
+}
 
 function actionButtons(p, release) {
   if (p.status === "soon") {
@@ -636,10 +707,11 @@ function actionButtons(p, release) {
       : [{ ...m, label: PLATFORM[m.pl] || m.pl, count: m.pl }];
   });
   direct.forEach((m, i) => {
+    const meta = [fileType(m.asset.name), fileSize(m.asset.size)].filter(Boolean).join(" · ");
     const btn = ext(m.asset.url, `Download · ${m.label}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`, {
       project: p.slug,
       platform: m.pl,
-    });
+    }, meta);
     // Cumulative all-time downloads for this OS, or this package format. A freshly-cut
     // release genuinely has none yet, and printing "0 downloads" under the button reads
     // worse than printing nothing at all — so the count appears only once there is one.
@@ -662,16 +734,19 @@ function actionButtons(p, release) {
     buttons.push(ext(fallback, fallbackLabel, `btn ${primary}`, { project: p.slug, platform: p.homepage ? "homepage" : "source" }));
   }
 
+  // The code is the one thing here only GitHub can show, so it links there.
+  buttons.push(ext(repoUrl(p.repo), "View source", "btn btn--ghost"));
   buttons.push(issueButton(p));
   const altLine = alts.length
     ? `<p class="dl-alt">${esc(p.altDownloads)} ${alts.join(" · ")}</p>`
     : "";
-  return `<div class="actions">${buttons.join("")}</div>${altLine}`;
+  return `<div class="actions">${buttons.join("")}</div>${altLine}${installHelp(direct)}`;
 }
 
 // Curated screenshot gallery (pure-CSS, no JS ships). Each entry is { src, alt }:
-// src is relative to assets/img/, alt is required for accessibility. Thumbnails sit
-// in a responsive grid (all visible — scales from 2 to 20+ shots); clicking one opens
+// src is relative to assets/img/, alt is required for accessibility. The first shot is
+// shown large and the rest as a centred row of thumbnails under it, every one visible —
+// no carousel, whose hidden slides most visitors never find; clicking one opens
 // a full-screen :target lightbox with a ✕ close, backdrop-click close, and ‹ / › prev-
 // next (stopping at the first and last shot). lightbox.js adds Escape and the arrow
 // keys; without it the visible controls and the browser Back button do. Empty/absent screenshots → no section at all.
@@ -685,7 +760,7 @@ function renderScreenshots(p) {
     .map((s, i) => {
       const src = `/assets/img/${esc(s.src)}`;
       const alt = esc(s.alt || `${p.name} screenshot`);
-      return `<a class="shot" href="#${lbId(i)}" aria-label="Enlarge screenshot ${i + 1} of ${n}: ${alt}"><img src="${src}" alt="${alt}" loading="lazy"></a>`;
+      return `<a class="shot${i === 0 ? " shot--lead" : ""}" href="#${lbId(i)}" aria-label="Enlarge screenshot ${i + 1} of ${n}: ${alt}"><img src="${src}" alt="${alt}" loading="lazy"></a>`;
     })
     .join("");
 
@@ -950,15 +1025,15 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
 
   // The tagline is the page's own one-line answer to "what is this?" — without it the
   // page jumped from a two-word title straight to the download buttons, and the only
-  // description a visitor got was whatever the About copy opened with.
+  // description a visitor got was whatever the About copy opened with. The status shows
+  // once, as the pill; a fork's credit to its upstream sits on the same line.
   const content = `
     <section class="detail-head">
-      <p class="kicker">${esc(STATUS[p.status]?.label || "")}${
-    fork ? " · " + fork : ""
-  }</p>
       ${detailTitle(p)}
       <p class="detail-tagline">${esc(p.tagline)}</p>
-      <div class="detail-sub">${statusPill(p)}${platformTags(p)}${version}</div>
+      <div class="detail-sub">${statusPill(p)}${platformTags(p)}${version}${
+    fork ? `<span class="fork">${fork}</span>` : ""
+  }</div>
       ${actionButtons(p, release)}
     </section>
     ${jump}
@@ -974,6 +1049,8 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
     section: "projects",
     back: { href: "/", label: "All projects" },
     lightbox: Boolean(shotsHtml),
+    // Marks the visitor's own system's download button; only where a release has files.
+    download: hasRelease && p.status !== "soon",
     // The version line carries a release date; the script rewrites it to the reader's own
     // system format. Only loaded where there is one — an unreleased project has no date.
     dates: hasRelease && Boolean(release.dateISO),
