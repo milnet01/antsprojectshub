@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **RetroDB's download buttons now give the version with Python built in, so there is nothing else to install; a line under them offers the smaller downloads for people who already have Python**
+
 - **RetroDB's page describes its newest releases: a Play button on every game's box art, one Achievements page with a tab each, and pages that fit any window; its piracy notice now matches the one inside the app**
 
 - **Groundwork's page describes its new release: it can lay out a drive for installing openSUSE, has two developer switches, and says it is an independent project, not an official openSUSE or SUSE product**

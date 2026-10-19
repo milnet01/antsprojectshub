@@ -95,7 +95,11 @@
       "blurb": "A web-based collection manager for retro games across 140+ platforms: hybrid metadata scraping, one-click emulator launch, achievements and trophy integration, ROM tools (CHD conversion, duplicate finding, multi-disc handling), an analytics dashboard, multiple themes and languages, and role-based multi-user access.",
       "status": "live",
       "repo": "milnet01/RetroDB",
-      "assetMatch": "^RetroDB-v[\\d.]+-(Linux|macOS|Windows)\\.zip$",
+      "assetMatch": [
+        "^RetroDB-v[\\d.]+-(Linux|macOS|Windows)-CPU-Standalone\\.zip$",
+        "^RetroDB-v[\\d.]+-(Linux|macOS|Windows)\\.zip$"
+      ],
+      "altDownloads": "Already have Python 3.10 or newer? Smaller downloads:",
       "platforms": [
         "win",
         "mac",

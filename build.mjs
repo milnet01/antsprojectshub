@@ -617,13 +617,26 @@ function actionButtons(p, release) {
     const count = n > 0 ? `<span class="dl__count">${esc(dlCountLabel(n))}</span>` : "";
     buttons.push(`<span class="dl">${btn}${count}</span>`);
   });
+  // A project whose `assetMatch` lists several builds can offer the ones its buttons passed
+  // over as a line of small links, introduced by its `altDownloads` text. An OS whose
+  // release has only one of them gets no link.
+  const rest = [].concat(p.assetMatch || []).slice(1);
+  const alts = p.altDownloads && rest.length
+    ? direct.flatMap((m) => {
+        const a = pickAsset(release.assets.filter((x) => x !== m.asset), m.pl, rest);
+        return a ? [ext(a.url, m.label, "", { project: p.slug, platform: m.pl })] : [];
+      })
+    : [];
   if (matched.some((m) => !m.asset)) {
     const primary = direct.length === 0 && !hasWeb ? "btn--primary" : "";
     buttons.push(ext(fallback, fallbackLabel, `btn ${primary}`, { project: p.slug, platform: p.homepage ? "homepage" : "source" }));
   }
 
   buttons.push(issueButton(p));
-  return `<div class="actions">${buttons.join("")}</div>`;
+  const altLine = alts.length
+    ? `<p class="dl-alt">${esc(p.altDownloads)} ${alts.join(" · ")}</p>`
+    : "";
+  return `<div class="actions">${buttons.join("")}</div>${altLine}`;
 }
 
 // Curated screenshot gallery (pure-CSS, no JS ships). Each entry is { src, alt }:

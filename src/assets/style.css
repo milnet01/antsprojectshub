@@ -632,6 +632,11 @@ a.card:hover .card__name {
   font-size: 0.8rem;
   color: var(--text-dim);
 }
+.dl-alt {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
 .btn {
   display: inline-flex;
   align-items: center;

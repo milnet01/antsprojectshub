@@ -47,13 +47,17 @@ progress of long jobs aloud.
 
 ## What you will need
 
-RetroDB is free. The download buttons give you the usual version, which needs
-Python 3.10 or newer: extract it and run `python install.py`. Each release on
-GitHub also has a version that needs no Python, in the files ending
-`-CPU-Standalone.zip`.
+RetroDB is free. The download buttons give you a version with Python built in,
+so there is nothing else to install. Unzip it and double-click the start file:
+`start.bat` on Windows, `start.command` on a Mac, `start.sh` on Linux. On Linux,
+`install-launcher.sh` also adds it to your app menu.
 
-Once it is installed, you can start it from a pinned icon, with no terminal. A
-setup wizard then walks you through the rest at `http://localhost:5000`.
+If you already have Python 3.10 or newer, the smaller downloads under the
+buttons are the other version: extract it and run `python install.py`. You can
+then start it from a pinned icon, with no terminal.
+
+Either way, RetroDB opens in your browser, and a setup wizard walks you through
+the rest.
 
 **One thing to know up front:** the metadata scrapers, the achievement trackers
 and the AI features each need their own account or API key, which you create on

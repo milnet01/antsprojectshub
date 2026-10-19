@@ -130,7 +130,9 @@ offline, the build still succeeds — each project falls back to static metadata
   deliberately conservative), falling
   back to `homepage` → Releases page → repo home. A project whose release ships two builds
   per OS names the one to link with `assetMatch` in `projects.json`, a regex the file must
-  also match. A Linux release with both a `.deb` and an `.rpm` and no AppImage or Flatpak
+  also match. A list of regexes is tried in order, falling back to the next where a release
+  lacks the first; with `altDownloads` set, the builds the buttons passed over are linked in
+  a line under them, introduced by that text. A Linux release with both a `.deb` and an `.rpm` and no AppImage or Flatpak
   gets one button per distro family (`linuxPackages`). Companion files — signatures, checksum
   manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching.
 
