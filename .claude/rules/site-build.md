@@ -68,8 +68,9 @@ offline, the build still succeeds — each project falls back to static metadata
   try/fallback discipline.
 
 - **The site is a one-stop shop; only what GitHub alone can serve still links there.** That
-  is the release binaries, the issue tracker, the source code (the "View source" button),
-  and credit to a fork's upstream. Everything a
+  is the release binaries, the issue tracker, the source code (the "View source" button, and
+  an unreleased project's "Follow development on GitHub →"), credit to a fork's upstream,
+  and the owner's profile in the footer. Everything a
   visitor *reads* — the About copy and the whole changelog — is on this site. Do not
   reintroduce an "on GitHub →" link for reading material.
 
@@ -88,8 +89,9 @@ offline, the build still succeeds — each project falls back to static metadata
   The lightbox works fully without `lightbox.js` (✕, click-outside, Back) — keep it that
   way; it is loaded via `basePage({ lightbox: true })`. `dates.js` never touches the
   `datetime` attribute and acts only on `<time data-localise>`; it is loaded via `basePage({ dates: true })`.
-  `download.js` labels the download button for the visitor's own system and moves it to the
-  front; without it every button still shows, in the build's order. It changes nothing on a
+  `download.js` finds the download buttons for the visitor's own system by the
+  `data-dl-platform` the build writes on each, labels them and moves them to the front. The
+  alt-download links carry the same attribute and stay where they are. Without it every button still shows, in the build's order. It changes nothing on a
   phone or tablet, or on a system it does not recognise. It is loaded via
   `basePage({ download: true })`. Don't add further client JS lightly.
 
@@ -129,7 +131,9 @@ offline, the build still succeeds — each project falls back to static metadata
 - **Security headers ship via `<meta>`**: a strict CSP
   with no inline scripts or styles, `referrer: no-referrer`, `nosniff`. The self-hosted
   scripts are allowed by `script-src 'self'` and demo videos by `media-src 'self'`;
-  **inline** `<script>`/`<style>` still break the CSP — never introduce them. The one
+  **inline** `<script>`/`<style>` still break the CSP — never introduce them. Only the
+  JSON-LD block (`ldScript()` in `lib/templates.mjs`) may be inline: it is data, never
+  executed, so the CSP does not apply to it. The one
   third-party origin in the whole policy is `googletagmanager.com` in `script-src`, plus
   Google Analytics' collector in `connect-src`.
 
@@ -142,9 +146,9 @@ offline, the build still succeeds — each project falls back to static metadata
   a line under them, introduced by that text. A Linux release with both a `.deb` and an `.rpm` and no AppImage or Flatpak
   gets one button per distro family (`linuxPackages`). Companion files — signatures, checksum
   manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching.
-  Each matched button names its file's type and size, read from the release asset. The "How
-  to install" fold-out under the buttons is built from the same files' types, one note per
-  type; a file whose type has no note gets none, and a fallback button gets none. No project
+  Each matched button names its file's type, taken from the file name (AppImage, `.deb`,
+  `.exe`), and its size, from the release asset's `size` field. The "How to install" fold-out
+  under the buttons is built from the same files' types, one note per type; a file whose type has no note gets none, and a fallback button gets none. No project
   writes its own install text.
 
 The About-page and 1.0.0 checks are in [`content.md`](content.md).
