@@ -448,7 +448,9 @@ function sparkline(values) {
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     })
     .join(" ");
-  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+  // Stretchable: the downloads table widens it to fill its Trend cell (CSS), and the stroke
+  // keeps its weight however far the drawing is stretched. Elsewhere it draws at w × h.
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`;
 }
 
 // Wide tables keep their column widths and let this wrapper scroll instead of crushing on a
@@ -525,12 +527,14 @@ function downloadsTable(rows, history, base) {
 
   return scrollTable(
     "Downloads per OS",
-    `<table class="tbl sortable" data-table="downloads">
+    `<table class="tbl sortable tbl--dl" data-table="downloads">
     <caption>All-time downloads, by operating system. A blank cell means the project isn't
       offered for that OS; a zero means it is, and nobody has downloaded it. Total and Trend
       count the three OS columns only. “Other” is release files that aren't the app —
       signatures, checksums, updater metadata, source archives — so it sits last, outside
       the total. That's normal; it only turns amber when something there is unexplained.</caption>
+    <colgroup><col class="c-name">${'<col class="c-num">'.repeat(OS_KEYS.length + 1)}<col
+      class="c-trend"><col></colgroup>
     <thead><tr><th scope="col">Project</th>${OS_KEYS.map(
       (k) => `<th scope="col" class="n os os--${k}">${OS_LABEL[k]}</th>`
     ).join("")}<th scope="col" class="n" aria-sort="descending">Total</th>
@@ -2034,7 +2038,12 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .d--up { color: var(--teal); }
 .d--down { color: var(--rose); }
 .spark { color: var(--violet); display: block; }
-.sparkcell { width: 72px; }
+/* Downloads per OS: the three OS columns and Total share one width so the figures line up as
+   a set, and Trend gets enough room for its line to show a shape. Other takes what is left. */
+.tbl--dl .c-name { width: 22%; }
+.tbl--dl .c-num { width: 11%; }
+.tbl--dl .c-trend { width: 24%; }
+.sparkcell .spark { width: 100%; height: 1.6rem; }
 
 /* The heading is the cue and the wording is the cue: "⚠ Broken now" says it in text, so the
    amber only reinforces what already reads in greyscale. The count is dim because it is the

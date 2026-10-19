@@ -79,6 +79,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **On the private stats page's downloads-by-OS table, Windows, macOS, Linux and Total are one width, and the Trend graph is wider**
+
 - **RetroDB's screenshots are fresh, from version 3.26.0, each with a new description of what it shows**
 
 - **Vestige's Linux download button now gives the AppImage, which runs with a double-click, instead of the archive**
