@@ -135,7 +135,7 @@ offline, the build still succeeds — each project falls back to static metadata
 
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative), falling
-  back to `homepage` → Releases page → repo home. A project whose release ships two builds
+  back to `homepage`, else the source archive (`sourceZipUrl`). A project whose release ships two builds
   per OS names the one to link with `assetMatch` in `projects.json`, a regex the file must
   also match. A list of regexes is tried in order, falling back to the next where a release
   lacks the first; with `altDownloads` set, the builds the buttons passed over are linked in
