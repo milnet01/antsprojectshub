@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **RetroDB's page describes its newest releases: a Play button on every game's box art, one Achievements page with a tab each, and pages that fit any window; its piracy notice now matches the one inside the app**
+
 - **Groundwork's page describes its new release: it can lay out a drive for installing openSUSE, has two developer switches, and says it is an independent project, not an official openSUSE or SUSE product**
 
 - **RetroDB's page says we do not condone piracy: use only games you own, and game names and art belong to their owners**
