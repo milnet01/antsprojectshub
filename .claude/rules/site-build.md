@@ -68,7 +68,8 @@ offline, the build still succeeds — each project falls back to static metadata
   try/fallback discipline.
 
 - **The site is a one-stop shop; only what GitHub alone can serve still links there.** That
-  is the release binaries, the issue tracker, and credit to a fork's upstream. Everything a
+  is the release binaries, the issue tracker, the source code (the "View source" button),
+  and credit to a fork's upstream. Everything a
   visitor *reads* — the About copy and the whole changelog — is on this site. Do not
   reintroduce an "on GitHub →" link for reading material.
 
@@ -86,8 +87,11 @@ offline, the build still succeeds — each project falls back to static metadata
   output is static HTML/CSS plus the hand-written progressive-enhancement scripts.
   The lightbox works fully without `lightbox.js` (✕, click-outside, Back) — keep it that
   way; it is loaded via `basePage({ lightbox: true })`. `dates.js` never touches the
-  `datetime` attribute and acts only on `<time data-localise>`; it is loaded via `basePage({ dates: true })`. Don't add further
-  client JS lightly.
+  `datetime` attribute and acts only on `<time data-localise>`; it is loaded via `basePage({ dates: true })`.
+  `download.js` labels the download button for the visitor's own system and moves it to the
+  front; without it every button still shows, in the build's order. It changes nothing on a
+  phone or tablet, or on a system it does not recognise. It is loaded via
+  `basePage({ download: true })`. Don't add further client JS lightly.
 
 - **Demo videos are native `<video controls>`** — no player library, no JS, self-hosted
   under `/assets/video/`, `preload="none"` with a poster, and they **never autoplay**. The
@@ -138,5 +142,9 @@ offline, the build still succeeds — each project falls back to static metadata
   a line under them, introduced by that text. A Linux release with both a `.deb` and an `.rpm` and no AppImage or Flatpak
   gets one button per distro family (`linuxPackages`). Companion files — signatures, checksum
   manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching.
+  Each matched button names its file's type and size, read from the release asset. The "How
+  to install" fold-out under the buttons is built from the same files' types, one note per
+  type; a file whose type has no note gets none, and a fallback button gets none. No project
+  writes its own install text.
 
 The About-page and 1.0.0 checks are in [`content.md`](content.md).
