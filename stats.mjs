@@ -193,6 +193,64 @@ async function collectTraffic(repo) {
   };
 }
 
+// openSUSE installs. zypper fetches packages from download.opensuse.org, whose MirrorCache
+// counts every package file it hands out, by package name. A first install and each later
+// update count once each, so the figure is downloads, not people. It keeps only the last
+// 30 days, and nothing here snapshots it: like Google Analytics, the source holds the record.
+// A name counts every Build Service project that ships it, so a figure is shown only when
+// every place the name lives is under OBS_HOME, and a name living nowhere there is not ours.
+const OBS = "https://download.opensuse.org";
+const OBS_HOME = "/repositories/home:/milnet";
+
+async function obsJson(path) {
+  const res = await fetch(OBS + path, { signal: AbortSignal.timeout(20000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function obsExists(path) {
+  const res = await fetch(OBS + path, { method: "HEAD", signal: AbortSignal.timeout(20000) });
+  return res.ok;
+}
+
+// One project's openSUSE figures, or null when it has no package on the Build Service. The
+// package is named after the slug or the repo (fin-break ships as finbreak). A failed call
+// returns { error }, shown as "no data", never as zero.
+async function collectObs(p) {
+  const names = [...new Set([p.slug, p.repo.split("/")[1].toLowerCase()])];
+  try {
+    for (const name of names) {
+      const locs = (await obsJson(`/rest/search/package_locations?package=${encodeURIComponent(name)}`)).data || [];
+      if (!locs.length) {
+        // On the Build Service but not counted yet: MirrorCache had not indexed groundwork
+        // five days after its first build (2026-10-19).
+        if (await obsExists(`${OBS_HOME}:/${name}/`)) return { slug: p.slug, name: p.name, pkg: name, uncounted: true };
+        continue;
+      }
+      const ours = locs.filter((l) => l.path.startsWith(OBS_HOME)).length;
+      if (!ours) continue; // someone else's package of the same name (retroarch)
+      if (ours < locs.length) {
+        return { slug: p.slug, name: p.name, pkg: name, shared: true };
+      }
+      const { id } = await obsJson(`/rest/package/${encodeURIComponent(name)}`);
+      const [s] = (await obsJson(`/rest/package/${id}/stat_download`)).data || [];
+      if (!s) throw new Error("no figures returned");
+      return {
+        slug: p.slug,
+        name: p.name,
+        pkg: name,
+        d1: Number(s.cnt_1d),
+        d7: Number(s.cnt_7d),
+        d30: Number(s.cnt_30d),
+      };
+    }
+    return null;
+  } catch (err) {
+    console.warn(`! ${p.slug}: openSUSE download count failed (${err.message})`);
+    return { slug: p.slug, name: p.name, error: true };
+  }
+}
+
 // --------------------------------------------------------------------- history
 
 async function loadHistory() {
@@ -1257,7 +1315,7 @@ function tallyList(obj) {
     .join("");
 }
 
-function page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks }) {
+function page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks, obs }) {
   const ok = rows.filter((r) => r.ok);
   const grand = ok.reduce((s, r) => s + r.total, 0);
   const stars = ok.reduce((s, r) => s + r.stars, 0);
@@ -1335,7 +1393,8 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
   <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads</h2>
     ${cols(
       `<h3>All time, by operating system</h3>${downloadsTable(rows, history, base)}`,
-      `<h3>The last 7 and 30 days</h3>${recentDownloads(rows, history, now)}`
+      `<h3>The last 7 and 30 days</h3>${recentDownloads(rows, history, now)}
+       <h3>openSUSE installs and updates</h3>${obsTable(obs)}`
     )}</section>
 
   <section class="sec" data-sec="ga" aria-labelledby="h-ga"><h2 id="h-ga">Site visitors</h2>
@@ -1415,6 +1474,51 @@ function osTotal(p) {
 function sumOf(snapshot, pick) {
   const get = typeof pick === "function" ? pick : (p) => p[pick] || 0;
   return Object.values(snapshot.projects).reduce((s, p) => s + get(p), 0);
+}
+
+function obsTable(obs) {
+  if (!obs.length) return `<p class="note">No project has a package on the openSUSE Build Service.</p>`;
+  const counted = obs.filter((o) => o.d30 != null).sort((a, b) => b.d30 - a.d30);
+  const rest = obs.filter((o) => o.d30 == null);
+  const why = (o) =>
+    o.error
+      ? "no data: openSUSE did not answer"
+      : o.shared
+      ? `not shown: another project also ships a package called ${esc(o.pkg)}`
+      : "not counted by openSUSE yet";
+  const body =
+    counted
+      .map(
+        (o) => `<tr><th scope="row" data-sort="${esc(o.name)}">${esc(o.name)}</th>
+        <td class="n" data-sort="${o.d1}">${num(o.d1)}</td>
+        <td class="n" data-sort="${o.d7}">${num(o.d7)}</td>
+        <td class="n strong" data-sort="${o.d30}">${num(o.d30)}</td></tr>`
+      )
+      .join("") +
+    rest
+      .map(
+        (o) => `<tr class="row--missing"><th scope="row" data-sort="${esc(o.name)}">${esc(
+          o.name
+        )}<br><span class="dim">${why(o)}</span></th>
+        ${[1, 7, 30].map(() => `<td class="n" data-sort="-1"><span class="dim">—</span></td>`).join("")}</tr>`
+      )
+      .join("");
+  const sum = (k) => counted.reduce((s, o) => s + o[k], 0);
+  return scrollTable(
+    "openSUSE downloads",
+    `<table class="tbl sortable" data-table="obs">
+    <caption>Packages zypper fetched from the openSUSE Build Service, as openSUSE's download
+      server counts them. A first install and every later update count once each, so these are
+      downloads, not people. openSUSE keeps only the last 30 days, and does not say whether it
+      leaves out robots.</caption>
+    <thead><tr><th scope="col">Project</th><th scope="col" class="n">Last 24 hours</th>
+      <th scope="col" class="n">Last 7 days</th>
+      <th scope="col" class="n" aria-sort="descending">Last 30 days</th></tr></thead>
+    <tbody>${body}</tbody>
+    <tfoot><tr><th scope="row">All projects</th><td class="n strong">${num(sum("d1"))}</td>
+      <td class="n strong">${num(sum("d7"))}</td><td class="n strong">${num(sum("d30"))}</td></tr></tfoot>
+  </table>`
+  );
 }
 
 function releasesTable(rows) {
@@ -1900,6 +2004,11 @@ export async function generate() {
   if (postViews?.error) console.warn(`! Blog readership: ${postViews.error} — table skipped`);
   const clicks = await collectDownloadClicks(propertyId);
   if (clicks?.error) console.warn(`! Download clicks: ${clicks.error} — table skipped`);
+  const obs = [];
+  for (const p of published) {
+    const o = await collectObs(p);
+    if (o) obs.push(o);
+  }
 
   const now = Date.now();
   const history = await loadHistory();
@@ -1921,7 +2030,7 @@ export async function generate() {
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   await writeFile(
     PAGE,
-    page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks })
+    page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks, obs })
   );
 
   const failed = rows.filter((r) => !r.ok);
