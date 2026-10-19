@@ -61,8 +61,14 @@ dashboard".
   blue/magenta/green. Those hues deliberately sit clear of the status language — amber means
   "look at this", teal "up", rose "down". Figures stay in text ink.
 
-- **The sticky nav is progressive enhancement too.** The links are ordinary anchors that
-  work without JavaScript; `dashboard.js` only adds the scroll-spy.
+- **The sections are tabs, and the tabs are progressive enhancement too.** The nav's links
+  are ordinary anchors: without JavaScript every section shows on one long page and a link
+  jumps to its section. `dashboard.js` turns them into tabs that show one section at a
+  time, marking the open tab's link with `aria-current`. The summary tiles and the banners
+  stay above every tab. The open tab is remembered in the URL's `#` part, so "Refresh now"
+  reopens it, and in `localStorage` under `aph-tab`, so a fresh visit does; the `#` part
+  wins. A remembered tab that no longer exists opens the first. Every `localStorage`
+  access is wrapped in `try`/`catch`.
 
 - **Sorting is progressive enhancement.** `dashboard.js` turns each `table.sortable` header
   into a `<button>` and toggles `aria-sort`; every table also ships pre-sorted by its most
