@@ -1,6 +1,6 @@
 <!-- ants-roadmap-format: 1 -->
 <!-- Generated from the Ants Terminal roadmap store. Edit it with roadmap_log; hand edits are discarded by the next write. -->
-<!-- ants-roadmap-id-high-water: APHW=28 -->
+<!-- ants-roadmap-id-high-water: APHW=29 -->
 # Ants Projects Hub — Roadmap
 
 > **What this is:** the planned work for
@@ -414,6 +414,18 @@ answers than the page asks of it.
   **Layman:** Give Hell's Gate a proper logo instead of the plain letter H.
   Kind: ux.
   Source: site-ideas-offered-2026-10-19.
+
+- 🚧 [APHW-0029] **Keep every stat's history in a local database and chart it on the dashboard.**
+  One SQLite file in .stats/, through Node's built-in node:sqlite (no
+  new dependency). Imports .stats/history.json, which stays as a backup.
+  Records GitHub downloads, stars and traffic; openSUSE MirrorCache
+  counts (its server keeps only 30 days); Google Analytics per-day
+  figures, re-reading recent days so they match Google. User chose on
+  2026-10-21 to save GA figures, reversing the never-snapshotted rule in
+  .claude/rules/stats-dashboard.md, and to add charts in this item.
+  **Layman:** The private dashboard remembers GitHub, openSUSE and Google figures day by day, and shows how they change over time.
+  Kind: feature.
+  Source: user-request-2026-10-21.
 
 ## P03 — Pictures, clicks and the weekly post (target: 2026-10)
 
