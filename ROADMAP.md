@@ -423,6 +423,11 @@ answers than the page asks of it.
   figures, re-reading recent days so they match Google. User chose on
   2026-10-21 to save GA figures, reversing the never-snapshotted rule in
   .claude/rules/stats-dashboard.md, and to add charts in this item.
+  Spec docs/specs/APHW-0029-stats-history-database.md gated by
+  review-contract 2026-10-21: 1 loop (user round budget), 2 lanes, 8
+  verified findings, all fixed in 34a804e; none deferred. Status
+  accepted (2026-10-21). Loop log:
+  docs/reviews/APHW-0029-stats-history-database-loop-log.md.
   **Layman:** The private dashboard remembers GitHub, openSUSE and Google figures day by day, and shows how they change over time.
   Kind: feature.
   Source: user-request-2026-10-21.
