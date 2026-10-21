@@ -231,6 +231,21 @@ Moved verbatim from CLAUDE.md on 2026-09-27:
 
 - because GitHub deletes traffic data after 14 days
 
+## Private stats dashboard: "History is local, kept in `.stats/stats.db`, and has no cap"
+
+Replaced the rule above on 2026-10-21 (APHW-0029). `history.json` kept only the
+newest 400 snapshots, and a file that failed to parse was replaced by an empty
+history and written back, losing every snapshot. The database keeps everything,
+writes each run in one transaction, and stops rather than start empty. The daily
+backups exist because it holds the only copy of traffic older than 14 days and
+openSUSE counts older than 30.
+
+## Private stats dashboard: "Google Analytics is read, never written to Google, and stored per day"
+
+Replaced "never snapshotted" on 2026-10-21, at the user's request, so every
+figure's history sits in one place (APHW-0029). The drift the old rule feared is
+answered by replacing every day each run re-reads.
+
 ## Private stats dashboard: ".stats/ must stay self-contained"
 
 A relative path to `../src/assets/style.css` resolves when the file is opened

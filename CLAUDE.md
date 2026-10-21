@@ -24,12 +24,12 @@ The only client-side JavaScript is hand-written, and each piece is progressive e
 ## Build & preview
 
 ```bash
-npm ci                  # install locked deps (Node >= 22.12)
+npm ci                  # install locked deps (Node >= 22.13)
 node build.mjs          # build → dist/  (or: npm run build)
 npx serve dist          # preview at http://localhost:3000
 ./local-CI.sh           # reproduce the CI build job locally before pushing
 npm run stats           # private stats dashboard → .stats/ (never published)
-npm test                # the stats server's port handling (Node + Python)
+npm test                # the stats server's port handling and history store (Node + Python)
 scripts/ship.sh 'p/<slug>.html=<new text>'   # push, wait for the deploy, check the live page
 ```
 
@@ -93,8 +93,9 @@ by calling `generate()` itself.
 
 **The privacy model is "it is never published", and nothing weaker works.**
 
-- `.stats/` is `.gitignore`d, and `stats.mjs` writes **only** there — never `dist/`.
-- Nothing in `build.mjs`, `local-CI.sh` or `deploy.yml` references it.
+- `.stats/` is `.gitignore`d, and `stats.mjs` writes **only** there — never `dist/`. That
+  includes the history database, `.stats/stats.db`, and its backups.
+- Nothing in `build.mjs`, `local-CI.sh` or `deploy.yml` references it, or `lib/store.mjs`.
 - `serve.mjs` binds `127.0.0.1` explicitly, never `0.0.0.0` — the dashboard must not be
   reachable from the local network. Keep the file allowlist (`FILES`) closed; don't turn it
   into a general static server rooted at the repo.

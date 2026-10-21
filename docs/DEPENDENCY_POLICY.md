@@ -18,10 +18,12 @@ plus one reading of §1, for Node, stated below.
   "latest stable" for Node, because a Current major is short-lived and an odd-numbered
   one never becomes LTS. This is a deliberate difference from standard §1, which would
   move to the newest Current major; decided by the user on 2026-09-26.
-- **The Node floor** — `engines.node` in `package.json`, and the `Node >= 22.12` that
-  `CLAUDE.md` § Build & preview quotes from it. A floor, not a hold (standard §4): it
-  does not move with `CI_NODE_MAJOR`. It is the highest `engines.node` among the npm
-  dependencies, so recheck it on every npm bump (command below).
+- **The Node floor** — `engines.node` in `package.json`, the lockfile's root entry, and the
+  `Node >= 22.13` that `CLAUDE.md` § Build & preview quotes from it. A floor, not a hold
+  (standard §4): it does not move with `CI_NODE_MAJOR`. It is the higher of the highest
+  `engines.node` among the npm dependencies and 22.13.0, the first Node whose
+  `node:sqlite` (used by `lib/store.mjs`) needs no flag. Recheck it on every npm bump
+  (command below).
 - **The runner image** — `runs-on: ubuntu-latest` in both jobs of `deploy.yml`, a label
   GitHub moves forward itself.
 

@@ -5,6 +5,7 @@ paths:
   - "lib/ga.mjs"
   - "lib/github.mjs"
   - "lib/port.mjs"
+  - "lib/store.mjs"
   - "tray/**"
   - "test/**"
   - "systemd/ants-stats*"
@@ -30,15 +31,17 @@ dashboard".
   from its own. `LWSM_MANAGED=1` drops the icon and logs to stdout instead — a presentation
   hint only, never a reason to grant or skip anything.
 
-- **Google Analytics is read, never written, and never snapshotted.** The "Site visitors"
-  section calls the GA4 Data API through `lib/ga.mjs` at render time and keeps nothing. A GA
-  failure returns `null` and renders as "could not be read" — never as zeros, and never
-  enough to abort the run; the GitHub half of the page still builds. The section also states
-  in plain words that opt-in tracking makes every figure a floor rather than a total.
+- **Google Analytics is read, never written to Google, and stored per day.** The "Site
+  visitors" section calls the GA4 Data API through `lib/ga.mjs` at render time. Its daily
+  figures go into the store, and each run replaces every day it re-read, so the local copy
+  matches Google for that window. A GA failure returns `null` and renders as "could not be
+  read" — never as zeros, never stored, and never enough to abort the run; the GitHub half
+  of the page still builds. The section also states in plain words that opt-in tracking
+  makes every figure a floor rather than a total.
 
 - **A failed fetch is never recorded as zero.** Rate-limited or errored projects are shown
-  as "no data", excluded from totals, and kept out of `.stats/history.json`. Keep this
-  discipline in new metrics.
+  as "no data", excluded from totals, and kept out of the store. Keep this discipline in new
+  metrics.
 
 - **The token is resolved per run, never once per process.** `resolveAuth()` in
   `lib/github.mjs` re-checks while unauthenticated and caches success; `generate()` calls it
@@ -51,8 +54,12 @@ dashboard".
   token is ever suggested, it is classic scope `public_repo`, **not** full `repo`. With
   neither, the run degrades: traffic is skipped.
 
-- **History is append-only and local.** Download totals are stored as dated snapshots;
-  traffic is merged as per-day buckets.
+- **History is local, kept in `.stats/stats.db`, and has no cap.** `lib/store.mjs` is the
+  only file that runs SQL. Download totals are stored as dated snapshots; traffic is merged
+  as per-day buckets. A database that cannot be read stops the run; it never starts again
+  from empty. One backup per day goes to `.stats/backup/`, the newest 14 kept.
+  `.stats/history.json` was imported once and is never written again. The design is
+  [`docs/specs/APHW-0029-stats-history-database.md`](../../docs/specs/APHW-0029-stats-history-database.md).
 
 - **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
   `site.css`, not linked. Any new asset the page references gets copied in and added to
@@ -92,7 +99,8 @@ dashboard".
   `build.mjs` never imports it. It is the mirror
   of `src/assets/analytics.js`, the *write* half, and neither can switch the other on.
 
-`npm test` covers the *stats server only* — the port contract in
-`.claude/rules/stats-dashboard.md`, and nothing else. It
+`npm test` covers the *stats dashboard only* — the port contract in
+`.claude/rules/stats-dashboard.md`, and the history store and its charts
+(`test/store.test.mjs`), and nothing else. It
 uses `node --test` and Python's `unittest`; the site build has no
 tests. It runs in the pre-push gate, **not in CI**.

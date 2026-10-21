@@ -62,10 +62,14 @@ daily series as a line chart with a table of the same numbers beside it.
   `loadHistory()` keeps returning the object shape the renderers read
   (`{ snapshots, traffic, attention }`), built from the database. So
   `downloadsTable()`, `archiveTraffic()`, `windowDownloads()` and the rest are
-  unchanged. `updateHistory()` loses its 400-snapshot cap.
+  unchanged. `updateHistory()` is removed, its 400-snapshot cap with it:
+  `generate()` saves the run, then reads the whole record back, so the page
+  shows exactly what was stored.
 - **`lib/ga.mjs`**: `collectDownloadClicks()` adds the `date` dimension, so
   clicks can be stored per day. `clicksTable()` sums the days. An event count
-  is additive, so the sum equals the old figure.
+  is additive, so the sum equals the old figure. Each GA result also carries
+  `from` and `to`, the days it asked about, as local dates: the GA property's
+  time zone is this machine's (Africa/Johannesburg, checked 2026-10-21).
 - **`.claude/rules/stats-dashboard.md`** lists `lib/store.mjs` in its `paths`,
   and its rules change as §11 says.
 
@@ -126,14 +130,15 @@ transaction:
 - **openSUSE:** one `obs_snapshot` row per `collectObs()` result carrying
   `d1`, `d7` and `d30`. An `error`, `uncounted` or `shared` result writes
   nothing.
-- **Google:** `ga_daily`, `ga_post_daily` and `ga_click_daily` rows are
-  upserted for every day the run read, overwriting the stored values, and
-  each day of the window read is added to `ga_read` for that table. Days
+- **Google:** for each of `ga_daily`, `ga_post_daily` and `ga_click_daily`,
+  the rows inside the window the run read are replaced by what GA returned,
+  and each day of the window is added to `ga_read` for that table. Replacing
+  rather than upserting drops a page GA no longer reports for a day. Days
   outside the window read keep their stored values. A GA call that failed
   writes nothing for that table, `ga_read` included.
 - **Attention:** the table is replaced with the run's `history.attention`.
 
-Nothing is ever deleted except attention keys the run has cleared.
+Nothing else is ever deleted.
 
 ### 4.4 Opening, importing and backing up
 
@@ -146,7 +151,7 @@ Nothing is ever deleted except attention keys the run has cleared.
 - **Backup:** after a successful write, if no backup exists for today (UTC),
   `VACUUM INTO .stats/backup/stats-<YYYY-MM-DD>.db`. Then the newest 14
   backups are kept and older ones deleted. A failed `VACUUM INTO` deletes
-  nothing.
+  nothing, and the run, already saved, carries on with a warning.
 - **A store that cannot be opened or read stops the run** with an error
   naming the file. It never starts again from empty (§2 item 4).
 
@@ -175,7 +180,11 @@ inline SVG, so it shows with JavaScript off:
   on `--bg`.
 - **A day with no value is a gap in the line, never a zero** (for GA days,
   §4.2 says which days are zeros).
-- The y-axis starts at 0. A value with no neighbour is drawn as a dot.
+- The y-axis starts at 0 and tops out at an even whole number, so the middle
+  gridline's label is exact. A value with no neighbour is drawn as a dot.
+- A GA chart starts at its series' first non-zero day. GA answers for days
+  before tracking began (the blog read reaches back to the oldest post), and
+  those days are unknown, not zero.
 - **Today is left out** of every daily chart: a part-day reads as a drop.
 - Under each chart, `<details><summary>Show the numbers</summary>` holds a
   table of every day plotted.
@@ -221,8 +230,8 @@ cannot run yet.
   *Test:* `test/store.test.mjs`, "no snapshot cap" — the fixture exceeds the
   old 400 cap, so it fails only if a cap exists.
   Also `grep -c "snapshots.length > 400" stats.mjs` → `0`.
-  *Breaks when:* a cap survives in `updateHistory()` or is reintroduced in
-  the store or in `loadHistory()`.
+  *Breaks when:* a cap is reintroduced in `stats.mjs`, in the store or in
+  `loadHistory()`.
 
 - **INV-6** — A store that cannot be read stops the run, and its bytes are
   unchanged afterwards.

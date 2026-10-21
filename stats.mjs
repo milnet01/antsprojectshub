@@ -20,6 +20,7 @@ import { spawn } from "node:child_process";
 import { esc, ORIGIN } from "./lib/templates.mjs";
 import { collectAnalytics, collectDownloadClicks, collectPostViews, gaError } from "./lib/ga.mjs";
 import { loadPosts } from "./lib/posts.mjs";
+import { openStore, closeStore, loadHistory, saveRun, readTrends, backup } from "./lib/store.mjs";
 import {
   ghRequest,
   assetPlatform,
@@ -33,6 +34,7 @@ import {
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, ".stats");
+// The pre-database history file: imported once by lib/store.mjs, then never written again.
 const HISTORY = join(OUT, "history.json");
 const PAGE = join(OUT, "dashboard.html");
 // Written by scripts/weekly-post.sh at the end of every real run; read, never written, here.
@@ -53,6 +55,7 @@ const NAV = [
   ["tr", "h-tr", "Repo traffic"],
   ["act", "h-act", "Audience"],
   ["rel", "h-rel", "Releases"],
+  ["trend", "h-trend", "Trends"],
 ];
 
 // Release files that legitimately aren't OS downloads, so listing them as "a missing
@@ -217,7 +220,7 @@ async function collectTraffic(repo) {
 // openSUSE installs. zypper fetches packages from download.opensuse.org, whose MirrorCache
 // counts every package file it hands out, by package name. A first install and each later
 // update count once each, so the figure is downloads, not people. It keeps only the last
-// 30 days, and nothing here snapshots it: like Google Analytics, the source holds the record.
+// 30 days, so each run's figures are stored (lib/store.mjs) to keep the longer record.
 // A name counts every Build Service project that ships it, so a figure is shown only when
 // every place the name lives is under OBS_HOME, and a name living nowhere there is not ours.
 const OBS = "https://download.opensuse.org";
@@ -274,59 +277,10 @@ async function collectObs(p) {
 
 // --------------------------------------------------------------------- history
 
-async function loadHistory() {
-  try {
-    const h = JSON.parse(await readFile(HISTORY, "utf8"));
-    return { version: 1, snapshots: [], traffic: {}, attention: {}, ...h };
-  } catch {
-    return { version: 1, snapshots: [], traffic: {}, attention: {} };
-  }
-}
-
-// Download totals are cumulative counters, so one dated snapshot per run is enough to
-// derive any delta later. Traffic is different: GitHub serves per-day buckets and drops
-// them after 14 days, so we merge the buckets by date instead — run at least fortnightly
-// and the record is unbroken, however long ago you started.
-function updateHistory(history, rows, now) {
-  const snapshot = { at: new Date(now).toISOString(), projects: {} };
-  for (const r of rows) {
-    // Only projects whose fetch succeeded. Recording a failed one would bake a false zero
-    // into the history, and every later run would read the recovery as a huge spike.
-    if (!r.ok) continue;
-    snapshot.projects[r.slug] = {
-      // Per-OS counts are the durable record; `total` is a convenience that older snapshots
-      // wrote with `other` folded in, which is why every read goes through osTotal().
-      ...r.downloads,
-      total: r.total,
-      stars: r.stars,
-      forks: r.forks,
-      issues: r.issues,
-      prs: r.prs,
-    };
-    if (!r.traffic || r.traffic.denied) continue;
-    const bucket = (history.traffic[r.slug] ||= {});
-    for (const d of r.traffic.daily) {
-      bucket[dayKey(d.timestamp)] = {
-        ...bucket[dayKey(d.timestamp)],
-        views: d.count,
-        uniques: d.uniques,
-      };
-    }
-    for (const d of r.traffic.dailyClones) {
-      bucket[dayKey(d.timestamp)] = {
-        ...bucket[dayKey(d.timestamp)],
-        clones: d.count,
-        cloneUniques: d.uniques,
-      };
-    }
-  }
-  // A run that fetched nothing records nothing — an empty snapshot is noise in the trend.
-  if (!Object.keys(snapshot.projects).length) return null;
-  history.snapshots.push(snapshot);
-  // Roughly a year of daily runs; keeps the file small without ever losing recent detail.
-  if (history.snapshots.length > 400) history.snapshots = history.snapshots.slice(-400);
-  return snapshot;
-}
+// The history lives in .stats/stats.db, behind lib/store.mjs: generate() saves each run there
+// and reads the whole record back in the shape the renderers below expect. Download totals are
+// cumulative counters, so one dated snapshot per run derives any delta; traffic is GitHub's
+// per-day buckets, merged by date, because GitHub drops them after 14 days.
 
 // The snapshot to compare against: the most recent one at least a day old, so running
 // twice in an afternoon doesn't flatten every delta to zero. When nothing is that old yet,
@@ -451,6 +405,172 @@ function sparkline(values) {
   // Stretchable: the downloads table widens it to fill its Trend cell (CSS), and the stroke
   // keeps its weight however far the drawing is stretched. Elsewhere it draws at w × h.
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+// A labelled line chart of one daily series, for the Trends tab. `points` is
+// [{ day: "YYYY-MM-DD", value }], one per day in order; a null value is a day with no figure,
+// drawn as a gap and never as a zero, because a false zero reads as a collapse. A value with
+// no neighbour on either side is a dot. The y-axis starts at 0 so a slope is never
+// exaggerated. Every plotted value is also in the table under it, which is the text
+// alternative: the SVG is labelled by the visible caption.
+export function lineChart({ id, title, points, note = "" }) {
+  const known = points.filter((p) => p.value != null);
+  const capId = `${id}-cap`;
+  if (!known.length) {
+    return `<figure class="chart"><figcaption id="${capId}"><strong>${esc(title)}</strong> — nothing recorded yet.
+      ${note ? `<span class="chart__note">${note}</span>` : ""}</figcaption></figure>`;
+  }
+  const W = 960;
+  const H = 260;
+  const pad = { l: 64, r: 20, t: 14, b: 34 };
+  const plotW = W - pad.l - pad.r;
+  const plotH = H - pad.t - pad.b;
+  // An even top, so the middle gridline is a whole number and its label is exact.
+  const top = Math.max(2, Math.ceil(Math.max(...known.map((p) => p.value))));
+  const max = top % 2 ? top + 1 : top;
+  const x = (i) => pad.l + (points.length > 1 ? (i / (points.length - 1)) * plotW : plotW / 2);
+  const y = (v) => pad.t + plotH - (v / max) * plotH;
+  const base = pad.t + plotH;
+
+  const marks = [];
+  let run = [];
+  const flush = () => {
+    if (run.length === 1) {
+      marks.push(`<circle cx="${x(run[0]).toFixed(1)}" cy="${y(points[run[0]].value).toFixed(1)}" r="3.5"/>`);
+    } else if (run.length > 1) {
+      const pts = run.map((i) => `${x(i).toFixed(1)},${y(points[i].value).toFixed(1)}`).join(" ");
+      marks.push(`<polyline points="${pts}"/>`);
+    }
+    run = [];
+  };
+  points.forEach((p, i) => (p.value == null ? flush() : run.push(i)));
+  flush();
+
+  const grid = [0, max / 2, max]
+    .map((v) => {
+      const gy = y(v).toFixed(1);
+      return `<line x1="${pad.l}" x2="${W - pad.r}" y1="${gy}" y2="${gy}"/>
+        <text x="${pad.l - 8}" y="${gy}" text-anchor="end" dominant-baseline="middle">${num(v)}</text>`;
+    })
+    .join("");
+  const ticks = [...new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])]
+    .map((i, n, all) => {
+      const anchor = all.length > 1 && n === 0 ? "start" : n === all.length - 1 && all.length > 1 ? "end" : "middle";
+      return `<text x="${x(i).toFixed(1)}" y="${H - 10}" text-anchor="${anchor}">${dayYear(points[i].day)}</text>`;
+    })
+    .join("");
+
+  const last = known[known.length - 1];
+  return `<figure class="chart">
+  <figcaption id="${capId}"><strong>${esc(title)}</strong> — ${num(last.value)} on ${dayYear(last.day)};
+    ${dayYear(points[0].day)} to ${dayYear(points[points.length - 1].day)}.
+    ${note ? `<span class="chart__note">${note}</span>` : ""}</figcaption>
+  <svg class="chart__svg" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="${capId}" data-baseline="${base.toFixed(1)}">
+    <g class="chart__grid">${grid}</g><g class="chart__axis">${ticks}</g>
+    <g class="chart__line">${marks.join("")}</g>
+  </svg>
+  <details><summary>Show the numbers</summary>
+    <table class="tbl"><thead><tr><th scope="col">Day</th><th scope="col" class="n">${esc(title)}</th></tr></thead>
+    <tbody>${known
+      .map((p) => `<tr><td>${dayYear(p.day)}</td><td class="n">${num(p.value)}</td></tr>`)
+      .join("")}</tbody></table>
+  </details>
+</figure>`;
+}
+
+// Every calendar day from `from` up to but not including `until`, both YYYY-MM-DD.
+function dayRange(from, until) {
+  const out = [];
+  for (let t = Date.parse(`${from}T00:00:00Z`); dayKey(t) < until; t += DAY) out.push(dayKey(t));
+  return out;
+}
+
+// The seven daily series the Trends tab draws. Each stops at yesterday: today is still
+// counting, and a part-day reads as a fall. GitHub and openSUSE days are UTC (dayKey); GA days
+// are in the GA property's zone, which is this machine's (Africa/Johannesburg), so "today"
+// for them is the local date.
+function trendSeries(history, trends, now) {
+  const todayUtc = dayKey(now);
+  const todayLocal = new Date(now).toLocaleDateString("en-CA");
+  const series = {};
+
+  // All-time downloads: each project's newest count on or before the day, so a project whose
+  // fetch failed that day still counts at its last known figure rather than as a drop.
+  const snaps = history.snapshots;
+  if (snaps.length) {
+    const latest = {};
+    let i = 0;
+    series.downloads = dayRange(dayKey(snaps[0].at), todayUtc).map((day) => {
+      for (; i < snaps.length && dayKey(snaps[i].at) <= day; i++) Object.assign(latest, snaps[i].projects);
+      return { day, value: Object.values(latest).reduce((s, p) => s + osTotal(p), 0) };
+    });
+  }
+
+  // Repo views and clones: summed over repos; a day no repo reported is a gap.
+  const byDay = {};
+  for (const bucket of Object.values(history.traffic)) {
+    for (const [day, d] of Object.entries(bucket)) {
+      const t = (byDay[day] ||= {});
+      if (d.views != null) t.views = (t.views || 0) + d.views;
+      if (d.clones != null) t.clones = (t.clones || 0) + d.clones;
+    }
+  }
+  const trafficDays = Object.keys(byDay).sort();
+  if (trafficDays.length) {
+    const range = dayRange(trafficDays[0], todayUtc);
+    series.views = range.map((day) => ({ day, value: byDay[day]?.views ?? null }));
+    series.clones = range.map((day) => ({ day, value: byDay[day]?.clones ?? null }));
+  }
+
+  // openSUSE: each package's last figure of the day, summed. A day missing a package that has
+  // earlier figures is a gap, since the sum would otherwise fall by that package's share.
+  if (trends.obs.length) {
+    const days = {};
+    const seen = new Set();
+    for (const o of trends.obs) (days[dayKey(o.at)] ||= {})[o.pkg] = o.d1;
+    series.obs = dayRange(dayKey(trends.obs[0].at), todayUtc).map((day) => {
+      const got = days[day];
+      if (!got) return { day, value: null };
+      const complete = [...seen].every((pkg) => pkg in got);
+      Object.keys(got).forEach((pkg) => seen.add(pkg));
+      return { day, value: complete ? Object.values(got).reduce((s, v) => s + v, 0) : null };
+    });
+  }
+
+  // GA: a day GA was asked about and returned no row for is a zero; a day never asked about
+  // is a gap (lib/store.mjs, replaceWindow). A series starts at its first non-zero day: GA
+  // also answers for days before tracking began (the blog read reaches back to the oldest
+  // post), and those are unknown, not zero.
+  const gaSeries = (rows, read, pick) => {
+    const first = rows.find((r) => pick(r) > 0);
+    if (!first) return undefined;
+    const value = Object.fromEntries(rows.map((r) => [r.day, pick(r)]));
+    return dayRange(first.day, todayLocal).map((day) => ({
+      day,
+      value: value[day] ?? (read.has(day) ? 0 : null),
+    }));
+  };
+  series.visitors = gaSeries(trends.ga.daily, trends.ga.read.daily, (r) => r.active_users);
+  series.posts = gaSeries(trends.ga.posts, trends.ga.read.posts, (r) => r.value);
+  series.clicks = gaSeries(trends.ga.clicks, trends.ga.read.clicks, (r) => r.value);
+  return series;
+}
+
+function trendsSection(history, trends, now) {
+  const s = trendSeries(history, trends, now);
+  const floor = "Only visitors who accepted analytics are counted, so this is a floor, not a total.";
+  const charts = [
+    ["downloads", "GitHub downloads, all projects", "The all-time total, from each project's latest count that day."],
+    ["views", "Repo views per day", "Summed over every repository."],
+    ["clones", "Repo clones per day", "Summed over every repository."],
+    ["obs", "openSUSE downloads per day", "The last-day figure from each day's last check. openSUSE does not say exactly which 24 hours that figure covers."],
+    ["visitors", "Site visitors per day", floor],
+    ["posts", "Blog views per day", floor],
+    ["clicks", "Download clicks per day", floor],
+  ];
+  return `<div class="charts">${charts
+    .map(([key, title, note]) => lineChart({ id: `trend-${key}`, title, points: s[key] || [], note }))
+    .join("")}</div>`;
 }
 
 // Wide tables keep their column widths and let this wrapper scroll instead of crushing on a
@@ -773,8 +893,8 @@ function windowSum(bucket, from, to) {
   return out;
 }
 
-// The half GitHub can't serve. updateHistory() has been merging per-day buckets into
-// history.traffic since the first run, and GitHub keeps only 14 days — so past a fortnight
+// The half GitHub can't serve. Every run has merged GitHub's per-day buckets into the stored
+// history since the first run, and GitHub keeps only 14 days — so past a fortnight
 // this archive is the only copy that exists. Until now nothing on the page read it back.
 function archiveTraffic(rows, history, now) {
   // Every row, not just this run's successes — the one table on the page that can outlive a
@@ -917,6 +1037,8 @@ const gaDay = (d) => `${Number(d.slice(6, 8))} ${MONTHS[Number(d.slice(4, 6)) - 
 // The same, for an archive key. GA hands back YYYYMMDD and dayKey() writes YYYY-MM-DD; two
 // formats reach the page, so they share one month table rather than growing a second.
 const dayLabel = (key) => `${Number(key.slice(8, 10))} ${MONTHS[Number(key.slice(5, 7)) - 1]}`;
+// The same with its year, for the Trends charts, whose history runs across years.
+const dayYear = (key) => `${dayLabel(key)} ${key.slice(0, 4)}`;
 
 // Seconds as something a human reads. Zero is a dash, not "0s": on a page nobody has
 // engaged with yet, "0s" reads as a measured result rather than an absence.
@@ -995,10 +1117,13 @@ function clicksTable(clicks, projects) {
     }. Treat them as unknown, never as zero.</p>`;
   }
   const bySlug = new Map(projects.map((p) => [p.slug, p.name]));
-  const rows = clicks.rows
-    .map((r) => {
-      const slug = /^\/p\/([^/]+?)(?:\.html)?$/.exec(r.pagePath)?.[1];
-      return { label: bySlug.get(slug) || r.pagePath, n: r.eventCount };
+  // GA returns one row per page per day; a page's clicks are the sum of its days.
+  const perPage = {};
+  for (const r of clicks.rows) perPage[r.pagePath] = (perPage[r.pagePath] || 0) + r.eventCount;
+  const rows = Object.entries(perPage)
+    .map(([path, n]) => {
+      const slug = /^\/p\/([^/]+?)(?:\.html)?$/.exec(path)?.[1];
+      return { label: bySlug.get(slug) || path, n };
     })
     .sort((a, b) => b.n - a.n);
   if (!rows.length) {
@@ -1408,7 +1533,7 @@ function tallyList(obj) {
     .join("");
 }
 
-function page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks, obs }) {
+function page({ rows, history, trends, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks, obs }) {
   const ok = rows.filter((r) => r.ok);
   const grand = ok.reduce((s, r) => s + r.total, 0);
   const stars = ok.reduce((s, r) => s + r.stars, 0);
@@ -1506,6 +1631,11 @@ function page({ rows, history, base, health, projects, now, elapsed, ga, propert
   <section class="sec" data-sec="rel" aria-labelledby="h-rel"><h2 id="h-rel">Recent releases</h2>
     ${releasesTable(ok)}</section>
   </div>
+
+  <section class="sec" data-sec="trend" aria-labelledby="h-trend"><h2 id="h-trend">Trends</h2>
+    <p class="note">Each figure day by day, from the history this dashboard keeps. Today is left
+      out until it is over; a gap is a day with no figure, never a zero.</p>
+    ${trendsSection(history, trends, now)}</section>
 
   <footer class="foot">Local file — never published. Regenerate with
     <code>npm run stats</code>.</footer>
@@ -1899,6 +2029,7 @@ body.admin { background: var(--bg); color: var(--text); font-family: var(--font)
 [data-sec="tr"]  { --accent: #7dd3fc; }
 [data-sec="act"] { --accent: #93c5fd; }
 [data-sec="rel"] { --accent: #a5b4fc; }
+[data-sec="trend"] { --accent: #c4b5fd; }
 
 /* Sticky bar. Stays put while the page scrolls under it; the tint is a translucent
    wash over --bg so the tables read through it while scrolling past. */
@@ -2038,6 +2169,21 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .d { font-size: .8rem; white-space: nowrap; }
 .d--up { color: var(--teal); }
 .d--down { color: var(--rose); }
+/* Trends: two charts to a row. The line takes the section accent; every label is text ink,
+   so the axis reads at AA contrast whatever the accent. */
+.charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; }
+.chart { margin: 0 0 2rem; }
+.chart figcaption { margin-bottom: 8px; }
+.chart__note { display: block; color: var(--text-muted); }
+.chart__svg { display: block; width: 100%; height: auto; }
+.chart__svg text { fill: var(--text-muted); font-size: 17px; }
+.chart__grid line { stroke: var(--surface-border); stroke-width: 1; }
+.chart__line polyline { fill: none; stroke: var(--accent); stroke-width: 2.5;
+  stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.chart__line circle { fill: var(--accent); }
+.chart details { margin-top: 8px; }
+.chart summary { cursor: pointer; color: var(--text-muted); }
+.chart summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .spark { color: var(--violet); display: block; }
 /* Downloads per OS: the three OS columns and Total share one width so the figures line up as
    a set, and Trend gets enough room for its line to show a shape. Other takes what is left. */
@@ -2122,9 +2268,9 @@ export async function generate() {
 
   // Google Analytics, in parallel with nothing — it is four calls against a different API
   // and a failure here must not touch the GitHub figures. collectAnalytics returns null
-  // rather than throwing, and null renders as "couldn't read", never as zero. Nothing from
-  // GA is written to history.json: unlike GitHub's 14-day traffic window, Google keeps the
-  // history itself, so snapshotting it would only create a second copy that could drift.
+  // rather than throwing, and null renders as "couldn't read", never as zero — and stores
+  // nothing. Its daily figures are stored, each run replacing every day it re-read, so the
+  // local copy matches Google for that window rather than drifting from it.
   const ga = await collectAnalytics(propertyId);
   if (propertyId && !ga) console.warn(`! Google Analytics: ${gaError} — visitor figures skipped`);
   const posts = await loadPosts(join(ROOT, "src/posts"));
@@ -2141,18 +2287,36 @@ export async function generate() {
   }
 
   const now = Date.now();
-  const history = await loadHistory();
-  const base = baselineSnapshot(history, now);
-  updateHistory(history, rows, now);
   const health = await contentHealth(projects);
   // Read by attentionItems, so a dead GA credential is on the tab that opens first, not only
   // inside the Visitors tab.
   health.gaDown = Boolean(propertyId && !ga);
   health.unreleased = unreleased.filter((r) => r.ok);
-  updateAttention(history, attentionItems(rows.filter((r) => r.ok), health), [...rows, ...unreleased], now);
 
+  // Save the run, then read the whole record back, so the page shows exactly what was stored.
+  // The first open imports history.json, which is never written again; a database that cannot
+  // be read throws here and stops the run rather than starting again from empty.
   await mkdir(OUT, { recursive: true });
-  await writeFile(HISTORY, JSON.stringify(history, null, 2));
+  const store = openStore(OUT, { importFrom: HISTORY });
+  let history;
+  let trends;
+  let base;
+  try {
+    const prior = loadHistory(store);
+    base = baselineSnapshot(prior, now);
+    updateAttention(prior, attentionItems(rows.filter((r) => r.ok), health), [...rows, ...unreleased], now);
+    saveRun(store, { now, rows, obs, ga, postViews, clicks, attention: prior.attention });
+    history = loadHistory(store);
+    trends = readTrends(store);
+    try {
+      await backup(store, now);
+    } catch (err) {
+      // The run is already saved; a missing backup is worth a warning, not a lost run.
+      console.warn(`! Backup of ${store.file} failed (${err.message}) — no older backup was removed`);
+    }
+  } finally {
+    closeStore(store);
+  }
   // Copy the site stylesheet in rather than linking ../src/assets/style.css: a relative
   // path out of .stats/ resolves when the file is opened from disk but 404s when serve.mjs
   // serves the folder, which silently drops every colour and font to browser defaults.
@@ -2164,7 +2328,7 @@ export async function generate() {
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   await writeFile(
     PAGE,
-    page({ rows, history, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks, obs })
+    page({ rows, history, trends, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks, obs })
   );
 
   const failed = rows.filter((r) => !r.ok);
@@ -2176,7 +2340,7 @@ export async function generate() {
     console.warn(
       `! No data for: ${failed.map((r) => r.slug).join(", ")}` +
         (failed.some((r) => r.rateLimited) ? " (GitHub rate limit)" : "") +
-        " — excluded from the page totals and not written to history."
+        " — excluded from the page totals and not stored."
     );
   }
 

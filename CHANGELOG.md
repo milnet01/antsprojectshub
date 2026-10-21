@@ -9,6 +9,14 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- **The private stats dashboard now keeps every figure's history — GitHub, openSUSE and Google Analytics — in a local database, and a new Trends tab charts each one day by day**
+  The history has no age limit any more, a damaged history now stops the dashboard instead
+  of being replaced by an empty one, and a backup is kept for each of the last 14 days.
+  Each chart has a "Show the numbers" table, and a day with no figure shows as a gap, never
+  a zero. Nothing of it is published; it stays on this machine.
+
 ### Changed
 
 - **A project's screenshot thumbnails now sit in one row under the large shot; when they don't fit, the row scrolls sideways with ‹ › buttons and a teal bar showing where you are**
