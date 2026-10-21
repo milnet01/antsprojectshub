@@ -112,8 +112,9 @@ offline, the build still succeeds — each project falls back to static metadata
   switch, don't add another. Nothing loads until the visitor presses Accept; the choice is
   kept in `localStorage`, not a cookie. Google's own copy-paste snippet **cannot be used as
   given**. `googletagmanager.com` is
-  the one third-party origin allowed, because GA has no self-hostable tag; apply that same
-  test before widening the list for anything else.
+  the one third-party script origin allowed, because GA has no self-hostable tag; apply that
+  same test before widening the list for anything else. Images are the exception: see the
+  Security headers bullet.
 
 - **Reading the numbers back is a separate switch from sending them, deliberately.**
   `analytics.measurementId` decides whether visitors are *tracked*; `analytics.propertyId`
@@ -134,9 +135,11 @@ offline, the build still succeeds — each project falls back to static metadata
   scripts are allowed by `script-src 'self'` and demo videos by `media-src 'self'`;
   **inline** `<script>`/`<style>` still break the CSP — never introduce them. Only the
   JSON-LD block (`ldScript()` in `lib/templates.mjs`) may be inline: it is data, never
-  executed, so the CSP does not apply to it. The one
-  third-party origin in the whole policy is `googletagmanager.com` in `script-src`, plus
-  Google Analytics' collector in `connect-src`.
+  executed, so the CSP does not apply to it. The only
+  third-party origins named in the policy are `googletagmanager.com` in `script-src`, plus
+  Google Analytics' collector in `connect-src`. `img-src` allows **any** https host, because
+  README images are rewritten to absolute URLs on whatever host the README uses; narrowing
+  it breaks them.
 
 - **Download links** point at matched release assets per OS (`ASSET_PAT`/`pickAsset`,
   deliberately conservative), falling
