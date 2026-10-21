@@ -15,6 +15,13 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Fixed
 
+- **`marked` 18.1.1 and `sanitize-html` 2.18.1, with `postcss` 8.5.31 and `source-map-js` 1.2.2 through the lockfile**
+  This clears three moderate `sanitize-html` advisories (GHSA-x3q4-9hxx-gx8m,
+  GHSA-374f-7chj-9948, GHSA-cv27-6wvh-8x7j) and a high `source-map-js` one
+  (GHSA-68fv-2mgg-jv7q). These packages run only during the build and never ship to a
+  visitor. One built page changed: on the Ants Terminal changelog, a word in italics
+  right after a code span now shows as italics instead of asterisks.
+
 - **The private stats tray icon now always opens and refreshes the dashboard on the port it really runs on; a port set where the tray was started could send it to the wrong one**
 
 ## 2026-10-21
