@@ -101,6 +101,11 @@
         "^RetroDB-v[\\d.]+-(Linux|macOS|Windows)\\.zip$"
       ],
       "altDownloads": "Already have Python 3.10 or newer? Smaller downloads:",
+      "installNotes": {
+        "win": "Unzip the folder, then double-click start.bat.",
+        "mac": "Unzip the folder, then double-click start.command.",
+        "linux": "Unzip the folder, then run start.sh (double-click it, or `./start.sh` in a terminal)."
+      },
       "platforms": [
         "win",
         "mac",

@@ -1,6 +1,6 @@
 <!-- ants-roadmap-format: 1 -->
 <!-- Generated from the Ants Terminal roadmap store. Edit it with roadmap_log; hand edits are discarded by the next write. -->
-<!-- ants-roadmap-id-high-water: APHW=27 -->
+<!-- ants-roadmap-id-high-water: APHW=28 -->
 # Ants Projects Hub — Roadmap
 
 > **What this is:** the planned work for
@@ -190,10 +190,11 @@ Nothing here changes what is measured, only what the eye lands on.
   refuses any clone value that differs from DOCS_GLOB, so the risk is only to
   someone editing DOCS_GLOB by the rule's list. Fix: name src/policies/ too,
   or say "nothing under src/ the build reads".
+  Resolved (2026-10-21): site-build.md now says the docs glob never
+  matches anything under src/.
   **Layman:** The build rules list the folders the "docs only" shortcut must never skip, and one folder the site builds pages from is missing from that list.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 site-build.md loop 4 lane d.
-  Resolved (2026-10-21): site-build.md now says the docs glob never matches anything under src/.
 
 - ✅ [APHW-0025] **stats-dashboard.md: four rules outside the tabs change disagree with the code (accent colours, tray port source, rules-file paths, FILES vs TYPES).**
   Found outside the gated change (865ea34, dashboard tabs), so filed, not fixed.
@@ -226,34 +227,58 @@ Nothing here changes what is measured, only what the eye lands on.
   Also, code collateral (not a doc fix): the lib/port.mjs header comment
   says an unusable STATS_PORT "still falls back to 4321"; only a
   non-number or zero does.
-  **Layman:** The dashboard's colour rule says section colours never reuse the warning amber, but the "Needs attention" section does; one of the two should change.
-  Kind: doc-fix.
-  Source: review-contract-2026-10-19 stats-dashboard.md loop 1 lanes a and b.
   Resolved (2026-10-21): the user kept amber on Notifications, now named as the exception in
   the rule and the CSS comment; the tray reads the port from the unit only, as the rule says;
   lib/github.mjs joined the rule's paths and CLAUDE.md's list; the .stats/ bullet names TYPES;
   the lib/port.mjs comment matches the code. The tray still ignores a port below 1024, which
   the server would use from STATS_PORT; left as is.
+  **Layman:** The dashboard's colour rule says section colours never reuse the warning amber, but the "Needs attention" section does; one of the two should change.
+  Kind: doc-fix.
+  Source: review-contract-2026-10-19 stats-dashboard.md loop 1 lanes a and b.
 
 - ✅ [APHW-0026] **macOS buttons that link an Apple Silicon-only build do not say so (Slipcase, Snatch, Rolodex).**
   Slipcase's assetMatch picks macos-arm64.dmg, Snatch ships only
   Snatch-arm64.dmg, Rolodex only rolodex-macos-arm64. The button meta
   line (fileType/fileSize in build.mjs) could add "Apple Silicon" when
   the file name says arm64. Found 2026-10-19; not raised with the user yet.
+  Resolved (2026-10-21): macChip() in build.mjs adds "Apple Silicon" to a macOS button's
+  meta line when the file name says arm64 or aarch64 and names no Intel or universal build.
   **Layman:** Someone with an older Intel Mac can download a Mac file that will not run on their computer.
   Kind: ux.
   Source: session-2026-10-19.
-  Resolved (2026-10-21): macChip() in build.mjs adds "Apple Silicon" to a macOS button's
-  meta line when the file name says arm64 or aarch64 and names no Intel or universal build.
 
 - ✅ [APHW-0027] **README.md's one-stop list omits two GitHub links site-build.md now lists.**
   site-build.md (contract review 2026-10-19) lists an unreleased
   project's "Follow development on GitHub" link and the footer profile
   link; README.md's visitor summary names neither. Low stakes.
+  Resolved (2026-10-21): README.md names the development link and the
+  footer profile link.
   **Layman:** The README's short list of links that go to GitHub is missing two small ones.
   Kind: doc-fix.
   Source: session-2026-10-19.
-  Resolved (2026-10-21): README.md names the development link and the footer profile link.
+
+- 📋 [APHW-0028] **site-build.md defines projects.json download fields that CLAUDE.md sends readers to content.md for, and says build.mjs owns all data access.**
+  Found outside the gated change (17000ed, the `installNotes` sentence),
+  so filed, not fixed.
+  [Q2] CLAUDE.md says "Field meanings and About rules:
+  [`.claude/rules/content.md`]", but content.md defines none of
+  `assetMatch`, `altDownloads` or `installNotes`; only site-build.md's
+  Download links bullet does, and site-build.md's `paths:` frontmatter
+  does not list `src/projects.json`, so it does not load when only that
+  file is edited. An editor guessing `installNotes` keys (`"windows"` for
+  `"win"`) gets no line and no error. Fix: define the three fields in
+  content.md, or add `src/projects.json` to site-build.md's `paths:` and
+  point CLAUDE.md at it.
+  [Q2] .claude/rules/site-build.md, Modules, `build.mjs` entry: "Owns all
+  data access and page-assembly logic", against `lib/about.mjs` "Data
+  access and parsing only" and `lib/github.mjs` "shared GitHub I/O
+  (`ghRequest`/`ghJson`)". A conformer adding a GitHub fetch could put it
+  in build.mjs, where stats.mjs never sees it. Fix: build.mjs owns page
+  assembly and calls the data access in `lib/about.mjs` and
+  `lib/github.mjs`.
+  **Layman:** The build rules point people the wrong way twice: where to read what the download settings mean, and which file should fetch data from GitHub.
+  Kind: doc-fix.
+  Source: review-contract-2026-10-21 site-build.md loop 6 lanes c and d.
 
 ## P02 — What the numbers actually say (target: TBD)
 

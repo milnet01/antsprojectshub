@@ -645,11 +645,22 @@ const INSTALL_NOTES = {
   "linux:Program": "In a terminal, run `chmod +x {file}`, then `./{file}`.",
 };
 
+const OS_WARN = { win: WIN_WARN, mac: MAC_WARN };
+
+// A project's own line for an OS (`installNotes`) wins over the type's note, for files that
+// need a step no type's note can name, such as a start script. The built-in notes already
+// end in the warning; a project's line gets it added here.
+function installNote(p, m) {
+  const own = p.installNotes?.[m.pl];
+  if (own) return OS_WARN[m.pl] ? `${own} ${OS_WARN[m.pl]}` : own;
+  return INSTALL_NOTES[`${m.pl}:${fileType(m.asset.name)}`];
+}
+
 // The fold-out under the download buttons: one line per download that has a note, named
 // by the same label its button carries. Closed by default, so it costs one line.
-function installHelp(direct) {
+function installHelp(p, direct) {
   const items = direct.flatMap((m) => {
-    const note = INSTALL_NOTES[`${m.pl}:${fileType(m.asset.name)}`];
+    const note = installNote(p, m);
     if (!note) return [];
     const html = esc(note.replaceAll("{file}", m.asset.name)).replace(/`([^`]+)`/g, "<code>$1</code>");
     return [`<li><strong>${esc(m.label)}:</strong> ${html}</li>`];
@@ -747,7 +758,7 @@ function actionButtons(p, release) {
   const altLine = alts.length
     ? `<p class="dl-alt">${esc(p.altDownloads)} ${alts.join(" · ")}</p>`
     : "";
-  return `<div class="actions">${buttons.join("")}</div>${altLine}${installHelp(direct)}`;
+  return `<div class="actions">${buttons.join("")}</div>${altLine}${installHelp(p, direct)}`;
 }
 
 // Curated screenshot gallery (pure-CSS, no JS ships). Each entry is { src, alt }:

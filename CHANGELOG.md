@@ -9,6 +9,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Changed
+
+- **RetroDB's "How to install" help now names the file to start on each system: start.bat on Windows, start.command on macOS and start.sh on Linux**
+
 ### Fixed
 
 - **The private stats tray icon now always opens and refreshes the dashboard on the port it really runs on; a port set where the tray was started could send it to the wrong one**
