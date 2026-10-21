@@ -26,7 +26,9 @@ Loaded by itself when a session reads one of the files above. Moved verbatim fro
   the project's landing-page card and, as the `<h1>` with the name as its alt, at the top
   of its page and changelog (relative to `assets/img/`, see
   `src/assets/img/logos/README.md`) — without one the card shows the name's first letter,
-  never a screenshot, and the pages a text heading.
+  never a screenshot, and the pages a text heading. The download fields `assetMatch`,
+  `altDownloads` and `installNotes` are defined in [`site-build.md`](site-build.md)'s
+  Download links bullet.
 
 - **`src/about/<slug>.md`** — the hand-written About section for one project, named for its
   slug. **Every project needs one, `soon` ones included**; a missing file fails the build

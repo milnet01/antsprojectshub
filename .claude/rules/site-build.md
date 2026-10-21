@@ -45,8 +45,9 @@ offline, the build still succeeds — each project falls back to static metadata
 - **`build.mjs`** — the generator. For each *published* project (has a `repo` and status is
   not `soon`) it fetches the release history from the GitHub API, renders the notes to HTML,
   and writes the project page plus a full on-site changelog. It also emits the landing page,
-  `404.html`, `CNAME`, `robots.txt` and `sitemap.xml`. Owns all data access and
-  page-assembly logic.
+  `404.html`, `CNAME`, `robots.txt` and `sitemap.xml`. Owns page assembly. It reads
+  `src/projects.json` itself, makes its GitHub requests through `lib/github.mjs`'s `ghJson`,
+  and gets About pages from `lib/about.mjs`.
 
 - **`lib/about.mjs`** — reads and renders `src/about/*.md`. Data access and parsing only.
   Its sanitiser allowlist is deliberately NOT `build.mjs`'s.

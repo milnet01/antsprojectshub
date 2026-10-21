@@ -257,7 +257,7 @@ Nothing here changes what is measured, only what the eye lands on.
   Kind: doc-fix.
   Source: session-2026-10-19.
 
-- 📋 [APHW-0028] **site-build.md defines projects.json download fields that CLAUDE.md sends readers to content.md for, and says build.mjs owns all data access.**
+- ✅ [APHW-0028] **site-build.md defines projects.json download fields that CLAUDE.md sends readers to content.md for, and says build.mjs owns all data access.**
   Found outside the gated change (17000ed, the `installNotes` sentence),
   so filed, not fixed.
   [Q2] CLAUDE.md says "Field meanings and About rules:
@@ -276,6 +276,10 @@ Nothing here changes what is measured, only what the eye lands on.
   in build.mjs, where stats.mjs never sees it. Fix: build.mjs owns page
   assembly and calls the data access in `lib/about.mjs` and
   `lib/github.mjs`.
+  Fixed 2026-10-21: content.md's Fields entry points to site-build.md's
+  Download links bullet for the three download fields (one home kept
+  there); the build.mjs Modules entry now says it owns page assembly and
+  makes its GitHub requests through lib/github.mjs's ghJson.
   **Layman:** The build rules point people the wrong way twice: where to read what the download settings mean, and which file should fetch data from GitHub.
   Kind: doc-fix.
   Source: review-contract-2026-10-21 site-build.md loop 6 lanes c and d.
