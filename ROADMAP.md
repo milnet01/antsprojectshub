@@ -415,7 +415,7 @@ answers than the page asks of it.
   Kind: ux.
   Source: site-ideas-offered-2026-10-19.
 
-- 🚧 [APHW-0029] **Keep every stat's history in a local database and chart it on the dashboard.**
+- ✅ [APHW-0029] **Keep every stat's history in a local database and chart it on the dashboard.**
   One SQLite file in .stats/, through Node's built-in node:sqlite (no
   new dependency). Imports .stats/history.json, which stays as a backup.
   Records GitHub downloads, stars and traffic; openSUSE MirrorCache
@@ -428,6 +428,10 @@ answers than the page asks of it.
   verified findings, all fixed in 34a804e; none deferred. Status
   accepted (2026-10-21). Loop log:
   docs/reviews/APHW-0029-stats-history-database-loop-log.md.
+  Shipped 2026-10-21 in 02d8688: lib/store.mjs (.stats/stats.db), Trends
+  tab, history.json imported (217 snapshots, deep-equal), service
+  restarted on the new code. Implementation fold-back recorded in the
+  spec's loop log (impl row).
   **Layman:** The private dashboard remembers GitHub, openSUSE and Google figures day by day, and shows how they change over time.
   Kind: feature.
   Source: user-request-2026-10-21.
