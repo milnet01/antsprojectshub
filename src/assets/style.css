@@ -994,6 +994,9 @@ a.card:hover .card__name {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.1);
   overflow: hidden;
+  cursor: pointer;
+  /* lightbox.js drags it; a touch drag must not scroll the page instead. */
+  touch-action: none;
 }
 .shots__bar[hidden] {
   display: none;

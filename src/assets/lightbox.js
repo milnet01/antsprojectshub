@@ -12,7 +12,7 @@
 // those panels have no link onward.
 
 // Each strip's buttons scroll it most of its own width, and dim at either end. The bar
-// under it shows how much of the strip is in view and where.
+// under it shows how much of the strip is in view and where, and drags like a scrollbar.
 document.querySelectorAll(".shots__row").forEach(function (row) {
   var strip = row.querySelector(".shots__strip");
   var prev = row.querySelector(".shots__arrow--prev");
@@ -37,6 +37,31 @@ document.querySelectorAll(".shots__row").forEach(function (row) {
   }
   prev.addEventListener("click", function () { scrollStrip(-1); });
   next.addEventListener("click", function () { scrollStrip(1); });
+  // Drag the bar like a native scrollbar: hold the thumb where it was grabbed, or
+  // press the track to centre the thumb there and keep dragging. Snapping is off
+  // while dragging, or it would pull the strip away from the pointer.
+  bar.addEventListener("pointerdown", function (e) {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    var t = thumb.getBoundingClientRect();
+    var grab = e.target === thumb ? e.clientX - t.left : t.width / 2;
+    function follow(ev) {
+      var b = bar.getBoundingClientRect();
+      strip.scrollLeft = ((ev.clientX - b.left - grab) / b.width) * strip.scrollWidth;
+    }
+    // Listen on the window, so the drag keeps going once the pointer leaves the bar.
+    function release() {
+      window.removeEventListener("pointermove", follow);
+      window.removeEventListener("pointerup", release);
+      window.removeEventListener("pointercancel", release);
+      strip.style.scrollSnapType = "";
+    }
+    strip.style.scrollSnapType = "none";
+    window.addEventListener("pointermove", follow);
+    window.addEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release);
+    follow(e);
+  });
   strip.addEventListener("scroll", update, { passive: true });
   window.addEventListener("resize", update);
   // A thumbnail has no width until its image loads, so re-measure as each arrives.
