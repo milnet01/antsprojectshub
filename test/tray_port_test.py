@@ -38,34 +38,30 @@ class ParseUnitEnv(unittest.TestCase):
 
 class ResolvePort(unittest.TestCase):
     def test_default(self):
-        self.assertEqual(tray.resolve_port({}, {}), 4321)
+        self.assertEqual(tray.resolve_port({}), 4321)
 
     def test_unit_stats_port(self):
-        self.assertEqual(tray.resolve_port({"STATS_PORT": "5001"}, {}), 5001)
+        self.assertEqual(tray.resolve_port({"STATS_PORT": "5001"}), 5001)
 
     def test_unit_port_wins_over_unit_stats_port(self):
         self.assertEqual(
-            tray.resolve_port({"PORT": "5997", "STATS_PORT": "4321"}, {}), 5997
+            tray.resolve_port({"PORT": "5997", "STATS_PORT": "4321"}), 5997
         )
 
-    def test_the_unit_beats_our_own_environment(self):
+    def test_a_drop_in_override_is_followed(self):
         # The regression this whole function exists for: the service is started by systemd, so
         # a drop-in override never reaches the tray's own environment. A tray that trusted
         # its own STATS_PORT here would open 4321 and POST /refresh into nothing.
         self.assertEqual(
-            tray.resolve_port({"PORT": "5997"}, {"STATS_PORT": "4321"}), 5997
+            tray.resolve_port({"PORT": "5997"}), 5997
         )
 
-    def test_own_environment_is_the_last_resort(self):
-        self.assertEqual(tray.resolve_port({}, {"PORT": "5999"}), 5999)
-        self.assertEqual(tray.resolve_port({}, {"STATS_PORT": "5001"}), 5001)
-        self.assertEqual(tray.resolve_port({}, {"PORT": "5999", "STATS_PORT": "5001"}), 5999)
 
     def test_unusable_values_fall_through(self):
         # The tray only reads a port; the server is the one that refuses to start on a bad
         # one. Guessing 4321 here is right — it is what an unset PORT would have meant.
         for bad in ("abc", "[abc]", "", "0", "80", "65536", "5999.5", " 5997 "):
-            self.assertEqual(tray.resolve_port({"PORT": bad}, {}), 4321, bad)
+            self.assertEqual(tray.resolve_port({"PORT": bad}), 4321, bad)
 
 
 class Headless(unittest.TestCase):

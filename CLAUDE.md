@@ -103,8 +103,9 @@ by calling `generate()` itself.
 **Everything else about the dashboard — the port, Google Analytics, failed fetches,
 authentication, history, the self-contained `.stats/` folder, colour, the nav and sorting —
 is in [`.claude/rules/stats-dashboard.md`](.claude/rules/stats-dashboard.md).** It loads by
-itself when you open `stats.mjs`, `serve.mjs`, `lib/ga.mjs`, `lib/port.mjs`, `tray/`, `test/`
-or `systemd/ants-stats*`. Read it by hand before creating a new file for the dashboard.
+itself when you open `stats.mjs`, `serve.mjs`, `lib/ga.mjs`, `lib/github.mjs`, `lib/port.mjs`,
+`tray/`, `test/` or `systemd/ants-stats*`. Read it by hand before creating a new file for
+the dashboard.
 
 ## Weekly blog post (`scripts/weekly-post.sh`)
 

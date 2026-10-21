@@ -1882,7 +1882,8 @@ const CSS = `/* Private dashboard — layers on the site's tokens.
    Colour here is wayfinding, not data: each section owns an --accent, and its nav link
    wears the same one. The status language is left alone — amber still means "look at
    this", teal "up", rose "down" — so the accents deliberately avoid carrying meaning.
-   Accents run teal → violet down the page, so scroll position has a colour. */
+   Accents run teal → violet down the page, so scroll position has a colour. The one
+   exception is Notifications, amber on purpose: everything in it asks to be looked at. */
 /* Read only on the owner's 4K monitor at 100% scaling, never a phone: every rem on the
    page scales from this base, and the column is measured in rem so it widens with it. */
 html { font-size: 150%; }

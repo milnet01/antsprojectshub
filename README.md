@@ -3,7 +3,8 @@
 Source for **[antsprojectshub.co.za](https://antsprojectshub.co.za)** — a static
 showcase site for my projects. The site is meant to be a one-stop shop: what a visitor
 *reads* is here, and only what GitHub alone can serve — the download files, the issue
-tracker, the source code, credit to a fork's upstream — still links there.
+tracker, the source code (and an unreleased project's development page), credit to a
+fork's upstream, and my profile in the footer — still links there.
 
 ## How it works
 

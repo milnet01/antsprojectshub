@@ -180,7 +180,7 @@ Nothing here changes what is measured, only what the eye lands on.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 site-build.md loop 2 lane a.
 
-- 📋 [APHW-0024] **site-build.md says ants.gate.docsGlob never matches src/about/ or src/posts/, but the build also reads src/policies/.**
+- ✅ [APHW-0024] **site-build.md says ants.gate.docsGlob never matches src/about/ or src/posts/, but the build also reads src/policies/.**
   Found outside the gated change (b9f2948, download changes), so filed, not fixed.
   [Q2] .claude/rules/site-build.md, The pre-push gate: "Each clone sets
   `ants.gate.docsGlob`, and it never matches `src/about/` or `src/posts/`,
@@ -193,8 +193,9 @@ Nothing here changes what is measured, only what the eye lands on.
   **Layman:** The build rules list the folders the "docs only" shortcut must never skip, and one folder the site builds pages from is missing from that list.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 site-build.md loop 4 lane d.
+  Resolved (2026-10-21): site-build.md now says the docs glob never matches anything under src/.
 
-- 📋 [APHW-0025] **stats-dashboard.md: four rules outside the tabs change disagree with the code (accent colours, tray port source, rules-file paths, FILES vs TYPES).**
+- ✅ [APHW-0025] **stats-dashboard.md: four rules outside the tabs change disagree with the code (accent colours, tray port source, rules-file paths, FILES vs TYPES).**
   Found outside the gated change (865ea34, dashboard tabs), so filed, not fixed.
   [Q1] .claude/rules/stats-dashboard.md, Colour bullet: "Each section owns an
   `--accent` (teal → violet down the page)" and "Those hues deliberately sit
@@ -228,6 +229,11 @@ Nothing here changes what is measured, only what the eye lands on.
   **Layman:** The dashboard's colour rule says section colours never reuse the warning amber, but the "Needs attention" section does; one of the two should change.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 stats-dashboard.md loop 1 lanes a and b.
+  Resolved (2026-10-21): the user kept amber on Notifications, now named as the exception in
+  the rule and the CSS comment; the tray reads the port from the unit only, as the rule says;
+  lib/github.mjs joined the rule's paths and CLAUDE.md's list; the .stats/ bullet names TYPES;
+  the lib/port.mjs comment matches the code. The tray still ignores a port below 1024, which
+  the server would use from STATS_PORT; left as is.
 
 - ✅ [APHW-0026] **macOS buttons that link an Apple Silicon-only build do not say so (Slipcase, Snatch, Rolodex).**
   Slipcase's assetMatch picks macos-arm64.dmg, Snatch ships only
@@ -240,13 +246,14 @@ Nothing here changes what is measured, only what the eye lands on.
   Resolved (2026-10-21): macChip() in build.mjs adds "Apple Silicon" to a macOS button's
   meta line when the file name says arm64 or aarch64 and names no Intel or universal build.
 
-- 📋 [APHW-0027] **README.md's one-stop list omits two GitHub links site-build.md now lists.**
+- ✅ [APHW-0027] **README.md's one-stop list omits two GitHub links site-build.md now lists.**
   site-build.md (contract review 2026-10-19) lists an unreleased
   project's "Follow development on GitHub" link and the footer profile
   link; README.md's visitor summary names neither. Low stakes.
   **Layman:** The README's short list of links that go to GitHub is missing two small ones.
   Kind: doc-fix.
   Source: session-2026-10-19.
+  Resolved (2026-10-21): README.md names the development link and the footer profile link.
 
 ## P02 — What the numbers actually say (target: TBD)
 

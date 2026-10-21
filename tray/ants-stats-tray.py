@@ -90,13 +90,12 @@ def parse_unit_env(show_output):
     return env
 
 
-def resolve_port(unit_env, own_env):
-    """PORT → STATS_PORT, from the unit first and only then from our own environment."""
-    for source in (unit_env, own_env):
-        for name in ("PORT", "STATS_PORT"):
-            value = source.get(name, "")
-            if value.isdigit() and 1024 <= int(value) <= 65535:
-                return int(value)
+def resolve_port(unit_env):
+    """PORT → STATS_PORT, from the unit's environment only."""
+    for name in ("PORT", "STATS_PORT"):
+        value = unit_env.get(name, "")
+        if value.isdigit() and 1024 <= int(value) <= 65535:
+            return int(value)
     return DEFAULT_PORT
 
 
@@ -282,7 +281,7 @@ def run_headless():
 
 def main():
     global PORT, URL
-    PORT = resolve_port(unit_environment(), os.environ)
+    PORT = resolve_port(unit_environment())
     URL = f"http://127.0.0.1:{PORT}"
 
     if is_headless(os.environ):

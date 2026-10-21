@@ -3,6 +3,7 @@ paths:
   - "stats.mjs"
   - "serve.mjs"
   - "lib/ga.mjs"
+  - "lib/github.mjs"
   - "lib/port.mjs"
   - "tray/**"
   - "test/**"
@@ -55,12 +56,13 @@ dashboard".
 
 - **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
   `site.css`, not linked. Any new asset the page references gets copied in and added to
-  `FILES` too. The body class is `admin`, **not** `stats`.
+  `FILES` too, and its extension to `TYPES` if new. The body class is `admin`, **not** `stats`.
 
 - **Colour on the dashboard is wayfinding, not data.** Each section owns an `--accent`
   (teal → violet down the page) shared with its nav link, and the OS columns are tinted
   blue/magenta/green. Those hues deliberately sit clear of the status language — amber means
-  "look at this", teal "up", rose "down". Figures stay in text ink.
+  "look at this", teal "up", rose "down". The one exception is Notifications, whose accent
+  is amber on purpose: everything in it asks to be looked at. Figures stay in text ink.
 
 - **The sections are tabs, and the tabs are progressive enhancement too.** The nav's links
   are ordinary anchors: without JavaScript every section shows on one long page and a link
