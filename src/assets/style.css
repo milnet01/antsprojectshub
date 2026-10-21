@@ -891,10 +891,11 @@ a.card:hover .card__name {
   margin: 0.4rem 0 0;
 }
 
-/* ---- Screenshots: one large shot, then a row of thumbnails (no JS) ----
-   The first screenshot is shown large; the rest sit centred under it as thumbnails, all
-   visible — a carousel hides the shots behind arrows, and most visitors never find them.
-   Each tile opens a :target lightbox (below).
+/* ---- Screenshots: one large shot, then a strip of thumbnails ----
+   The first screenshot is shown large; the rest sit centred under it in one row. When
+   they don't fit, the row scrolls sideways under a visible teal scrollbar, and
+   lightbox.js shows a ‹ / › button at each end (the user's choice, 2026-10-21, after
+   RetroDB's strip). Each tile opens a :target lightbox (below).
 
    Every image keeps its screenshot's own shape. A fixed tile ratio has to either crop
    (the old 16:9 `cover`, which sliced OneUp's tall window through the middle and
@@ -950,6 +951,93 @@ a.card:hover .card__name {
 }
 .shot:hover {
   border-color: var(--teal);
+}
+/* The strip shrinks to its thumbnails, so a row that fits stays centred and scrolls
+   nothing; only a row wider than the page overflows. */
+.shots__row {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.shots__track {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.shots__strip {
+  display: flex;
+  gap: var(--gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-color: var(--teal) rgba(255, 255, 255, 0.1);
+  /* Room for the scrollbar under the thumbnails, so it never covers them. */
+  padding-bottom: 0.7rem;
+}
+/* lightbox.js draws its own bar (below) and hides the native one, which Firefox on
+   Linux shows only on hover; without the script the native one stays. */
+.shots__strip--drawn {
+  scrollbar-width: none;
+  padding-bottom: 0;
+}
+.shots__strip--drawn::-webkit-scrollbar {
+  display: none;
+}
+.shots__bar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.shots__bar[hidden] {
+  display: none;
+}
+.shots__thumb {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: var(--teal);
+}
+.shots__strip .shot {
+  flex: none;
+  scroll-snap-align: start;
+}
+.shots__arrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 999px;
+  background: rgba(20, 24, 32, 0.9);
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+  font: inherit;
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.shots__arrow[hidden] {
+  display: none;
+}
+.shots__arrow:hover:not(:disabled) {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--bg);
+}
+/* At either end the button stays in place, dimmed, so the strip doesn't jump. */
+.shots__arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 /* ---- Screenshot lightbox: pure-CSS :target overlay (no JS) ----

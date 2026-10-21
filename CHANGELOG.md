@@ -11,6 +11,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **A project's screenshot thumbnails now sit in one row under the large shot; when they don't fit, the row scrolls sideways with ‹ › buttons and a teal bar showing where you are**
+  Pages with many screenshots, such as MAME Curator and Pressless, no longer wrap a thumbnail onto a second line. Without JavaScript the row still scrolls by the browser's own scrollbar.
+
 - **RetroDB's "How to install" help now names the file to start on each system: start.bat on Windows, start.command on macOS and start.sh on Linux**
 
 ### Fixed

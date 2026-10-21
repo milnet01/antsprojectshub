@@ -763,8 +763,12 @@ function actionButtons(p, release) {
 
 // Curated screenshot gallery (pure-CSS, no JS ships). Each entry is { src, alt }:
 // src is relative to assets/img/, alt is required for accessibility. The first shot is
-// shown large and the rest as a centred row of thumbnails under it, every one visible —
-// no carousel, whose hidden slides most visitors never find; clicking one opens
+// shown large and the rest as one row of thumbnails under it, in a strip that scrolls
+// sideways with a visible scrollbar when they don't fit (the user's choice, 2026-10-21,
+// after RetroDB's own screenshot strip). The ‹ / › buttons beside the strip and the bar
+// under it ship hidden; lightbox.js shows them only while the strip overflows, and the
+// bar then stands in for the native scrollbar, which Firefox on Linux hides until
+// hovered. Clicking a shot opens
 // a full-screen :target lightbox with a ✕ close, backdrop-click close, and ‹ / › prev-
 // next (stopping at the first and last shot). lightbox.js adds Escape and the arrow
 // keys; without it the visible controls and the browser Back button do. Empty/absent screenshots → no section at all.
@@ -774,13 +778,23 @@ function renderScreenshots(p) {
   const n = shots.length;
   const lbId = (i) => `lb-${p.slug}-${i + 1}`;
 
-  const thumbs = shots
-    .map((s, i) => {
-      const src = `/assets/img/${esc(s.src)}`;
-      const alt = esc(s.alt || `${p.name} screenshot`);
-      return `<a class="shot${i === 0 ? " shot--lead" : ""}" href="#${lbId(i)}" aria-label="Enlarge screenshot ${i + 1} of ${n}: ${alt}"><img src="${src}" alt="${alt}" loading="lazy"></a>`;
-    })
-    .join("");
+  const shotLink = (s, i) => {
+    const src = `/assets/img/${esc(s.src)}`;
+    const alt = esc(s.alt || `${p.name} screenshot`);
+    return `<a class="shot${i === 0 ? " shot--lead" : ""}" href="#${lbId(i)}" aria-label="Enlarge screenshot ${i + 1} of ${n}: ${alt}"><img src="${src}" alt="${alt}" loading="lazy"></a>`;
+  };
+  const strip =
+    n > 1
+      ? `<div class="shots__row">
+        <button type="button" class="shots__arrow shots__arrow--prev" aria-label="Scroll screenshots left" hidden>‹</button>
+        <div class="shots__track">
+          <div class="shots__strip">${shots.slice(1).map((s, i) => shotLink(s, i + 1)).join("")}</div>
+          <div class="shots__bar" aria-hidden="true" hidden><div class="shots__thumb"></div></div>
+        </div>
+        <button type="button" class="shots__arrow shots__arrow--next" aria-label="Scroll screenshots right" hidden>›</button>
+      </div>`
+      : "";
+  const thumbs = shotLink(shots[0], 0) + strip;
 
   // One lightbox panel per shot. Prev/next stop at the ends, as in RetroDB's own
   // viewer: the first shot has no ‹ and the last has no ›.
