@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-10-21
+
 ### Added
 
 - **A Mac download button says "Apple Silicon" when its file runs only on Macs with Apple's own chips, so someone with an older Intel Mac can tell before downloading (Slipcase, Snatch, Rolodex)**
