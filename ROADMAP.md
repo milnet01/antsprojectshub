@@ -229,7 +229,7 @@ Nothing here changes what is measured, only what the eye lands on.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 stats-dashboard.md loop 1 lanes a and b.
 
-- 📋 [APHW-0026] **macOS buttons that link an Apple Silicon-only build do not say so (Slipcase, Snatch, Rolodex).**
+- ✅ [APHW-0026] **macOS buttons that link an Apple Silicon-only build do not say so (Slipcase, Snatch, Rolodex).**
   Slipcase's assetMatch picks macos-arm64.dmg, Snatch ships only
   Snatch-arm64.dmg, Rolodex only rolodex-macos-arm64. The button meta
   line (fileType/fileSize in build.mjs) could add "Apple Silicon" when
@@ -237,6 +237,8 @@ Nothing here changes what is measured, only what the eye lands on.
   **Layman:** Someone with an older Intel Mac can download a Mac file that will not run on their computer.
   Kind: ux.
   Source: session-2026-10-19.
+  Resolved (2026-10-21): macChip() in build.mjs adds "Apple Silicon" to a macOS button's
+  meta line when the file name says arm64 or aarch64 and names no Intel or universal build.
 
 - 📋 [APHW-0027] **README.md's one-stop list omits two GitHub links site-build.md now lists.**
   site-build.md (contract review 2026-10-19) lists an unreleased

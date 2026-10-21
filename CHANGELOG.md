@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **A Mac download button says "Apple Silicon" when its file runs only on Macs with Apple's own chips, so someone with an older Intel Mac can tell before downloading (Slipcase, Snatch, Rolodex)**
+
 - **Games Hub's page describes its new release: the card games play from the keyboard, every game shows its moves in motion, and Klondike, Spider and FreeCell move cards by clicking; it no longer calls the game a beta**
 
 - **The private stats page's first tab is now Notifications: it lists open issues and pull requests on each project, your own open pull requests to the projects you forked, and which projects are live, beta, wip and soon; the Content tab is gone**

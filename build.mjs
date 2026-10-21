@@ -607,6 +607,12 @@ function fileType(name) {
   return name.includes(".") ? "" : "Program";
 }
 
+// A Mac file built only for Apple's own chips will not run on an Intel Mac, so its button
+// says so. A file that also names an Intel build, or calls itself universal, is left unmarked.
+function macChip(name) {
+  return /arm64|aarch64/i.test(name) && !/universal|x86_64|x64|intel/i.test(name) ? "Apple Silicon" : "";
+}
+
 // Decimal megabytes (1 MB = 1,000,000 bytes). Whole numbers above 10 MB,
 // where a decimal place is noise; a file under 1 MB (a .deb of a script) shows in KB.
 function fileSize(bytes) {
@@ -707,7 +713,8 @@ function actionButtons(p, release) {
       : [{ ...m, label: PLATFORM[m.pl] || m.pl, count: m.pl }];
   });
   direct.forEach((m, i) => {
-    const meta = [fileType(m.asset.name), fileSize(m.asset.size)].filter(Boolean).join(" · ");
+    const chip = m.pl === "mac" ? macChip(m.asset.name) : "";
+    const meta = [fileType(m.asset.name), chip, fileSize(m.asset.size)].filter(Boolean).join(" · ");
     const btn = ext(m.asset.url, `Download · ${m.label}`, `btn ${i === 0 && !hasWeb ? "btn--primary" : ""}`, {
       project: p.slug,
       platform: m.pl,
