@@ -165,7 +165,7 @@ Nothing here changes what is measured, only what the eye lands on.
 
 ---
 
-- 📋 [APHW-0021] **site-build.md calls googletagmanager.com the one third-party origin, but img-src allows any https host.**
+- ✅ [APHW-0021] **site-build.md calls googletagmanager.com the one third-party origin, but img-src allows any https host.**
   Found outside the gated change (the Demo videos bullet), so filed, not fixed.
   [Q1] .claude/rules/site-build.md, Analytics bullet ("`googletagmanager.com` is
   the one third-party origin allowed") and Security headers bullet ("The one
@@ -176,6 +176,8 @@ Nothing here changes what is measured, only what the eye lands on.
   CSP array says the same "ONE third-party origin". A conformer could narrow
   img-src to match the rule and break README images. Fix: name the img-src
   exception at both places (and in the templates.mjs comment).
+  Shipped 2026-10-21 in 554b154: both site-build.md bullets and the CSP
+  comment in lib/templates.mjs name the img-src exception.
   **Layman:** The build rules say the site trusts only one outside website, but pictures may come from any secure website; the rule should say so.
   Kind: doc-fix.
   Source: review-contract-2026-10-19 site-build.md loop 2 lane a.
