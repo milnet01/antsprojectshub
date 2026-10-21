@@ -148,7 +148,10 @@ offline, the build still succeeds — each project falls back to static metadata
   manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching.
   Each matched button names its file's type, taken from the file name (AppImage, `.deb`,
   `.exe`), and its size, from the release asset's `size` field. The "How to install" fold-out
-  under the buttons is built from the same files' types, one note per type; a file whose type has no note gets none, and a fallback button gets none. No project
-  writes its own install text.
+  under the buttons is built from the same files' types, one note per type; a file whose type has no note gets none, and a fallback button gets none.
+  A project whose files need a step no type's note can name, such as a start script, may
+  replace the note on one OS's buttons with its own line in `installNotes` (`{"win": …, "mac": …, "linux":
+  …}`). The Windows and macOS warning sentence is still added after that line. Nothing
+  checks that a project needed one; most projects do not.
 
 The About-page and 1.0.0 checks are in [`content.md`](content.md).
