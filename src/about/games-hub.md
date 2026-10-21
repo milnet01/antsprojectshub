@@ -51,9 +51,19 @@ When the turn passes, one light fades out as the next fades in. It has a gold
 outline as well as a glow, so it does not depend on seeing the colour, and it grows
 stronger with Large switched on.
 
-**Four games play from the keyboard.** In Chess, Reversi, Draughts and
-Minesweeper the arrow keys move a cursor round the board, and Space or Return
-plays the square under it. The other games still need a mouse.
+**The board games and the card games play from the keyboard**, and so does
+Minesweeper. In Chess, Reversi, Draughts and Minesweeper the arrow keys move a
+cursor round the board, and Space or Return plays the square under it. In the card
+games the arrow keys move a gold cursor between the piles, Space lifts a card and
+Space puts it down, and Escape puts it back.
+
+**Every game shows its moves instead of jumping to the result.** A chess piece
+slides to its square, a draughts jump travels hop by hop, and Reversi's captured
+discs turn over one by one. Cards fly to where they go, and a new game deals in
+motion. Any click or key finishes a deal still running.
+
+**Klondike, Spider and FreeCell move cards by clicking as well as dragging.** Click
+a card to pick it up, then click the pile it should go to.
 
 ## Getting it
 
@@ -71,5 +81,5 @@ from source is the way round that.
 
 ## Where it stands
 
-In beta and thoroughly playable. Pick a game from the grid; `Esc` goes back. Each
+Thoroughly playable. Pick a game from the grid; `Esc` goes back. Each
 game puts its own controls on the toolbar beside it, and one switch mutes the lot.

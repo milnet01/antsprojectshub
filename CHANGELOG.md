@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- **Games Hub's page describes its new release: the card games play from the keyboard, every game shows its moves in motion, and Klondike, Spider and FreeCell move cards by clicking; it no longer calls the game a beta**
+
 - **The private stats page's first tab is now Notifications: it lists open issues and pull requests on each project, your own open pull requests to the projects you forked, and which projects are live, beta, wip and soon; the Content tab is gone**
 
 - **Rusty PSN's page links its public GitHub repository and says there is no release yet**
