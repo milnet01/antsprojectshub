@@ -307,12 +307,13 @@ body::after {
 .hero__brand {
   background: linear-gradient(
     90deg,
-    #ccfbf1,
+    #5eead4,
     #ffffff,
-    #cffafe,
+    #67e8f9,
+    #c4b5fd,
     #ffffff,
-    #fce7f3,
-    #ccfbf1
+    #f9a8d4,
+    #5eead4
   );
   background-size: 300% auto;
   -webkit-background-clip: text;
@@ -320,10 +321,7 @@ body::after {
   color: transparent;
   -webkit-text-fill-color: transparent;
   animation: title-flow 10s linear infinite;
-  /* Two glows, a tight bright one and a wide soft one, so the title reads lit rather
-     than dim against the dark hero. */
-  filter: drop-shadow(0 0 4px rgba(207, 250, 254, 0.6))
-    drop-shadow(0 0 18px rgba(103, 232, 249, 0.55));
+  filter: drop-shadow(0 1px 12px rgba(103, 232, 249, 0.4));
 }
 @keyframes title-flow {
   to { background-position: 300% center; }
