@@ -28,7 +28,7 @@ so dated sections stand in for versions. Planned work lives in
   Pages with many screenshots, such as MAME Curator and Pressless, no longer wrap a thumbnail onto a second line. The bar works like a scrollbar: drag it, or click the track to jump there. Without JavaScript the row still scrolls by the browser's own scrollbar.
 
 - **Pressless's page now covers its 0.10.0 release: a Look screen for your site's colours, fonts and layout, several sites in one copy, site files and daily backups, and uploaded songs, videos and documents**
-  "Change the site's colours, fonts and layout" left the Still to come list, and the card no longer says running the whole site is still to come.
+  Two new screenshots show the Look screen and the Sites screen. "Change the site's colours, fonts and layout" left the Still to come list, and the card no longer says running the whole site is still to come.
 
 - **RetroDB's page now covers its 3.30.0 release: linked regional versions, a manual reader, full keyboards for home-computer and RetroArch games, and pop-ups that behave the same way**
 
