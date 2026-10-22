@@ -19,6 +19,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **The home page's "Ants Projects Hub" title glows brighter, keeping its flowing colours**
+
 - **The home page and every project page now ask for support near the top, with a short note on why donations help and the GitHub Sponsors, Patreon and Paybru buttons**
   On a project page it sits right under the download buttons; on the home page, under the opening banner instead of at the foot of the page. On a fork's page, the note says donations support the work on the fork, not the original project.
 

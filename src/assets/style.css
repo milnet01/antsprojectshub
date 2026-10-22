@@ -320,7 +320,10 @@ body::after {
   color: transparent;
   -webkit-text-fill-color: transparent;
   animation: title-flow 10s linear infinite;
-  filter: drop-shadow(0 1px 12px rgba(103, 232, 249, 0.4));
+  /* Two glows, a tight bright one and a wide soft one, so the title reads lit rather
+     than dim against the dark hero. */
+  filter: drop-shadow(0 0 4px rgba(207, 250, 254, 0.6))
+    drop-shadow(0 0 18px rgba(103, 232, 249, 0.55));
 }
 @keyframes title-flow {
   to { background-position: 300% center; }
