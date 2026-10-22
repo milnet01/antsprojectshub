@@ -19,8 +19,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
-- **Every project page now ends with a "Support" section: a short note on why donations help, and the GitHub Sponsors, Patreon and Paybru buttons**
-  The page's jump bar gains a Support link. On a fork's page, the note says donations support the work on the fork, not the original project.
+- **The home page and every project page now ask for support near the top, with a short note on why donations help and the GitHub Sponsors, Patreon and Paybru buttons**
+  On a project page it sits right under the download buttons; on the home page, under the opening banner instead of at the foot of the page. On a fork's page, the note says donations support the work on the fork, not the original project.
 
 - **A project's screenshot thumbnails now sit in one row under the large shot; when they don't fit, the row scrolls sideways with ‹ › buttons and a teal bar showing where you are**
   Pages with many screenshots, such as MAME Curator and Pressless, no longer wrap a thumbnail onto a second line. The bar works like a scrollbar: drag it, or click the track to jump there. Without JavaScript the row still scrolls by the browser's own scrollbar.

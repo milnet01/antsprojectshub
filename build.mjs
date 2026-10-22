@@ -162,8 +162,11 @@ function renderCard(p, release) {
     </a>`;
 }
 
-// The home page shows the row alone; a project page passes its own heading and the note
-// saying why we ask.
+// Both the home page and each project page ask near the top, with a note saying why; at
+// the foot of the page nobody read it. A project page passes its own heading.
+const SITE_SUPPORT_NOTE =
+  "Every app here is free and open source. Donations pay for the time it takes to fix bugs, add features and keep them working as computers change. If they're useful to you, any amount helps.";
+
 function renderSupport(support, { heading = "Support the work", note = "" } = {}) {
   const btns = support
     .map((s) => {
@@ -522,7 +525,6 @@ function landingPage(projects, support, releases, posts) {
 ${present
     .map((c) => `      <a href="#${CATEGORY[c].id}">${esc(CATEGORY[c].label)}</a>`)
     .join("\n")}
-      <a href="#support">Support</a>
     </nav>`;
   const groups = present
     .map((c) => {
@@ -553,11 +555,11 @@ ${cards}
         <div class="stat"><b>3</b><span>Desktop OSes</span></div>
       </div>
     </section>
+    ${renderSupport(support, { note: SITE_SUPPORT_NOTE })}
 ${renderFresh(projects, releases)}
 ${renderLogBand(posts)}
     ${jump}
-${groups}
-    ${renderSupport(support)}`;
+${groups}`;
   return basePage({
     title: "Ants Projects Hub",
     description:
@@ -1037,8 +1039,9 @@ function projectPage(p, { aboutHtml, release, history = [], support = [] }) {
     : history.length
       ? changelogFilePanel(p, history)
       : "";
-  // Every page asks, and says why. A fork's donations fund this fork, not its upstream,
-  // so its note says so.
+  // Every page asks, and says why, right under the download buttons where every visitor
+  // looks; at the foot of the page nobody read it. A fork's donations fund this fork, not
+  // its upstream, so its note says so.
   const supportNote = `${p.name} is free and open source. Donations pay for the time it takes to fix bugs, add features and keep it working as computers change. If it's useful to you, any amount helps.${
     p.isFork && p.upstream
       ? ` This supports the work on this fork, not the original ${p.upstream} project.`
@@ -1049,8 +1052,7 @@ function projectPage(p, { aboutHtml, release, history = [], support = [] }) {
     : "";
   const body = `${soon}
       ${aboutPanel(p, aboutHtml)}
-      ${whatsNew}
-      ${supportHtml}`;
+      ${whatsNew}`;
 
   // The demo video then the screenshots lead the page (the hook), then the body — a
   // moving tour beats a still, and a still beats prose. Jump nav only links to sections
@@ -1062,7 +1064,6 @@ function projectPage(p, { aboutHtml, release, history = [], support = [] }) {
   if (shotsHtml) navTargets.push(["screenshots", "Screenshots"]);
   navTargets.push(["about", "About"]);
   if (whatsNew) navTargets.push(["whatsnew", "What's new"]);
-  if (supportHtml) navTargets.push(["support", "Support"]);
   const jump =
     navTargets.length >= 2
       ? `<nav class="jump" aria-label="Jump to a section">${navTargets
@@ -1083,6 +1084,7 @@ function projectPage(p, { aboutHtml, release, history = [], support = [] }) {
   }</div>
       ${actionButtons(p, release)}
     </section>
+    ${supportHtml}
     ${jump}
     ${videoHtml}
     ${shotsHtml}

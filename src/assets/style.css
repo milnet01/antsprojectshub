@@ -544,6 +544,10 @@ a.card:hover .card__name {
   flex-wrap: wrap;
   justify-content: center;
 }
+/* On a project page it sits under the download buttons, so it keeps the gap small. */
+.detail-head + .support {
+  margin: 0 0 1.75rem;
+}
 .support__note {
   max-width: 38rem;
   margin: 0 auto 1rem;
@@ -947,7 +951,8 @@ a.card:hover .card__name {
   border-color: var(--teal);
 }
 /* Centred, like the header above them. */
-.detail-head + .jump {
+.detail-head + .jump,
+.detail-head + .support + .jump {
   justify-content: center;
 }
 .demo-sec > .section-label,
