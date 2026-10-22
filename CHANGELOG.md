@@ -27,6 +27,9 @@ so dated sections stand in for versions. Planned work lives in
 - **A project's screenshot thumbnails now sit in one row under the large shot; when they don't fit, the row scrolls sideways with ‹ › buttons and a teal bar showing where you are**
   Pages with many screenshots, such as MAME Curator and Pressless, no longer wrap a thumbnail onto a second line. The bar works like a scrollbar: drag it, or click the track to jump there. Without JavaScript the row still scrolls by the browser's own scrollbar.
 
+- **Pressless's page now covers its 0.10.0 release: a Look screen for your site's colours, fonts and layout, several sites in one copy, site files and daily backups, and uploaded songs, videos and documents**
+  "Change the site's colours, fonts and layout" left the Still to come list, and the card no longer says running the whole site is still to come.
+
 - **RetroDB's page now covers its 3.30.0 release: linked regional versions, a manual reader, full keyboards for home-computer and RetroArch games, and pop-ups that behave the same way**
 
 - **RetroDB's "How to install" help now names the file to start on each system: start.bat on Windows, start.command on macOS and start.sh on Linux**

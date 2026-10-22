@@ -42,12 +42,40 @@ page by typing straight onto it, as it will look, and add ready-made sections:
 headings, paragraphs, pictures, columns, buttons, video, music and downloads.
 Drag a section into place with the mouse, or move it between columns.
 
+A video, music or download section takes a file you upload: a song, a video,
+a PDF, a ZIP or a text file, up to 50 MiB each. A Files screen lists every
+uploaded file and the pages that use it.
+
 Add, rename and remove pages, and the menu keeps up by itself. A renamed page's
 old address still works. Change the header, footer and menu in the same editor,
 without code.
 
 Pages can also hold ready-made interactive pieces: a picture slideshow,
 questions that fold open, a picture that enlarges, a countdown.
+
+## Your site's own look
+
+A Look screen sets your site's colours, fonts, text size, page width and
+layout, with a live preview as you change them. Colours are set for light and
+dark, and a text colour that is hard to read is warned about. Anyone who knows
+CSS can add their own, to one page or to every page.
+
+New sites made from the Sunrise, Meadow or Harbour starter looks turn dark for
+visitors whose computer is set to dark. You can also choose your site's icon,
+shown in a browser's tab, and the picture shown beside a link to your site
+when someone shares it.
+
+## More than one site
+
+One copy of Pressless can look after several websites. A Sites screen lists
+them, starts a new one and opens another. Each site keeps its own writing,
+settings and publishing key.
+
+A whole site saves to one file, which opens again as a site on this computer
+or another. The file never holds your publishing key. A step-by-step guide
+moves Pressless to a new computer. Every day, Pressless backs up each site by
+itself and keeps the last seven backups, beside the program or in a folder you
+choose.
 
 ## What it does today
 
@@ -67,7 +95,7 @@ questions that fold open, a picture that enlarges, a countdown.
 - **Undo the last publish** in one step, when a change turns out wrong.
 - **Open your site in one click.** View your site sits in the top bar, and
   appears again after you publish and at the end of setup.
-- **Add photographs** from the editor. Pressless keeps your original
+- **Add photographs** from the editor, including AVIF ones. Pressless keeps your original
   untouched and puts the picture where you were typing.
 - **Remember your choices between visits**, such as the last page you
   opened. They stay on your computer.
@@ -96,13 +124,13 @@ questions that fold open, a picture that enlarges, a countdown.
 - **Choose how Pressless looks** from a picker in its top bar: light,
   dark, two high-contrast looks, and playful looks inspired by games,
   films and TV. Your choice is remembered.
+- **Say which version you have**, on an About page that also says
+  Pressless is independent of GitHub, Google and WordPress.
 - **Explain every problem in plain words** — what happened, what it means for
   your site, and what to do about it.
 
 ## Still to come
 
-- **Change the site's colours, fonts and layout**, so Pressless can
-  replace WordPress entirely.
 - **Bring in an existing WordPress blog**, with an import anyone can run.
 - **Offer to add Pressless to the Start Menu and the desktop** the first time
   it opens.
