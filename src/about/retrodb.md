@@ -16,7 +16,8 @@ your browser, and point it at your ROM folders.
 - **Launches your games.** Press Play on a game's page, or the Play button on
   its box art in the library, and it opens in the emulator you have set up for
   that system, RetroArch included. RetroDB first checks that the file is a type
-  that system uses.
+  that system uses. Home-computer games (C64, Amiga, DOS and more) get every key
+  you type, and RetroArch games start with a working keyboard.
 - **Tracks achievements and trophies** from RetroAchievements, Steam, Xbox, and
   PlayStation — including local RPCS3 trophies. They share one Achievements
   page, with a tab for each.
@@ -24,7 +25,9 @@ your browser, and point it at your ROM folders.
   PEGI, CERO, USK and China's. They are mapped against each other, so you can
   filter by whichever one you actually recognise.
 - **Organises the collection** with tags, custom lists, a wishlist, and
-  collector trophies you unlock by hitting milestones.
+  collector trophies you unlock by hitting milestones. Own a game from several
+  regions? Link the versions and the library shows one card, which plays your
+  preferred region.
 - **Brings in what you already own.** Import from CLZ, or from your Steam, Xbox
   and PlayStation libraries.
 - **Fixes the files themselves.** An archive scanner, a CHD converter and
@@ -40,10 +43,12 @@ your browser, and point it at your ROM folders.
   that fits the evening you actually have.
 
 There is also a Museum — an interactive encyclopedia of the consoles themselves —
-and seven themes to look at it all through, including Cyberpunk, Matrix and a
+and you can read a game's manual right on its page, turning pages like a book.
+Seven themes let you look at it all, including Cyberpunk, Matrix and a
 vector starfield. Every page fits the window it is in, from a phone to a wide
 monitor. The interface comes in 21 languages, and screen readers announce the
-progress of long jobs aloud.
+progress of long jobs aloud. Every pop-up handles Escape, keyboard focus and
+screen readers the same way.
 
 ## What you will need
 

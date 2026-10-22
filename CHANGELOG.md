@@ -22,6 +22,8 @@ so dated sections stand in for versions. Planned work lives in
 - **A project's screenshot thumbnails now sit in one row under the large shot; when they don't fit, the row scrolls sideways with ‹ › buttons and a teal bar showing where you are**
   Pages with many screenshots, such as MAME Curator and Pressless, no longer wrap a thumbnail onto a second line. The bar works like a scrollbar: drag it, or click the track to jump there. Without JavaScript the row still scrolls by the browser's own scrollbar.
 
+- **RetroDB's page now covers its 3.30.0 release: linked regional versions, a manual reader, full keyboards for home-computer and RetroArch games, and pop-ups that behave the same way**
+
 - **RetroDB's "How to install" help now names the file to start on each system: start.bat on Windows, start.command on macOS and start.sh on Linux**
 
 ### Fixed
@@ -32,6 +34,8 @@ so dated sections stand in for versions. Planned work lives in
   (GHSA-68fv-2mgg-jv7q). These packages run only during the build and never ship to a
   visitor. One built page changed: on the Ants Terminal changelog, a word in italics
   right after a code span now shows as italics instead of asterisks.
+
+- **The private stats dashboard no longer lists demoreel's `PKGBUILD` as an unexpected release file; it is Arch Linux's build recipe, which goes with the source download**
 
 - **The private stats tray icon now always opens and refreshes the dashboard on the port it really runs on; a port set where the tray was started could send it to the wrong one**
 
