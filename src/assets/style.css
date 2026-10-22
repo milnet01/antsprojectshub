@@ -544,6 +544,11 @@ a.card:hover .card__name {
   flex-wrap: wrap;
   justify-content: center;
 }
+.support__note {
+  max-width: 38rem;
+  margin: 0 auto 1rem;
+  color: var(--text-muted);
+}
 .support__btn {
   font-size: 0.95rem;
   font-weight: 700;

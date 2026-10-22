@@ -162,7 +162,9 @@ function renderCard(p, release) {
     </a>`;
 }
 
-function renderSupport(support) {
+// The home page shows the row alone; a project page passes its own heading and the note
+// saying why we ask.
+function renderSupport(support, { heading = "Support the work", note = "" } = {}) {
   const btns = support
     .map((s) => {
       if (s.url) {
@@ -177,7 +179,8 @@ function renderSupport(support) {
     })
     .join("");
   return `<section class="support" id="support" aria-labelledby="support-h">
-      <h2 class="section-label" id="support-h">Support the work</h2>
+      <h2 class="section-label" id="support-h">${esc(heading)}</h2>
+      ${note ? `<p class="support__note">${esc(note)}</p>` : ""}
       <div class="support__row">${btns}</div>
     </section>`;
 }
@@ -991,7 +994,7 @@ function detailTitle(p) {
   return `<h1 class="detail-logo"><img src="/assets/img/${esc(p.logo)}" alt="${esc(p.name)}"></h1>`;
 }
 
-function projectPage(p, { aboutHtml, release, history = [] }) {
+function projectPage(p, { aboutHtml, release, history = [], support = [] }) {
   const published = isPublished(p);
   const hasRelease = Boolean(release);
   const fork =
@@ -1034,9 +1037,20 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
     : history.length
       ? changelogFilePanel(p, history)
       : "";
+  // Every page asks, and says why. A fork's donations fund this fork, not its upstream,
+  // so its note says so.
+  const supportNote = `${p.name} is free and open source. Donations pay for the time it takes to fix bugs, add features and keep it working as computers change. If it's useful to you, any amount helps.${
+    p.isFork && p.upstream
+      ? ` This supports the work on this fork, not the original ${p.upstream} project.`
+      : ""
+  }`;
+  const supportHtml = support.length
+    ? renderSupport(support, { heading: `Support ${p.name}`, note: supportNote })
+    : "";
   const body = `${soon}
       ${aboutPanel(p, aboutHtml)}
-      ${whatsNew}`;
+      ${whatsNew}
+      ${supportHtml}`;
 
   // The demo video then the screenshots lead the page (the hook), then the body — a
   // moving tour beats a still, and a still beats prose. Jump nav only links to sections
@@ -1048,6 +1062,7 @@ function projectPage(p, { aboutHtml, release, history = [] }) {
   if (shotsHtml) navTargets.push(["screenshots", "Screenshots"]);
   navTargets.push(["about", "About"]);
   if (whatsNew) navTargets.push(["whatsnew", "What's new"]);
+  if (supportHtml) navTargets.push(["support", "Support"]);
   const jump =
     navTargets.length >= 2
       ? `<nav class="jump" aria-label="Jump to a section">${navTargets
@@ -1588,7 +1603,7 @@ async function main() {
     if (gap) driftWarnings.push(gap);
     await writeFile(
       join(DIST, "p", `${p.slug}.html`),
-      projectPage(p, { aboutHtml: about.get(p.slug), release, history })
+      projectPage(p, { aboutHtml: about.get(p.slug), release, history, support })
     );
     // The project's own changelog, so its history is readable without leaving the site.
     // Keyed on history rather than on a release: a project can keep a CHANGELOG.md and
