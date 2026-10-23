@@ -7,7 +7,8 @@ your website. This page says what it does with your information.
   Google or GitHub, is sent to the people who make Pressless.
 - Your information stays on your computer, apart from what you publish
   to your own website, what Pressless sends to GitHub and Google to do
-  the jobs you ask of it, and anonymous usage reports, which it sends
+  the jobs you ask of it, the requests it makes to your old website if
+  you bring a WordPress site in, and anonymous usage reports, which it sends
   only if you say yes (see Usage reports below).
 
 ## Google user data
@@ -143,6 +144,20 @@ Google Analytics deletes the reports after two months.
 Pressless asks GitHub whether a newer version of Pressless has been
 released. That request carries nothing about you or your site; like any
 visit to a web page, it shows GitHub your internet address.
+
+## Bringing in a WordPress site
+
+If you bring a WordPress site into Pressless, Pressless reads the export
+file you chose on your own computer. It then asks your old website for
+each photograph and file the export names, at the addresses written in
+it. If your old website sends one of those requests on somewhere else,
+such as a storage service, Pressless follows it there.
+
+Each request asks for one file and names the Pressless version. It
+carries no password, cookie or sign-in. Like any visit to a web page, it
+shows that website your internet address. It is encrypted (HTTPS) where
+the address in your export is. Nothing is sent to the people who make
+Pressless.
 
 ## Reporting a problem
 

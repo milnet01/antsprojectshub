@@ -77,6 +77,17 @@ moves Pressless to a new computer. Every day, Pressless backs up each site by
 itself and keeps the last seven backups, beside the program or in a folder you
 choose.
 
+## Bring your WordPress site in
+
+When you set up a new, empty site, Pressless offers to bring a WordPress site
+in: its posts, pages, menu, comments, photographs and files. It shows you how
+to make WordPress's export file, then copies each photograph and file from your
+old site while it is still online. Anything you had not published arrives as a
+draft. At the end, a report lists anything that did not come across.
+
+Lists, links and italics come across too, and one broken comment or missing
+photograph does not stop the import.
+
 ## What it does today
 
 - **Write with a handful of simple marks** — bold, a heading, a link, a
@@ -131,7 +142,6 @@ choose.
 
 ## Still to come
 
-- **Bring in an existing WordPress blog**, with an import anyone can run.
 - **Offer to add Pressless to the Start Menu and the desktop** the first time
   it opens.
 
@@ -152,9 +162,6 @@ to copy. You pick one of three starter looks, and your site is live.
 
 If a console window (a plain text window) opens alongside the browser, leave
 it open while you work: closing it stops Pressless.
-
-You cannot bring an existing blog in yet. You start from a starter look and
-write from there. An import from WordPress that anyone can run is planned.
 
 Google has approved Pressless, so setting up visitor numbers no longer warns
 that Google is still checking the app. And after you agree to replace an old
