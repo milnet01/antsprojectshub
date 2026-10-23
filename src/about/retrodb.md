@@ -12,7 +12,8 @@ your browser, and point it at your ROM folders.
 
 - **Fills in the details automatically.** It looks your games up across several
   metadata sources at once and merges what it finds — box art, screenshots,
-  descriptions, genres, developers, release dates.
+  descriptions, genres, developers, release dates. A title you type yourself
+  stays; scraping never changes it back.
 - **Launches your games.** Press Play on a game's page, or the Play button on
   its box art in the library, and it opens in the emulator you have set up for
   that system, RetroArch included. RetroDB first checks that the file is a type
@@ -36,6 +37,9 @@ your browser, and point it at your ROM folders.
 - **Fixes the files themselves.** An archive scanner, a CHD converter and
   verifier, a duplicate finder, a multi-disc organiser, and reports that flag
   ROMs whose names break the standard conventions, all on one ROM Tools page.
+  There, the AI can also suggest each game's full official name in its own
+  region: a Japanese Mega Man becomes Rockman. You see old and new side by side
+  and accept only the ones you want.
 - **Sharpens old artwork** with an optional AI upscaler for low-resolution
   covers and screenshots.
 - **Shows you what you have** through a twelve-tab analytics dashboard with
@@ -48,9 +52,11 @@ your browser, and point it at your ROM folders.
 There is also a Museum — an interactive encyclopedia of the consoles themselves —
 and you can read a game's manual right on its page, turning pages like a book.
 Seven themes let you look at it all, including Cyberpunk, Matrix and a
-vector starfield. Every page fits the window it is in, from a phone to a wide
-monitor; on a phone, the library's filters open from one Filters button. The
-interface comes in 21 languages, and screen readers announce the progress of
+vector starfield. A search box on every page finds any game or console as you
+type; press / to jump to it. Every page fits the window it is in, from a phone
+to a wide monitor. On a phone or tablet, a bar along the bottom reaches the
+Dashboard, Library, Systems and Achievements in one tap, and the library's
+filters open from one Filters button. The interface comes in 21 languages, and screen readers announce the progress of
 long jobs aloud. Every pop-up handles Escape, keyboard focus and screen readers
 the same way.
 
