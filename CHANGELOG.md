@@ -27,6 +27,8 @@ so dated sections stand in for versions. Planned work lives in
 - **A project's screenshot thumbnails now sit in one row under the large shot; when they don't fit, the row scrolls sideways with ‹ › buttons and a teal bar showing where you are**
   Pages with many screenshots, such as MAME Curator and Pressless, no longer wrap a thumbnail onto a second line. The bar works like a scrollbar: drag it, or click the track to jump there. Without JavaScript the row still scrolls by the browser's own scrollbar.
 
+- **RetroDB's page now covers its 3.31.0 release: filtering the library by several genres, series or publishers at once, new sorting, an Unscraped button, PlayStation 3 games stored as a folder, and a clearer first start**
+
 - **Pressless's page now covers its 0.10.1 release: bringing a WordPress site in, with its posts, pages, menu, comments, photographs and files**
   "Bring in an existing WordPress blog" left the Still to come list. Pressless's privacy policy gains a "Bringing in a WordPress site" section saying what Pressless asks your old website for.
 

@@ -17,7 +17,8 @@ your browser, and point it at your ROM folders.
   its box art in the library, and it opens in the emulator you have set up for
   that system, RetroArch included. RetroDB first checks that the file is a type
   that system uses. Home-computer games (C64, Amiga, DOS and more) get every key
-  you type, and RetroArch games start with a working keyboard.
+  you type, and RetroArch games start with a working keyboard. PlayStation 3
+  games stored as a folder play too.
 - **Tracks achievements and trophies** from RetroAchievements, Steam, Xbox, and
   PlayStation — including local RPCS3 trophies. They share one Achievements
   page, with a tab for each.
@@ -27,7 +28,9 @@ your browser, and point it at your ROM folders.
 - **Organises the collection** with tags, custom lists, a wishlist, and
   collector trophies you unlock by hitting milestones. Own a game from several
   regions? Link the versions and the library shows one card, which plays your
-  preferred region.
+  preferred region. Filter the library by several genres, series or publishers
+  at once, sort it by name, release date, score or recently added, and press
+  Unscraped to see the games still waiting for their details.
 - **Brings in what you already own.** Import from CLZ, or from your Steam, Xbox
   and PlayStation libraries.
 - **Fixes the files themselves.** An archive scanner, a CHD converter and
@@ -46,9 +49,10 @@ There is also a Museum — an interactive encyclopedia of the consoles themselve
 and you can read a game's manual right on its page, turning pages like a book.
 Seven themes let you look at it all, including Cyberpunk, Matrix and a
 vector starfield. Every page fits the window it is in, from a phone to a wide
-monitor. The interface comes in 21 languages, and screen readers announce the
-progress of long jobs aloud. Every pop-up handles Escape, keyboard focus and
-screen readers the same way.
+monitor; on a phone, the library's filters open from one Filters button. The
+interface comes in 21 languages, and screen readers announce the progress of
+long jobs aloud. Every pop-up handles Escape, keyboard focus and screen readers
+the same way.
 
 ## What you will need
 
@@ -62,7 +66,8 @@ buttons are the other version: extract it and run `python install.py`. You can
 then start it from a pinned icon, with no terminal.
 
 Either way, RetroDB opens in your browser, and a setup wizard walks you through
-the rest.
+the rest, showing which step you are on and which steps you can skip. A new
+library starts with a Scan Library button, not an empty page.
 
 **One thing to know up front:** the metadata scrapers, the achievement trackers
 and the AI features each need their own account or API key, which you create on
