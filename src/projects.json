@@ -42,6 +42,22 @@
       }
     },
     {
+      "slug": "frameledger",
+      "name": "frameledger",
+      "tagline": "Finds out what is slowing down a game engine’s frames.",
+      "blurb": "Three game engines here — Vestige, UT Ants and DOOM Ants — each measured their frame times a different way, so a slow spot had to be hunted by hand in each. frameledger gives all three one shared way to record a benchmark run, and one tool that reads it and answers in plain sentences: which part of the frame costs the most, whether it was waiting on the processor or the graphics card, and whether the run held 60 frames per second. A command-line tool in development; nothing to download yet.",
+      "status": "soon",
+      "repo": "milnet01/frameledger",
+      "platforms": [
+        "win",
+        "linux"
+      ],
+      "isFork": false,
+      "upstream": null,
+      "homepage": null,
+      "category": "engines"
+    },
+    {
       "slug": "ants-terminal",
       "name": "Ants Terminal",
       "tagline": "A fast, modern terminal for Linux that makes Claude Code cheaper and easier to use.",
