@@ -23,7 +23,7 @@ reads that file and answers in plain sentences first, before any table:
 - **Whether the run held 60 frames per second**, every second, and whether
   any single frame ran too long.
 
-## What it is for
+## Planned after the first release
 
 - **Telling whether a change helped.** Compare runs from two builds, and it
   says faster, slower or no real difference — judged against how much the
@@ -44,9 +44,9 @@ charts yet; plain text comes first.
 ## Where it stands
 
 **In development, with nothing to download yet.** It is a command-line tool,
-so there are no screenshots. The file format is agreed by all three engines.
-The first piece of the tool, which checks that a run file is valid, is being
-built now.
+so there are no screenshots. The file format is agreed by all three engines,
+and the first piece of the tool — checking that a run file is valid — is
+built. The report on a single run is being built now.
 
 It is written in Python and needs nothing installed beyond Python itself. It
 runs on Linux and Windows. An optional small C header lets an engine write the
