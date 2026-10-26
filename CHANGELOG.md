@@ -12,7 +12,7 @@ so dated sections stand in for versions. Planned work lives in
 ### Added
 
 - **A page for frameledger, a new tool that finds what is slowing down a game engine's frames**
-  Its first release is out, with a download for Linux and Windows. It sits beside Vestige in the engines section.
+  Its first release is out, with a download for Linux. It sits beside Vestige in the engines section.
 
 - **The private stats dashboard now keeps every figure's history — GitHub, openSUSE and Google Analytics — in a local database, and a new Trends tab charts each one day by day**
   The history has no age limit any more, a damaged history now stops the dashboard instead
