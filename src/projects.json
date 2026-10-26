@@ -49,6 +49,7 @@
       "status": "beta",
       "repo": "milnet01/frameledger",
       "platforms": [
+        "win",
         "linux"
       ],
       "isFork": false,

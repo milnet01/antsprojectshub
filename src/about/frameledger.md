@@ -66,7 +66,7 @@ charts yet; plain text comes first. It reads one run at a time.
 
 **The first release is out.** It is a command-line tool: you type its
 commands in a terminal window, and it answers in text. So there are no
-screenshots. It runs on Linux only for now. The download is one zip. It holds the tool,
+screenshots. The download is one zip for Linux and Windows. It holds the tool,
 which needs Python 3.10 or newer and nothing else, and an optional small C
 header. An engine can use the header to write run files without writing its
 own code for it.
