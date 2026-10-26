@@ -1,36 +1,53 @@
-Three game engines here — [Vestige](/p/vestige-engine.html),
-[UT Ants](/p/ut-ants.html) and [DOOM Ants](/p/doom-ants.html) — each measure
-their frame times a different way. Vestige logs an average about once a
-second, so one slow frame vanishes into it. UT Ants writes one set of figures
-per run. DOOM Ants prints lines to the terminal. A slow spot has to be hunted
-by hand in each engine, and nobody can show with one agreed number that a
-change made things faster.
+A game engine is the software underneath a game. It draws each picture on
+the screen, many times a second. Each picture is called a frame. For a game to
+feel smooth, each frame has to be drawn quickly: 60 frames per second leaves
+about 16 thousandths of a second for each one. When frames take longer, the
+game stutters.
 
-frameledger gives all three one shared way to record a benchmark run, and one
-tool that reads it. The goal behind it: every engine holds at least 60 frames
-per second.
+frameledger was made for three game engines on this site, all by the same
+developer:
+
+- **[Vestige](/p/vestige-engine.html)** — a 3D engine built from scratch, for
+  walking through spaces you build yourself.
+- **[UT Ants](/p/ut-ants.html)** — a new engine that plays maps made for the
+  1999 game Unreal Tournament, with modern lighting.
+- **[DOOM Ants](/p/doom-ants.html)** — a modernised version of id Software's
+  classic DOOM, moving toward ray-traced lighting.
+
+Each of the three measures its speed a different way. Vestige logs an
+average about once a second, so one slow frame vanishes into it. UT Ants
+writes one set of figures per test. DOOM Ants prints lines to the screen.
+Finding a slow spot means hunting by hand in each engine. Nobody can show with
+one agreed number that a change made things faster.
+
+frameledger gives all three one shared way to record a test run, called a
+benchmark, and one tool that reads it. The goal behind it: every engine holds
+at least 60 frames per second.
 
 ## How it works
 
 After a run, the engine writes a plain text file: every frame, and how long
 each part of it took on the processor and on the graphics card. frameledger
-reads that file and answers in plain sentences first, before any table:
+reads that file and answers in plain sentences first, before any table. It
+has three commands:
 
-- **Which part of the frame costs the most.**
-- **What the frame was waiting on** — the processor or the graphics card.
-- **Which frames were worst**, by place and frame number, so you can go to
-  that spot in the game and see it.
-- **Whether the run held 60 frames per second**, every second, and whether
-  any single frame ran too long.
+- **`report`** says where the frame time went: the costliest parts of the
+  frame, whether the processor or the graphics card held it up, and which
+  frames were worst.
+- **`floor`** says whether the run held a frame rate you set, such as 60
+  frames per second, in every second of the run.
+- **`check`** says whether a run file is written correctly.
 
-## Planned after the first release
+A report warns you when its numbers should not be trusted: a debug build, a
+software renderer, or a machine busy with other work.
+
+## Planned
 
 - **Telling whether a change helped.** Compare runs from two builds, and it
   says faster, slower or no real difference — judged against how much the
   runs vary by themselves.
 - **Refusing an unfair comparison.** It will not compare runs at different
-  resolutions or build types. It warns about a run it should not trust, such
-  as a debug build or one with too few frames.
+  resolutions or build types.
 - **Checking many maps at once.** One command ranks a run per map by its
   slowest frames, and names the costliest part of each one that is too slow.
 
@@ -39,15 +56,13 @@ reads that file and answers in plain sentences first, before any table:
 It does not time anything inside an engine; each engine keeps its own timing.
 It does not replace a profiler such as RenderDoc or Tracy: frameledger says
 which part and which frames to look at, and a profiler says why. There are no
-charts yet; plain text comes first.
+charts yet; plain text comes first. It reads one run at a time.
 
 ## Where it stands
 
-**In development, with nothing to download yet.** It is a command-line tool,
-so there are no screenshots. The file format is agreed by all three engines,
-and the first piece of the tool — checking that a run file is valid — is
-built. The report on a single run is being built now.
-
-It is written in Python and needs nothing installed beyond Python itself. It
-runs on Linux and Windows. An optional small C header lets an engine write the
-file without writing its own code for it.
+**The first release is out.** It is a command-line tool: you type its
+commands in a terminal window, and it answers in text. So there are no
+screenshots. The download is one zip for Linux and Windows. It holds the tool,
+which needs Python 3.10 or newer and nothing else, and an optional small C
+header. An engine can use the header to write run files without writing its
+own code for it.
