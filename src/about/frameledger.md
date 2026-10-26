@@ -24,6 +24,10 @@ frameledger gives all three one shared way to record a test run, called a
 benchmark, and one tool that reads it. The goal behind it: every engine holds
 at least 60 frames per second.
 
+For now, frameledger is built to find the slow spots in these three engines.
+The plan is to make it a general tool later, for anyone to use with their own
+engine.
+
 ## How it works
 
 After a run, the engine writes a plain text file: every frame, and how long

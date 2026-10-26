@@ -45,7 +45,7 @@
       "slug": "frameledger",
       "name": "frameledger",
       "tagline": "Finds out what is slowing down a game engine’s frames.",
-      "blurb": "A game engine is the software that draws a game on screen, many times a second, and a game stutters when that drawing is slow. Three engines on this site — Vestige, UT Ants and DOOM Ants — each measure their speed a different way, so a slow spot has to be hunted by hand in each. frameledger gives all three one shared way to record a benchmark run, and one tool that reads it and answers in plain sentences: which part of the frame costs the most, whether it was waiting on the processor or the graphics card, and whether the run held 60 frames per second. A command-line tool; it needs only Python.",
+      "blurb": "A game engine is the software that draws a game on screen, many times a second, and a game stutters when that drawing is slow. Three engines on this site — Vestige, UT Ants and DOOM Ants — each measure their speed a different way, so a slow spot has to be hunted by hand in each. frameledger gives all three one shared way to record a benchmark run, and one tool that reads it and answers in plain sentences: which part of the frame costs the most, whether it was waiting on the processor or the graphics card, and whether the run held 60 frames per second. It is built for these engines first; a general tool for anyone is planned later. A command-line tool; it needs only Python.",
       "status": "beta",
       "repo": "milnet01/frameledger",
       "platforms": [
