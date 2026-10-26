@@ -55,7 +55,8 @@
       "isFork": false,
       "upstream": null,
       "homepage": "https://github.com/milnet01/frameledger/releases/latest/download/frameledger.zip",
-      "category": "engines"
+      "category": "engines",
+      "logo": "logos/frameledger.svg"
     },
     {
       "slug": "ants-terminal",
