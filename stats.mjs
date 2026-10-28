@@ -2245,6 +2245,10 @@ export async function generate() {
     );
   }
 
+  // openSUSE is another host with no shared rate limit, and collectObs never throws, so its
+  // calls all start now and run alongside the GitHub ones below instead of after them.
+  const obsRun = Promise.all(published.map(collectObs));
+
   // One project's failure must never abort the run — same discipline as the site build.
   const rows = [];
   for (const p of published) {
@@ -2280,11 +2284,7 @@ export async function generate() {
   if (postViews?.error) console.warn(`! Blog readership: ${postViews.error} — table skipped`);
   const clicks = await collectDownloadClicks(propertyId);
   if (clicks?.error) console.warn(`! Download clicks: ${clicks.error} — table skipped`);
-  const obs = [];
-  for (const p of published) {
-    const o = await collectObs(p);
-    if (o) obs.push(o);
-  }
+  const obs = (await obsRun).filter(Boolean);
 
   const now = Date.now();
   const health = await contentHealth(projects);
