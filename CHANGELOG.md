@@ -15,6 +15,9 @@ so dated sections stand in for versions. Planned work lives in
   A date such as 2026-02-31 used to be read as 3 March, and two posts sharing a slug wrote
   the same page, so one silently replaced the other.
 
+- **Declining analytics from "Cookie settings" after accepting now stops measurement at once**
+  Until the next page load, Google Analytics kept counting the visit and download clicks.
+
 ## 2026-10-28
 
 ### Added

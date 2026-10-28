@@ -4,7 +4,8 @@
 // Nothing here runs until the visitor says yes:
 //   no choice yet  → show the consent bar, load nothing
 //   "Accept"       → remember it, then load gtag.js and start counting
-//   "Decline"      → remember it, load nothing, never ask again
+//   "Decline"      → remember it, load nothing, never ask again (and, after an earlier
+//                    Accept, switch GA off for the rest of the page view)
 // The choice lives in localStorage (not a cookie — a cookie set to record that you
 // refused cookies is the joke that writes itself), so a visitor who has never
 // accepted has no Google cookie on their machine at all.
@@ -70,6 +71,7 @@
   // inserted right after the skip link so a keyboard or screen-reader user meets it
   // near the top of the page instead of hunting for it at the end.
   var bar = null;
+  var granted = false;
 
   function close(choice) {
     remember(choice);
@@ -78,7 +80,12 @@
       bar = null;
       document.body.classList.remove("has-consent");
     }
-    if (choice === "granted") loadGA();
+    // GA cannot be unloaded once its script is in, so a visitor who accepted and then
+    // declines from "Cookie settings" is switched off with Google's own per-ID opt-out
+    // flag, which gtag checks before every hit. Accepting again clears it.
+    granted = choice === "granted";
+    window["ga-disable-" + ID] = !granted;
+    if (granted) loadGA();
   }
 
   function button(label, cls, choice) {
@@ -153,11 +160,11 @@
   // ---- Download clicks -----------------------------------------------------
   // The build marks each download button with data-dl-project / data-dl-platform. A
   // click on one becomes a download_click event, so the dashboard can say which pages
-  // lead to a download. `loaded` is only true after Accept, so a visitor who declined
-  // or never chose sends nothing. The buttons open in a new tab, so this page stays
+  // lead to a download. `granted` is only true while Accept stands, so a visitor who
+  // declined, never chose, or changed their mind sends nothing. The buttons open in a new tab, so this page stays
   // alive to send the hit.
   document.addEventListener("click", function (e) {
-    if (!loaded || !e.target.closest) return;
+    if (!granted || !e.target.closest) return;
     var a = e.target.closest("a[data-dl-project]");
     if (!a) return;
     window.gtag("event", "download_click", {
@@ -167,7 +174,9 @@
   });
 
   var choice = remembered();
-  if (choice === "granted") loadGA();
-  else if (choice !== "denied") showBar(false);
+  if (choice === "granted") {
+    granted = true;
+    loadGA();
+  } else if (choice !== "denied") showBar(false);
   addFooterLink();
 })();
