@@ -9,6 +9,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Fixed
+
+- **The build now refuses a blog post with an impossible date or a slug another post already uses**
+  A date such as 2026-02-31 used to be read as 3 March, and two posts sharing a slug wrote
+  the same page, so one silently replaced the other.
+
 ## 2026-10-28
 
 ### Added
