@@ -379,12 +379,16 @@ async function fetchReleases(repo, assetMatch = null) {
   const changelogLinkSrc =
     `(?:\\[[^\\]]*\\]\\(\\s*)?<?https?://github\\.com/${repo.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}` +
     `/blob/[^\\s)>]+/CHANGELOG\\.md[^\\s)>]*>?\\s*\\)?`;
+  // Compiled once per repo, not per paragraph. The test is the non-global copy because a
+  // global regex's .test() carries lastIndex from one paragraph to the next.
+  const changelogLink = new RegExp(changelogLinkSrc, "i");
+  const changelogLinks = new RegExp(changelogLinkSrc, "gi");
   const stripChangelogPointer = (body) =>
     body
       .split(/\n\s*\n/)
       .filter((para) => {
-        if (!new RegExp(changelogLinkSrc, "i").test(para)) return true;
-        const residue = para.replace(new RegExp(changelogLinkSrc, "gi"), "").replace(/\s+/g, " ").trim();
+        if (!changelogLink.test(para)) return true;
+        const residue = para.replace(changelogLinks, "").replace(/\s+/g, " ").trim();
         return residue.length > 80;
       })
       .join("\n\n");
@@ -459,6 +463,7 @@ async function fetchReleases(repo, assetMatch = null) {
       shippedBefore,
     },
     history,
+    listFailed,
   };
 }
 
