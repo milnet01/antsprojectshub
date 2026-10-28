@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-10-28
+
 ### Added
 
 - **A page for frameledger, a new tool that finds what is slowing down a game engine's frames**
