@@ -54,7 +54,7 @@ const FILES = {
 const stamp = () => new Date().toISOString().replace("T", " ").slice(0, 19);
 const log = (msg) => console.log(`[${stamp()}] ${msg}`);
 
-// One refresh at a time. Two overlapping runs would race on history.json and could write a
+// One refresh at a time. Two overlapping runs would race on the history database and could write a
 // snapshot twice; a concurrent caller just waits for the run already in flight.
 let inFlight = null;
 function refresh(reason) {
@@ -78,7 +78,10 @@ function refresh(reason) {
 }
 
 const server = createServer(async (req, res) => {
-  if (req.method === "POST" && req.url === "/refresh") {
+  // Match on the path alone, so a query string (a cache-buster, a tracking tag on a
+  // bookmark) still finds its file instead of a 404.
+  const path = req.url.split("?", 1)[0];
+  if (req.method === "POST" && path === "/refresh") {
     try {
       const r = await refresh("button");
       res.writeHead(200, { "content-type": "application/json" });
@@ -90,7 +93,7 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  const name = FILES[req.url];
+  const name = FILES[path];
   if (!name) {
     res.writeHead(404, { "content-type": "text/plain" });
     res.end("Not found");
