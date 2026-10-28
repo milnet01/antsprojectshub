@@ -89,7 +89,9 @@ if (next < lines.length && lines[next].trim() === `## ${today}`) {
     if (lines[i].startsWith("## ")) { end = i; break; }
   }
   for (const [k, v] of blocks(lines.slice(next + 1, end))) {
-    merged.set(k, [...(merged.get(k) || []), ...v]);
+    // A blank line between the two halves, as between any two entries.
+    const have = merged.get(k) || [];
+    merged.set(k, have.length && v.length ? [...have, "", ...v] : [...have, ...v]);
   }
 }
 
