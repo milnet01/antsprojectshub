@@ -9,6 +9,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- **The private stats dashboard shows the total open issues and open pull requests at the top**
+  They count the same repos as Notifications, so the two always agree.
+
 ### Changed
 
 - **finbreak's page covers its newest release: faster start-up, a faster Transactions tab and security updates**

@@ -1575,6 +1575,10 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
   // Only projects whose record covers the whole week; the tile says so when that isn't all
   // of them, because a total quietly missing a project reads as a quiet week.
   const week = windowTotal(rows, history, 7);
+  // The same repos and lists Notifications reads, so a tile and that tab never disagree.
+  const repos = [...ok, ...(health.unreleased || [])];
+  const count = (key) => repos.reduce((s, r) => s + (r[key]?.length || 0), 0);
+  const upstream = count("upstreamPrs");
   const tiles = [
     ["Total downloads", num(grand), base ? delta(grand, sumOf(base, osTotal)) : ""],
     [
@@ -1585,6 +1589,8 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
     ["Stars", num(stars), base ? delta(stars, sumOf(base, "stars")) : ""],
     ["Repo views (14d)", hasToken ? num(views) : "—", ""],
     ["Projects", String(projects.length), `${health.byStatus.live || 0} live`],
+    ["Open issues", num(count("issueList")), ""],
+    ["Open PRs", num(count("prList")), upstream ? `+${upstream} of yours upstream` : ""],
   ]
     .map(
       ([label, value, sub]) =>
