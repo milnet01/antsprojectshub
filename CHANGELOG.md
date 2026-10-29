@@ -16,6 +16,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **RetroDB's page covers its newest release: it updates itself, and can download and set up RetroArch for you**
+  It also mentions the RPCS3 compatibility shown for PS3 games, and AI Fill's sales figures, regional release dates and official names.
+
 - **finbreak's page covers its newest release: faster start-up, a faster Transactions tab and security updates**
 
 ### Fixed

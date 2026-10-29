@@ -13,13 +13,19 @@ your browser, and point it at your ROM folders.
 - **Fills in the details automatically.** It looks your games up across several
   metadata sources at once and merges what it finds — box art, screenshots,
   descriptions, genres, developers, release dates. A title you type yourself
-  stays; scraping never changes it back.
+  stays; scraping never changes it back. AI Fill adds sales figures, release
+  dates for every region and each game's official name, and the library and
+  system pages update live while a bulk scrape runs.
 - **Launches your games.** Press Play on a game's page, or the Play button on
   its box art in the library, and it opens in the emulator you have set up for
   that system, RetroArch included. RetroDB first checks that the file is a type
   that system uses. Home-computer games (C64, Amiga, DOS and more) get every key
   you type, and RetroArch games start with a working keyboard. PlayStation 3
-  games stored as a folder play too.
+  games stored as a folder play too, and each shows how well it runs in RPCS3,
+  read from your own copy. No RetroArch yet? One button downloads the official
+  one, checks it and sets it up with its own settings and saves, apart from any
+  RetroArch you already have. It fetches each system's core the first time you
+  play. That works on Linux and Windows; on a Mac it is not tested yet.
 - **Tracks achievements and trophies** from RetroAchievements, Steam, Xbox, and
   PlayStation — including local RPCS3 trophies. They share one Achievements
   page, with a tab for each.
@@ -87,7 +93,11 @@ roles keeping them out of each other's way.
 
 ## Where it stands
 
-Live and in daily use, on Linux, Windows and macOS, with a launcher for each. It
+Live and in daily use, on Linux, Windows and macOS, with a launcher for each.
+RetroDB updates itself: an admin sees a new version on the dashboard and in
+Settings, and one button downloads it, checks it is genuine, backs up the
+database and installs it. If the new version will not start, RetroDB goes back
+to the old one by itself. Your games, settings and images are left alone. It
 is built for a home network: other computers and phones in the house can open it
 at your machine's address. To reach it from outside your home, there is a guide
 for putting it behind a proper reverse proxy.
