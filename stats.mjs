@@ -92,6 +92,33 @@ const dayKey = (ts) => new Date(ts).toISOString().slice(0, 10);
 // This site's own repo, shaped like a projects.json entry so collectProject can read it.
 const SITE_REPO = { slug: "site", name: "This website", repo: "milnet01/antsprojectshub" };
 
+// Every repo the account owns that projects.json does not name — this site's own, private
+// ones, test repos — so their issues and pull requests reach Notifications too. Asked of
+// GitHub each run, so a new repo is covered without editing anything. Private repos need a
+// token with `repo` scope; the gh CLI's login has it, a `public_repo` token sees none of
+// them. Archived repos are skipped: they take no new issues or pull requests. If the list
+// cannot be read, the site's own repo is still checked.
+async function unlistedRepos(projects) {
+  const listed = new Set(projects.filter((p) => p.repo).map((p) => p.repo.toLowerCase()));
+  const repos = [];
+  for (let page = 1; ; page++) {
+    const res = await ghRequest(`/user/repos?affiliation=owner&per_page=100&page=${page}`);
+    if (!res.ok || !Array.isArray(res.data)) {
+      console.warn(`! Could not list your other repos (HTTP ${res.status}) — checking only this site's`);
+      return [SITE_REPO];
+    }
+    repos.push(...res.data);
+    if (res.data.length < 100) break;
+  }
+  return repos
+    .filter((r) => !r.archived && !listed.has(r.full_name.toLowerCase()))
+    .map((r) =>
+      r.full_name.toLowerCase() === SITE_REPO.repo
+        ? SITE_REPO
+        : { slug: `repo-${r.name.toLowerCase()}`, name: r.name, repo: r.full_name }
+    );
+}
+
 // Everything we need about one project, in as few API calls as possible. Traffic is
 // skipped without a token: it would 403 anyway, and skipping keeps an unauthenticated run
 // inside the 60/hour ceiling so the rest of the dashboard still fills in.
@@ -2264,10 +2291,11 @@ export async function generate() {
   rows.sort((a, b) => b.total - a.total);
   // A project not released yet can still have a public repo with issues and pull requests.
   // Fetched for Notifications only: it has no downloads, so it stays out of every table.
-  // This site's own repo is not a project, but its issues and pull requests (Dependabot's
-  // among them) wait on you just the same, so it rides along here.
+  // Repos the site does not list at all ride along here for the same reason.
+  const others = await unlistedRepos(projects);
+  console.log(`Also checking repos not on the site: ${others.map((p) => p.repo).join(", ")}`);
   const unreleased = [];
-  for (const p of [...projects.filter((x) => x.repo && !isPublished(x)), SITE_REPO]) {
+  for (const p of [...projects.filter((x) => x.repo && !isPublished(x)), ...others]) {
     try {
       unreleased.push(await collectProject(p));
     } catch (err) {
