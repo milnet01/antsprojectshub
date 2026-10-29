@@ -18,6 +18,9 @@ so dated sections stand in for versions. Planned work lives in
 - **Declining analytics from "Cookie settings" after accepting now stops measurement at once**
   Until the next page load, Google Analytics kept counting the visit and download clicks.
 
+- **The private stats dashboard now lists this site's own open issues and pull requests under Notifications**
+  It checked only the projects' repos, so Dependabot's pull requests here went unseen for months.
+
 ## 2026-10-28
 
 ### Added

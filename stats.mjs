@@ -89,6 +89,9 @@ const dayKey = (ts) => new Date(ts).toISOString().slice(0, 10);
 
 // ------------------------------------------------------------------ collection
 
+// This site's own repo, shaped like a projects.json entry so collectProject can read it.
+const SITE_REPO = { slug: "site", name: "This website", repo: "milnet01/antsprojectshub" };
+
 // Everything we need about one project, in as few API calls as possible. Traffic is
 // skipped without a token: it would 403 anyway, and skipping keeps an unauthenticated run
 // inside the 60/hour ceiling so the rest of the dashboard still fills in.
@@ -2261,8 +2264,10 @@ export async function generate() {
   rows.sort((a, b) => b.total - a.total);
   // A project not released yet can still have a public repo with issues and pull requests.
   // Fetched for Notifications only: it has no downloads, so it stays out of every table.
+  // This site's own repo is not a project, but its issues and pull requests (Dependabot's
+  // among them) wait on you just the same, so it rides along here.
   const unreleased = [];
-  for (const p of projects.filter((x) => x.repo && !isPublished(x))) {
+  for (const p of [...projects.filter((x) => x.repo && !isPublished(x)), SITE_REPO]) {
     try {
       unreleased.push(await collectProject(p));
     } catch (err) {
