@@ -9,6 +9,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Changed
+
+- **finbreak's page covers its newest release: faster start-up, a faster Transactions tab and security updates**
+
 ### Fixed
 
 - **The build now refuses a blog post with an impossible date or a slug another post already uses**
