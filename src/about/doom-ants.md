@@ -31,6 +31,10 @@ You switch between them from the in-game menu, mid-game.
 Ultra needs a graphics card with ray-tracing support. It is developed and tested
 on an AMD RX 6600, which is a mid-range card rather than an expensive one.
 
+The downloads do not include the HD art yet, so a downloaded copy of Ultra shows
+DOOM's original art. Today the HD art needs a build from the source code, and it
+appears only with ray tracing on.
+
 ## What you need to play
 
 **A DOOM data file**, which is not included and cannot be — the game's assets are
