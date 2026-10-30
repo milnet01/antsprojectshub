@@ -600,13 +600,14 @@ stays in its phase block.
   Lanes: projects.json, assets/img/shots.
 
 - 🚧 [APHW-0030] **Make the DOOM Ants split-screen trailer and put it on its page.**
-  Waiting on the DOOM Ants session: its release, then the final footage
-  and per-scene sound in /mnt/Games/Trailers/incoming/doom-ants/. Waiting
-  on the user: a ruling on the look of the outdoor test clips there. Sample and script:
+  DOOM Ants 0.8.0 shipped the HD art 2026-10-30. Waiting on the DOOM Ants
+  session: final footage and per-scene sound in
+  /mnt/Games/Trailers/incoming/doom-ants/. Waiting on the user: a ruling
+  on the look of the outdoor test clips there. Asked demoreel for a
+  split-screen scene 2026-10-30, so the final cut can be made with it. Sample and script:
   /mnt/Games/Trailers/work/doom-ants-trailer/split_sample.py, style B
   (--centre), approved by the user 2026-10-30.
-  When the release ships the HD art, remove the "do not include the HD
-  art yet" note from src/about/doom-ants.md. After the user approves the
+  After the user approves the
   full cut, add the self-hosted page copy.
   **Layman:** A trailer comparing DOOM Ants' five views side by side, waiting on footage from the DOOM Ants session.
   Kind: marketing.

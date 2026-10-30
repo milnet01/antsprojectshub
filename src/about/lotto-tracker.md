@@ -3,9 +3,10 @@ covers a set number of draws, and when it runs out nothing tells you — you are
 simply no longer in the draw. Checking results by hand means finding the SMS,
 finding the draw, and comparing six numbers by eye.
 
-LottoTracker reads those SMSes and gives you one view of every ticket you have
-bought. It tells you when a ticket is about to run out, so you can buy the next
-one, and checks every entry against the real draw results.
+LottoTracker keeps one ledger of every South African lottery ticket you buy, built
+from your bank's SMS confirmations. It shows your numbers beside the draw and what
+each ticket won and cost, and warns you before a ticket runs out. It runs on your
+own machine, with no account and nothing to pay.
 
 ## First, whether it is for you
 
@@ -72,9 +73,13 @@ results pages.
 
 ## Where it stands
 
-In beta, on Linux, with no account, no API key and nothing paid. There is no download yet —
-you run it from a copy of the source, which needs Python 3.9 or newer and a
+In beta, on Linux, with no account, no API key and nothing paid. The first release has no
+download file: you run it from a copy of the source, which needs Python 3.9 or newer and a
 couple of standard tools from your distribution to talk to the phone; the
 repository's Setup section lists them. A packaged Linux version is planned. The
 tray icon needs one extra library — and it is the only thing that does, so
 everything works without it.
+
+LottoTracker is an independent app. It is not affiliated with or endorsed by the
+South African National Lottery, its operator, or Standard Bank. Always check results
+and claim prizes through the official lottery before relying on what the app shows.

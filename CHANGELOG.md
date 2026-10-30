@@ -16,6 +16,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **DOOM Ants' page covers its newest release: the downloads now include Ultra's HD art**
+  It names the one texture that still shows the original art, and says Ultra has not yet been run on real Windows.
+
+- **LottoTracker's page has a new introduction and the app's disclaimer, for its first release**
+  It still runs from source, with no download file.
+
 - **Groundwork's page covers its newest release: sharing folders at home and connecting extra drives at start-up**
   It also says that shared folders have no password, and that the app remembers your colour theme. Its screenshots are new too, with two more pages.
 

@@ -22,8 +22,8 @@ You switch between them from the in-game menu, mid-game.
   widescreen support. Its menus use the same sharp style as Solid and Ultra,
   drawn over a dimmed view of the game, and its Video menu shows only the
   settings that apply to it.
-- **Solid** — the same DOOM world drawn on the graphics card, with dynamic lights
-  and contact shadows.
+- **Solid** — the same DOOM world drawn on the graphics card, with dynamic lights,
+  contact shadows and surface detail taken from DOOM's own textures.
 - **Ultra** — a full path tracer. Ray-traced lighting and shadows, HD physically
   based materials, a flashlight that moves with you, ambient occlusion, and
   grimier surfaces that no longer repeat visibly across a wall.
@@ -31,15 +31,17 @@ You switch between them from the in-game menu, mid-game.
 Ultra needs a graphics card with ray-tracing support. It is developed and tested
 on an AMD RX 6600, which is a mid-range card rather than an expensive one.
 
-The downloads do not include the HD art yet, so a downloaded copy of Ultra shows
-DOOM's original art. Today the HD art needs a build from the source code, and it
-appears only with ray tracing on.
+The downloads include Ultra's HD art, and Ultra keeps it with ray tracing off too.
+One wall texture still shows the original art in a download, because its HD maps
+are made from your own copy of the game and cannot be shipped. Ultra has been run
+from the Linux download and, under Wine, the Windows one, but not yet on real
+Windows.
 
 ## What you need to play
 
 **A DOOM data file**, which is not included and cannot be — the game's assets are
-still commercial property. The shareware `doom1.wad` is freely available and works;
-so does a retail `doom.wad` or `doom2.wad` from a copy you own.
+still commercial property. Freedoom, a free replacement, works. So does the shareware
+`doom1.wad`, or a retail `doom.wad` or `doom2.wad` from a copy you own.
 
 Downloads for Linux and Windows are on the buttons above. Classic mode runs
 anywhere; Solid and Ultra need a working Vulkan driver.
@@ -50,8 +52,9 @@ Playable, and honestly early. The engine runs, all three renderers work, and the
 path-traced mode already looks like something the original could not have
 imagined. What is still moving is everything that makes Ultra consistent — the
 target is a solid 60 frames a second floor while looking like that. The latest
-release also fixes a long list of rendering, sound and stability problems across
-the 3D modes, and hardens the game against damaged or malicious map files.
+release also makes invulnerability and the light-amp visor work in Solid and Ultra,
+makes the Brightness slider brighten when moved right, and stops Ultra's dirt stains
+hiding the art.
 
 The original code is © id Software and this inherits its GPL v2 licence. This is
 a fork of their released source, and all the credit for DOOM itself is theirs.
