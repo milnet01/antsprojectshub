@@ -8,7 +8,13 @@ people never touch it. Snatch does the typing so you do not have to.
 ## What is in it
 
 **Download** — paste a link or drag one onto the window, choose your quality, and
-go. Queue up as many as you like and watch a progress bar for each.
+go. Queue up as many as you like and watch a progress bar for each. Starting the
+queue again skips the videos already finished.
+
+Queued videos can download at the same time, up to three. It starts at one, so
+nothing changes until you raise it. A Parallel parts setting fetches several
+pieces of one video at once, which can help on a slow connection. The new queue
+has not yet been tried in real use on Windows or macOS.
 
 **Search** — search YouTube without opening a browser, and preview a result to
 check it is the right video before committing to the download.
@@ -59,6 +65,14 @@ resumes from where it stopped.
 
 Live and stable, on Windows, macOS and Linux. Snatch bundles yt-dlp and ffmpeg,
 each under its own licence.
+
+The Linux AppImage now works on newer systems such as openSUSE Tumbleweed, where
+it could not fetch or download anything before. It also starts about a second
+sooner on Linux, and the bundled image library is updated to close published
+security advisories.
+
+A notice along the bottom of the window asks you to download only what you have
+the right to. It also says Snatch is not affiliated with YouTube, Google or yt-dlp.
 
 The screenshots show Blender open movies. Big Buck Bunny is © Blender Foundation,
 under [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/) ([peach.blender.org](https://peach.blender.org)).

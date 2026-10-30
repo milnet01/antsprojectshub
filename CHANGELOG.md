@@ -27,6 +27,11 @@ so dated sections stand in for versions. Planned work lives in
 - **Groundwork's page covers its newest release: carry your setup over to a new install**
   It also adds Claude Code to the developer switches.
 
+- **Snatch's page covers its newest release: up to three downloads at once, and a fix for the Linux AppImage on newer systems**
+  It also adds the Parallel parts setting and the notice along the bottom of the window.
+
+- **DOOM Ants' page now says the downloads do not include the HD art yet**
+
 - **RetroDB's page covers version 3.34.0: cheats and RetroAchievements sign-in**
   It also adds AI Fill for a whole system, Claude's web search for sales figures, choosing each system's emulator from a list, and a Browse button on every path box.
 
