@@ -12,7 +12,9 @@ It checks the computer first, then offers choices level by level:
 
 Nothing changes until you press Apply, and it asks for your password once.
 Each choice is an on/off switch. Colour themes, dark and high contrast among
-them, follow the desktop's light or dark unless you choose one.
+them, follow the desktop's light or dark unless you choose one, and your choice
+is remembered. After a run, "Back to my choices" lets you pick more without
+restarting.
 
 Three switches are for developers. "Claude Code" installs Anthropic's coding
 assistant, which needs a paid Claude plan to use. "Tools for Claude Code" installs
@@ -28,6 +30,17 @@ part. It saves the result to one file, such as on a USB stick. On the new instal
 start from that file: your software sources, programs, Flatpak apps and app
 settings come back in one run. Settings that hold saved passwords or keys start
 switched off.
+
+## Sharing folders and connecting drives
+
+Groundwork can share folders with other computers at home. List the folders,
+and choose for each whether people may only look or may also add, change and
+delete files. Anyone on the network can open a shared folder with no password,
+and the app says so. System folders and your whole home folder are refused.
+
+It can also connect your other internal drives every time the computer starts.
+They appear in `/mnt`, named after their labels. USB and Windows drives are left
+out.
 
 ## Preparing a drive for openSUSE
 

@@ -16,6 +16,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Groundwork's page covers its newest release: sharing folders at home and connecting extra drives at start-up**
+  It also says that shared folders have no password, and that the app remembers your colour theme.
+
 - **RetroDB's page covers its newest release: it updates itself, and can download and set up RetroArch for you**
   It also mentions the RPCS3 compatibility shown for PS3 games, and AI Fill's sales figures, regional release dates and official names.
 
