@@ -14,8 +14,10 @@ your browser, and point it at your ROM folders.
   metadata sources at once and merges what it finds — box art, screenshots,
   descriptions, genres, developers, release dates. A title you type yourself
   stays; scraping never changes it back. AI Fill adds sales figures, release
-  dates for every region and each game's official name, and the library and
-  system pages update live while a bulk scrape runs.
+  dates for every region and each game's official name, one game at a time or a
+  whole system at once. Claude can also search the web for sales figures, and you
+  can type a figure in yourself. The library and system pages update live while a
+  bulk scrape runs.
 - **Launches your games.** Press Play on a game's page, or the Play button on
   its box art in the library, and it opens in the emulator you have set up for
   that system, RetroArch included. RetroDB first checks that the file is a type
@@ -25,10 +27,16 @@ your browser, and point it at your ROM folders.
   read from your own copy. No RetroArch yet? One button downloads the official
   one, checks it and sets it up with its own settings and saves, apart from any
   RetroArch you already have. It fetches each system's core the first time you
-  play. That works on Linux and Windows; on a Mac it is not tested yet.
+  play. That works on Linux and Windows; on a Mac it is not tested yet. Pick each
+  system's emulator from a list, and a game's page says which one Play will use.
+  In RetroDB's RetroArch, the left stick can act as the D-pad.
+- **Turns cheats on from a game's page**, for RetroDB's RetroArch, DuckStation
+  and PCSX2. A cheat that is on pauses RetroAchievements hardcore mode.
 - **Tracks achievements and trophies** from RetroAchievements, Steam, Xbox, and
   PlayStation — including local RPCS3 trophies. They share one Achievements
-  page, with a tab for each.
+  page, with a tab for each. Sign in to RetroAchievements from Settings > Account,
+  and achievements unlock as you play in RetroDB's RetroArch. The password goes
+  only to RetroAchievements and is not kept.
 - **Age ratings from around the world**: nine rating systems, including ESRB,
   PEGI, CERO, USK and China's. They are mapped against each other, so you can
   filter by whichever one you actually recognise.
@@ -78,8 +86,9 @@ buttons are the other version: extract it and run `python install.py`. You can
 then start it from a pinned icon, with no terminal.
 
 Either way, RetroDB opens in your browser, and a setup wizard walks you through
-the rest, showing which step you are on and which steps you can skip. A new
-library starts with a Scan Library button, not an empty page.
+the rest, showing which step you are on and which steps you can skip. Every path
+box has a Browse button. A new library starts with a Scan Library button, not an
+empty page.
 
 **One thing to know up front:** the metadata scrapers, the achievement trackers
 and the AI features each need their own account or API key, which you create on

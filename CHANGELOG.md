@@ -27,6 +27,9 @@ so dated sections stand in for versions. Planned work lives in
 - **Groundwork's page covers its newest release: carry your setup over to a new install**
   It also adds Claude Code to the developer switches.
 
+- **RetroDB's page covers version 3.34.0: cheats and RetroAchievements sign-in**
+  It also adds AI Fill for a whole system, Claude's web search for sales figures, choosing each system's emulator from a list, and a Browse button on every path box.
+
 ### Fixed
 
 - **The build now refuses a blog post with an impossible date or a slug another post already uses**
