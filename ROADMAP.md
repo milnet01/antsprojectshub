@@ -1,6 +1,6 @@
 <!-- ants-roadmap-format: 1 -->
 <!-- Generated from the Ants Terminal roadmap store. Edit it with roadmap_log; hand edits are discarded by the next write. -->
-<!-- ants-roadmap-id-high-water: APHW=29 -->
+<!-- ants-roadmap-id-high-water: APHW=30 -->
 # Ants Projects Hub — Roadmap
 
 > **What this is:** the planned work for
@@ -598,6 +598,19 @@ stays in its phase block.
   Kind: feature.
   Source: user-2026-09-25.
   Lanes: projects.json, assets/img/shots.
+
+- 🚧 [APHW-0030] **Make the DOOM Ants split-screen trailer and put it on its page.**
+  Waiting on the DOOM Ants session: a brightness test for the user to
+  see, then DOOM-0182, DOOM-0498, its release and the final footage in
+  /mnt/Games/Trailers/incoming/doom-ants/. Sample and script:
+  /mnt/Games/Trailers/work/doom-ants-trailer/split_sample.py, style B
+  (--centre), approved by the user 2026-10-30.
+  When the release ships the HD art, remove the "do not include the HD
+  art yet" note from src/about/doom-ants.md. After the user approves the
+  full cut, add the self-hosted page copy.
+  **Layman:** A trailer comparing DOOM Ants' five views side by side, waiting on footage from the DOOM Ants session.
+  Kind: marketing.
+  Source: user-request-2026-10-30.
 
 ## How to add an item
 
