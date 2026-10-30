@@ -32,6 +32,11 @@ so dated sections stand in for versions. Planned work lives in
 
 - **DOOM Ants' page now says the downloads do not include the HD art yet**
 
+- **Slipcase's page covers its newest release: a 3D View, box files for RetroDB, and update notices**
+  It also covers real PlayStation and Dreamcast jewel cases and a case size for each console and region, and corrects the old case measurements.
+
+- **RetroDB's page says you can import a Slipcase 3D box onto a game**
+
 - **RetroDB's page covers version 3.34.0: cheats and RetroAchievements sign-in**
   It also adds AI Fill for a whole system, Claude's web search for sales figures, choosing each system's emulator from a list, and a Browse button on every path box.
 

@@ -67,6 +67,8 @@ your browser, and point it at your ROM folders.
 
 There is also a Museum — an interactive encyclopedia of the consoles themselves —
 and you can read a game's manual right on its page, turning pages like a book.
+Import a [Slipcase](/p/slipcase.html) 3D box onto a game, and you can turn it in
+your hands to see the spine and back.
 Seven themes let you look at it all, including Cyberpunk, Matrix and a
 vector starfield. A search box on every page finds any game or console as you
 type; press / to jump to it. Every page fits the window it is in, from a phone

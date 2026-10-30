@@ -8,12 +8,14 @@ proper lighting and a soft shadow underneath.
 
 ## What it does
 
-- **Knows what the box should look like.** Every case type is modelled at its real
-  measurements in millimetres — a SNES cardboard box is 30 mm deep, a Blu-ray case
-  12.5 mm, a Game Boy box is small and surprisingly chunky. Fifteen case types
-  are built in, covering everything from NES cartridge boxes and Genesis
-  clamshells through N64, DVD, Blu-ray and jewel cases to Game Boy Advance, DS,
-  3DS, PSP, Vita and Switch, plus a generic cartridge case.
+- **Knows what the box should look like.** Each console gets its own case size
+  and plastic, per region, modelled in millimetres — a US SNES box is 32 mm deep,
+  a PS3 Blu-ray case 13 mm, a Game Boy box is small and surprisingly chunky.
+  Slipcase picks the region's case from the cover's file name, such as "(Europe)",
+  and you can pick another. PlayStation and Dreamcast games look like their real
+  jewel cases. The list runs from NES cartridge boxes and Genesis clamshells
+  through N64, DVD, Blu-ray and jewel cases to Game Boy Advance, DS, 3DS, PSP,
+  Vita and Switch, plus a generic cartridge case.
 - **Builds a spine when your cover does not have one**, which most scraped cover
   art does not.
 - **Understands full scans.** If your image is a whole wrap-around scan — back,
@@ -25,6 +27,10 @@ proper lighting and a soft shadow underneath.
 - **Renders it cleanly.** Everything is drawn at double size and scaled back down,
   which is what stops the edges of the box looking like a staircase. A soft
   reflection under the box is on by default, and can be turned off.
+- **Lets you turn the box in 3D.** The 3D View shows all six sides. Turn it with
+  the mouse or arrow keys, zoom with the wheel, or let Auto-spin turn it. Exports
+  also save a box file beside each picture, ready for
+  [RetroDB](/p/retrodb.html)'s importer.
 - **Animates the box.** It can turn the box from almost face-on to a sharp
   angle and back, and save that as an animated PNG, which keeps the transparent
   background, or as a GIF.
@@ -58,8 +64,13 @@ One honest caveat about the Mac build: nobody has tried it by hand on a real
 Mac yet. It is built on GitHub's Mac machines, where it passes its own
 self-check and the full test suite. If it misbehaves for you, please report it.
 
-**Safer downloads, steadier search.** This update makes cover downloads safer
-and the search window steadier. Cover-art searches and image downloads now have
+**Updates.** Slipcase can tell you when a new version is out; turn this on in
+Settings. On Linux and Windows it can then install the update for you, after
+checking the download's signature. On a Mac it opens the download page. The
+install step has not yet been run end to end, because that needs a later release
+to update to.
+
+**Safer downloads, steadier search.** Cover-art searches and image downloads have
 firm limits on size and time, so a slow or misbehaving server can no longer hold
 a download open. Clicking quickly through search results no longer freezes the
 window, and a preview from an earlier search no longer shows up beside a newer
