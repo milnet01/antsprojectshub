@@ -18,6 +18,11 @@ MAME Curator does that sorting for you, then lets you argue with its choices.
   the driver is emulated, then region, then revision.
 - **Lets you overrule it.** Click any game to see its siblings side by side with
   cover art and screenshots, and swap the pick with one click.
+- **Finds the artwork.** It uses art ES-DE or RetroArch has already downloaded,
+  straight from disk. MobyGames arcade box art is optional, with your own API key.
+- **Shows what a refresh would change.** Refreshing its INI files, the community
+  lists it sorts games with, previews the games they would add or remove before
+  anything changes.
 - **Saves a curation as a named session** — a year range plus preferred genres,
   publishers and developers — so `80s shooters` and `co-op only` are two clicks
   apart rather than a rebuild.
@@ -29,11 +34,19 @@ MAME Curator does that sorting for you, then lets you argue with its choices.
 
 ## Using it
 
-Clone it and run `./run.sh` — `run.bat` on Windows. That checks you have Python
-3.12 or newer and installs everything else it needs. The first time, a setup
-wizard asks where your DAT, your ROMs and your destination folder live, and where
-to write the playlist. Then the interface opens in your browser. Run it again any
-time; it picks up where it left off.
+Download one file from the buttons above and run it: an AppImage for Linux, an
+`.exe` for Windows, or a `.dmg` for a Mac with Apple Silicon. There is nothing to
+install and no terminal. The interface opens in your browser, and you point it at
+your DAT and ROMs under **Settings → Paths**. On Windows a console window stays
+open: that is the app running, and closing it stops the app.
+
+To update, open **Settings → Updates**. It checks for new releases, shows what's
+new, updates the app for you, and can roll back.
+
+On an Intel Mac, or if you prefer the source, clone it and run `./run.sh`, or
+`run.bat` on Windows. That checks you have Python 3.12 or newer and
+installs everything else it needs. The first time, a setup wizard asks where your
+DAT, your ROMs and your destination folder live, and where to write the playlist.
 
 There is a command-line route too, including a dry run that reports what would be
 copied without copying anything.
@@ -45,5 +58,5 @@ something this project distributes.
 
 Version 1 and stable. It runs entirely on your own machine: no telemetry, no
 analytics, no cloud sync, and the ban on adding any is enforced by an automated
-check rather than good intentions. You need Python 3.12 or newer and a browser;
-everything else is handled for you. MIT licensed.
+check rather than good intentions. You need a browser; the download carries
+everything else. MIT licensed.

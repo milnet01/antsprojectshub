@@ -21,6 +21,12 @@ so dated sections stand in for versions. Planned work lives in
 
 - **finbreak's page covers its newest release: faster start-up, a faster Transactions tab and security updates**
 
+- **MAME Curator now has one-file downloads for Linux, Windows and Apple Silicon Macs**
+  Its page covers version 1.4.1: nothing to install, updates from Settings, a preview before INI file refreshes, and artwork from ES-DE, RetroArch or MobyGames.
+
+- **Groundwork's page covers its newest release: carry your setup over to a new install**
+  It also adds Claude Code to the developer switches.
+
 ### Fixed
 
 - **The build now refuses a blog post with an impossible date or a slug another post already uses**

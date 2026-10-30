@@ -14,11 +14,20 @@ Nothing changes until you press Apply, and it asks for your password once.
 Each choice is an on/off switch. Colour themes, dark and high contrast among
 them, follow the desktop's light or dark unless you choose one.
 
-Two switches are for developers. "Tools for Claude Code" installs ripgrep, Git
-and code checkers. "tree-sitter" installs tree-sitter with grammars for common
+Three switches are for developers. "Claude Code" installs Anthropic's coding
+assistant, which needs a paid Claude plan to use. "Tools for Claude Code" installs
+ripgrep, Git and code checkers. "tree-sitter" installs tree-sitter with grammars for common
 languages. Tumbleweed and Slowroll get more grammars than Leap, which lacks
 some. Switching on Ants Terminal switches tree-sitter off, since Ants Terminal
 includes it, and the row says why.
+
+## Carrying your setup to a new install
+
+Groundwork lists what is set up on this computer and lets you keep or drop each
+part. It saves the result to one file, such as on a USB stick. On the new install,
+start from that file: your software sources, programs, Flatpak apps and app
+settings come back in one run. Settings that hold saved passwords or keys start
+switched off.
 
 ## Preparing a drive for openSUSE
 

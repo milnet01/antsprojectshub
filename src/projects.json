@@ -164,9 +164,7 @@
       "blurb": "Turns a 40,000-machine MAME set into a human-sized arcade library. It intelligently chooses the best version of each game, lets you override picks in a browser UI, copies the chosen ROMs plus required BIOSes, and writes a ready-to-use RetroArch playlist.",
       "status": "live",
       "repo": "milnet01/mame-curator",
-      "platforms": [
-        "web"
-      ],
+      "platforms": ["linux", "win", "mac"],
       "isFork": false,
       "upstream": null,
       "homepage": null,
