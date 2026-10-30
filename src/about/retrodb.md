@@ -24,10 +24,12 @@ your browser, and point it at your ROM folders.
   that system uses. Home-computer games (C64, Amiga, DOS and more) get every key
   you type, and RetroArch games start with a working keyboard. PlayStation 3
   games stored as a folder play too, and each shows how well it runs in RPCS3,
-  read from your own copy. No RetroArch yet? One button downloads the official
-  one, checks it and sets it up with its own settings and saves, apart from any
-  RetroArch you already have. It fetches each system's core the first time you
-  play. That works on Linux and Windows; on a Mac it is not tested yet. Pick each
+  read from your own copy. No RetroArch yet? Press Get RetroArch under Settings >
+  Emulators > Play in RetroDB. It downloads the official one, checks it and sets
+  it up with its own settings and saves, apart from any RetroArch you already
+  have. Games open in RetroArch's own window, and it fetches each system's core
+  the first time you play. That works on Linux and Windows; on a Mac it is not
+  tested yet. Pick each
   system's emulator from a list, and a game's page says which one Play will use.
   In RetroDB's RetroArch, the left stick can act as the D-pad.
 - **Turns cheats on from a game's page**, for RetroDB's RetroArch, DuckStation
