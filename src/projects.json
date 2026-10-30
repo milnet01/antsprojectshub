@@ -688,19 +688,27 @@
       "screenshots": [
         {
           "src": "shots/groundwork-2-essentials.png",
-          "alt": "Groundwork's Essentials page in its dark theme, headed 'What a desktop needs for things to work.' Each item checks itself first, and says what it found. Each row has an on/off switch, what it found and a plain description. 'Bring the system up to date' says no updates were waiting. Media codecs, Flatpak and Flathub, and Video acceleration on AMD graphics say 'already done'. The NVIDIA graphics driver, Sound firmware and Broadcom Wi-Fi rows are greyed out and say 'not needed here', each with the reason, such as 'No NVIDIA graphics card was found.'"
+          "alt": "Groundwork's Essentials page in its dark theme, headed 'What a desktop needs for things to work.' Its items sit in two columns. Each has an on/off switch, what it found and a plain description. 'Bring the system up to date' is switched on and says '250 update(s) waiting at the last refresh of the software sources.' Media codecs, Flatpak and Flathub, and Video acceleration on AMD graphics say 'already done'. The NVIDIA graphics driver, Sound firmware and Broadcom Wi-Fi rows are greyed out and say 'not needed here', each with the reason, such as 'No NVIDIA graphics card was found.'"
+        },
+        {
+          "src": "shots/groundwork-6-system-setup.png",
+          "alt": "Groundwork's System setup page, headed 'That the system can recover and is protected.' Two columns of items, each with an on/off switch, what it found and a plain description: System snapshots, Firewall, Firmware updates, RAM protection, Emergency keyboard escape, Calmer wake from hibernation, A size limit on the system log, A shorter wait at the boot menu, The freeze recorder and Less eager swapping say 'already done'. Smoother spinning hard drives says 'not done'. Laptop power settings is greyed out and says 'not needed here', because this computer has no battery."
+        },
+        {
+          "src": "shots/groundwork-5-configuration.png",
+          "alt": "Groundwork's Configuration page, headed 'Choices a new install asks of its owner.' Two columns of items, each with an on/off switch. 'Extra drives connect at start-up' says 'already done' and 'Your other internal drives are ready in /mnt every time the computer starts. A missing drive never stops it starting.' 'Share folders on the network' says 'not done', warns that anyone on the network can get in with no password, and has an 'Add a folder…' button. Computer name, Remote login, Clock shared with Windows and NumLock on at login are also listed. The computer's name and existing share names have been painted out of this picture."
         },
         {
           "src": "shots/groundwork-3-extras.png",
-          "alt": "Groundwork's Nice to have page, headed 'Extras. Each one is its own choice.' A list of apps, each with a tick box, a status and a one-line description: Google Chrome, Brave, VLC, Discord, Spotify, Steam and Build tools say 'already done'; Zoom and Bottles are ticked and say 'not done'; VSCodium is not done and not ticked."
+          "alt": "Groundwork's Nice to have page, headed 'Extras. Each one is its own choice.' Two columns of apps, each with an on/off switch, a status and a one-line description: Google Chrome, Brave, VLC media player, Spotify, Steam and Build tools say 'already done'; Discord and Zoom are switched on and say 'not done'; Bottles and VSCodium are not done and switched off. A scroll bar shows the list goes on."
         },
         {
           "src": "shots/groundwork-4-ready-to-apply.png",
-          "alt": "Groundwork's Ready to apply page, headed 'These run in this order after one password.' It lists three jobs with what each does: bring the system up to date, install Zoom, and install Bottles. Back, Apply and Cancel buttons sit at the bottom."
+          "alt": "Groundwork's Ready to apply page, headed 'These run in this order after one password.' It lists four jobs with what each does: bring the system up to date, install Discord, install Zoom, and install Bottles. Back, Apply and Cancel buttons sit at the bottom."
         },
         {
           "src": "shots/groundwork-1-checking.png",
-          "alt": "Groundwork's welcome page: 'Groundwork sets up this computer the way you want. Each page offers a level of choices, from essentials to extras. Nothing changes until you press Apply.' A language menu is set to English, and the line 'Checking this computer…' shows it is looking at the machine before offering anything."
+          "alt": "Groundwork's welcome page: 'Groundwork sets up this computer the way you want. Each page offers a level of choices, from essentials to extras. Nothing changes until you press Apply.' Menus for Language, set to English, and Colours, set to Follow the desktop, sit above three choices: Set up this computer, Carry this setup over to a new install, and Prepare a drive for installing openSUSE. The line 'Checking this computer…' shows it is looking at the machine before offering anything."
         }
       ],
       "video": {
