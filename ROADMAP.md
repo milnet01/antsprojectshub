@@ -614,6 +614,11 @@ stays in its phase block.
   youtube.txt; script work/doom-ants-trailer/build_cut.py. Nobody has
   listened to it. Waiting on the user: watch and listen, and rule on the
   outdoor look. After approval, add the self-hosted page copy.
+  2026-11-01, user: good first draft, not approved. Keep the 3-way split
+  and the sliding pillars. It needs build-up to each comparison rather
+  than opening straight on the split. Waiting on the user's script, due
+  during the week; rebuild from it. The page copy waits for approval of
+  that version.
   **Layman:** A trailer comparing DOOM Ants' five views side by side, waiting on footage from the DOOM Ants session.
   Kind: marketing.
   Source: user-request-2026-10-30.
