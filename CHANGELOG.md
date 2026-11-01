@@ -16,6 +16,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **OneUp's page covers its newest release: failed updates are safer and clearer**
+
+- **Ants Terminal's page covers its newest release: the welcome window can install Claude Code, and the status bar shows background work still running**
+
+- **RetroArch's page lists the five fixes official RetroArch accepted on 15 and 24 October**
+
 - **DOOM Ants' page covers its newest release: the downloads now include Ultra's HD art**
   It names the one texture that still shows the original art, and says Ultra has not yet been run on real Windows.
 

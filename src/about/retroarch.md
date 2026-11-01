@@ -153,6 +153,20 @@ list no longer crash when they are given no rule for which items to remove. They
 now do nothing, as their sister helpers already did, and three new tests check
 it.
 
+Four more were accepted on 15 October 2026:
+
+- **The GameCube and Wii controller code** no longer reads past the end of its
+  table of pads.
+- **Input and netplay** no longer shift a value into an integer's sign bit, which
+  the C language leaves undefined.
+- **Core options and run-ahead** now check three small memory requests.
+- **A libretro-common test** now builds on systems that need the maths library
+  named explicitly.
+
+One more followed on 24 October 2026. Pressing Scan on the Playlists tab, or in
+the Ozone menu's sidebar, no longer freezes the menu when there is no other
+playlist to go to.
+
 ## Should you use it?
 
 **No — use the official RetroArch.** Upstream ships builds for every platform, gets

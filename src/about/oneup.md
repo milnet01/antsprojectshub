@@ -117,12 +117,19 @@ the screen, and a window you moved stays where you put it. Offline, the firmware
 step no longer reports "up to date" from an old firmware list. It also includes
 clearer warnings and a few smaller window and engine tidy-ups.
 
-**The newest update fixes four things.** Pressing Stop while packages download
+**The one after that fixes four things.** Pressing Stop while packages download
 is now reported as a stop, not a failure. The signing-key hint appears only when
 there really is a signing-key problem, not whenever a package has "gpg" or "key"
 in its name. The download figure now reaches the end when some packages were
 downloaded before. A run that updated only Flatpak apps no longer says nothing
 was needed.
+
+**The newest update makes failed updates safer and clearer.** A system update
+that fails part-way now ends the run and says so, and an install failure is no
+longer called a package conflict. OneUp says when it could not list leftover
+packages, and when the password box cannot start. Pressing Stop during a retried
+download no longer claims the system was updated. The count of installed updates
+now includes new packages, and garbled characters in messages are gone.
 
 OneUp's openSUSE package has a new address: its own project on the openSUSE
 Build Service,

@@ -38,7 +38,8 @@ the terminal is connected.
 - **See which model it is using.** A small badge shows the model — Haiku,
   Sonnet or Opus — and how hard it is set to think.
 - **See what it left running.** A Background Tasks button lists the commands
-  Claude started in the background.
+  Claude started in the background. The status bar says when that work is still
+  running: "Claude: waiting (2 bg)".
 - **Let sessions leave each other notes.** Claude sessions on different
   projects can message each other, and the bottom bar shows when the session
   in your tab has unread ones.
@@ -84,8 +85,8 @@ the menu bar; one click downloads it, checks that it really came from this
 project, and swaps it in. Restart then, or carry on and get the new version next
 time you open it.
 
-The first time you open it, a welcome window explains what it can do and offers
-one-click setup for Claude Code. Anything that would change one of your own
+The first time you open it, a welcome window explains what it can do. It can
+install Claude Code on a fresh computer, and offers one-click setup for it. Anything that would change one of your own
 files is shown to you first. You can reopen it from Help, Show Welcome.
 
 Your settings live in `~/.config/ants-terminal/`, readable only by you. On its
