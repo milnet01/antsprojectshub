@@ -609,6 +609,11 @@ stays in its phase block.
   (--centre), approved by the user 2026-10-30.
   After the user approves the
   full cut, add the self-hosted page copy.
+  2026-11-01: final footage arrived 2026-10-31. Review cut built:
+  /mnt/Games/Trailers/doom-ants-trailer.mp4 with its thumbnail and
+  youtube.txt; script work/doom-ants-trailer/build_cut.py. Nobody has
+  listened to it. Waiting on the user: watch and listen, and rule on the
+  outdoor look. After approval, add the self-hosted page copy.
   **Layman:** A trailer comparing DOOM Ants' five views side by side, waiting on footage from the DOOM Ants session.
   Kind: marketing.
   Source: user-request-2026-10-30.
