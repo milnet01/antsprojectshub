@@ -12,7 +12,10 @@ your browser, and point it at your ROM folders.
 
 - **Fills in the details automatically.** It looks your games up across several
   metadata sources at once and merges what it finds — box art, screenshots,
-  descriptions, genres, developers, release dates. A title you type yourself
+  descriptions, genres, developers, release dates. Each source searches the
+  right console. A game's region comes from its own file name, and its box,
+  manual, title and date follow that region. Your local ES-DE data keeps its
+  place in your chosen source order. A title you type yourself
   stays; scraping never changes it back. AI Fill adds sales figures, release
   dates for every region and each game's official name, one game at a time or a
   whole system at once. Claude can also search the web for sales figures, and you
@@ -33,12 +36,14 @@ your browser, and point it at your ROM folders.
   system's emulator from a list, and a game's page says which one Play will use.
   In RetroDB's RetroArch, the left stick can act as the D-pad.
 - **Turns cheats on from a game's page**, for RetroDB's RetroArch, DuckStation
-  and PCSX2. A cheat that is on pauses RetroAchievements hardcore mode.
+  and PCSX2. A cheat that is on pauses RetroAchievements hardcore mode. The
+  Cheats section folds away when you don't need it.
 - **Tracks achievements and trophies** from RetroAchievements, Steam, Xbox, and
   PlayStation — including local RPCS3 trophies. They share one Achievements
   page, with a tab for each. Sign in to RetroAchievements from Settings > Account,
-  and achievements unlock as you play in RetroDB's RetroArch. The password goes
-  only to RetroAchievements and is not kept.
+  and achievements unlock as you play in RetroDB's RetroArch. That sign-in also
+  reaches DuckStation and PCSX2 when you press Play. The password goes only to
+  RetroAchievements and is not kept.
 - **Age ratings from around the world**: nine rating systems, including ESRB,
   PEGI, CERO, USK and China's. They are mapped against each other, so you can
   filter by whichever one you actually recognise.
@@ -55,7 +60,10 @@ your browser, and point it at your ROM folders.
   ROMs whose names break the standard conventions, all on one ROM Tools page.
   There, the AI can also suggest each game's full official name in its own
   region: a Japanese Mega Man becomes Rockman. You see old and new side by side
-  and accept only the ones you want.
+  and accept only the ones you want. Fix Regions from File Names, Fix Box and
+  Manual Regions, and Clear RAWG Pictures from Box Art repair older scrapes.
+  Screenshot Review lists doubtful ZX Spectrum, Commodore 64 and Game Boy
+  screenshots and removes only what you choose.
 - **Sharpens old artwork** with an optional AI upscaler for low-resolution
   covers and screenshots.
 - **Shows you what you have** through a twelve-tab analytics dashboard with
@@ -67,8 +75,9 @@ your browser, and point it at your ROM folders.
 
 There is also a Museum — an interactive encyclopedia of the consoles themselves —
 and you can read a game's manual right on its page, turning pages like a book.
-Import a [Slipcase](/p/slipcase.html) 3D box onto a game, and you can turn it in
-your hands to see the spine and back.
+The left and right arrow keys step between games on a game's page.
+Import a [Slipcase](/p/slipcase.html) 3D box onto a game from its Edit window,
+and you can turn it in your hands to see the spine and back.
 Seven themes let you look at it all, including Cyberpunk, Matrix and a
 vector starfield. A search box on every page finds any game or console as you
 type; press / to jump to it. Every page fits the window it is in, from a phone
@@ -121,4 +130,5 @@ such copies differs from country to country, so check yours. Game names, cover
 art, screenshots and videos belong to their owners. RetroDB is not affiliated
 with or endorsed by any console maker, game publisher, or the game databases and
 services it works with. RetroDB shows this notice too, in its About dialog and
-its Library settings. MIT licensed.
+its Library settings. It also credits RAWG, one of its sources, with a link in
+the sidebar. MIT licensed.
