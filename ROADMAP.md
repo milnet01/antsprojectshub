@@ -629,6 +629,9 @@ stays in its phase block.
   features. The user decides when to resume. No filming until then; the DOOM
   Ants session was told. The script and captions stand, but recheck each
   caption against the game when work resumes. No page copy until then.
+  2026-11-02, user: after the comparisons, also show some features, as
+  the first cut did. Added to full_test.py: flashlight, ray-traced lighting
+  and shadows, switching views from the menu. Still on hold.
   **Layman:** A trailer comparing DOOM Ants' five views side by side, waiting on footage from the DOOM Ants session.
   Kind: marketing.
   Source: user-request-2026-10-30.
