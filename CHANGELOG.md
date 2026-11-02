@@ -16,6 +16,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **MAME Curator's page plays its new trailer**
+
 - **RetroDB's page covers its newest releases: scraping stops taking the wrong game, AI answers are marked, and two more ROM Tools**
 
 - **LottoTracker's page plays its new trailer**
