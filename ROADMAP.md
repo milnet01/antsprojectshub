@@ -619,6 +619,10 @@ stays in its phase block.
   than opening straight on the split. Waiting on the user's script, due
   during the week; rebuild from it. The page copy waits for approval of
   that version.
+  2026-11-02: the user sent the script's opening. A test on existing
+  footage works: work/doom-ants-trailer/script-test.mp4. Waiting on the
+  DOOM Ants session for one long E1M1 run in all five views, and on the
+  user for the rest of the script.
   **Layman:** A trailer comparing DOOM Ants' five views side by side, waiting on footage from the DOOM Ants session.
   Kind: marketing.
   Source: user-request-2026-10-30.
