@@ -14,6 +14,11 @@ so dated sections stand in for versions. Planned work lives in
 - **The private stats dashboard shows the total open issues and open pull requests at the top**
   They count the same repos as Notifications, so the two always agree.
 
+- **The private stats dashboard has a new look and opens on an Overview: what is broken, this week against last, the week's top downloads, latest releases and plain facts**
+  A Projects tab gives each project a card. The page can now find a project across every tab,
+  change its text size, read a chart's figure on hover, save a table for a spreadsheet, and be
+  driven from the keyboard. It marks download rises that look automated.
+
 ### Changed
 
 - **MAME Curator's page plays its new trailer**
@@ -64,6 +69,9 @@ so dated sections stand in for versions. Planned work lives in
   It also adds AI Fill for a whole system, Claude's web search for sales figures, choosing each system's emulator from a list, and a Browse button on every path box.
 
 ### Fixed
+
+- **The private stats dashboard no longer loses its 7-day download total when it runs at an unusual hour**
+  Every project was marked as having a short record, so the top tile said "needs two runs".
 
 - **The build now refuses a blog post with an impossible date or a slug another post already uses**
   A date such as 2026-02-31 used to be read as 3 March, and two posts sharing a slug wrote

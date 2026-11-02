@@ -157,7 +157,7 @@ Nothing else is ever deleted.
 
 ### 4.5 The Trends tab
 
-A seventh `NAV` entry, `["trend", "h-trend", "Trends"]`, last. Its accent
+A `NAV` entry, `["trend", "h-trend", "Trends"]`, last. Its accent
 continues the teal-to-violet ramp after `rel`, per the colour rule. The tab
 shows these charts, in this order, each one daily series:
 
@@ -170,6 +170,7 @@ shows these charts, in this order, each one daily series:
 | Site visitors per day | `ga_daily.active_users` |
 | Blog views per day | sum of `ga_post_daily.views` |
 | Download clicks per day | sum of `ga_click_daily.clicks` |
+| GitHub downloads per day (added 2026-11-02) | `dailyDownloads()`: each project's rise between readings; a day with no reading is a gap |
 
 Each chart is drawn server-side by a new `lineChart()` in `stats.mjs`, as an
 inline SVG, so it shows with JavaScript off:

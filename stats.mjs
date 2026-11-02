@@ -49,6 +49,8 @@ const DAY = 86400000;
 // --accent (see the CSS block), and dashboard.js can show that section as the link's tab.
 // Order is the page order.
 const NAV = [
+  ["ov", "h-ov", "Overview"],
+  ["proj", "h-proj", "Projects"],
   ["att", "h-att", "Notifications"],
   ["dl", "h-dl", "Downloads"],
   ["ga", "h-ga", "Visitors"],
@@ -469,6 +471,7 @@ export function lineChart({ id, title, points, note = "" }) {
       marks.push(`<circle cx="${x(run[0]).toFixed(1)}" cy="${y(points[run[0]].value).toFixed(1)}" r="3.5"/>`);
     } else if (run.length > 1) {
       const pts = run.map((i) => `${x(i).toFixed(1)},${y(points[i].value).toFixed(1)}`).join(" ");
+      marks.push(`<polygon points="${x(run[0]).toFixed(1)},${base} ${pts} ${x(run[run.length - 1]).toFixed(1)},${base}"/>`);
       marks.push(`<polyline points="${pts}"/>`);
     }
     run = [];
@@ -495,7 +498,8 @@ export function lineChart({ id, title, points, note = "" }) {
   <figcaption id="${capId}"><strong>${esc(title)}</strong> — ${num(last.value)} on ${dayYear(last.day)};
     ${dayYear(points[0].day)} to ${dayYear(points[points.length - 1].day)}.
     ${note ? `<span class="chart__note">${note}</span>` : ""}</figcaption>
-  <svg class="chart__svg" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="${capId}" data-baseline="${base.toFixed(1)}">
+  <svg class="chart__svg" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="${capId}" data-baseline="${base.toFixed(1)}"
+    data-geo="${pad.l},${plotW},${pad.t},${plotH},${max}" data-points="${esc(JSON.stringify(points.map((p) => [p.day, p.value])))}">
     <g class="chart__grid">${grid}</g><g class="chart__axis">${ticks}</g>
     <g class="chart__line">${marks.join("")}</g>
   </svg>
@@ -515,7 +519,43 @@ function dayRange(from, until) {
   return out;
 }
 
-// The seven daily series the Trends tab draws. Each stops at yesterday: today is still
+// Downloads per day, from the all-time counters: each project's rise since its previous reading,
+// filed under the day of the later reading. A project's first reading adds nothing, or its whole
+// history would land on the day it was added. A fall (an asset deleted) adds nothing either. The
+// first day is left out because it only holds the rest of that day. A day with no reading at
+// all is a gap, and its downloads land on the next reading, because the counter keeps them.
+export function dailyDownloads(snapshots, todayUtc) {
+  if (!snapshots.length) return [];
+  const last = {};
+  const rise = {};
+  for (const snap of snapshots) {
+    const day = dayKey(snap.at);
+    rise[day] ||= 0;
+    for (const [slug, p] of Object.entries(snap.projects)) {
+      const total = osTotal(p);
+      if (slug in last && total > last[slug]) rise[day] += total - last[slug];
+      last[slug] = total;
+    }
+  }
+  return dayRange(dayKey(snapshots[0].at), todayUtc)
+    .slice(1)
+    .map((day) => ({ day, value: rise[day] ?? null }));
+}
+
+// The last seven days of a daily series against the seven before. A gap is left out of the sum
+// and counted, so a short week can say so instead of reading as a quiet one. Null when the
+// latest seven days hold no figure at all.
+export function compareWeeks(points = []) {
+  const sum = (list) => {
+    const known = list.filter((p) => p.value != null);
+    return { total: known.reduce((t, p) => t + p.value, 0), days: known.length };
+  };
+  const now = sum(points.slice(-7));
+  if (!now.days) return null;
+  return { now, before: sum(points.slice(-14, -7)) };
+}
+
+// The eight daily series the Trends tab draws. Each stops at yesterday: today is still
 // counting, and a part-day reads as a fall. GitHub and openSUSE days are UTC (dayKey); GA days
 // are in the GA property's zone, which is this machine's (Africa/Johannesburg), so "today"
 // for them is the local date.
@@ -534,6 +574,7 @@ function trendSeries(history, trends, now) {
       for (; i < snaps.length && dayKey(snaps[i].at) <= day; i++) Object.assign(latest, snaps[i].projects);
       return { day, value: Object.values(latest).reduce((s, p) => s + osTotal(p), 0) };
     });
+    series.dlDaily = dailyDownloads(snaps, todayUtc);
   }
 
   // Repo views and clones: summed over repos; a day no repo reported is a gap.
@@ -586,6 +627,9 @@ function trendSeries(history, trends, now) {
   return series;
 }
 
+const DAILY_NOTE =
+  "The rise in each project's counter between readings. Downloads from a day with no reading land on the next one. GitHub does not say who downloads, so a rise may be an automated sweep.";
+
 function trendsSection(history, trends, now) {
   const s = trendSeries(history, trends, now);
   const floor = "Only visitors who accepted analytics are counted, so this is a floor, not a total.";
@@ -597,6 +641,7 @@ function trendsSection(history, trends, now) {
     ["visitors", "Site visitors per day", floor],
     ["posts", "Blog views per day", floor],
     ["clicks", "Download clicks per day", floor],
+    ["dlDaily", "GitHub downloads per day", DAILY_NOTE],
   ];
   return `<div class="charts">${charts
     .map(([key, title, note]) => lineChart({ id: `trend-${key}`, title, points: s[key] || [], note }))
@@ -610,6 +655,8 @@ function trendsSection(history, trends, now) {
 // narrower than the column share a row instead of stacking.
 const cols = (...blocks) =>
   `<div class="cols">${blocks.map((b) => `<div class="col">${b}</div>`).join("")}</div>`;
+// A value's width beside the largest in its list, for a bar drawn in CSS.
+const share = (value, max) => `${max > 0 ? Math.max(0, (value / max) * 100).toFixed(1) : 0}%`;
 const scrollTable = (label, html) =>
   `<div class="tbl-scroll" tabindex="0" role="region" aria-label="${esc(label)}, scrollable">${html}</div>`;
 
@@ -619,6 +666,7 @@ function downloadsTable(rows, history, base) {
       .map((s) => (s.projects[slug] ? osTotal(s.projects[slug]) : null))
       .filter((v) => v != null);
 
+  const topTotal = Math.max(0, ...rows.filter((r) => r.ok).map((r) => r.total));
   const body = rows
     .map((r) => {
       // Unfetched project: dashes, never zeros — the reader must be able to tell "nobody
@@ -658,7 +706,7 @@ function downloadsTable(rows, history, base) {
         r.repo
       )}</span></th>
         ${cells}
-        <td class="n strong" data-sort="${r.total}">${num(r.total)}${deltaLine(
+        <td class="n strong databar" style="--w:${share(r.total, topTotal)}" data-sort="${r.total}">${num(r.total)}${deltaLine(
         r.total,
         b ? osTotal(b) : null
       )}</td>
@@ -732,6 +780,12 @@ function windowDownloads(history, slug, days) {
   if (covered < 0.5) return null;
   return {
     count: osTotal(latest.projects[slug]) - osTotal(anchor.projects[slug]),
+    // Signatures, checksums and source archives over the same window; null on a reading too
+    // old to hold them.
+    other:
+      latest.projects[slug].other != null && anchor.projects[slug].other != null
+        ? latest.projects[slug].other - anchor.projects[slug].other
+        : null,
     covered,
     at: Date.parse(latest.at),
   };
@@ -748,7 +802,9 @@ function recordSpan(history) {
 // Short means shorter than the record could have managed — not shorter than the window. The
 // first is this project missing days everyone else has; the second is the archive being young,
 // which the note above the table already says once.
-const isShort = (w, reach) => !w || w.covered < reach - 0.5;
+// Readings land about a day apart, so the reading nearest a cut-off can sit most of a day from
+// it for every project at once, and that alone is not a short record.
+const isShort = (w, reach) => !w || w.covered < reach - 1;
 
 // Site-wide downloads over a window, counting only the projects whose record covers the whole
 // of it. Mixing a full fortnight with someone's first three days produces a number that is
@@ -778,6 +834,7 @@ function recentDownloads(rows, history, now) {
       your second run.</p>`;
   }
 
+  const topWeek = Math.max(0, ...data.map((d) => d.wins[0]?.count || 0));
   const cell = (w, days) => {
     if (!w) return `<td class="n" data-sort="-1"><span class="dim">no data</span></td>`;
     // Labelled with what this project's own record reaches. Without it a project watched for
@@ -790,7 +847,8 @@ function recentDownloads(rows, history, now) {
     // rather than printing a negative download count and leaving the reader to guess.
     const fell = w.count < 0 ? `<br><span class="dim">an asset was removed</span>` : "";
     const shown = w.count < 0 ? `−${num(-w.count)}` : num(w.count);
-    return `<td class="n" data-sort="${w.count}">${shown}${note}${fell}</td>`;
+    const bar = days === WINDOWS[0] && w.count > 0 ? ` databar" style="--w:${share(w.count, topWeek)}` : "";
+    return `<td class="n${bar}" data-sort="${w.count}">${shown}${note}${fell}</td>`;
   };
 
   const body = data
@@ -1571,7 +1629,7 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
   // Say "earlier today" rather than rounding a 40-minute-old baseline up to "1 day ago".
   const baseGap = base ? now - Date.parse(base.at) : null;
   const baseAge =
-    baseGap == null ? null : baseGap < DAY ? "earlier today" : `${Math.round(baseGap / DAY)} day(s) ago`;
+    baseGap == null ? null : baseGap < DAY ? "earlier today" : ago(Math.round(baseGap / DAY));
   // Only projects whose record covers the whole week; the tile says so when that isn't all
   // of them, because a total quietly missing a project reads as a quiet week.
   const week = windowTotal(rows, history, 7);
@@ -1579,25 +1637,32 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
   const repos = [...ok, ...(health.unreleased || [])];
   const count = (key) => repos.reduce((s, r) => s + (r[key]?.length || 0), 0);
   const upstream = count("upstreamPrs");
+  const series = trendSeries(history, trends, now);
+  const spark = (key) =>
+    sparkline((series[key] || []).slice(-30).map((p) => p.value).filter((v) => v != null));
+  // Each tile opens the tab that explains it; without the script it is a jump to that heading.
   const tiles = [
-    ["Total downloads", num(grand), base ? delta(grand, sumOf(base, osTotal)) : ""],
+    ["Total downloads", num(grand), base ? delta(grand, sumOf(base, osTotal)) : "", "dl", spark("downloads")],
     [
       "Downloads (7d)",
       week ? num(week.count) : "—",
       week ? (week.of < week.all ? `${week.of} of ${week.all} projects on record` : "") : "needs two runs",
+      "dl",
+      spark("dlDaily"),
     ],
-    ["Stars", num(stars), base ? delta(stars, sumOf(base, "stars")) : ""],
-    ["Repo views (14d)", hasToken ? num(views) : "—", ""],
-    ["Projects", String(projects.length), `${health.byStatus.live || 0} live`],
-    ["Open issues", num(count("issueList")), ""],
-    ["Open PRs", num(count("prList")), upstream ? `+${upstream} of yours upstream` : ""],
+    ["Stars", num(stars), base ? delta(stars, sumOf(base, "stars")) : "", "act"],
+    ["Repo views (14d)", hasToken ? num(views) : "—", "", "tr", spark("views")],
+    ["Projects", String(projects.length), `${health.byStatus.live || 0} live`, "proj"],
+    ["Open issues", num(count("issueList")), "", "att"],
+    ["Open PRs", num(count("prList")), upstream ? `+${upstream} of yours upstream` : "", "att"],
   ]
     .map(
-      ([label, value, sub]) =>
-        `<div class="tile"><span class="tile__label">${label}</span>
-         <span class="tile__value">${value}</span><span class="tile__sub">${sub}</span></div>`
+      ([label, value, sub, tab, line = ""]) =>
+        `<a class="tile tile--link" href="#h-${tab}" data-tab="${tab}"><span class="tile__label">${label}</span>
+         <span class="tile__value">${value}</span><span class="tile__sub">${sub}</span>${line}</a>`
     )
     .join("");
+  const waiting = attentionItems(ok, health).reduce((t, i) => t + i.n, 0);
 
   return `<!doctype html>
 <html lang="en">
@@ -1613,17 +1678,29 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
 </head>
 <body class="admin" id="top">
 <nav class="topnav" aria-label="Sections">
-  <a class="topnav__brand" href="#top">Private stats</a>
+  <a class="topnav__brand" href="#top"><img src="favicon.svg" alt="" width="32" height="32">Private stats</a>
   <ul class="topnav__list">${NAV.map(
     ([sec, id, label]) =>
-      `<li><a href="#${id}" data-sec="${sec}">${label}</a></li>`
+      `<li><a href="#${id}" data-sec="${sec}">${label}${
+        sec === "att" && waiting ? ` <span class="badge"><span class="sr-only">, </span>${waiting}<span class="sr-only"> items</span></span>` : ""
+      }</a></li>`
   ).join("")}</ul>
-  <button type="button" id="refresh" class="btn-refresh" hidden>Refresh now</button>
+  <div class="tools" id="tools" hidden>
+    <label class="find"><span class="sr-only">Find a project on this tab</span>
+      <input type="search" id="find" placeholder="Find a project  ( / )" autocomplete="off"></label>
+    <span id="find-msg" class="find-msg" role="status"></span>
+    <span class="sizer" role="group" aria-label="Text size">
+      <button type="button" id="size-down" class="btn-tool" aria-label="Smaller text">A−</button>
+      <button type="button" id="size-up" class="btn-tool" aria-label="Larger text">A+</button>
+    </span>
+    <button type="button" id="help-open" class="btn-tool" aria-label="Keyboard shortcuts">?</button>
+  </div>
+  <button type="button" id="refresh" class="btn-refresh" data-took="${elapsed}" hidden>Refresh now</button>
   <span id="refresh-msg" class="refresh-msg" role="status"></span>
 </nav>
 <main class="wrap">
   <header class="head">
-    <h1>Private stats</h1>
+    <h1 class="sr-only">Private stats</h1>
     <p class="sub">Last updated
       <span id="updated" data-at="${new Date(now).toISOString()}">${new Date(now).toLocaleString(
     "en-GB"
@@ -1632,7 +1709,6 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
       ${history.snapshots.length} snapshot(s) recorded${
         baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
       }</p>
-    <p class="sub">Click a column heading to sort by it; click it again to reverse.</p>
   </header>
 
   ${gapBanner(history, now)}
@@ -1640,6 +1716,12 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
 
   <section aria-labelledby="h-sum"><h2 id="h-sum" class="sr-only">Summary</h2>
     <div class="tiles">${tiles}</div></section>
+
+  <section class="sec" data-sec="ov" aria-labelledby="h-ov"><h2 id="h-ov">Overview</h2>
+    ${overviewSection({ rows, ok, history, base, baseAge, health, now, ga, obs, series })}</section>
+
+  <section class="sec" data-sec="proj" aria-labelledby="h-proj"><h2 id="h-proj">Projects</h2>
+    ${projectsSection(rows, history, obs, now)}</section>
 
   <section class="sec" data-sec="att" aria-labelledby="h-att"><h2 id="h-att">Notifications</h2>
     ${issuesSection(ok, health, history.attention, now)}</section>
@@ -1676,9 +1758,270 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
   <footer class="foot">Local file — never published. Regenerate with
     <code>npm run stats</code>.</footer>
 </main>
+<dialog id="help" class="help" aria-labelledby="help-h">
+  <h2 id="help-h">Keyboard shortcuts</h2>
+  <dl class="keys">
+    <dt><kbd>1</kbd> to <kbd>9</kbd></dt><dd>Open that tab, counting from the left</dd>
+    <dt><kbd>/</kbd></dt><dd>Find a project; <kbd>Esc</kbd> clears it</dd>
+    <dt><kbd>+</kbd> <kbd>-</kbd></dt><dd>Larger or smaller text</dd>
+    <dt><kbd>r</kbd></dt><dd>Refresh the figures</dd>
+    <dt><kbd>?</kbd></dt><dd>This list</dd>
+  </dl>
+  <p class="sub">Click a column heading to sort by it, and again to reverse. Hover over a chart to
+    read a day's figure. Each table's caption has a link that saves it for a spreadsheet.</p>
+  <form method="dialog"><button class="btn-refresh">Close</button></form>
+</dialog>
 </body>
 </html>
 `;
+}
+
+// ------------------------------------------------------------- overview and projects
+
+const ago = (days) => (days === 0 ? "today" : days === 1 ? "yesterday" : `${num(days)} days ago`);
+const maxBy = (list, pick) => list.reduce((best, x) => (best === null || pick(x) > pick(best) ? x : best), null);
+const panel = (title, body, cls = "") => `<article class="panel ${cls}"><h3>${title}</h3>${body}</article>`;
+const tabLink = (tab, text) => `<a class="more" href="#h-${tab}" data-tab="${tab}">${text} →</a>`;
+
+// One bar per operating system, in proportion. The words under it carry every figure, so the
+// colours only help the eye.
+function osShare(downloads) {
+  const total = OS_KEYS.reduce((t, k) => t + downloads[k], 0);
+  if (!total) return "";
+  const percent = (k) => `${Math.round((downloads[k] / total) * 100)}%`;
+  return `<div class="share" aria-hidden="true">${OS_KEYS.filter((k) => downloads[k])
+    .map((k) => `<span class="os--${k}" style="width:${share(downloads[k], total)}"></span>`)
+    .join("")}</div>
+    <ul class="share__key">${OS_KEYS.filter((k) => downloads[k])
+      .map((k) => `<li class="os--${k}"><strong>${OS_LABEL[k]}</strong> ${num(downloads[k])} <span class="dim">(${percent(k)})</span></li>`)
+      .join("")}</ul>`;
+}
+
+// A week against the week before, for every daily series there is. Change shows only when both
+// weeks are whole: a percentage over a short week is a false fall.
+function weekTable(series) {
+  const floor = '<span class="dim"> *</span>';
+  const lines = [
+    ["GitHub downloads", "dlDaily", ""],
+    ["Repo views", "views", ""],
+    ["Repo clones", "clones", ""],
+    ["openSUSE downloads", "obs", ""],
+    ["Site visitors, each day added up", "visitors", floor],
+    ["Blog views", "posts", floor],
+    ["Download clicks", "clicks", floor],
+  ];
+  const week = (w) =>
+    `${num(w.total)}${w.days < 7 ? `<br><span class="dim">${w.days} of 7 days</span>` : ""}`;
+  const body = lines
+    .map(([label, key, mark]) => {
+      const c = compareWeeks(series[key]);
+      if (!c) {
+        return `<tr><th scope="row">${label}${mark}</th><td class="n dim" colspan="3">no figures this week</td></tr>`;
+      }
+      const whole = c.now.days === 7 && c.before.days === 7 && c.before.total > 0;
+      const change = whole ? Math.round(((c.now.total - c.before.total) / c.before.total) * 100) : null;
+      const shown =
+        change === null || change === 0
+          ? '<span class="dim">—</span>'
+          : `<span class="d ${change > 0 ? "d--up" : "d--down"}">${change > 0 ? "▲ +" : "▼ −"}${num(Math.abs(change))}%</span>`;
+      return `<tr><th scope="row">${label}${mark}</th><td class="n strong">${week(c.now)}</td>
+        <td class="n">${c.before.days ? week(c.before) : '<span class="dim">no figures</span>'}</td><td class="n">${shown}</td></tr>`;
+    })
+    .join("");
+  return `<table class="tbl tbl--plain"><thead><tr><th scope="col">Figure</th><th scope="col" class="n">Last 7 days</th>
+    <th scope="col" class="n">Week before</th><th scope="col" class="n">Change</th></tr></thead><tbody>${body}</tbody></table>
+    <p class="fine">Whole days only, ending yesterday. * Only visitors who accepted analytics are counted, so these are floors.</p>`;
+}
+
+function overviewSection({ rows, ok, history, base, baseAge, health, now, ga, obs, series }) {
+  // --- what needs doing
+  const items = attentionItems(ok, health);
+  const countOf = (state) => items.filter((i) => i.now === state).reduce((t, i) => t + i.n, 0);
+  const broken = items.filter((i) => i.now === true).sort((a, b) => a.rank - b.rank);
+  const attention = panel(
+    "Needs your attention",
+    `${
+      broken.length
+        ? `<p class="issues-h issues-h--now">⚠ Broken now</p><ul class="issues">${broken
+            .map((i) => `<li>${i.html("", () => "")}</li>`)
+            .join("")}</ul>`
+        : '<p class="good">✓ Nothing is broken.</p>'
+    }
+    <p class="counts"><strong>${num(countOf(false))}</strong> incomplete · <strong>${num(countOf(null))}</strong> waiting on a pull request or issue</p>
+    ${tabLink("att", "All notifications")}`
+  );
+
+  // --- the week's downloads, biggest first
+  const span = recordSpan(history);
+  const weekly = rows
+    .map((r) => ({ r, w: windowDownloads(history, r.slug, 7) }))
+    .filter(({ w }) => w && w.count > 0)
+    .sort((a, b) => b.w.count - a.w.count);
+  const topWeek = weekly[0]?.w.count || 0;
+  // Signature and checksum files rising with the app's is the sign that separated a sweep from
+  // real interest in October 2026: people fetch the app, robots fetch everything.
+  const swept = ({ w }) => w.other != null && w.other >= 5 && w.other >= w.count / 2;
+  const rank = weekly.length
+    ? `<ul class="bars filterable">${weekly
+        .slice(0, 10)
+        .map(
+          (x) => `<li><span class="bars__name">${esc(x.r.name)}</span>
+          <span class="bars__track" aria-hidden="true"><span style="width:${share(x.w.count, topWeek)}"></span></span>
+          <span class="bars__value">${num(x.w.count)}${isShort(x.w, Math.min(7, span)) ? ` <span class="dim">(${Math.round(x.w.covered)} d)</span>` : ""}</span>
+          ${swept(x) ? `<span class="bars__note">+${num(x.w.other)} other files too</span>` : ""}</li>`
+        )
+        .join("")}</ul>
+      ${
+        weekly.some(swept)
+          ? `<p class="fine">Other files are signatures, checksums and source archives. When they rise with the app's own files, it is often an automated sweep, not people. GitHub does not say who downloads.</p>`
+          : ""
+      }`
+    : '<p class="fine">No downloads on record in the last 7 days.</p>';
+
+  // --- operating systems, across everything fetched this run
+  const allOs = Object.fromEntries(OS_KEYS.map((k) => [k, ok.reduce((t, r) => t + r.downloads[k], 0)]));
+  const counted = obs.filter((o) => o.d30 != null);
+  const obs30 = counted.reduce((t, o) => t + o.d30, 0);
+
+  // --- what moved since the comparison reading
+  const moved = ok
+    .map((r) => ({ r, was: base?.projects[r.slug] }))
+    .filter(({ r, was }) => was && r.total !== osTotal(was))
+    .sort((a, b) => b.r.total - osTotal(b.was) - (a.r.total - osTotal(a.was)));
+  const change = !base
+    ? '<p class="fine">Change appears from the second run.</p>'
+    : moved.length
+      ? `<ul class="plain filterable">${moved
+          .slice(0, 8)
+          .map(({ r, was }) => `<li>${esc(r.name)} ${delta(r.total, osTotal(was))}</li>`)
+          .join("")}</ul>
+        ${moved.length > 8 ? `<p class="fine">and ${moved.length - 8} more.</p>` : ""}
+        <p class="fine">Compared with the reading from ${esc(baseAge)}.</p>`
+      : `<p class="fine">No project's downloads have changed since ${esc(baseAge)}.</p>`;
+
+  // --- the newest releases, across every project
+  const releases = ok
+    .flatMap((r) => r.perRelease.filter((x) => x.at).map((x) => ({ ...x, name: r.name })))
+    .sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
+    .slice(0, 8);
+  const releaseList = releases.length
+    ? `<ul class="plain filterable">${releases
+        .map(
+          (x) => `<li><strong>${esc(x.name)}</strong> ${esc(x.tag)}${x.prerelease ? ' <span class="flag">pre</span>' : ""}
+          <span class="dim">${ago(daysSince(x.at, now))} · ${num(x.total)} download${x.total === 1 ? "" : "s"}</span></li>`
+        )
+        .join("")}</ul>`
+    : '<p class="fine">No releases published yet.</p>';
+
+  // --- plain facts; a fact with no figure behind it is left out
+  const released = ok.filter((r) => r.latestAt);
+  const committed = ok.filter((r) => r.pushedAt);
+  const quiet = rows.filter((r) => {
+    const w = windowDownloads(history, r.slug, 30);
+    return w && w.count === 0 && !isShort(w, Math.min(30, span));
+  });
+  const top = maxBy(ok, (r) => r.total);
+  const oldRelease = maxBy(released, (r) => daysSince(r.latestAt, now));
+  const oldCommit = maxBy(committed, (r) => daysSince(r.pushedAt, now));
+  const topPage = ga?.pages.find((p) => p.pagePath !== "/");
+  const topCountry = ga?.countries.find((c) => c.country);
+  const topSource = ga?.sources[0];
+  const busyDay = ga?.daily.length ? maxBy(ga.daily, (d) => d.screenPageViews) : null;
+  const first = history.snapshots[0];
+  const facts = [
+    top && ["Most downloaded ever", `${esc(top.name)}, ${num(top.total)}`],
+    weekly[0] && ["Busiest this week", `${esc(weekly[0].r.name)}, ${num(weekly[0].w.count)}`],
+    oldRelease && ["Longest since a release", `${esc(oldRelease.name)}, ${ago(daysSince(oldRelease.latestAt, now))}`],
+    oldCommit && ["Longest since a commit", `${esc(oldCommit.name)}, ${ago(daysSince(oldCommit.pushedAt, now))}`],
+    quiet.length && [
+      "No downloads in 30 days",
+      `${quiet.length}: ${quiet.slice(0, 4).map((r) => esc(r.name)).join(", ")}${quiet.length > 4 ? ` and ${quiet.length - 4} more` : ""}`,
+    ],
+    topPage && ["Most-read page", `${esc(topPage.pagePath)}, ${num(topPage.screenPageViews)} views`],
+    topSource && ["Most visits came from", `${esc(topSource.sessionSource || "unknown")}, ${num(topSource.sessions)} sessions`],
+    topCountry && ["Most visitors in", `${esc(topCountry.country)}, ${num(topCountry.activeUsers)}`],
+    busyDay && ["Busiest day on the site", `${gaDay(busyDay.date)}, ${num(busyDay.screenPageViews)} page views`],
+    first && ["History kept since", `${dayYear(dayKey(Date.parse(first.at)))}, ${num(history.snapshots.length)} readings`],
+  ].filter(Boolean);
+  const factList = `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>`;
+
+  const recent = (key) => (series[key] || []).slice(-60);
+  return `<div class="grid3">
+      ${attention}
+      ${panel("This week against last", weekTable(series))}
+      ${panel("At a glance", factList)}
+      ${panel("Most downloaded this week", rank + tabLink("dl", "All downloads"))}
+      <div class="stack">
+        ${panel(
+          "Downloads by system, all time",
+          osShare(allOs) +
+            (counted.length ? `<p class="fine">Plus ${num(obs30)} openSUSE package downloads in the last 30 days, counted separately.</p>` : "")
+        )}
+        ${panel("Since the last comparison", change)}
+      </div>
+      ${panel("Latest releases", releaseList + tabLink("rel", "All releases"))}
+    </div>
+    <div class="charts charts--ov">
+      ${lineChart({ id: "ov-dl", title: "GitHub downloads per day, last 60 days", points: recent("dlDaily"), note: DAILY_NOTE })}
+      ${lineChart({ id: "ov-vis", title: "Site visitors per day, last 60 days", points: recent("visitors"), note: "Only visitors who accepted analytics are counted, so this is a floor, not a total." })}
+    </div>`;
+}
+
+// One card per published project, holding what is otherwise spread over five tabs. A project
+// whose fetch failed says so, and shows no figures rather than zeros.
+function projectsSection(rows, history, obs, now) {
+  const obsOf = Object.fromEntries(obs.map((o) => [o.slug, o]));
+  const age = (iso) => (iso ? ago(daysSince(iso, now)) : '<span class="dim">never</span>');
+  const cards = rows
+    .map((r) => {
+      const site = `${ORIGIN}/p/${encodeURIComponent(r.slug)}.html`;
+      const siteLink = `<a href="${esc(site)}" target="_blank" rel="noopener">${esc(r.name)}</a>`;
+      const repo = `https://github.com/${r.repo}`;
+      if (!r.ok) {
+        return `<article class="pcard pcard--missing" data-name="${esc(r.name.toLowerCase())}" data-total="-1" data-week="-1" data-stars="-1" data-rel="0" data-commit="0">
+          <h3>${siteLink}</h3><p class="dim">No data this run.</p></article>`;
+      }
+      const [w7, w30] = WINDOWS.map((d) => windowDownloads(history, r.slug, d));
+      const trend = history.snapshots.map((s) => (s.projects[r.slug] ? osTotal(s.projects[r.slug]) : null)).filter((v) => v != null);
+      const windowed = (w) => (w ? (w.count < 0 ? `−${num(-w.count)}` : num(w.count)) : '<span class="dim">no data</span>');
+      const o = obsOf[r.slug];
+      return `<article class="pcard" data-name="${esc(r.name.toLowerCase())}" data-total="${r.total}" data-week="${w7?.count ?? -1}"
+        data-stars="${r.stars}" data-rel="${r.latestAt ? Date.parse(r.latestAt) : 0}" data-commit="${r.pushedAt ? Date.parse(r.pushedAt) : 0}">
+        <header class="pcard__head"><h3>${siteLink}</h3>
+          <span class="chip">${esc(r.project?.status || "")}</span>${r.archived ? '<span class="flag">archived</span>' : ""}
+          <span class="pcard__ver">${r.latestTag ? esc(r.latestTag) : '<span class="dim">no release</span>'}</span></header>
+        <div class="pcard__nums">
+          <div><strong>${num(r.total)}</strong><span>all time</span></div>
+          <div><strong>${windowed(w7)}</strong><span>7 days</span></div>
+          <div><strong>${windowed(w30)}</strong><span>30 days</span></div>
+        </div>
+        ${sparkline(trend)}
+        ${osShare(r.downloads)}
+        <dl class="facts facts--tight">
+          <div><dt>Released</dt><dd>${age(r.latestAt)}</dd></div>
+          <div><dt>Last commit</dt><dd>${age(r.pushedAt)}</dd></div>
+          <div><dt>Repo views, 14 days</dt><dd>${r.traffic ? num(r.traffic.views) : '<span class="dim">no data</span>'}</dd></div>
+          ${o?.d30 != null ? `<div><dt>openSUSE, 30 days</dt><dd>${num(o.d30)}</dd></div>` : ""}
+          <div><dt>Stars · forks</dt><dd>${num(r.stars)} · ${num(r.forks)}</dd></div>
+          <div><dt>Issues · pull requests</dt><dd>${num(r.issueList.length)} · ${num(r.prList.length)}</dd></div>
+        </dl>
+        <p class="pcard__links">
+          <a href="${esc(repo)}" target="_blank" rel="noopener">Repo</a>
+          <a href="${esc(r.releasesUrl)}" target="_blank" rel="noopener">Latest release</a>
+          <a href="${esc(`${ORIGIN}/p/${encodeURIComponent(r.slug)}/changelog.html`)}" target="_blank" rel="noopener">Changelog</a>
+        </p></article>`;
+    })
+    .join("");
+  return `<p class="pcards__tools" id="pcards-tools" hidden><label>Order by
+      <select id="pcards-sort">
+        <option value="total">Most downloads</option>
+        <option value="week">Most downloads this week</option>
+        <option value="stars">Most stars</option>
+        <option value="rel">Newest release</option>
+        <option value="commit">Newest commit</option>
+        <option value="name">Name</option>
+      </select></label></p>
+    <div class="pcards" id="pcards">${cards}</div>`;
 }
 
 // GitHub serves only the last 14 days of traffic, so a gap longer than that loses those
@@ -1903,7 +2246,14 @@ const JS = `(function () {
     refresh.hidden = false;
     refresh.addEventListener("click", function () {
       refresh.disabled = true;
-      msg.textContent = "Fetching from GitHub — about 12 seconds…";
+      var started = Date.now();
+      var took = Math.round(Number(refresh.dataset.took)) || 0;
+      var progress = function () {
+        msg.textContent = "Fetching… " + Math.floor((Date.now() - started) / 1000) + " s" +
+          (took ? " (the last run took " + took + " s)" : "");
+      };
+      progress();
+      var counting = setInterval(progress, 1000);
       fetch("refresh", { method: "POST" })
         .then(function (r) {
           if (!r.ok) throw new Error("server said " + r.status);
@@ -1911,6 +2261,7 @@ const JS = `(function () {
         })
         .then(function () { location.reload(); })
         .catch(function (e) {
+          clearInterval(counting);
           refresh.disabled = false;
           msg.textContent = "Refresh failed — " + e.message;
         });
@@ -1948,6 +2299,7 @@ const JS = `(function () {
         else a.removeAttribute("aria-current");
       });
       Object.keys(panes).forEach(function (p) { panes[p].hidden = p !== k; });
+      findStatus();
       if (save) {
         try { localStorage.setItem(TAB_KEY, k); } catch (e) {}
       }
@@ -2039,6 +2391,203 @@ const JS = `(function () {
       applySort(target, saved.index, saved.asc, false);
     }
   });
+
+  // Tiles and "All ..." links open a tab rather than jumping down a long page.
+  Array.prototype.forEach.call(document.querySelectorAll("a[data-tab]"), function (a) {
+    a.addEventListener("click", function (e) {
+      var tab = document.querySelector('.topnav__list a[data-sec="' + a.getAttribute("data-tab") + '"]');
+      if (!tab || !document.body.classList.contains("tabbed")) return;
+      e.preventDefault();
+      tab.click();
+    });
+  });
+
+  // Find a project: hides what does not match across every tab, and the totals rows with it,
+  // since a total under a filtered list would be read as the total of what is left.
+  var tools = document.getElementById("tools");
+  var find = document.getElementById("find");
+  var findMsg = document.getElementById("find-msg");
+  var FINDABLE = ".sec table.sortable tbody tr, .pcard, .issues li, .filterable li";
+  function findStatus() {
+    if (!find || !findMsg) return;
+    if (!find.value.trim()) { findMsg.textContent = ""; return; }
+    var open = document.querySelector("section[data-sec]:not([hidden])");
+    var shown = open ? open.querySelectorAll(FINDABLE) : [];
+    var n = 0;
+    Array.prototype.forEach.call(shown, function (el) { if (!el.hidden) n++; });
+    findMsg.textContent = n + " match" + (n === 1 ? "" : "es") + " on this tab";
+  }
+  function applyFind() {
+    var q = find.value.trim().toLowerCase();
+    Array.prototype.forEach.call(document.querySelectorAll(FINDABLE), function (el) {
+      el.hidden = q !== "" && el.textContent.toLowerCase().indexOf(q) === -1;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("table.sortable"), function (t) {
+      t.classList.toggle("is-found", q !== "");
+    });
+    findStatus();
+  }
+  if (tools && find) {
+    tools.hidden = false;
+    find.addEventListener("input", applyFind);
+    find.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { find.value = ""; applyFind(); find.blur(); }
+    });
+  }
+
+  // Text size, remembered. Every size on the page is in rem, so one root value moves them all.
+  var SIZES = [130, 150, 170, 190, 210];
+  var SIZE_KEY = "aph-size";
+  var sizeAt = 1;
+  try {
+    var savedSize = SIZES.indexOf(Number(localStorage.getItem(SIZE_KEY)));
+    if (savedSize !== -1) sizeAt = savedSize;
+  } catch (e) {}
+  function applySize(step) {
+    sizeAt = Math.max(0, Math.min(SIZES.length - 1, sizeAt + step));
+    document.documentElement.style.fontSize = SIZES[sizeAt] + "%";
+    if (step) {
+      try { localStorage.setItem(SIZE_KEY, String(SIZES[sizeAt])); } catch (e) {}
+    }
+  }
+  applySize(0);
+  var sizeDown = document.getElementById("size-down");
+  var sizeUp = document.getElementById("size-up");
+  if (sizeDown) sizeDown.addEventListener("click", function () { applySize(-1); });
+  if (sizeUp) sizeUp.addEventListener("click", function () { applySize(1); });
+
+  // Shortcuts. Plain keys only, and never while typing or while the list is open.
+  var help = document.getElementById("help");
+  var helpOpen = document.getElementById("help-open");
+  if (help && helpOpen) helpOpen.addEventListener("click", function () { help.showModal(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (help && help.open) return;
+    var tag = e.target && e.target.tagName;
+    if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+    var k = e.key;
+    if (k === "/" && find) { e.preventDefault(); find.focus(); }
+    else if (k === "?" && help) { help.showModal(); }
+    else if (k === "+" || k === "=") { applySize(1); }
+    else if (k === "-") { applySize(-1); }
+    else if (k === "r" && refresh && !refresh.hidden && !refresh.disabled) { refresh.click(); }
+    else if (k >= "1" && k <= "9" && links[Number(k) - 1]) { links[Number(k) - 1].click(); }
+  });
+
+  // Projects: the cards' order, remembered.
+  var pcards = document.getElementById("pcards");
+  var pcardsSort = document.getElementById("pcards-sort");
+  if (pcards && pcardsSort) {
+    document.getElementById("pcards-tools").hidden = false;
+    var CARD_KEY = "aph-cards";
+    var orderCards = function () {
+      var by = pcardsSort.value;
+      var cards = Array.prototype.slice.call(pcards.children);
+      cards.sort(function (a, b) {
+        if (by === "name") return a.dataset.name.localeCompare(b.dataset.name);
+        return Number(b.dataset[by]) - Number(a.dataset[by]);
+      });
+      cards.forEach(function (c) { pcards.appendChild(c); });
+    };
+    try {
+      var savedOrder = localStorage.getItem(CARD_KEY);
+      if (savedOrder && pcardsSort.querySelector('option[value="' + savedOrder + '"]')) pcardsSort.value = savedOrder;
+    } catch (e) {}
+    orderCards();
+    pcardsSort.addEventListener("change", function () {
+      orderCards();
+      try { localStorage.setItem(CARD_KEY, pcardsSort.value); } catch (e) {}
+    });
+  }
+
+  // Each sortable table's caption gets a link that saves it for a spreadsheet: the same rows in
+  // the same order, with the raw figure from data-sort rather than the formatted text.
+  Array.prototype.forEach.call(document.querySelectorAll("table.sortable[data-table]"), function (table) {
+    if (!table.caption) return;
+    var save = document.createElement("button");
+    save.type = "button";
+    save.className = "btn-link";
+    save.textContent = "Save for a spreadsheet";
+    table.caption.appendChild(document.createTextNode(" "));
+    table.caption.appendChild(save);
+    var field = function (cell) {
+      var raw = cell.dataset.sort;
+      var number = Number(raw);
+      // data-sort holds the plain name or figure. The exceptions read better as shown: -1, which
+      // stands for "no figure", and a date's millisecond count.
+      var usable = raw !== undefined && raw !== "" && (isNaN(number) || (number >= 0 && number < 1e11));
+      var text = usable ? raw : cell.textContent.trim().split(/\\s+/).join(" ");
+      if (isNaN(Number(text)) && "=+-@".indexOf(text.charAt(0)) !== -1) text = "'" + text;
+      return '"' + text.split('"').join('""') + '"';
+    };
+    save.addEventListener("click", function () {
+      var lines = [];
+      Array.prototype.forEach.call(table.rows, function (row) {
+        if (row.parentNode.tagName === "TFOOT" || row.hidden) return;
+        var parts = [];
+        Array.prototype.forEach.call(row.cells, function (c) {
+          parts.push(row.parentNode.tagName === "THEAD" ? '"' + c.textContent.trim().split('"').join('""') + '"' : field(c));
+        });
+        lines.push(parts.join(","));
+      });
+      var nl = String.fromCharCode(13, 10);
+      var url = URL.createObjectURL(new Blob([lines.join(nl) + nl], { type: "text/csv" }));
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = table.getAttribute("data-table") + "-" + new Date().toISOString().slice(0, 10) + ".csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  });
+
+  // Charts: hover to read a day's figure. Every figure is also in the table under the chart.
+  Array.prototype.forEach.call(document.querySelectorAll("svg.chart__svg[data-points]"), function (svg) {
+    var pts = JSON.parse(svg.getAttribute("data-points"));
+    var geo = svg.getAttribute("data-geo").split(",").map(Number);
+    var NS = "http://www.w3.org/2000/svg";
+    var cursor = document.createElementNS(NS, "line");
+    var dot = document.createElementNS(NS, "circle");
+    cursor.setAttribute("class", "chart__cursor");
+    cursor.setAttribute("y1", geo[2]);
+    cursor.setAttribute("y2", geo[2] + geo[3]);
+    dot.setAttribute("class", "chart__dot");
+    dot.setAttribute("r", 6);
+    var tip = document.createElement("div");
+    tip.className = "chart__tip";
+    tip.hidden = true;
+    svg.parentNode.style.position = "relative";
+    svg.parentNode.appendChild(tip);
+    svg.appendChild(cursor);
+    svg.appendChild(dot);
+    var off = function () { tip.hidden = true; cursor.style.display = "none"; dot.style.display = "none"; };
+    off();
+    svg.addEventListener("mouseleave", off);
+    svg.addEventListener("mousemove", function (e) {
+      var box = svg.getBoundingClientRect();
+      var vb = svg.viewBox.baseVal;
+      var at = ((e.clientX - box.left) / box.width) * vb.width;
+      var i = pts.length > 1 ? Math.round(((at - geo[0]) / geo[1]) * (pts.length - 1)) : 0;
+      i = Math.max(0, Math.min(pts.length - 1, i));
+      var x = pts.length > 1 ? geo[0] + (i / (pts.length - 1)) * geo[1] : geo[0] + geo[1] / 2;
+      var v = pts[i][1];
+      cursor.setAttribute("x1", x);
+      cursor.setAttribute("x2", x);
+      cursor.style.display = "";
+      if (v === null) dot.style.display = "none";
+      else {
+        dot.setAttribute("cx", x);
+        dot.setAttribute("cy", geo[2] + geo[3] - (v / geo[4]) * geo[3]);
+        dot.style.display = "";
+      }
+      var day = new Date(pts[i][0] + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+      tip.textContent = day + ": " + (v === null ? "no figure" : v.toLocaleString("en-GB"));
+      tip.hidden = false;
+      var figure = svg.parentNode.getBoundingClientRect();
+      var left = box.left - figure.left + (x / vb.width) * box.width;
+      tip.style.left = Math.min(left, figure.width - tip.offsetWidth) + "px";
+      tip.style.top = box.top - figure.top + 4 + "px";
+    });
+  });
 })();
 `;
 
@@ -2048,126 +2597,238 @@ const CSS = `/* Private dashboard — layers on the site's tokens.
    Colour here is wayfinding, not data: each section owns an --accent, and its nav link
    wears the same one. The status language is left alone — amber still means "look at
    this", teal "up", rose "down" — so the accents deliberately avoid carrying meaning.
-   Accents run teal → violet down the page, so scroll position has a colour. The one
-   exception is Notifications, amber on purpose: everything in it asks to be looked at. */
+   Accents run teal → violet along the tabs. The one exception is Notifications, amber on
+   purpose: everything in it asks to be looked at. */
 /* Read only on the owner's 4K monitor at 100% scaling, never a phone: every rem on the
-   page scales from this base, and the column is measured in rem so it widens with it. */
+   page scales from this base, which the A− and A+ buttons move. The column is measured in
+   rem so it widens with it, up to the width of the screen. */
 html { font-size: 150%; }
-body.admin { background: var(--bg); color: var(--text); font-family: var(--font); }
-.wrap { max-width: 136rem; margin: 0 auto; padding: 20px 20px 60px; }
-.head h1 { margin: 0 0 4px; font-size: 1.6rem; }
-.sub { color: var(--text-muted); margin: 0 0 6px; font-size: .85rem; }
+:root { --col: min(136rem, 100vw - 48px);
+  --card: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.04));
+  --card-line: rgba(255,255,255,.13); --lift: 0 10px 34px rgba(0,0,0,.42);
+  --r: 1rem; }
+[hidden] { display: none !important; }
+body.admin { color: var(--text); font-family: var(--font); background:
+    radial-gradient(70rem 40rem at 12% -6%, rgba(94,234,212,.09), transparent 70%),
+    radial-gradient(70rem 40rem at 90% -8%, rgba(196,181,253,.10), transparent 70%),
+    var(--bg);
+  background-attachment: fixed; }
+body.admin::after { display: none; }
+.wrap { width: var(--col); max-width: none; margin: 0 auto; padding: 1.1rem 0 3rem; }
+.head { margin: 0 0 .9rem; }
+.sub { color: var(--text-muted); margin: 0; font-size: .86rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
 /* One accent per section, shared by the section and its nav link. */
 [data-sec="att"] { --accent: var(--amber); }
-[data-sec="dl"]  { --accent: #5eead4; }
+[data-sec="ov"]  { --accent: #5eead4; }
+[data-sec="proj"] { --accent: #5ee9dc; }
+[data-sec="dl"]  { --accent: #62e4e4; }
 [data-sec="ga"]  { --accent: #67dde8; }
 [data-sec="tr"]  { --accent: #7dd3fc; }
 [data-sec="act"] { --accent: #93c5fd; }
 [data-sec="rel"] { --accent: #a5b4fc; }
 [data-sec="trend"] { --accent: #c4b5fd; }
 
-/* Sticky bar. Stays put while the page scrolls under it; the tint is a translucent
-   wash over --bg so the tables read through it while scrolling past. */
+/* Sticky bar: glass over the page, its contents lined up with the centred column. */
 .topnav { position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
-  flex-wrap: wrap; gap: 6px 18px;
-  /* Side padding lines the bar's contents up with .wrap's centred column. */
-  padding: 9px max(20px, calc((100% - 136rem) / 2 + 20px));
-  background: linear-gradient(180deg, rgba(94,234,212,.10), rgba(196,181,253,.06)), var(--bg);
-  border-bottom: 1px solid var(--surface-border);
-  backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); }
-.topnav__brand { font-weight: 700; font-size: .9rem; color: var(--text); text-decoration: none;
-  padding-right: 18px; border-right: 1px solid var(--surface-border); }
-.topnav__list { display: flex; flex-wrap: wrap; gap: 4px 6px; list-style: none; margin: 0;
-  padding: 0; flex: 1; }
-.topnav__list a { display: block; font-size: .82rem; color: var(--text-muted);
-  text-decoration: none; padding: 5px 10px; border-radius: 999px;
-  border: 1px solid transparent; }
-.topnav__list a:hover { color: var(--text); background: var(--surface); }
+  flex-wrap: wrap; gap: .5rem .9rem;
+  padding: .55rem calc((100vw - var(--col)) / 2);
+  background: rgba(12,12,20,.82); border-bottom: 1px solid var(--card-line);
+  box-shadow: 0 6px 24px rgba(0,0,0,.35);
+  backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3); }
+.topnav__brand { display: inline-flex; align-items: center; gap: .5rem; font-weight: 700;
+  font-size: .95rem; color: var(--text); text-decoration: none; margin-right: .3rem; }
+.topnav__brand img { width: 1.5rem; height: 1.5rem; }
+.topnav__list { display: flex; flex-wrap: wrap; gap: .15rem; list-style: none; margin: 0;
+  padding: .2rem; background: rgba(255,255,255,.05); border: 1px solid var(--card-line);
+  border-radius: 999px; }
+.topnav__list a { display: block; font-size: .86rem; color: var(--text-muted);
+  text-decoration: none; padding: .32rem .8rem; border-radius: 999px;
+  border: 1px solid transparent; transition: background-color .12s, color .12s; }
+.topnav__list a:hover { color: var(--text); background: rgba(255,255,255,.08); }
 .topnav__list a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-/* Open tab: its own accent, plus a filled pill so it reads without the colour. */
+/* Open tab: its own accent, plus a filled pill and bolder weight so it reads without the colour. */
 .topnav__list a.is-current { color: var(--accent); border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 14%, transparent); font-weight: 600; }
-/* Anchor jumps must clear the sticky bar. */
-.sec h2 { scroll-margin-top: 4rem; }
-/* Tabs (dashboard.js adds .tabbed): one section shows at a time, so the last two no longer
-   share a grid and each takes the full column. */
-.sec[hidden] { display: none; }
-.tabbed .cols--tail { display: block; }
-
-.btn-refresh { font: inherit; font-size: .82rem; color: var(--bg); background: var(--teal);
-  border: 0; border-radius: 999px; padding: 6px 15px; cursor: pointer; font-weight: 600; }
+  background: color-mix(in srgb, var(--accent) 16%, transparent); font-weight: 700; }
+.badge { display: inline-block; min-width: 1.35em; padding: 0 .35em; border-radius: 999px;
+  text-align: center; font-size: .8em; font-weight: 700; color: #1a1205; background: var(--amber); }
+.tools { display: flex; align-items: center; gap: .45rem; margin-left: auto; }
+.find input { font: inherit; font-size: .86rem; color: var(--text); width: 15rem;
+  padding: .36rem .8rem; background: rgba(255,255,255,.07);
+  border: 1px solid var(--card-line); border-radius: 999px; }
+.find input::placeholder { color: var(--text-dim); opacity: 1; }
+.find input:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
+.find-msg, .refresh-msg { color: var(--text-muted); font-size: .84rem; }
+.sizer { display: inline-flex; gap: .15rem; }
+.btn-tool { font: inherit; font-size: .86rem; font-weight: 600; color: var(--text); cursor: pointer;
+  min-width: 2.1rem; padding: .32rem .5rem; background: rgba(255,255,255,.07);
+  border: 1px solid var(--card-line); border-radius: 999px; }
+.btn-tool:hover { background: rgba(255,255,255,.14); }
+.btn-tool:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
+.btn-refresh { font: inherit; font-size: .86rem; color: #06201c; background: var(--teal);
+  border: 0; border-radius: 999px; padding: .38rem 1rem; cursor: pointer; font-weight: 700; }
 .btn-refresh:hover { filter: brightness(1.1); }
 .btn-refresh:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-.btn-refresh[disabled] { opacity: .55; cursor: progress; }
-.refresh-msg { color: var(--text-muted); font-size: .82rem; }
+.btn-refresh[disabled] { opacity: .6; cursor: progress; }
+.btn-link { font: inherit; color: var(--text); background: none; border: 0; padding: 0;
+  cursor: pointer; text-decoration: underline; text-underline-offset: .15em; }
+.btn-link:hover { color: var(--teal); }
+.btn-link:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 #updated { color: var(--text); font-weight: 600; }
 /* Amber plus the word "ago" carries the meaning — never colour alone. */
 #updated.stale { color: var(--amber); }
-h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--teal); }
-/* Section heading takes its accent, with a matching rule so the colour isn't the only cue. */
-.sec h2 { color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--gap); }
-.tile { background: var(--surface); border: 1px solid var(--surface-border);
-  border-left: 3px solid var(--tile-accent, var(--teal));
-  border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
-.tile:nth-child(1) { --tile-accent: #5eead4; }
-.tile:nth-child(2) { --tile-accent: #7dd3fc; }
-.tile:nth-child(3) { --tile-accent: #a5b4fc; }
-.tile:nth-child(4) { --tile-accent: #c4b5fd; }
+/* Anchor jumps must clear the sticky bar. */
+.sec h2 { scroll-margin-top: 5rem; }
+/* Tabs (dashboard.js adds .tabbed): one section shows at a time, so the last two no longer
+   share a grid and each takes the full column. */
+.tabbed .cols--tail { display: block; }
+.tabbed .sec { animation: rise .16s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .tabbed .sec { animation: none; }
+  .tile--link, .topnav__list a, .pcard { transition: none; }
+}
+h2 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 .8rem; color: var(--teal); letter-spacing: -.01em; }
+/* Section heading takes its accent, with a matching rule so the colour isn't the only cue. */
+.sec h2 { color: var(--accent); border-left: .2rem solid var(--accent); padding-left: .55rem; }
+
+/* Summary tiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .75rem; }
+.tile { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: .1rem;
+  min-height: 5.6rem; padding: .75rem .95rem; color: var(--text); text-decoration: none;
+  background: var(--card); border: 1px solid var(--card-line); border-radius: var(--r);
+  box-shadow: var(--lift); }
+.tile::before { content: ""; position: absolute; inset: 0 0 auto; height: .17rem;
+  background: var(--tile-accent, var(--teal)); }
+.tile:nth-child(7n+1) { --tile-accent: #5eead4; }
+.tile:nth-child(7n+2) { --tile-accent: #67dde8; }
+.tile:nth-child(7n+3) { --tile-accent: #7dd3fc; }
+.tile:nth-child(7n+4) { --tile-accent: #93c5fd; }
+.tile:nth-child(7n+5) { --tile-accent: #a5b4fc; }
+.tile:nth-child(7n+6) { --tile-accent: #b4b4fd; }
+.tile:nth-child(7n+7) { --tile-accent: #c4b5fd; }
+.tile--link { transition: transform .12s, border-color .12s; }
+.tile--link:hover { transform: translateY(-2px); border-color: var(--tile-accent); }
+.tile--link:focus-visible { outline: 2px solid var(--tile-accent); outline-offset: 2px; }
+.tile__label { font-size: .8rem; font-weight: 600; color: var(--text-muted); letter-spacing: .01em; }
+.tile__value { font-size: 2rem; font-weight: 750; line-height: 1.15; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; }
+.tile__sub { font-size: .8rem; color: var(--text-muted); min-height: 1.2em; }
+.tile .spark { position: absolute; right: .9rem; top: 1.9rem; width: 40%; height: 1.9rem;
+  color: var(--tile-accent); opacity: .9; }
 /* Trend row under the visitor tiles: end labels flank the sparkline so the line is read
    against real dates rather than floating unanchored. */
-.ga-trend { display: flex; align-items: center; gap: 10px; margin: 14px 0 0;
-  font-size: .82rem; color: var(--text-muted); }
-.ga-trend .spark { color: var(--accent); flex: none; }
+.ga-trend { display: flex; align-items: center; gap: .6rem; margin: .8rem 0 0;
+  font-size: .84rem; color: var(--text-muted); }
+.ga-trend .spark { color: var(--accent); flex: none; width: 12rem; height: 1.6rem; }
 .ga-trend__label { color: var(--text-dim); }
 
-.tile__label { font-size: .8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
-.tile__value { font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
-.tile__sub { font-size: .8rem; color: var(--text-muted); min-height: 1.2em; }
+/* Overview */
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; align-items: stretch; }
+.stack { display: flex; flex-direction: column; gap: .9rem; }
+.stack .panel { flex: 1; }
+.panel { margin: 0; padding: .95rem 1.1rem; background: var(--card); border: 1px solid var(--card-line);
+  border-radius: var(--r); box-shadow: var(--lift); min-width: 0; }
+.panel > h3, .sec .panel > h3 { margin: 0 0 .65rem; font-size: 1rem; font-weight: 700; color: var(--text); }
+.good { margin: 0 0 .6rem; color: var(--teal); font-weight: 600; }
+.counts { margin: .7rem 0 .4rem; color: var(--text-muted); font-size: .88rem; }
+.counts strong { color: var(--text); }
+.more { display: inline-block; margin-top: .55rem; font-size: .86rem; color: var(--text);
+  text-underline-offset: .15em; }
+.more:hover { color: var(--accent); }
+.fine { margin: .55rem 0 0; color: var(--text-muted); font-size: .8rem; line-height: 1.45; }
+.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: .32rem; font-size: .88rem; }
+.facts { margin: 0; display: grid; gap: .2rem; font-size: .88rem; }
+.facts > div { display: flex; justify-content: space-between; gap: 1rem; padding: .22rem 0;
+  border-bottom: 1px solid rgba(255,255,255,.07); }
+.facts > div:last-child { border-bottom: 0; }
+.facts dt { color: var(--text-muted); }
+.facts dd { margin: 0; text-align: right; font-weight: 600; overflow-wrap: anywhere; }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: .38rem; font-size: .88rem; }
+.bars li { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr) auto; gap: .1rem .6rem; align-items: center; }
+.bars__track { height: .55rem; background: rgba(255,255,255,.07); border-radius: 999px; overflow: hidden; }
+.bars__track span { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+.bars__value { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.bars__note { grid-column: 2 / -1; color: var(--text-muted); font-size: .8rem; }
+.share { display: flex; height: .8rem; gap: 2px; border-radius: 999px; overflow: hidden; }
+.share span { display: block; background: var(--os); }
+.share__key { list-style: none; display: flex; flex-wrap: wrap; gap: .15rem 1rem; margin: .45rem 0 0;
+  padding: 0; font-size: .86rem; }
+.share__key li::before { content: ""; display: inline-block; width: .6em; height: .6em;
+  margin-right: .35em; border-radius: 50%; background: var(--os); }
+.charts--ov { margin-top: 1rem; }
 
-/* border-collapse: separate, because collapse defeats the border-radius and the tables then
-   sit square-cornered next to round-cornered tiles and notes; overflow clips the corners.
-   min-width is the floor the .tbl-scroll wrapper scrolls against. */
+/* Projects */
+.pcards__tools { margin: 0 0 .7rem; font-size: .88rem; color: var(--text-muted); }
+.pcards__tools select { font: inherit; color: var(--text); background: #1a1a22; margin-left: .4rem;
+  padding: .28rem .6rem; border: 1px solid var(--card-line); border-radius: .5rem; }
+.pcards__tools select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(26rem, 1fr)); gap: .9rem; }
+.pcard { display: flex; flex-direction: column; gap: .55rem; padding: .95rem 1.1rem;
+  background: var(--card); border: 1px solid var(--card-line); border-radius: var(--r);
+  box-shadow: var(--lift); transition: border-color .12s; }
+.pcard:hover { border-color: var(--accent); }
+.pcard__head { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .55rem; }
+.sec .pcard h3 { margin: 0; font-size: 1.05rem; }
+.pcard h3 a { color: var(--text); text-decoration: none; }
+.pcard h3 a:hover { color: var(--accent); text-decoration: underline; }
+.pcard__ver { margin-left: auto; color: var(--text-muted); font-size: .86rem; font-variant-numeric: tabular-nums; }
+.pcard__nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+.pcard__nums strong { display: block; font-size: 1.45rem; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.pcard__nums span { color: var(--text-muted); font-size: .8rem; }
+.pcard__nums .dim { font-size: .86rem; font-weight: 400; }
+.pcard .spark { width: 100%; height: 1.9rem; color: var(--accent); }
+.facts--tight { font-size: .84rem; }
+.pcard__links { margin: auto 0 0; padding-top: .35rem; display: flex; gap: 1.1rem; font-size: .86rem; }
+.pcard__links a { color: var(--text); text-underline-offset: .15em; }
+.pcard__links a:hover { color: var(--accent); }
+
+/* Tables. border-collapse: separate, because collapse defeats the border-radius; overflow clips
+   the corners. min-width is the floor the .tbl-scroll wrapper scrolls against. */
 .tbl { width: 100%; min-width: 40rem; border-collapse: separate; border-spacing: 0;
-  font-size: .88rem; overflow: hidden;
-  background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius); }
+  font-size: .9rem; overflow: hidden; background: var(--card);
+  border: 1px solid var(--card-line); border-radius: var(--r); box-shadow: var(--lift); }
 /* Without collapse the last row's own bottom border doubles up against the table's, so drop
    it where no tfoot follows (tfoot rows already carry border-bottom: 0). */
 .tbl tbody:last-child tr:last-child > * { border-bottom: 0; }
-/* Wide tables scroll rather than crush. Focusable, so the region is keyboard-reachable. */
-.tbl-scroll { overflow-x: auto; }
+/* While Find is narrowing a table, its totals row would add up what is no longer shown. */
+.tbl.is-found tfoot { display: none; }
+/* Wide tables scroll rather than crush. Focusable, so the region is keyboard-reachable. The
+   padding keeps the table's shadow from being clipped by the scroller. */
+.tbl-scroll { overflow-x: auto; padding-bottom: .8rem; }
 /* Two blocks per row; minmax(0, …) lets a wide table scroll inside its half instead of
    pushing the grid wider than the column. */
-.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem;
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.4rem;
   align-items: start; }
 /* A note above a table sits flush against the caption's first line, because .note carries no
-   bottom margin and a caption has no top padding. Two tables lead with one, so the gap belongs
-   to the pair rather than to either. */
-.note + .tbl-scroll { margin-top: 14px; }
+   bottom margin and a caption has no top padding. */
+.note + .tbl-scroll { margin-top: .75rem; }
 .tbl-scroll:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
-/* Two columns — nothing to crush, so no floor and nothing to scroll. */
-.tbl--rel { min-width: 0; }
-/* Site visitors carries three tables, Downloads and Repo traffic two each. Every one gets a
-   heading of its own: a dim caption is weak wayfinding, and this page is read by someone who
-   needs the structure to be obvious rather than inferred from spacing. */
-.sec h3 { font-size: .95rem; font-weight: 700; color: var(--text); margin: 26px 0 8px; }
+/* Few columns — nothing to crush, so no floor and nothing to scroll. */
+.tbl--rel, .tbl--plain { min-width: 0; }
+.tbl--plain { box-shadow: none; background: none; border: 0; border-radius: 0; font-size: .88rem; }
+.tbl--plain th, .tbl--plain td { padding: .36rem .3rem; }
+/* Every table gets a heading of its own: a dim caption is weak wayfinding, and this page is
+   read by someone who needs the structure to be obvious rather than inferred from spacing. */
+.sec h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin: 1.3rem 0 .5rem; }
 
 /* The caption is prose, so it must wrap to the screen rather than ride the table's min-width
-   out of view: sized to the visible column instead of the table, and pinned left so it stays
-   put while the table scrolls under it. (.wrap contributes the 40px of side padding.) */
+   out of view: sized to the visible column, and pinned left so it stays put while the table
+   scrolls under it. */
 .tbl caption { caption-side: top; text-align: left; color: var(--text-muted);
-  font-size: .8rem; padding: 0 0 8px;
-  position: sticky; left: 0; max-width: calc(100vw - 40px); }
-.tbl th, .tbl td { padding: 9px 12px; border-bottom: 1px solid var(--surface-border); text-align: left; }
-.tbl thead th { color: var(--text-dim); font-size: .8rem; text-transform: uppercase;
-  letter-spacing: .05em; font-weight: 600; }
+  font-size: .82rem; line-height: 1.45;
+  /* The table's rounded corner clips this box too, so the first line stays clear of it. */
+  padding: .35rem 0 .5rem .55rem;
+  position: sticky; left: 0; max-width: var(--col); }
+.tbl th, .tbl td { padding: .55rem .75rem; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; }
+.tbl thead th { color: var(--text-muted); background: rgba(255,255,255,.045); font-size: .82rem;
+  font-weight: 600; letter-spacing: .01em; }
 /* The sort control fills the header cell so the whole header is the click target. */
 .tbl thead th:has(.sort-btn) { padding: 0; }
 .sort-btn { font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit;
-  background: none; border: 0; padding: 9px 12px; width: 100%; text-align: inherit;
+  background: none; border: 0; padding: .55rem .75rem; width: 100%; text-align: inherit;
   cursor: pointer; }
 .sort-btn:hover { color: var(--text); }
 .sort-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
@@ -2177,7 +2838,7 @@ th[aria-sort] .sort-btn { color: var(--teal); }
 th[aria-sort="ascending"] .sort-btn::after { content: " ▲"; }
 th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .tbl tbody th { font-weight: 600; }
-.tbl tfoot th, .tbl tfoot td { border-bottom: 0; font-weight: 700; }
+.tbl tfoot th, .tbl tfoot td { border-bottom: 0; font-weight: 700; background: rgba(255,255,255,.045); }
 /* Tracking one row across nine columns is exactly what a row highlight is for, so it has to
    be visible — and it has to cross the OS columns, whose tints are cell background-colours
    and would paint over a row background. Layering the wash as a background-image leaves the
@@ -2186,8 +2847,14 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .tbl tbody tr:nth-child(even) > * {
   background-image: linear-gradient(rgba(255,255,255,.028), rgba(255,255,255,.028)); }
 .tbl tbody tr:hover > * {
-  background-image: linear-gradient(rgba(255,255,255,.09), rgba(255,255,255,.09)); }
+  background-image: linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.1)); }
 .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tbl th.n, .tbl td.n { text-align: right; }
+/* A thin bar along the foot of a cell: the row's share of the largest figure in its column. */
+.databar { position: relative; }
+.databar::after { content: ""; position: absolute; right: .75rem; bottom: .22rem; height: .14rem;
+  width: var(--w); max-width: calc(100% - 1.5rem);
+  background: var(--accent); border-radius: 999px; opacity: .85; }
 /* The three OS columns are tinted so the eye can track one across a wide row. The heading
    carries the colour; the figures stay in text ink so nothing competes with the numbers.
    These hues sit well clear of amber/rose — a tinted column must never read as a warning. */
@@ -2200,62 +2867,81 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .dim { color: var(--text-dim); }
 .country-flag { font-size: 1.25em; margin-right: .45em; vertical-align: -.1em; }
 .warn { color: var(--amber); }
-.repo { display: block; font-weight: 400; font-size: .8rem; color: var(--text-dim); }
+.repo { display: block; font-weight: 400; font-size: .82rem; color: var(--text-dim); }
 
-.d { font-size: .8rem; white-space: nowrap; }
+.d { font-size: .82rem; white-space: nowrap; }
 .d--up { color: var(--teal); }
 .d--down { color: var(--rose); }
 /* Trends: two charts to a row. The line takes the section accent; every label is text ink,
    so the axis reads at AA contrast whatever the accent. */
-.charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; }
-.chart { margin: 0 0 2rem; }
-.chart figcaption { margin-bottom: 8px; }
-.chart__note { display: block; color: var(--text-muted); }
+.charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem 1.2rem; }
+.chart { margin: 0; padding: .95rem 1.1rem; background: var(--card); border: 1px solid var(--card-line);
+  border-radius: var(--r); box-shadow: var(--lift); }
+.chart figcaption { margin-bottom: .5rem; font-size: .9rem; }
+.chart__note { display: block; color: var(--text-muted); font-size: .82rem; }
 .chart__svg { display: block; width: 100%; height: auto; }
-.chart__svg text { fill: var(--text-muted); font-size: 17px; }
-.chart__grid line { stroke: var(--surface-border); stroke-width: 1; }
+.chart__svg text { fill: var(--text-muted); font-size: 15px; }
+.chart__grid line { stroke: rgba(255,255,255,.1); stroke-width: 1; }
 .chart__line polyline { fill: none; stroke: var(--accent); stroke-width: 2.5;
   stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.chart__line polygon { fill: var(--accent); opacity: .13; }
 .chart__line circle { fill: var(--accent); }
-.chart details { margin-top: 8px; }
+.chart__cursor { stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: 4 4; }
+.chart__dot { fill: var(--text); stroke: var(--bg); stroke-width: 2; }
+.chart__tip { position: absolute; z-index: 5; pointer-events: none; padding: .22rem .6rem;
+  font-size: .88rem; font-weight: 600; white-space: nowrap; color: var(--text);
+  background: #1d1d28; border: 1px solid var(--accent); border-radius: .5rem;
+  transform: translateX(.6rem); font-variant-numeric: tabular-nums; }
+.chart details { margin-top: .5rem; font-size: .88rem; }
 .chart summary { cursor: pointer; color: var(--text-muted); }
 .chart summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chart details .tbl { margin-top: .5rem; box-shadow: none; }
 .spark { color: var(--violet); display: block; }
 /* Downloads per OS: the three OS columns and Total share one width so the figures line up as
    a set, and Trend gets enough room for its line to show a shape. Other takes what is left. */
 .tbl--dl .c-name { width: 22%; }
 .tbl--dl .c-num { width: 11%; }
 .tbl--dl .c-trend { width: 24%; }
-.sparkcell .spark { width: 100%; height: 1.6rem; }
+.sparkcell .spark { width: 100%; height: 1.6rem; color: var(--accent); }
 
 /* The heading is the cue and the wording is the cue: "⚠ Broken now" says it in text, so the
    amber only reinforces what already reads in greyscale. The count is dim because it is the
    least urgent thing in the line — the reader wants the word first. */
-.issues-h { font-size: .95rem; font-weight: 700; color: var(--text); margin: 26px 0 8px; }
+.issues-h { font-size: 1rem; font-weight: 700; color: var(--text); margin: 1.3rem 0 .5rem; }
 .issues-h:first-child { margin-top: 0; }
 .issues-h--now { color: var(--amber); }
 .issues-h .count { color: var(--text-dim); font-weight: 600; }
-.issues { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
-.issues li { color: var(--text-muted); font-size: .88rem; line-height: 1.5; }
+.issues { margin: 0; padding-left: 1.2rem; display: grid; gap: .45rem; }
+.issues li { color: var(--text-muted); font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
 .issues strong { color: var(--text); }
 .issues .age { color: var(--text-dim); white-space: nowrap; }
-.note { background: var(--surface); border: 1px solid var(--surface-border);
-  border-radius: var(--radius); padding: 12px 14px; color: var(--text-muted); font-size: .88rem; margin: 0; }
+.note { background: var(--card); border: 1px solid var(--card-line);
+  border-radius: var(--r); padding: .7rem .95rem; color: var(--text-muted); font-size: .9rem; margin: 0; }
 .note.ok { color: var(--teal); }
-.banner { border-color: var(--amber); color: var(--text); margin-bottom: 18px; }
+.banner { border-color: var(--amber); color: var(--text); margin-bottom: 1rem; }
 .banner strong { color: var(--amber); }
 .row--missing th { opacity: .75; }
 .flag { font-size: .8rem; color: var(--amber); border: 1px solid var(--amber);
-  border-radius: 6px; padding: 0 5px; vertical-align: middle; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
-.chip { background: var(--surface); border: 1px solid var(--surface-border);
-  border-radius: 999px; padding: 4px 11px; font-size: .8rem; color: var(--text-muted); }
+  border-radius: .4rem; padding: 0 .3rem; vertical-align: middle; }
+.chips { display: flex; flex-wrap: wrap; gap: .45rem; margin: .6rem 0; }
+.chip { background: rgba(255,255,255,.07); border: 1px solid var(--card-line);
+  border-radius: 999px; padding: .1rem .6rem; font-size: .8rem; color: var(--text-muted); }
 .chip strong { color: var(--text); }
-.rels { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; font-size: .84rem; }
-.ref { font-size: .8rem; color: var(--text-muted); }
-.foot { margin-top: 40px; color: var(--text-dim); font-size: .8rem; }
-code { background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 5px; font-size: .95em; }
-@media (max-width: 720px) { .tbl { font-size: .8rem; } .tbl th, .tbl td { padding: 7px 8px; } }
+.rels { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; font-size: .86rem; }
+.ref { font-size: .82rem; color: var(--text-muted); }
+.foot { margin-top: 2rem; color: var(--text-dim); font-size: .82rem; }
+code { background: rgba(255,255,255,.08); padding: .05rem .3rem; border-radius: .3rem; font-size: .95em; }
+kbd { font: inherit; font-size: .88em; font-weight: 700; padding: .05rem .4rem; color: var(--text);
+  background: rgba(255,255,255,.1); border: 1px solid var(--card-line); border-radius: .35rem; }
+
+/* The shortcuts list. */
+.help { max-width: 38rem; padding: 1.3rem 1.5rem; color: var(--text); background: #15151e;
+  border: 1px solid var(--card-line); border-radius: var(--r); box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+.help::backdrop { background: rgba(0,0,0,.6); }
+.help h2 { margin: 0 0 .8rem; color: var(--text); }
+.keys { display: grid; grid-template-columns: auto 1fr; gap: .4rem 1rem; margin: 0 0 .9rem; font-size: .92rem; }
+.keys dd { margin: 0; color: var(--text-muted); }
+.help form { margin-top: 1rem; text-align: right; }
 `;
 
 // ------------------------------------------------------------------------ main

@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { openStore, closeStore, loadHistory, saveRun, readTrends, backup } from "../lib/store.mjs";
-import { lineChart } from "../stats.mjs";
+import { compareWeeks, dailyDownloads, lineChart } from "../stats.mjs";
 
 async function scratch(t) {
   const dir = await mkdtemp(join(tmpdir(), "aph-store-"));
@@ -156,6 +156,45 @@ test("every point is in the table", () => {
   const html = lineChart({ id: "t", title: "Test", points });
   const table = html.slice(html.indexOf("<table"));
   assert.equal((table.match(/<tr>/g) || []).length - 1, 3, "one row per non-null point, plus the header");
+});
+
+const reading = (day, projects) => ({
+  at: `${day}T08:00:00Z`,
+  projects: Object.fromEntries(Object.entries(projects).map(([k, linux]) => [k, { win: 0, mac: 0, linux, other: 0 }])),
+});
+
+test("downloads per day count rises, and a new project's history is not one", () => {
+  const days = dailyDownloads(
+    [
+      reading("2026-10-01", { a: 100 }),
+      reading("2026-10-02", { a: 103 }),
+      // b appears with 500 from before it was watched; a loses an asset.
+      reading("2026-10-03", { a: 90, b: 500 }),
+      reading("2026-10-05", { a: 95, b: 502 }),
+    ],
+    "2026-10-07"
+  );
+  assert.deepEqual(days, [
+    { day: "2026-10-02", value: 3 },
+    { day: "2026-10-03", value: 0 },
+    // No reading that day: a gap, never a zero. Its downloads land on the next reading.
+    { day: "2026-10-04", value: null },
+    { day: "2026-10-05", value: 7 },
+    { day: "2026-10-06", value: null },
+  ]);
+});
+
+test("downloads per day never include today", () => {
+  const days = dailyDownloads([reading("2026-10-01", { a: 1 }), reading("2026-10-02", { a: 5 })], "2026-10-02");
+  assert.deepEqual(days, []);
+});
+
+test("a week's gaps are counted, not summed as zero", () => {
+  const week = (values) => values.map((value, i) => ({ day: `d${i}`, value }));
+  const c = compareWeeks(week([1, 1, 1, 1, 1, 1, 1, 2, null, 2, 2, 2, 2, 2]));
+  assert.deepEqual(c, { now: { total: 12, days: 6 }, before: { total: 7, days: 7 } });
+  assert.equal(compareWeeks(week([1, 1, null, null, null, null, null, null, null])), null);
+  assert.equal(compareWeeks(undefined), null);
 });
 
 test("backups rotate", async (t) => {

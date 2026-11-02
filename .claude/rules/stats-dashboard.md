@@ -66,19 +66,39 @@ dashboard".
   `FILES` too, and its extension to `TYPES` if new. The body class is `admin`, **not** `stats`.
 
 - **Colour on the dashboard is wayfinding, not data.** Each section owns an `--accent`
-  (teal → violet down the page) shared with its nav link, and the OS columns are tinted
+  (teal → violet along the tabs) shared with its nav link, and the OS columns are tinted
   blue/magenta/green. Those hues deliberately sit clear of the status language — amber means
   "look at this", teal "up", rose "down". The one exception is Notifications, whose accent
   is amber on purpose: everything in it asks to be looked at. Figures stay in text ink.
 
 - **The sections are tabs, and the tabs are progressive enhancement too.** The nav's links
   are ordinary anchors: without JavaScript every section shows on one long page and a link
-  jumps to its section. `dashboard.js` turns them into tabs that show one section at a
+  jumps to its section. The first tab, Overview, must show whatever is broken now, so a fault
+  is seen on opening; Projects holds one card per published project. `dashboard.js` turns them into tabs that show one section at a
   time, marking the open tab's link with `aria-current`. The summary tiles and the banners
   from `gapBanner()` and `incompleteBanner()` stay above every tab. The open tab is remembered in the URL's `#` part, so "Refresh now"
   reopens it, and in `localStorage` under `aph-tab`, so a fresh visit does; the `#` part
   wins. A remembered tab that no longer exists opens the first. Every `localStorage`
   access is wrapped in `try`/`catch`.
+
+- **The page's tools are progressive enhancement too, and every one is hidden until the script
+  runs.** Find hides what does not match on every tab, and hides a table's totals row while it
+  does, because a total under a narrowed list reads as the total of what is left. The text
+  size is the root `font-size`, stored in `localStorage` under `aph-size`, so **every size on the
+  page is in rem**. The Projects order is stored under `aph-cards`. Shortcuts are plain keys,
+  ignored while typing or while the list is open, and the list in `<dialog id="help">` names
+  them all. A chart's hover read-out only repeats its table, which stays the text alternative.
+
+- **A week is compared only when both weeks are whole.** `compareWeeks()` counts a gap rather
+  than summing it as zero, and the Overview shows no percentage over a short week.
+  `dailyDownloads()` counts rises between readings, so a project's first reading adds nothing.
+
+- **A rise in downloads is not proof of people.** The Overview marks a project whose signature,
+  checksum and source files rose with its app files, the sign of an automated sweep, and says
+  GitHub does not say who downloads.
+
+- **`site.css` comes first and shares class names.** It styles `.panel`, `.chip` and `.wrap`
+  for the public site, so a dashboard rule on one of those must reset what it does not want.
 
 - **Sorting is progressive enhancement.** `dashboard.js` turns each `table.sortable` header
   into a `<button>` and toggles `aria-sort`; every table also ships pre-sorted by its most
