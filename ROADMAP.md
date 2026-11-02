@@ -599,7 +599,7 @@ stays in its phase block.
   Source: user-2026-09-25.
   Lanes: projects.json, assets/img/shots.
 
-- 🚧 [APHW-0030] **Make the DOOM Ants split-screen trailer and put it on its page.**
+- 📋 [APHW-0030] **Make the DOOM Ants split-screen trailer and put it on its page.**
   DOOM Ants 0.8.0 shipped the HD art 2026-10-30. Waiting on the DOOM Ants
   session: final footage and per-scene sound in
   /mnt/Games/Trailers/incoming/doom-ants/. Waiting on the user: a ruling
@@ -623,6 +623,12 @@ stays in its phase block.
   footage works: work/doom-ants-trailer/script-test.mp4. Waiting on the
   DOOM Ants session for one long E1M1 run in all five views, and on the
   user for the rest of the script.
+  2026-11-02, user: the test of the whole script
+  (work/doom-ants-trailer/full-test.mp4, full_test.py) is brilliant, but too
+  good for the current graphics. On hold until DOOM Ants has more graphics
+  features. The user decides when to resume. No filming until then; the DOOM
+  Ants session was told. The script and captions stand, but recheck each
+  caption against the game when work resumes. No page copy until then.
   **Layman:** A trailer comparing DOOM Ants' five views side by side, waiting on footage from the DOOM Ants session.
   Kind: marketing.
   Source: user-request-2026-10-30.
