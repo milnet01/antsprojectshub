@@ -14,8 +14,11 @@ your browser, and point it at your ROM folders.
   metadata sources at once and merges what it finds — box art, screenshots,
   descriptions, genres, developers, release dates. Each source searches the
   right console. A game's region comes from its own file name, and its box,
-  manual, title and date follow that region. Your local ES-DE data keeps its
-  place in your chosen source order. A title you type yourself
+  manual, title and date follow that region. A sequel, a mod or an add-on no
+  longer passes for the game you own, and a bulk scrape needs the title to match,
+  not only the console. A release date shows only as much as its source knows.
+  Your local ES-DE data keeps its place in your chosen source order, which also
+  decides between equal matches. A title you type yourself
   stays; scraping never changes it back. AI Fill adds sales figures, release
   dates for every region and each game's official name, one game at a time or a
   whole system at once. Claude can also search the web for sales figures, and you
@@ -52,7 +55,8 @@ your browser, and point it at your ROM folders.
   regions? Link the versions and the library shows one card, which plays your
   preferred region. Filter the library by several genres, series or publishers
   at once, sort it by name, release date, score or recently added, and press
-  Unscraped to see the games still waiting for their details.
+  Unscraped to see the games still waiting for their details. Genres,
+  perspectives and game modes use one set of names, so filters find every game.
 - **Brings in what you already own.** Import from CLZ, or from your Steam, Xbox
   and PlayStation libraries.
 - **Fixes the files themselves.** An archive scanner, a CHD converter and
@@ -61,7 +65,8 @@ your browser, and point it at your ROM folders.
   There, the AI can also suggest each game's full official name in its own
   region: a Japanese Mega Man becomes Rockman. You see old and new side by side
   and accept only the ones you want. Fix Regions from File Names, Fix Box and
-  Manual Regions, and Clear RAWG Pictures from Box Art repair older scrapes.
+  Manual Regions, Clear RAWG Pictures from Box Art, Tidy Release Dates, and Tidy
+  Genres, Perspectives and Modes repair older scrapes.
   Screenshot Review lists doubtful ZX Spectrum, Commodore 64 and Game Boy
   screenshots and removes only what you choose.
 - **Sharpens old artwork** with an optional AI upscaler for low-resolution
