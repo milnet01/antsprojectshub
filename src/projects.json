@@ -745,7 +745,12 @@
           "src": "shots/lotto-tracker-settings.png",
           "alt": "Totals comparing what was spent with what was won, then the settings: a colour theme choice, switches for starting the tray at login and opening this page when the tray starts, and a Refresh results button."
         }
-      ]
+      ],
+      "video": {
+        "src": "lotto-tracker-trailer.mp4",
+        "poster": "lotto-tracker-trailer-poster.jpg",
+        "caption": "A 43-second trailer for LottoTracker, with background music and soft clicks but no speech; everything it says is written on screen. It is set on a page of lined paper. It opens straight on the app, in its dark look with invented tickets, and each clip has a caption below. \"Did it win? Your numbers beside the draw\": under Not yet paid, a Powerball line shows the ticket's numbers as coloured balls beside the numbers drawn, with two of them matching, and Division 9. \"Did it run out? See the draws remaining\": a table lists three lines of numbers with 4, 4 and 2 draws remaining. \"Spend against winnings, by period\": a pointer ring marks a click on the Show list, which changes from 2026, with R80.00 spent and R65.00 won, to September 2026, with R37.50 spent and R15.00 won. \"Not checkable is never a loss\": a notice says 1 of 7 entries cannot be checked and that they are not losses. \"Thirteen colour themes\": with the Nord theme on, the page is slate blue. The Colour theme list opens on Dark, High contrast, Warm dark, Nord, Dracula, Gruvbox, Tokyo Night, Catppuccin Mocha, Monokai, Solarized Dark, Light, Solarized Light and Sepia. Solarized Dark is chosen, and the page turns dark teal. Three lines follow: \"Warns before tickets run out\", \"Runs on your own machine\" and \"No account, nothing paid\". Then \"Linux, run from source\" and \"South African lotteries. Standard Bank's messages so far.\" The logo follows, three numbered lottery balls beside the name, with \"Every lottery ticket in one ledger\". It ends on the logo with \"Free and fully open source\", \"Download it free at antsprojectshub.co.za\", and links to support the project on GitHub Sponsors, Patreon and Paybru. Small print says it is an independent app, not affiliated with or endorsed by the South African National Lottery, its operator or Standard Bank, and to check results with the official lottery."
+      }
     },
     {
       "slug": "demoreel",
