@@ -18,10 +18,16 @@ your browser, and point it at your ROM folders.
   longer passes for the game you own, and a bulk scrape needs the title to match,
   not only the console. A release date shows only as much as its source knows.
   Your local ES-DE data keeps its place in your chosen source order, which also
-  decides between equal matches. A title you type yourself
-  stays; scraping never changes it back. AI Fill adds sales figures, release
+  decides between equal matches. A game's series comes from sources that name
+  one, not from its title, and each company has one spelling, so clicking Sega
+  finds every SEGA game. A title you type yourself
+  stays; scraping never changes it back, and Full Re-scrape keeps a rating or
+  controller you set unless a source really provides one. AI Fill adds sales
+  figures, release
   dates for every region and each game's official name, one game at a time or a
-  whole system at once. Claude can also search the web for sales figures, and you
+  whole system at once. Age ratings, review scores and sales figures from the AI
+  are marked as such, so a guess doesn't look official. Claude can also search the
+  web for sales figures, and you
   can type a figure in yourself. The library and system pages update live while a
   bulk scrape runs.
 - **Launches your games.** Press Play on a game's page, or the Play button on

@@ -16,7 +16,7 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
-- **RetroDB's page covers its newest release: scraping stops taking the wrong game, and two more ROM Tools**
+- **RetroDB's page covers its newest releases: scraping stops taking the wrong game, AI answers are marked, and two more ROM Tools**
 
 - **LottoTracker's page plays its new trailer**
 
