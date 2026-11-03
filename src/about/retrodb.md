@@ -22,7 +22,14 @@ your browser, and point it at your ROM folders.
   one, not from its title, and each company has one spelling, so clicking Sega
   finds every SEGA game. A title you type yourself
   stays; scraping never changes it back, and Full Re-scrape keeps a rating or
-  controller you set unless a source really provides one. AI Fill adds sales
+  controller you set unless a source really provides one. A scrape asks
+  ScreenScraper about your exact file before searching by name. It also brings
+  title screens, more official names, the other consoles a game came out on, the
+  game's logo and the back of its box. The game page shows the logo above the
+  title, and a Back button on the cover shows the back. A screenshot you delete
+  stays deleted, even after the next scrape. When ScreenScraper, TheGamesDB or
+  RAWG reaches its limit, RetroDB stops asking it until later, and a bulk scrape
+  carries on with its other sources. AI Fill adds sales
   figures, release
   dates for every region and each game's official name, one game at a time or a
   whole system at once. Age ratings, review scores and sales figures from the AI
@@ -43,7 +50,8 @@ your browser, and point it at your ROM folders.
   the first time you play. That works on Linux and Windows; on a Mac it is not
   tested yet. Pick each
   system's emulator from a list, and a game's page says which one Play will use.
-  In RetroDB's RetroArch, the left stick can act as the D-pad.
+  In RetroDB's RetroArch, the left stick can act as the D-pad. On a system with
+  no emulator set up, the Play button is greyed out and says why.
 - **Turns cheats on from a game's page**, for RetroDB's RetroArch, DuckStation
   and PCSX2. A cheat that is on pauses RetroAchievements hardcore mode. The
   Cheats section folds away when you don't need it.
@@ -52,7 +60,10 @@ your browser, and point it at your ROM folders.
   page, with a tab for each. Sign in to RetroAchievements from Settings > Account,
   and achievements unlock as you play in RetroDB's RetroArch. That sign-in also
   reaches DuckStation and PCSX2 when you press Play. The password goes only to
-  RetroAchievements and is not kept.
+  RetroAchievements and is not kept. On systems that use a plain file hash, such
+  as Mega Drive and Game Boy, the game page says whether your copy earns
+  achievements. If Sony refuses a saved PlayStation sign-in, the dashboard and
+  Settings ask you to re-link.
 - **Age ratings from around the world**: nine rating systems, including ESRB,
   PEGI, CERO, USK and China's. They are mapped against each other, so you can
   filter by whichever one you actually recognise.
@@ -64,7 +75,9 @@ your browser, and point it at your ROM folders.
   Unscraped to see the games still waiting for their details. Genres,
   perspectives and game modes use one set of names, so filters find every game.
 - **Brings in what you already own.** Import from CLZ, or from your Steam, Xbox
-  and PlayStation libraries.
+  and PlayStation libraries. A Steam import fills each game's description,
+  credits, Metacritic score, age ratings, game modes and pictures from its store
+  page, and a sync keeps your play time and when you last played.
 - **Fixes the files themselves.** An archive scanner, a CHD converter and
   verifier, a duplicate finder, a multi-disc organiser, and reports that flag
   ROMs whose names break the standard conventions, all on one ROM Tools page.
@@ -73,6 +86,9 @@ your browser, and point it at your ROM folders.
   and accept only the ones you want. Fix Regions from File Names, Fix Box and
   Manual Regions, Clear RAWG Pictures from Box Art, Tidy Release Dates, and Tidy
   Genres, Perspectives and Modes repair older scrapes.
+  MAME Names gives MAME games their real names, years and makers from MAME's own
+  list; the files keep their short names, because MAME needs them. You can filter
+  the MAME list by category, and BIOS sets are hidden.
   Screenshot Review lists doubtful ZX Spectrum, Commodore 64 and Game Boy
   screenshots and removes only what you choose.
 - **Sharpens old artwork** with an optional AI upscaler for low-resolution

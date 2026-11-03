@@ -9,7 +9,8 @@ people never touch it. Snatch does the typing so you do not have to.
 
 **Download** — paste a link or drag one onto the window, choose your quality, and
 go. Queue up as many as you like and watch a progress bar for each. Starting the
-queue again skips the videos already finished.
+queue again skips the videos already finished. The queue survives closing Snatch:
+unfinished videos come back as Pending and never start on their own.
 
 Queued videos can download at the same time, up to three. It starts at one, so
 nothing changes until you raise it. A Parallel parts setting fetches several
@@ -34,7 +35,8 @@ already have access to.
 Search can keep only recent videos: pick last hour, today, this week, this month
 or this year, and you still get a full page of results. Click a search result and
 its upload date appears beside it. A Log button shows where the diagnostic log
-lives, handy for bug reports. Audio formats no longer show "None" for frame rate,
+lives, handy for bug reports. A Donate button offers the same donation pages as
+the project's GitHub page. Audio formats no longer show "None" for frame rate,
 and playlists in search results no longer show question marks.
 
 ## Getting it
@@ -53,6 +55,13 @@ Your downloads go wherever you point them. Snatch keeps its own settings and
 history alongside the app on Windows, and in the usual per-user folder on macOS
 and Linux. Nothing is uploaded anywhere.
 
+Snatch updates itself on Linux and Windows. When a new version is out, a "Snatch X
+available" button appears beside the theme menu and shows what changed since your
+version. *Update now* downloads it, installs it and reopens Snatch, keeping your
+queue and settings. It installs an update only if it carries the project's own
+signature. On a Mac the button opens the download page instead. Say no and the
+button stays hidden until an even newer version comes out.
+
 ## If something breaks
 
 **"No video formats found"** almost always means the site changed. Click *Check
@@ -69,7 +78,8 @@ each under its own licence.
 The Linux AppImage now works on newer systems such as openSUSE Tumbleweed, where
 it could not fetch or download anything before. It also starts about a second
 sooner on Linux, and the bundled image library is updated to close published
-security advisories.
+security advisories. Every Linux build is now tried on a current Linux system
+before release, so a break like that stops the release instead of reaching you.
 
 A notice along the bottom of the window asks you to download only what you have
 the right to. It also says Snatch is not affiliated with YouTube, Google or yt-dlp.

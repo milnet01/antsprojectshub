@@ -21,6 +21,12 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Snatch's page covers its two newest releases: it updates itself, and its queue survives closing it**
+  It also mentions the new-version button, the Donate button, and that every Linux build is now tried on a current system before release.
+
+- **RetroDB's page covers its two newest releases: real MAME names, richer Steam imports, game logos and box backs**
+  It also covers exact-file scrapes, RetroAchievements checking your copy, scrapes respecting each source's limit, and a greyed-out Play button that says why.
+
 - **MAME Curator's page plays its new trailer**
 
 - **RetroDB's page covers its newest releases: scraping stops taking the wrong game, AI answers are marked, and two more ROM Tools**
