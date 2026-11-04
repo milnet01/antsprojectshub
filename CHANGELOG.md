@@ -9,6 +9,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Changed
+
+- **UT Ants is out of "coming soon": its first release bakes your own maps and lets you fly through them, newly lit**
+  Its page gets a download-source button and describes the new lighting, fire, water and fog. There is no gameplay yet.
+
 ## 2026-11-04
 
 ### Added

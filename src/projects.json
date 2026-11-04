@@ -432,8 +432,8 @@
       "slug": "ut-ants",
       "name": "UT Ants",
       "tagline": "Plays your Unreal Tournament maps on a modern engine.",
-      "blurb": "Unreal Tournament is from 1999 and people are still playing it and still making maps for it — one Monster Hunt server here carries 515 of them. The engine underneath is frozen: shadows are painted into the walls at build time, and the computer players walk into a closed door and stop. UT Ants is a new engine that reads the maps you already have and rebuilds each one as a modernised version of itself — moving shadows, real materials, fog and light shafts — while running, dodging and shock-combos feel exactly as your hands expect. It ships none of Epic's content: you bring your own copy of the game. Very early, and there is nothing to download yet.",
-      "status": "soon",
+      "blurb": "Unreal Tournament is from 1999 and people are still playing it and still making maps for it — one Monster Hunt server here carries 515 of them. The engine underneath is frozen: shadows are painted into the walls at build time, and the computer players walk into a closed door and stop. UT Ants is a new engine that reads the maps you already have and rebuilds each one as a modernised version of itself — moving shadows, real materials, fog and light shafts — while running, dodging and shock-combos feel exactly as your hands expect. It ships none of Epic's content: you bring your own copy of the game. Early: you can fly through your own maps, newly lit, but there is nothing to play yet, and you build it from its source code.",
+      "status": "wip",
       "repo": "milnet01/UT_Ants",
       "platforms": [
         "win",

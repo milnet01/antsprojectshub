@@ -56,17 +56,33 @@ built for.
 
 ## Where it stands
 
-**Very early. There is nothing to play and nothing to download.** The project
-started in September 2026.
+**Early. You can fly through your own maps, but there is nothing to play yet.**
+The project started in September 2026, and its first release came out on
+4 November 2026. There is no ready-made download: you build it from its source
+code, as the repository's README explains.
 
-What exists is the reading and the drawing. It reads a real map end to end —
-its walls, textures, sounds, lights and everything placed in it — and rebuilds
-the old textures as modern materials. Point the first program at your Unreal
-Tournament folder and it lists the maps in it. Pick one and it is rebuilt and
-opened, and you can fly a camera through it — lit, shadowed, with fog and light
-shafts — on a keyboard and mouse or a gamepad. There is no player, no gravity,
-no weapons and no monsters yet. Windows and Linux are both built and tested on
-every single change — not one first and the other later — and the tests pass
+Open the launcher, pick any map in your Unreal Tournament install, and UT Ants
+bakes it into a modernised version of itself and opens it. You fly a camera
+through it on a keyboard and mouse or a gamepad. A baked map keeps its walls,
+doors, lifts and lights, and knows what is solid. Its old textures are rebuilt
+as modern materials.
+
+**The light is new.**
+
+- Baked shadows, and light that bounces off surfaces more than once.
+- Soft sky light outdoors, and a sun wherever a map's sky paints one.
+- Soft shadow in corners and creases.
+- Fires are moving flames that glow and make the light beside them flicker.
+- Water reflects the sky or the room around it.
+- Fog with shafts of light through it, a flashlight, a glow around bright
+  surfaces, and surfaces with depth set into them.
+
+Quality settings, and a picture size that adjusts itself and is sharpened back
+up with AMD FSR 1, aim to hold 60 frames a second.
+
+There is no player, no gravity, no weapons and no monsters yet. Movement and
+weapons come in the next release. Windows and Linux are both built and tested
+on every single change — not one first and the other later — and the tests pass
 on a machine that has never had Unreal Tournament installed.
 
 **Dark rooms get a torch of their own.** Our lighting is now physically
