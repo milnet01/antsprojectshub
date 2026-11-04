@@ -21,6 +21,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **The finbreak page says it installs as a native package on Debian 13 and Ubuntu 24.04**
+  It said those packages were still to come. They went live on the openSUSE Build Service on 2026-11-03.
+
 - **Snatch's page covers its two newest releases: it updates itself, and its queue survives closing it**
   It also mentions the new-version button, the Donate button, and that every Linux build is now tried on a current system before release.
 

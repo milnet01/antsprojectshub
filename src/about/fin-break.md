@@ -104,8 +104,8 @@ column widths and order you gave it, and Window → Reset layout puts them all b
 in one click.
 
 On Linux it runs as a self-contained AppImage, or installs as a native package on
-openSUSE Tumbleweed and Fedora through the openSUSE Build Service. Packages for
-Debian and Ubuntu and a macOS app are still to come.
+openSUSE Tumbleweed, Fedora, Debian 13 and Ubuntu 24.04 through the openSUSE Build
+Service. A macOS app is still to come.
 
 **Windows builds are not yet code-signed**, so SmartScreen will query it the first
 time — click *More info* → *Run anyway*. An application to a free signing
