@@ -12,6 +12,7 @@ so dated sections stand in for versions. Planned work lives in
 ### Changed
 
 - **Album Builder is finished: its page marks it live for 1.0, with undo for removing a song and reports printed on white**
+  Its main screenshot is retaken, showing the tick column beside the play button.
 
 - **Games Hub's page covers 1.3.0: a Games menu, "In progress" marks, filter buttons and favourites, one Preferences window, and a window that stays put**
 
