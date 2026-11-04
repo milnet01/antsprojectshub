@@ -372,7 +372,7 @@
       "screenshots": [
         {
           "src": "shots/games-hub-tiles.png",
-          "alt": "The Games Hub start screen, headed \"Pick a game\", showing large dark tiles in rows of three, each with a picture and a name: Chess, Reversi, Draughts, Minesweeper, Solitaire, Spider, FreeCell, Pyramid and Sudoku, with more below."
+          "alt": "The Games Hub start screen, headed \"Pick a game\", with a row of filter buttons (All, Board, Cards, Puzzle, Arcade and Favourites, with All lit) above large dark tiles in rows of three, each with a picture, a name and a star in its corner: Chess, Reversi, Draughts, Minesweeper, Solitaire, Spider, FreeCell, Pyramid and Sudoku, with more below. Chess's star is filled in gold as a favourite, and Reversi carries an \"In progress\" label."
         },
         {
           "src": "shots/games-hub-solitaire.png",

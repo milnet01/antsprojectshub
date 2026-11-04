@@ -17,6 +17,7 @@ so dated sections stand in for versions. Planned work lives in
   Its main screenshot is retaken, showing the tick column beside the play button.
 
 - **Games Hub's page covers 1.3.0: a Games menu, "In progress" marks, filter buttons and favourites, one Preferences window, and a window that stays put**
+  Its start-screen screenshot is retaken to show them, and the turn light is described as the glow it now is, with no outline.
 
 - **frameledger's page covers its second release: comparing two builds, finding the change that slowed a frame, time budgets and frame pacing**
 
