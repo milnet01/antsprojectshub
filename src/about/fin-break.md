@@ -77,7 +77,13 @@ Stable, with more still planned. This is finbreak's first stable release. Your
 vault, your backups and your saved import settings will keep working with every
 update in this series.
 
-**Faster, with security updates.** The newest release starts on Linux in about
+**Faster reports and transfers.** In the newest release, a PDF report of one
+period is quicker to make, most of all on a vault with many years of history. The
+Transfers tab, and deleting a statement, stay fast as transfers build up. Your
+vault upgrades itself the first time the new version opens it. And locking
+finbreak now also forgets the date range shown above the Transactions list.
+
+**Faster, with security updates** in an earlier release. finbreak starts on Linux in about
 0.8 seconds instead of 1.5. The Transactions tab opens quickly however long your
 history is: with 20,000 transactions, in about a tenth of a second instead of 1.3
 seconds. Both were measured on the developer's machine. Two libraries finbreak

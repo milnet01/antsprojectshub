@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **finbreak's page covers 1.0.3: faster PDF reports and transfers, and locking forgets the Transactions date range**
+
 - **Album Builder is finished: its page marks it live for 1.0, with undo for removing a song and reports printed on white**
   Its main screenshot is retaken, showing the tick column beside the play button.
 
