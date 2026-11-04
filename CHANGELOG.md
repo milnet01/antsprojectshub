@@ -11,6 +11,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Album Builder is finished: its page marks it live for 1.0, with undo for removing a song and reports printed on white**
+
+- **Games Hub's page covers 1.3.0: a Games menu, "In progress" marks, filter buttons and favourites, one Preferences window, and a window that stays put**
+
 - **frameledger's page covers its second release: comparing two builds, finding the change that slowed a frame, time budgets and frame pacing**
 
 - **UT Ants is out of "coming soon": its first release bakes your own maps and lets you fly through them, newly lit**

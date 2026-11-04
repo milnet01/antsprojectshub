@@ -11,7 +11,7 @@ afterwards.
 Point it at your recordings folder (File → Choose Music Folder, which you can change
 any time) and it lists everything it finds. From there:
 
-- **Say yes or no to each track** with a single toggle down the side of the list.
+- **Say yes or no to each track** with a tick box right beside its play button.
 - **Drag the keepers into order** in a pane beside it, and listen back as you go.
 - **See what you have already used.** Every track carries a badge showing which
   other approved albums it appears on, so you notice before you put the same
@@ -23,7 +23,7 @@ any time) and it lists everything it finds. From there:
 
 When you approve an album, it writes out everything you need: a playlist, a
 folder of numbered shortcuts to the tracks in order, and a report as both PDF and
-web page. The report comes in two flavours: the full one for you, and a
+web page. A printed report comes out on white paper, which saves ink. The report comes in two flavours: the full one for you, and a
 stripped-back artist-facing version fit to send to someone else. On Windows the
 numbered folder needs Developer Mode turned on, and a USB stick formatted FAT or
 exFAT cannot hold it on any system. Without it you still get the playlist and the
@@ -31,7 +31,8 @@ reports.
 
 Your work is remembered between sessions, and the library refreshes itself when
 you add new recordings to the folder. Deleting an album is not final either: File →
-Restore Deleted Album brings it back.
+Restore Deleted Album brings it back. Nor is removing a song from an album: Edit →
+Undo Remove Song, or Ctrl+Z, puts it back in the same place.
 
 ## Just listening
 
@@ -63,8 +64,10 @@ to start with a message about `GLIBC_2.35`.
 
 ## Where it stands
 
-In beta. Curation, ordering, usage tracking, lyric syncing, the export pipeline,
-the player with its own library, and eight languages are all in. Recent fixes:
+**Finished.** Everything it set out to do has been tested and works. Curation,
+ordering, usage tracking, lyric syncing, the export pipeline, the player with its
+own library, and eight languages are all in. A rare freeze when the music stopped
+as you closed the app is fixed. Earlier fixes:
 the Windows download no longer closes itself a moment after opening, the window
 fits smaller screens such as 1280 pixels wide, translations are better in every
 language, and closing the app no longer waits on your desktop's media controls.

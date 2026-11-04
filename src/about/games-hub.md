@@ -28,8 +28,15 @@ hand, the melds, the pile, the stock, the scores and the rules in force. There i
 no save button. It simply happens. Finish a game and nothing is kept, so you never
 return to a board you have already won.
 
-**The window remembers itself too**, separately per game, so one you like large
-opens large and the menu comes back where you put it. So do your settings —
+**Getting around is quick.** A Games menu goes straight from one game to another,
+without going back to the tiles. A game you left half-played is marked *In
+progress* on its tile and in the Games menu, and the board says so when it
+resumes. Buttons above the tiles show one kind of game — Board, Cards, Puzzle,
+Arcade — or your Favourites. Click the star on a tile, or press F, to make it a
+favourite. Both choices are remembered.
+
+**The window stays the size and place you leave it**; opening a game no longer
+moves or resizes it. Your settings are remembered too —
 Minesweeper reopens on the difficulty you last played, Canasta on the rules you
 last used.
 
@@ -55,7 +62,8 @@ stronger with Large switched on.
 Minesweeper. In Chess, Reversi, Draughts and Minesweeper the arrow keys move a
 cursor round the board, and Space or Return plays the square under it. In the card
 games the arrow keys move a gold cursor between the piles, Space lifts a card and
-Space puts it down, and Escape puts it back.
+Space puts it down, and Escape puts it back. The cursor is a slim outline, and only
+appears once you use the keys.
 
 **Every game shows its moves instead of jumping to the result.** A chess piece
 slides to its square, a draughts jump travels hop by hop, and Reversi's captured
@@ -82,4 +90,6 @@ from source is the way round that.
 ## Where it stands
 
 Thoroughly playable. Pick a game from the grid; `Esc` goes back. Each
-game puts its own controls on the toolbar beside it, and one switch mutes the lot.
+game puts its own controls on the toolbar beside it. Settings → Preferences holds
+every app-wide setting in one window: sound, volume, the Large switch and the
+support reminder.
