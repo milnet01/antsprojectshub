@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-11-04
+
 ### Added
 
 - **The private stats dashboard shows the total open issues and open pull requests at the top**
