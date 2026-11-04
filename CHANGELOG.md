@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **frameledger's page covers its second release: comparing two builds, finding the change that slowed a frame, time budgets and frame pacing**
+
 - **UT Ants is out of "coming soon": its first release bakes your own maps and lets you fly through them, newly lit**
   Its page gets a download-source button and describes the new lighting, fire, water and fog. There is no gameplay yet.
 

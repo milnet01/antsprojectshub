@@ -33,11 +33,22 @@ engine.
 After a run, the engine writes a plain text file: every frame, and how long
 each part of it took on the processor and on the graphics card. frameledger
 reads that file and answers in plain sentences first, before any table. It
-has three commands:
+has six commands:
 
 - **`report`** says where the frame time went: the costliest parts of the
   frame, whether the processor or the graphics card held it up, and which
-  frames were worst.
+  frames were worst. It also shows frame pacing: how much the frame time
+  jumps from one frame to the next. So a game that holds its frame rate but
+  still stutters shows it.
+- **`compare`** says whether a new build got slower than an old one, measure
+  by measure, memory included. Each change is judged against how much the
+  runs vary by themselves, so random wobble is not reported as a slowdown. It
+  refuses to compare runs made under different settings, such as a different
+  resolution, unless you say why it should.
+- **`bisect`** works with git, the tool that keeps a project's history, to
+  find the exact change that made a frame slower.
+- **`budget`** says whether any part of the frame went over the time you set
+  for it.
 - **`floor`** says whether the run held a frame rate you set, such as 60
   frames per second, in every second of the run.
 - **`check`** says whether a run file is written correctly.
@@ -47,11 +58,6 @@ software renderer, or a machine busy with other work.
 
 ## Planned
 
-- **Telling whether a change helped.** Compare runs from two builds, and it
-  says faster, slower or no real difference — judged against how much the
-  runs vary by themselves.
-- **Refusing an unfair comparison.** It will not compare runs at different
-  resolutions or build types.
 - **Checking many maps at once.** One command ranks a run per map by its
   slowest frames, and names the costliest part of each one that is too slow.
 
@@ -60,11 +66,11 @@ software renderer, or a machine busy with other work.
 It does not time anything inside an engine; each engine keeps its own timing.
 It does not replace a profiler such as RenderDoc or Tracy: frameledger says
 which part and which frames to look at, and a profiler says why. There are no
-charts yet; plain text comes first. It reads one run at a time.
+charts yet; plain text comes first.
 
 ## Where it stands
 
-**The first release is out.** It is a command-line tool: you type its
+**The second release is out, and it compares builds.** It is a command-line tool: you type its
 commands in a terminal window, and it answers in text. So there are no
 screenshots. The download is one zip for Linux and Windows. It holds the tool,
 which needs Python 3.10 or newer and nothing else, and an optional small C
