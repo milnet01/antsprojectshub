@@ -11,6 +11,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **OneUp's page covers its newest release: month names in your language, a clearer progress bar in the light theme, and updating over SSH**
+
+- **LocalWebServerManager's page covers its newest release: it says what is taking a port, lets you change a project's port, and keeps servers running after you quit**
+
 - **finbreak's page covers 1.0.3: faster PDF reports and transfers, and locking forgets the Transactions date range**
 
 - **Album Builder is finished: its page marks it live for 1.0, with undo for removing a song and reports printed on white**

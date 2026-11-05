@@ -54,11 +54,20 @@ against a contrast standard, and screen readers are told when a project changes
 state — once, rather than once a second. When something fails, the message appears
 under the project it is about, not in a corner of the window.
 
+**The newest release makes ports dependable.** A start refused because the port
+is taken now names the program taking it. View → What's using a port... tells
+you what is listening on any port. You can change the port a project starts on,
+and the app suggests a free one. Quitting the app no longer stops the servers it
+started, and reopening it still knows which ones are its own. Settings and the
+project list no longer lose entries when saved. Stop, Restart and Open in
+browser are refused if a different program took over while you were reading the
+warning.
+
 ## What is not there yet
 
 No live output panel inside the app; the logs are on disk and you read them with
 your own tools. No tray icon and no start-on-login yet — both are planned after
-version 1.0.0. No "what is using this port?" help.
+version 1.0.0.
 
 **And no packaged download.** Its first release is the source code only — a
 packaged AppImage is planned for version 1.0.0 — so for now you run it from that

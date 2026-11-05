@@ -124,12 +124,18 @@ in its name. The download figure now reaches the end when some packages were
 downloaded before. A run that updated only Flatpak apps no longer says nothing
 was needed.
 
-**The newest update makes failed updates safer and clearer.** A system update
+**The next made failed updates safer and clearer.** A system update
 that fails part-way now ends the run and says so, and an install failure is no
 longer called a package conflict. OneUp says when it could not list leftover
 packages, and when the password box cannot start. Pressing Stop during a retried
 download no longer claims the system was updated. The count of installed updates
 now includes new packages, and garbled characters in messages are gone.
+
+**The newest update is all fixes.** The "Last run" date uses your own
+language's month name. In the light theme, the progress bar's filled part is a
+deeper blue-to-teal that stands out from the empty part, with white words on
+it. And updating over SSH with no desktop now works: OneUp asks for the
+password in the terminal.
 
 OneUp's openSUSE package has a new address: its own project on the openSUSE
 Build Service,
