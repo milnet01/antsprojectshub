@@ -92,10 +92,6 @@ fetching, how far through the list it is, the size, the speed and how long it ha
 been waiting. It gives up on any one source after two minutes and offers to leave
 it out, rather than sitting there for hours.
 
-**Automatic updates never fail silently.** They need the passwordless setting. If
-that stops working, weekly updates switch themselves off and tell you, rather than
-quietly doing nothing every week.
-
 ## Accessibility
 
 Built to be usable if you cannot see the screen well, or at all.
