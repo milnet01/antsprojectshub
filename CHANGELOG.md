@@ -11,6 +11,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Pressless's page covers 0.13.0: edit a journal entry as it looks, see which pages will change before publishing, and a text-size setting**
+  It also adds the finish-setting-up list, the shorter domain wizard and a second site reusing your GitHub sign-in.
+
 - **Groundwork's page covers its two newest releases: copy your GitHub projects to a new computer, carry system-wide settings in a saved setup, and hibernate instead of sleep**
   It also adds the openSUSE Build Service tool to the developer switches.
 

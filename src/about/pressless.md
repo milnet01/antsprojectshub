@@ -90,9 +90,9 @@ photograph does not stop the import.
 
 ## What it does today
 
-- **Write with a handful of simple marks** — bold, a heading, a link, a
-  quotation — instead of buttons and hidden formatting. A cheat sheet sits
-  below the writing box, with a page to print.
+- **Edit a journal entry as it looks.** Click a paragraph on the page and
+  type. Bold, italic, links, colour, photographs and quotations sit in a
+  panel beside it.
 - **Show you the real page while you type**, rendered by the same code that
   builds the live site, so what you see is what gets published.
 - **Dim the preview in a dark look**, so a bright site does not glare at
@@ -102,7 +102,9 @@ photograph does not stop the import.
   until you publish it.
 - **Publish in one press.** If publishing fails, your files go back to how
   they were and you are told what to do next. Pressless refuses to replace
-  your site with an empty one.
+  your site with an empty one. Before anything goes live, it shows which
+  pages will change, with Publish now or Not yet. A large site publishes
+  using far less memory than before.
 - **Undo the last publish** in one step, when a change turns out wrong.
 - **Open your site in one click.** View your site sits in the top bar, and
   appears again after you publish and at the end of setup.
@@ -134,7 +136,8 @@ photograph does not stop the import.
   only a release signed by its maintainer.
 - **Choose how Pressless looks** from a picker in its top bar: light,
   dark, two high-contrast looks, and playful looks inspired by games,
-  films and TV. Your choice is remembered.
+  films and TV. Your choice is remembered. A text-size setting makes
+  Pressless's own screens up to twice as large.
 - **Say which version you have**, on an About page that also says
   Pressless is independent of GitHub, Google and WordPress.
 - **Explain every problem in plain words** — what happened, what it means for
@@ -158,7 +161,10 @@ you first start it.
 
 Pressless can now start someone with no website at all. Setup walks you
 through GitHub step by step and signs you in with a short code, with no keys
-to copy. You pick one of three starter looks, and your site is live.
+to copy. You pick one of three starter looks, and your site is live. A
+short finish-setting-up list then ticks itself off as you go. A second site
+reuses your GitHub sign-in. To use your own web address, a wizard shows only
+the settings that address needs.
 
 If a console window (a plain text window) opens alongside the browser, leave
 it open while you work: closing it stops Pressless.
