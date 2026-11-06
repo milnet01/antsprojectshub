@@ -351,7 +351,12 @@
           "src": "shots/snatch-history.png",
           "alt": "The History tab listing four past downloads, Big Buck Bunny, Sintel, Elephants Dream and Tears of Steel, with the date, the format such as MP4 1080p or MP3 audio, and where each file was saved, plus buttons to open the file or its folder."
         }
-      ]
+      ],
+      "video": {
+        "src": "snatch-trailer.mp4",
+        "poster": "snatch-trailer-poster.jpg",
+        "caption": "A 47-second trailer for Snatch, with background music and soft clicks but no speech; everything it says is written on screen. It is set on a dark background with a spinning vinyl record. It opens on two lines: \"Videos you want to keep.\" and \"Stuck behind a website.\" Then come clips of the app, each with a caption below and a ring marking each click. \"Search without opening a browser\": \"spring open movie\" is typed into the Search tab, and a list of Blender Studio's open movies appears, Spring first. \"Watch it right inside Snatch\": Spring plays inside the app. \"Paste a link, see every format\": a link is pasted on the Download tab and Fetch Formats is clicked; a preview of Big Buck Bunny appears, with a table of every format and its size. \"One click to download\": Download is clicked and the progress bar starts to fill. \"Everything you saved, remembered\": the History tab lists past downloads with their dates and formats. \"Pick a look you like\": the colour theme is changed from the theme list, from purple to grey to orange. Three lines follow: \"Search, watch and download\", \"Every format and quality\" and \"Free, open source, no ads\". Then \"Windows and Linux\". The logo follows, a download arrow over a tray beside the name, with \"Find it, watch it, keep it.\" It ends on the logo with \"Free and fully open source\", \"Download it free at antsprojectshub.co.za\", and links to support the project on GitHub Sponsors, Patreon and Paybru. Small print says to download only videos you have the right to, that Snatch is not made by or affiliated with YouTube, Google or yt-dlp, that the films are by the Blender Foundation under CC BY, and that the download history is made up."
+      }
     },
     {
       "slug": "games-hub",
