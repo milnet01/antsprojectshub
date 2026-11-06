@@ -37,10 +37,21 @@ It can also:
 - **Sit in the system tray** and turn amber when updates are waiting, with a
   right-click menu to check, update or open it. It can start at login too.
 - **Update automatically every week**, if you turn it on.
-- **Skip the password prompt**, if you turn it on. It stores no password: the
-  system remembers the decision for OneUp's update commands only, and switching it
-  off takes it back at once. Firmware may still ask, because it checks permission
-  its own way.
+- **Ask for your password the way Discover does.** Installed from the
+  openSUSE repository, OneUp comes with a small system service that runs its
+  update commands. It checks the same permission Discover checks: if Discover
+  would ask for a password, OneUp asks too, once per update.
+- **Skip the password prompt**, in the AppImage, if you turn it on. It stores
+  no password: the system remembers the decision for OneUp's update commands
+  only, and switching it off takes it back at once.
+- **Show each package's details.** After a check, each system package shows
+  its old and new version, its download size and where it comes from, such as
+  Packman. Click one to see what it is and, once downloaded, what changed in
+  it. Flatpak apps show what they are and which versions are new.
+- **Show an estimate of the time left** while packages download.
+- **Choose a layout and a theme.** Settings offers three window layouts, Rows,
+  Rail and Spotlight, and eight colour themes, four dark and four light.
+  "Follow system" keeps your desktop's light or dark setting.
 - **Roll back in one click** to the snapshot it takes before updating system
   packages.
 - **Restart just the affected services** when a full reboot isn't needed, and
@@ -55,8 +66,8 @@ There is also a live log and a history of past runs.
 ## The careful bits
 
 **It never runs as root.** The window is a thin front end. The privileged work
-happens in a separate engine that asks for your password once, through your
-desktop's standard password prompt.
+happens in a separate engine, which asks for permission through your desktop's
+standard prompt.
 
 **It gets the desktop's own updater out of the way.** The background updater
 holds the package manager shortly after login. OneUp pauses it so the update can
@@ -110,36 +121,14 @@ Live and stable, on openSUSE Tumbleweed and Leap. It follows your desktop's
 light or dark setting. The engine underneath also runs on its own in a terminal;
 the window just drives it.
 
-**A recent update was all fixes.** In the light theme, blue links and outlined
-buttons are now a darker blue that's easy to read. The window no longer stutters
-during a big download. Small messages open over OneUp instead of in a corner of
-the screen, and a window you moved stays where you put it. Offline, the firmware
-step no longer reports "up to date" from an old firmware list. It also includes
-clearer warnings and a few smaller window and engine tidy-ups.
-
-**The one after that fixes four things.** Pressing Stop while packages download
-is now reported as a stop, not a failure. The signing-key hint appears only when
-there really is a signing-key problem, not whenever a package has "gpg" or "key"
-in its name. The download figure now reaches the end when some packages were
-downloaded before. A run that updated only Flatpak apps no longer says nothing
-was needed.
-
-**The next made failed updates safer and clearer.** A system update
-that fails part-way now ends the run and says so, and an install failure is no
-longer called a package conflict. OneUp says when it could not list leftover
-packages, and when the password box cannot start. Pressing Stop during a retried
-download no longer claims the system was updated. The count of installed updates
-now includes new packages, and garbled characters in messages are gone.
-
-**The newest update is all fixes.** The "Last run" date uses your own
-language's month name. In the light theme, the progress bar's filled part is a
-deeper blue-to-teal that stands out from the empty part, with white words on
-it. And updating over SSH with no desktop now works: OneUp asks for the
-password in the terminal.
+**Version 2.0 is a big update.** It brings the system service, the three
+layouts, the eight themes and the package details described above. It also
+scrolls instead of squeezing on a small screen, and deletes its own old logs
+after 30 days. It is ready to be translated, including into right-to-left
+languages such as Hebrew and Arabic, though it still ships in English.
 
 OneUp's openSUSE package has a new address: its own project on the openSUSE
 Build Service,
 [home:milnet:oneup](https://download.opensuse.org/repositories/home:/milnet:/oneup/).
-If you added the older home:milnet repository, it keeps getting OneUp updates
-until the next major version, so nobody is cut off. To move, remove it and add
-the new one.
+The older home:milnet repository got 2.0 as its last OneUp update. If you
+added it, remove it and add the new one to keep getting updates.

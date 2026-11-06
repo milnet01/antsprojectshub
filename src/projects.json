@@ -668,12 +668,7 @@
           "src": "shots/oneup-settings-dark.png",
           "alt": "OneUp's Settings window in dark theme, headed 'Background behaviours. Each is off until you turn it on.' Eight rows each explain an option beside its button: Weekly check (on), Passwordless (off), Automatic updates (off, and it needs the passwordless setting), Tray icon (off), Start at boot (off), Copy diagnostics, Text size (Normal) and High contrast (off)."
         }
-      ],
-      "video": {
-        "src": "oneup-trailer.mp4",
-        "poster": "oneup-trailer-poster.jpg",
-        "caption": "A 40-second trailer for OneUp, with background music and soft clicks but no speech; everything it says is written on screen. It is styled like a computer terminal: green and white monospaced lettering over a dark background of faint scrolling text. It opens with \"Updating openSUSE is five chores. Easy to forget one.\", then the OneUp logo and \"Every openSUSE update, one click\". Four clips of the app follow, each with a caption below. OneUp's window lists five jobs, each with an on-off switch: System packages, Flatpak apps, Firmware, Leftover packages and Package cache. \"See what needs updating\": Check for updates is clicked, and System packages shows 24 available while Flatpak apps and Firmware show up to date. \"Every package, old and new version\": System packages opens into a list of package names, each with its current version, an arrow and its new version. \"Pick which jobs to run\": the Firmware and Leftover packages switches are turned off. \"One click updates everything\": Run selected updates is clicked, and a progress bar shows the 24 packages downloading and then installing, while System packages and Flatpak apps change to Done. Three lines follow: \"System, Flatpak and firmware updates\", \"Clears leftovers and old downloads\" and \"Roll back in one click\". Then \"openSUSE Tumbleweed · Leap\" and \"Install with zypper, or run the AppImage\". It ends on the logo with \"Free and fully open source\", \"Download it free at antsprojectshub.co.za\", and links to support the project on GitHub Sponsors, Patreon and Paybru. The updates shown are a replay of a real update with personal details removed."
-      }
+      ]
     },
     {
       "slug": "groundwork",

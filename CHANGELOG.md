@@ -11,6 +11,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **OneUp's page covers 2.0: Discover's password check, three layouts, eight themes and details for each package**
+  Its old trailer is gone until a new one shows 2.0.
+
 - **Snatch's page plays its new trailer**
 
 - **Pressless's page covers 0.13.0: edit a journal entry as it looks, see which pages will change before publishing, and a text-size setting**
