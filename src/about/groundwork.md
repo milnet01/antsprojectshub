@@ -16,9 +16,10 @@ them, follow the desktop's light or dark unless you choose one, and your choice
 is remembered. After a run, "Back to my choices" lets you pick more without
 restarting.
 
-Three switches are for developers. "Claude Code" installs Anthropic's coding
+Four switches are for developers. "Claude Code" installs Anthropic's coding
 assistant, which needs a paid Claude plan to use. "Tools for Claude Code" installs
-ripgrep, Git and code checkers. "tree-sitter" installs tree-sitter with grammars for common
+ripgrep, Git and code checkers. "openSUSE Build Service tool" installs osc, for
+building and publishing packages on OBS. "tree-sitter" installs tree-sitter with grammars for common
 languages. Tumbleweed and Slowroll get more grammars than Leap, which lacks
 some. Switching on Ants Terminal switches tree-sitter off, since Ants Terminal
 includes it, and the row says why.
@@ -28,8 +29,15 @@ includes it, and the row says why.
 Groundwork lists what is set up on this computer and lets you keep or drop each
 part. It saves the result to one file, such as on a USB stick. On the new install,
 start from that file: your software sources, programs, Flatpak apps and app
-settings come back in one run. Settings that hold saved passwords or keys start
-switched off.
+settings come back in one run. The file can also carry system-wide settings:
+firewall rules, printers, extra drives and shared folders, each with its own
+switch. Settings that hold saved passwords or keys start switched off and warn
+you. Sign-in folders for Claude Code, OBS, npm, PyPI and Cargo count as these.
+
+It can also copy your GitHub projects to the new computer. It installs git and
+gh if needed, and signs you in with a code in your browser. It lists your
+projects with a switch each, then copies the ones you keep into a folder you
+choose.
 
 ## Sharing folders and connecting drives
 
@@ -66,6 +74,12 @@ Groundwork also keeps a computer running well once it is set up:
 - **Smoother day to day.** Less eager swapping, a smoother setting for
   spinning hard drives, a 1 GB cap on the system log, and a calmer wake from
   hibernation.
+- **Hibernate instead of sleep**, for computers that do not wake properly
+  from sleep. It turns sleep off and keeps hibernate, using one settings file
+  in `/etc/systemd/sleep.conf.d/`. Deleting that file undoes it. It is offered
+  only where Secure Boot is off and the computer already wakes from a swap
+  partition at least as large as its memory. It never changes start-up
+  settings.
 
 It can also set up virtual machines, game controllers and GameMode, video
 acceleration on AMD graphics, NumLock on at login,

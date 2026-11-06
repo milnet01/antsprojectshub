@@ -11,6 +11,9 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Groundwork's page covers its two newest releases: copy your GitHub projects to a new computer, carry system-wide settings in a saved setup, and hibernate instead of sleep**
+  It also adds the openSUSE Build Service tool to the developer switches.
+
 - **OneUp's page covers its newest release: month names in your language, a clearer progress bar in the light theme, and updating over SSH**
 
 - **LocalWebServerManager's page covers its newest release: it says what is taking a port, lets you change a project's port, and keeps servers running after you quit**
