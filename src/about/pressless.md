@@ -93,6 +93,8 @@ photograph does not stop the import.
 - **Edit a journal entry as it looks.** Click a paragraph on the page and
   type. Bold, italic, links, colour, photographs and quotations sit in a
   panel beside it.
+- **Or type simple marks instead.** Show me the marks switches to a writing
+  box. A cheat sheet sits under it, with a page to print.
 - **Show you the real page while you type**, rendered by the same code that
   builds the live site, so what you see is what gets published.
 - **Dim the preview in a dark look**, so a bright site does not glare at
