@@ -1,6 +1,7 @@
 # Private stats dashboard — always-on local server.
 #
-# Install (as your own user, NOT root — it needs your gh login and your keyring):
+# Install (as your own user, NOT root — it needs your gh login and your keyring).
+# scripts/install-stats-service.sh does all of this, and installs Node.js if it is missing:
 #   mkdir -p ~/.config/systemd/user
 #   ln -sf "$PWD/systemd/ants-stats.service" ~/.config/systemd/user/
 #   systemctl --user daemon-reload

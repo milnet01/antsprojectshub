@@ -9,6 +9,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- **One script reinstalls the private stats dashboard after a fresh OS install**
+  `scripts/install-stats-service.sh` installs Node.js if it is missing, links and starts the service, and checks the page answers.
+
 ### Changed
 
 - **OneUp's page covers 2.0: Discover's password check, three layouts, eight themes and details for each package**
