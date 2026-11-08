@@ -16,6 +16,7 @@
 import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
+import { homedir } from "node:os";
 import { spawn } from "node:child_process";
 import { esc, ORIGIN } from "./lib/templates.mjs";
 import { collectAnalytics, collectDownloadClicks, collectPostViews, gaError } from "./lib/ga.mjs";
@@ -39,10 +40,21 @@ const HISTORY = join(OUT, "history.json");
 const PAGE = join(OUT, "dashboard.html");
 // Written by scripts/weekly-post.sh at the end of every real run; read, never written, here.
 const WEEKLY = join(OUT, "weekly-post.json");
+// Written by Ants Terminal's roadmap backup jobs (tools/roadmap-backup-lib.sh there), one
+// key=value file per job; read, never written, here. "export" commits the roadmaps into the
+// claude-config repo (~/.claude) and pushes it; "snapshot" copies the store to a local disk.
+const BACKUP_DIR = join(process.env.XDG_STATE_HOME || join(homedir(), ".local", "state"), "ants-terminal");
+const BACKUP_JOBS = [
+  { job: "export", label: "Roadmap backup to claude-config", unit: "ants-roadmap-export" },
+  { job: "snapshot", label: "Roadmap store snapshot", unit: "ants-roadmap-backup" },
+];
 
 const OS_KEYS = ["win", "mac", "linux"];
 const OS_LABEL = { win: "Windows", mac: "macOS", linux: "Linux" };
 const DAY = 86400000;
+// Both backup jobs run daily, a day late at worst when the PC was off; past this, a job
+// that last succeeded has stopped running.
+const BACKUP_STALE = 2 * DAY;
 
 // The sticky nav, whose links become tabs, and the accent each section wears. [key, heading
 // id, nav label] — the key ties a nav link to its section so CSS can give both the same
@@ -350,6 +362,7 @@ async function contentHealth(projects) {
     ),
     orphanShots: files.filter((f) => !isUsed(f)),
     weekly: await readWeekly(),
+    backups: await readBackups(),
   };
 }
 
@@ -368,6 +381,58 @@ async function readWeekly() {
   } catch {
     return { unreadable: true };
   }
+}
+
+// Each roadmap backup job's record: { job, label, unit, attempt, success, error }. A missing
+// file means the job has never run on this machine (missing: true); a file without an
+// attempt line is unreadable. Neither is treated as a failure of the job itself.
+async function readBackups() {
+  return Promise.all(
+    BACKUP_JOBS.map(async (b) => {
+      const path = join(BACKUP_DIR, `roadmap-backup-${b.job}.state`);
+      let text;
+      try {
+        text = await readFile(path, "utf8");
+      } catch {
+        return { ...b, path, missing: true };
+      }
+      const rec = {};
+      for (const line of text.split("\n")) {
+        const i = line.indexOf("=");
+        if (i > 0) rec[line.slice(0, i)] = line.slice(i + 1);
+      }
+      if (!rec.attempt) return { ...b, path, unreadable: true };
+      return { ...b, path, attempt: rec.attempt, success: rec.success || "", error: rec.error || "" };
+    })
+  );
+}
+
+function agoText(iso, now) {
+  const when = new Date(iso);
+  const days = Math.floor((now - when) / DAY);
+  const ago = days === 0 ? "today" : days === 1 ? "yesterday" : `${days} days ago`;
+  return `${ago} (<time datetime="${esc(iso)}">${esc(when.toLocaleString("en-GB"))}</time>)`;
+}
+
+function backupLines(backups, now) {
+  return backups
+    .map((b) => {
+      if (b.missing) {
+        return `<p class="note">${esc(b.label)}: no record yet at <code>${esc(b.path)}</code>.
+          The first run of <code>${esc(b.unit)}.timer</code> writes one.</p>`;
+      }
+      if (b.unreadable) {
+        return `<p class="note">${esc(b.label)}: the record at <code>${esc(b.path)}</code>
+          could not be read.</p>`;
+      }
+      const last = b.success ? `last success ${agoText(b.success, now)}` : "no success yet";
+      const result = b.error
+        ? `<strong>⚠ failed</strong> — ${esc(b.error)}`
+        : `<strong>ok</strong>`;
+      return `<p class="note">${esc(b.label)}, ${last}; last run ${agoText(b.attempt, now)}:
+        ${result}</p>`;
+    })
+    .join("");
 }
 
 const WEEKLY_LABEL = { published: "published", skipped: "skipped", stopped: "⚠ stopped" };
@@ -1450,6 +1515,21 @@ function attentionItems(rows, health) {
          <code>systemctl --user status ants-weekly-post.timer</code>. ${since}`);
     }
   }
+  // A roadmap backup job failed or has stopped running. Nothing visible to visitors, but the
+  // roadmaps are every project's plans, and a backup that quietly stopped is found only when
+  // it is needed. Same rank as the weekly post: it costs no downloads.
+  for (const b of health.backups.filter((x) => !x.missing && !x.unreadable)) {
+    if (b.error) {
+      add(true, 4, 1, [`backup:${b.job}:failed`], (since) =>
+        `<strong>${esc(b.label)} failed</strong>: ${esc(b.error.replace(/\.$/, ""))}. Last success:
+         ${b.success ? esc(new Date(b.success).toLocaleString("en-GB")) : "never"}. Fix: clear
+         that, then run <code>systemctl --user start ${esc(b.unit)}.service</code>. ${since}`);
+    } else if (Date.now() - new Date(b.success) > BACKUP_STALE) {
+      add(true, 4, 1, [`backup:${b.job}:stale`], (since) =>
+        `<strong>${esc(b.label)} has not run for over two days</strong> — check
+         <code>systemctl --user status ${esc(b.unit)}.timer</code>. ${since}`);
+    }
+  }
   // Nothing is broken below this line — a thinner page, and some tidying.
   //
   // A claimed OS no release has EVER shipped a file for. The button says "Download source",
@@ -1612,7 +1692,8 @@ function siteContent(health, now) {
         ? `<p class="note">Unpublished (no repo yet): ${health.noRepo.map(esc).join(", ")}.</p>`
         : ""
     }
-    ${weeklyLine(health.weekly, now)}`;
+    ${weeklyLine(health.weekly, now)}
+    ${backupLines(health.backups, now)}`;
 }
 
 function tallyList(obj) {

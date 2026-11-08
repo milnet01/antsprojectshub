@@ -61,6 +61,11 @@ dashboard".
   `.stats/history.json` was imported once and is never written again. The design is
   [`docs/specs/APHW-0029-stats-history-database.md`](../../docs/specs/APHW-0029-stats-history-database.md).
 
+- **The roadmap backup records are read, never written.** Ants Terminal's backup jobs
+  write one `roadmap-backup-<job>.state` file each under `$XDG_STATE_HOME/ants-terminal/`.
+  Its `tools/roadmap-backup-lib.sh` owns that format. A missing record is a note, never
+  an alarm. A failed job, or one with no success for over two days, is "Broken now".
+
 - **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
   `site.css`, not linked. Any new asset the page references gets copied in and added to
   `FILES` too, and its extension to `TYPES` if new. The body class is `admin`, **not** `stats`.

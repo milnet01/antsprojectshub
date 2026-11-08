@@ -14,6 +14,9 @@ so dated sections stand in for versions. Planned work lives in
 - **One script reinstalls the private stats dashboard after a fresh OS install**
   `scripts/install-stats-service.sh` installs Node.js and PySide6 if they are missing, links and starts the service, and checks the page answers.
 
+- **The private stats dashboard watches the daily roadmap backups**
+  The Overview shows when the roadmaps were last backed up to claude-config and to the local disk. It lists a failure, or a backup more than two days old, under "Broken now".
+
 ### Changed
 
 - **OneUp's page covers 2.0: Discover's password check, three layouts, eight themes and details for each package**
