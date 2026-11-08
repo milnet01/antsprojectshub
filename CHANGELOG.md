@@ -23,6 +23,7 @@ so dated sections stand in for versions. Planned work lives in
   It also says that a vault converts on first unlock and older versions cannot open it after that.
 
 - **Pressless's gallery shows the new entry editor, the box listing what will change before publishing, and the finish-setting-up checklist**
+  The dark-theme editor picture shows the new editor too.
 
 - **OneUp's page covers 2.0: Discover's password check, three layouts, eight themes and details for each package**
   Its old trailer is gone until a new one shows 2.0.
