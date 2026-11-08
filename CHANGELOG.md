@@ -19,6 +19,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- **Rolodex's page covers 2.0.0: themes and accent colours, CSV import and export, a stronger password scramble, narrow windows, and selecting several entries at once**
+  It also says that a vault converts on first unlock and older versions cannot open it after that.
+
+- **Pressless's gallery shows the new entry editor, the box listing what will change before publishing, and the finish-setting-up checklist**
+
 - **OneUp's page covers 2.0: Discover's password check, three layouts, eight themes and details for each package**
   Its old trailer is gone until a new one shows 2.0.
 
