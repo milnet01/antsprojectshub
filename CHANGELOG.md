@@ -12,7 +12,7 @@ so dated sections stand in for versions. Planned work lives in
 ### Added
 
 - **One script reinstalls the private stats dashboard after a fresh OS install**
-  `scripts/install-stats-service.sh` installs Node.js if it is missing, links and starts the service, and checks the page answers.
+  `scripts/install-stats-service.sh` installs Node.js and PySide6 if they are missing, links and starts the service, and checks the page answers.
 
 ### Changed
 
