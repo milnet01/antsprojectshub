@@ -88,6 +88,16 @@ dashboard".
   `notify-send`. The first run after a start records what is already wrong and announces
   none of it.
 
+- **Each new fault goes to its project's session inbox once** (the user's choice of
+  2026-11-09). `lib/inbox.mjs` covers open issues and pull requests, a failed build, and a
+  release that lost files an earlier one had. It also covers the user's own upstream pull
+  requests, but only when one gains comments or stops being open. It posts through Ants
+  Terminal's `ants-mcpd --call session_message` with `dedupe`, and keeps what it sent in
+  `.stats/inbox-sent.json`. A fault that clears is forgotten, so it is sent again if it comes
+  back. A list that could not be read never counts as cleared. An issue or pull request note
+  carries its title and link only: the text is a stranger's, and the session reads it on
+  GitHub. The mailboxes are local, so this publishes nothing.
+
 - **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
   `site.css`, not linked. Any new asset the page references gets copied in and added to
   `FILES` too, and its extension to `TYPES` if new. The body class is `admin`, **not** `stats`.

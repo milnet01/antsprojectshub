@@ -6,6 +6,8 @@
 //   • regenerates on demand when the page's "Refresh now" button POSTs /refresh
 //   • every BUILDS_SECONDS, re-reads only each repo's last push, checks and newest release,
 //     rewrites the page when one changed, and pops up a desktop notice for a new failure
+//   • after every run, leaves a note in the owning project's session inbox for each new
+//     issue, pull request, failed build or lost release file (lib/inbox.mjs)
 //
 // LOCAL ONLY, like everything else in .stats/: the listener binds to 127.0.0.1, so it is
 // reachable from this machine and nowhere else — not the local network, not the internet.
@@ -24,6 +26,7 @@ import { dirname, join } from "node:path";
 import { generate, watchBuilds, BUILDS_SECONDS } from "./stats.mjs";
 import { resolveAuth } from "./lib/github.mjs";
 import { resolvePort } from "./lib/port.mjs";
+import { deliver } from "./lib/inbox.mjs";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, ".stats");
@@ -76,6 +79,16 @@ function announce(alarms) {
   announced = keys;
 }
 
+// Inbox notes, one pass at a time: two passes reading and writing the sent-list together could
+// each send the same note. A failure is logged and never stops the server.
+let posting = Promise.resolve();
+function post(repos) {
+  if (!repos) return;
+  posting = posting
+    .then(() => deliver(repos, { root: ROOT, file: join(OUT, "inbox-sent.json"), log }))
+    .catch((err) => log(`inbox failed: ${err.message}`));
+}
+
 // One run at a time, full or watch. Two overlapping runs would race on the history database and
 // could write a snapshot twice; a concurrent caller just waits for the run already in flight. A
 // watch pass due while a full run is going is skipped: the full run reads everything it would.
@@ -90,6 +103,7 @@ function refresh(reason) {
     .then((r) => {
       log(`done — ${r.ok}/${r.total} projects`);
       announce(r.alarms);
+      post(r.repos);
       return r;
     })
     .catch((err) => {
@@ -168,6 +182,7 @@ setInterval(() => {
     .then((r) => {
       if (r.changed) log(`builds watch: ${r.changed} repo(s) changed — page rewritten (${r.calls.spent} charged call(s), ${r.calls.free} unchanged)`);
       announce(r.alarms);
+      post(r.repos);
     })
     .catch((err) => log(`builds watch failed: ${err.message}`))
     .finally(() => {

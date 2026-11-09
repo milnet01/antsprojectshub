@@ -51,7 +51,7 @@ const BACKUP_JOBS = [
 ];
 
 const OS_KEYS = ["win", "mac", "linux"];
-const OS_LABEL = { win: "Windows", mac: "macOS", linux: "Linux" };
+export const OS_LABEL = { win: "Windows", mac: "macOS", linux: "Linux" };
 const DAY = 86400000;
 // Both backup jobs run daily, a day late at worst when the PC was off; past this, a job
 // that last succeeded has stopped running.
@@ -168,7 +168,7 @@ async function collectProject(p) {
   const repo = repoRes.data || {};
   const releases = (Array.isArray(relRes.data) ? relRes.data : []).filter((r) => !r.draft);
   const latest = pickLatestRelease(releases);
-  const pr = (x) => ({ n: x.number, title: x.title, url: x.html_url });
+  const pr = (x) => ({ n: x.number, title: x.title, url: x.html_url, comments: x.comments || 0 });
   const open = Array.isArray(openRes.data) ? openRes.data : [];
   const prList = open.filter((x) => x.pull_request).map(pr);
   const issueList = open.filter((x) => !x.pull_request).map(pr);
@@ -241,6 +241,8 @@ async function collectProject(p) {
     prs: openPrs,
     prList,
     issueList,
+    // false when the open list could not be read, so its empty lists are not "none open".
+    issuesOk: openRes.ok,
     upstreamPrs,
     pushedAt: repo.pushed_at || null,
     archived: Boolean(repo.archived),
@@ -257,7 +259,7 @@ async function collectProject(p) {
 
 // The newest push whose checks ran: the head commit's, or when that one ran none, the
 // newest before it. A failure stays a failure until a later push's checks pass.
-const checkedPush = (push) => push?.ci || push?.lastChecked || null;
+export const checkedPush = (push) => push?.ci || push?.lastChecked || null;
 
 // A release is often published first and its files attached by a build that runs after it,
 // so an empty newest release counts as "no files" only once this long has passed. Until then
@@ -3347,7 +3349,7 @@ export async function watchBuilds() {
   }
   const now = Date.now();
   if (changed) await writeFile(PAGE, page(last.args));
-  return { changed, calls, alarms: buildAlarms(last.repos, now) };
+  return { changed, calls, alarms: buildAlarms(last.repos, now), repos: last.repos };
 }
 
 export async function generate() {
@@ -3476,6 +3478,7 @@ export async function generate() {
     total: published.length,
     failed,
     alarms: buildAlarms(last.repos, now),
+    repos: last.repos,
   };
 }
 
