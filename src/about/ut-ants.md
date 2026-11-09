@@ -59,7 +59,8 @@ built for.
 **Early. You can fly through your own maps, but there is nothing to play yet.**
 The project started in September 2026, and its first release came out on
 4 November 2026. There is no ready-made download: you build it from its source
-code, as the repository's README explains.
+code, as the README's [Building it](https://github.com/milnet01/UT_Ants#building-it)
+section explains.
 
 Open the launcher, pick any map in your Unreal Tournament install, and UT Ants
 bakes it into a modernised version of itself and opens it. You fly a camera

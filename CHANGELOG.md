@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- UT Ants's page links the README's build steps; 0.1.0 is source-only by design.
+
 - **One script reinstalls the private stats dashboard after a fresh OS install**
   `scripts/install-stats-service.sh` installs Node.js and PySide6 if they are missing, links and starts the service, and checks the page answers.
 
