@@ -4,6 +4,8 @@
 //   • regenerates on start (so a machine that was off catches up the moment it boots)
 //   • regenerates every REFRESH_HOURS (default 24)
 //   • regenerates on demand when the page's "Refresh now" button POSTs /refresh
+//   • every BUILDS_SECONDS, re-reads only each repo's last push, checks and newest release,
+//     rewrites the page when one changed, and pops up a desktop notice for a new failure
 //
 // LOCAL ONLY, like everything else in .stats/: the listener binds to 127.0.0.1, so it is
 // reachable from this machine and nowhere else — not the local network, not the internet.
@@ -14,11 +16,12 @@
 //   PORT=5000 node serve.mjs       → wins over STATS_PORT; see lib/port.mjs
 
 import { createServer } from "node:http";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
+import { execFile } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { generate } from "./stats.mjs";
+import { generate, watchBuilds, BUILDS_SECONDS } from "./stats.mjs";
 import { resolveAuth } from "./lib/github.mjs";
 import { resolvePort } from "./lib/port.mjs";
 
@@ -54,15 +57,39 @@ const FILES = {
 const stamp = () => new Date().toISOString().replace("T", " ").slice(0, 19);
 const log = (msg) => console.log(`[${stamp()}] ${msg}`);
 
-// One refresh at a time. Two overlapping runs would race on the history database and could write a
-// snapshot twice; a concurrent caller just waits for the run already in flight.
+// Desktop notices for build failures and releases with no files. Only an alarm that was not
+// there on the previous run pops up, so one failure is announced once, not every pass. The
+// first run only records what is already wrong: a restart must not replay every known fault,
+// and the dashboard lists them anyway. notify-send missing or failing is logged and ignored.
+let announced = null;
+function announce(alarms) {
+  if (!alarms) return;
+  const keys = new Set(alarms.map((a) => a.key));
+  if (announced) {
+    for (const a of alarms.filter((x) => !announced.has(x.key))) {
+      log(`notice: ${a.title}`);
+      execFile("notify-send", ["--app-name=Ants stats", "--icon=dialog-warning", a.title, a.body], (err) => {
+        if (err) log(`notify-send failed: ${err.message}`);
+      });
+    }
+  }
+  announced = keys;
+}
+
+// One run at a time, full or watch. Two overlapping runs would race on the history database and
+// could write a snapshot twice; a concurrent caller just waits for the run already in flight. A
+// watch pass due while a full run is going is skipped: the full run reads everything it would.
 let inFlight = null;
+let watching = null;
 function refresh(reason) {
   if (inFlight) return inFlight;
   log(`refreshing (${reason})`);
-  inFlight = generate()
+  inFlight = (watching || Promise.resolve())
+    .catch(() => {})
+    .then(() => generate())
     .then((r) => {
       log(`done — ${r.ok}/${r.total} projects`);
+      announce(r.alarms);
       return r;
     })
     .catch((err) => {
@@ -93,6 +120,19 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  // The page's write time, which the open page polls to learn a newer one exists.
+  if (req.method === "GET" && path === "/updated") {
+    try {
+      const { mtimeMs } = await stat(join(OUT, "dashboard.html"));
+      res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
+      res.end(JSON.stringify({ at: mtimeMs }));
+    } catch {
+      res.writeHead(503, { "content-type": "application/json" });
+      res.end("{}");
+    }
+    return;
+  }
+
   const name = FILES[path];
   if (!name) {
     res.writeHead(404, { "content-type": "text/plain" });
@@ -117,10 +157,23 @@ const server = createServer(async (req, res) => {
 // the startup refresh below can wait several minutes for credentials. Serving first means the
 // tray icon and the bookmark always open something instead of "connection refused".
 server.listen(PORT, "127.0.0.1", () => {
-  log(`dashboard on http://127.0.0.1:${PORT} — refreshing every ${REFRESH_HOURS}h`);
+  log(`dashboard on http://127.0.0.1:${PORT} — refreshing every ${REFRESH_HOURS}h, builds every ${BUILDS_SECONDS}s`);
 });
 
 setInterval(() => refresh("scheduled").catch(() => {}), REFRESH_HOURS * 3600_000);
+
+setInterval(() => {
+  if (inFlight || watching) return;
+  watching = watchBuilds()
+    .then((r) => {
+      if (r.changed) log(`builds watch: ${r.changed} repo(s) changed — page rewritten (${r.calls.spent} charged call(s), ${r.calls.free} unchanged)`);
+      announce(r.alarms);
+    })
+    .catch((err) => log(`builds watch failed: ${err.message}`))
+    .finally(() => {
+      watching = null;
+    });
+}, BUILDS_SECONDS * 1000);
 
 // At boot this service starts before the desktop session unlocks the keyring that `gh` keeps
 // the GitHub login in, so refreshing straight away yields an incomplete run: traffic skipped

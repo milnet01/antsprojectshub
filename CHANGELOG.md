@@ -20,6 +20,9 @@ so dated sections stand in for versions. Planned work lives in
 - **The private stats dashboard has a Builds tab**
   It shows each repo's last push and whether its GitHub checks passed, and how many files its newest release has. A failed build, or a release with no files, is marked at the top of the table and listed under "Broken now". The 0 key opens the tenth tab.
 
+- **The Builds tab keeps itself up to date, and a failure pops up on the desktop**
+  Every 2½ minutes the dashboard service asks GitHub whether any push, check or release has changed. An unchanged answer does not count against GitHub's hourly limit. An open dashboard reloads by itself when something changed. A new failed build, or a release still without files an hour after it went out, shows a desktop notice.
+
 ### Changed
 
 - **Rolodex's page covers 2.0.0: themes and accent colours, CSV import and export, a stronger password scramble, narrow windows, and selecting several entries at once**

@@ -71,6 +71,21 @@ dashboard".
   did, so a failure stays listed until a later push passes. A result that could not be read
   shows as "could not be read", never as passed. A newest release with no files attached is
   "Broken now", as is a failed build; GitHub's source-code archives are not counted as files.
+  A release under an hour old is "waiting for files" instead, since its build may still be
+  attaching them.
+
+- **The builds watch costs only what changed.** `serve.mjs` runs `watchBuilds()` every
+  `BUILDS_SECONDS` (150, the user's choice of 2026-11-09). It asks GitHub through
+  `ghCached`, whose unchanged (304) answers are not charged; keep the watch on it, never
+  on `ghRequest`. It updates the last full run's repos in place, rewrites the page, and
+  stores nothing. A failed read keeps the repo's previous figures. The open page polls
+  `GET /updated` and reloads when the page's write time changes, never while the reader
+  is typing.
+
+- **A desktop notice is for a new fault only.** `buildAlarms()` keys each by commit or
+  tag; `serve.mjs` pops up a key that was not in the previous run's list, through
+  `notify-send`. The first run after a start records what is already wrong and announces
+  none of it.
 
 - **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
   `site.css`, not linked. Any new asset the page references gets copied in and added to
@@ -131,7 +146,8 @@ dashboard".
   of `src/assets/analytics.js`, the *write* half, and neither can switch the other on.
 
 `npm test` covers the *stats dashboard only* — the port contract in
-`.claude/rules/stats-dashboard.md`, and the history store and its charts
-(`test/store.test.mjs`), and nothing else. It
+`.claude/rules/stats-dashboard.md`, the history store and its charts
+(`test/store.test.mjs`), and the Builds tab's file and alarm judgements
+(`test/builds.test.mjs`), and nothing else. It
 uses `node --test` and Python's `unittest`; the site build has no
 tests. It runs in the pre-push gate, **not in CI**.

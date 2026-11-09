@@ -24,6 +24,7 @@ import { loadPosts } from "./lib/posts.mjs";
 import { openStore, closeStore, loadHistory, saveRun, readTrends, backup } from "./lib/store.mjs";
 import {
   ghRequest,
+  ghCached,
   assetPlatform,
   pickAsset,
   pickLatestRelease,
@@ -55,6 +56,11 @@ const DAY = 86400000;
 // Both backup jobs run daily, a day late at worst when the PC was off; past this, a job
 // that last succeeded has stopped running.
 const BACKUP_STALE = 2 * DAY;
+// How often the stats server's builds watch runs (serve.mjs). Each pass asks GitHub "has this
+// changed?" of three paths per repo, and an unchanged answer is free, so the cost is the
+// changes, not the pace. Two and a half minutes is the user's choice (2026-11-09).
+export const BUILDS_SECONDS = Number(process.env.STATS_BUILDS_SECONDS) || 150;
+const BUILDS_EVERY = `${BUILDS_SECONDS / 60} minutes`;
 
 // The sticky nav, whose links become tabs, and the accent each section wears. [key, heading
 // id, nav label] — the key ties a nav link to its section so CSS can give both the same
@@ -252,6 +258,44 @@ async function collectProject(p) {
 // newest before it. A failure stays a failure until a later push's checks pass.
 const checkedPush = (push) => push?.ci || push?.lastChecked || null;
 
+// A release is often published first and its files attached by a build that runs after it,
+// so an empty newest release counts as "no files" only once this long has passed. Until then
+// it is "waiting for files". An hour is a guess at the slowest release build, not a measure.
+const RELEASE_GRACE = 60 * 60_000;
+
+// "none" (no files, past the grace), "pending" (no files yet, inside it), "ok", or null for
+// a repo with no release.
+export function filesState(r, now) {
+  if (!r.latestFiles) return null;
+  if (r.latestFiles.length) return "ok";
+  return r.latestAt && now - Date.parse(r.latestAt) < RELEASE_GRACE ? "pending" : "none";
+}
+
+// What the stats server pops up a desktop notice for: a failed build and a release past its
+// grace with no files. Each key names the commit or tag, so a later failure of the same repo
+// is announced again, and the same one never twice. The server decides which are new.
+export function buildAlarms(repos, now) {
+  const out = [];
+  for (const r of repos) {
+    const ci = checkedPush(r.push);
+    if (ci?.state === "failed") {
+      out.push({
+        key: `ci:${r.repo}:${ci.sha}`,
+        title: `Build failed: ${r.name}`,
+        body: `${ci.failed.map((f) => f.name).join(", ")} failed on ${r.push.branch}: ${ci.message}`,
+      });
+    }
+    if (filesState(r, now) === "none") {
+      out.push({
+        key: `nofiles:${r.repo}:${r.latestTag}`,
+        title: `Release has no files: ${r.name}`,
+        body: `${r.latestTag} has nothing attached to download.`,
+      });
+    }
+  }
+  return out;
+}
+
 // GitHub Actions conclusions that mean the push's checks did not pass.
 const CI_FAILED = new Set(["failure", "timed_out", "startup_failure", "action_required"]);
 
@@ -284,11 +328,12 @@ function ciResult(runs) {
 // push ran no checks (a docs-only change a workflow ignores) is "not checked", and the newest
 // push that was checked is reported beside it. Returns { error } when GitHub could not be
 // read, which renders as "could not be read" — never as passed.
-async function collectPush(repo, branch) {
+// `get` is ghRequest for a full run, and ghCached for the builds watch.
+async function collectPush(repo, branch, get = ghRequest) {
   const b = encodeURIComponent(branch);
   const [headRes, runsRes] = await Promise.all([
-    ghRequest(`/repos/${repo}/commits/${b}`),
-    ghRequest(`/repos/${repo}/actions/runs?branch=${b}&event=push&per_page=50&exclude_pull_requests=true`),
+    get(`/repos/${repo}/commits/${b}`),
+    get(`/repos/${repo}/actions/runs?branch=${b}&event=push&per_page=50&exclude_pull_requests=true`),
   ]);
   if (!headRes.ok || !runsRes.ok) return { error: `HTTP ${headRes.ok ? runsRes.status : headRes.status}` };
   const c = headRes.data;
@@ -1536,7 +1581,7 @@ function attentionItems(rows, health) {
     );
   }
   // The newest release has no files at all, so every download button on its page falls back.
-  for (const r of rows.filter((x) => x.latestFiles && !x.latestFiles.length)) {
+  for (const r of rows.filter((x) => filesState(x, Date.now()) === "none")) {
     add(true, 1, 1, [`nofiles:${r.slug}`], (since) =>
       `<strong>${esc(r.name)}</strong>: release ${link(r.releasesUrl, r.latestTag)} has no files
        attached, so there is nothing to download from it. Fix: attach the builds to it. ${since}`);
@@ -1916,7 +1961,7 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
   </div>
 
   <section class="sec" data-sec="ci" aria-labelledby="h-ci"><h2 id="h-ci">Builds and release files</h2>
-    ${buildsTable(ok, health.unreleased || [], now)}</section>
+    ${buildsTable(ok, health.unreleased || [], Date.now())}</section>
 
   <section class="sec" data-sec="trend" aria-labelledby="h-trend"><h2 id="h-trend">Trends</h2>
     <p class="note">Each figure day by day, from the history this dashboard keeps. Today is left
@@ -2348,7 +2393,8 @@ function buildsTable(rows, others, now) {
     .map((r) => {
       const [rank, checkHtml] = checks(r.push);
       const files = r.latestFiles;
-      const noFiles = files && !files.length;
+      const fstate = filesState(r, now);
+      const noFiles = fstate === "none";
       const failed = checkedPush(r.push)?.state === "failed";
       const head = r.push?.head;
       // Repos unlistedRepos() found carry no projects.json status; listed ones not yet
@@ -2372,6 +2418,8 @@ function buildsTable(rows, others, now) {
             ? '<span class="dim">—</span>'
             : noFiles
               ? '<span class="state state--bad">✗ No files</span>'
+              : fstate === "pending"
+                ? '<span class="state state--warn">● Waiting for files</span>'
               : `<span title="${esc(files.join("\n"))}">${num(files.length)}</span>`
         }</td></tr>`,
         alert: failed || noFiles,
@@ -2383,8 +2431,11 @@ function buildsTable(rows, others, now) {
     .join("");
   return `<p class="note">The newest commit on each repo's main branch, and what GitHub's checks
     said about it. A row is marked when its build failed or its newest release has no files
-    to download. Files count only what was attached; GitHub's automatic source-code archives
-    are not files. Hover a file count to read the names.</p>
+    to download; a release less than an hour old is "waiting for files" instead, since its
+    build may still be attaching them. Files count only what was attached; GitHub's automatic
+    source-code archives are not files. Hover a file count to read the names. While the
+    dashboard service runs it checks this every ${BUILDS_EVERY}, and an open page reloads by
+    itself when anything here changes.</p>
   ${scrollTable(
     "Builds and release files",
     `<table class="tbl tbl--builds sortable" data-table="builds"><caption>Last push and newest
@@ -2489,6 +2540,36 @@ const JS = `(function () {
     };
     tick();
     setInterval(tick, 30000);
+  }
+
+  // Live reload. serve.mjs rewrites the page when the builds watch sees a change, and answers
+  // GET /updated with the page's write time. The first answer is this page's; a later,
+  // different one means a newer page, so reload — the tab comes back from the # part. Not
+  // while the reader is typing, has the shortcut list open or a refresh is running: the
+  // next check reloads instead. A hidden tab is not checked. Served pages only, like the
+  // Refresh button: a page opened from disk has nothing to ask.
+  if (location.protocol !== "file:" && window.fetch) {
+    var seenAt = null;
+    var checkUpdated = function () {
+      if (document.hidden) return;
+      fetch("updated", { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d) return;
+          if (seenAt === null) { seenAt = d.at; return; }
+          if (d.at === seenAt) return;
+          var el = document.activeElement;
+          var typing = el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName);
+          var dlg = document.getElementById("help");
+          var busy = document.getElementById("refresh");
+          if (typing || (dlg && dlg.open) || (busy && busy.disabled)) return;
+          location.reload();
+        })
+        .catch(function () {});
+    };
+    checkUpdated();
+    setInterval(checkUpdated, 30000);
+    document.addEventListener("visibilitychange", checkUpdated);
   }
 
   // Refresh button. Only works when serve.mjs is serving the page — a page opened straight
@@ -3211,6 +3292,53 @@ kbd { font: inherit; font-size: .88em; font-weight: 700; padding: .05rem .4rem; 
 
 // Fetch everything, update history, write the page. Exported so serve.mjs can call it on a
 // schedule and on demand without shelling out to a second Node process.
+// ------------------------------------------------------------- the builds watch
+
+// The newest full run's page arguments and the repos the Builds tab lists. The watch updates
+// those repos' push and release fields in place and renders the page again from the same
+// arguments, so every tab, the Notifications badge included, agrees with Builds.
+let last = null;
+
+// One pass of the builds watch: re-read each repo's last push, its checks and its newest
+// release, and rewrite the page if any of it changed. Downloads, traffic and the history
+// database are left to the full run; nothing here is stored. A read that fails keeps the
+// repo's previous figures rather than blanking them, and is logged.
+export async function watchBuilds() {
+  // Before the first full run there is nothing to watch, and no alarms to report: an empty
+  // list here would read to serve.mjs as "nothing is wrong" and set its baseline to that.
+  if (!last) return { changed: 0, alarms: null };
+  if (!hasToken) return { changed: 0, alarms: buildAlarms(last.repos, Date.now()) };
+  let changed = 0;
+  // `spent` counts answers GitHub charged for; a 304 "unchanged" is free.
+  const calls = { spent: 0, free: 0 };
+  const get = async (path) => {
+    const res = await ghCached(path);
+    calls[res.status === 304 ? "free" : "spent"]++;
+    return res;
+  };
+  for (const r of last.repos) {
+    if (!r.push || r.push.error || !r.push.branch) continue;
+    const [push, relRes] = await Promise.all([
+      collectPush(r.repo, r.push.branch, get),
+      get(`/repos/${r.repo}/releases?per_page=20`),
+    ]);
+    const before = JSON.stringify([r.push, r.latestTag, r.latestFiles]);
+    if (push.error) console.warn(`! ${r.slug}: builds watch could not read the push (${push.error})`);
+    else r.push = push;
+    if (relRes.ok && Array.isArray(relRes.data)) {
+      const latest = pickLatestRelease(relRes.data.filter((x) => !x.draft));
+      r.latestTag = latest?.tag_name || null;
+      r.latestAt = latest?.published_at || null;
+      r.latestFiles = latest ? (latest.assets || []).map((a) => a.name) : null;
+      r.releasesUrl = latest?.html_url || `https://github.com/${r.repo}/releases`;
+    }
+    if (JSON.stringify([r.push, r.latestTag, r.latestFiles]) !== before) changed++;
+  }
+  const now = Date.now();
+  if (changed) await writeFile(PAGE, page(last.args));
+  return { changed, calls, alarms: buildAlarms(last.repos, now) };
+}
+
 export async function generate() {
   const started = Date.now();
   // Look for the login again each run: the long-lived server process may have started before
@@ -3314,10 +3442,9 @@ export async function generate() {
   await writeFile(join(OUT, "dashboard.js"), JS);
   await writeFile(join(OUT, "favicon.svg"), ICON);
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
-  await writeFile(
-    PAGE,
-    page({ rows, history, trends, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks, obs })
-  );
+  const args = { rows, history, trends, base, health, projects, now, elapsed, ga, propertyId, posts, postViews, clicks, obs };
+  await writeFile(PAGE, page(args));
+  last = { args, repos: [...rows.filter((r) => r.ok), ...health.unreleased] };
 
   const failed = rows.filter((r) => !r.ok);
   console.log(
@@ -3332,7 +3459,13 @@ export async function generate() {
     );
   }
 
-  return { page: PAGE, ok: rows.length - failed.length, total: published.length, failed };
+  return {
+    page: PAGE,
+    ok: rows.length - failed.length,
+    total: published.length,
+    failed,
+    alarms: buildAlarms(last.repos, now),
+  };
 }
 
 // CLI entry — skipped when serve.mjs imports this module.
