@@ -72,7 +72,8 @@ dashboard".
   shows as "could not be read", never as passed. A newest release with no files attached is
   "Broken now", as is a failed build; GitHub's source-code archives are not counted as files.
   A release under an hour old is "waiting for files" instead, since its build may still be
-  attaching them.
+  attaching them. A project none of whose earlier releases had files is "source only", not
+  broken: it ships no builds by design until one does.
 
 - **The builds watch costs only what changed.** `serve.mjs` runs `watchBuilds()` every
   `BUILDS_SECONDS` (150, the user's choice of 2026-11-09). It asks GitHub through

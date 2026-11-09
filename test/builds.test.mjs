@@ -52,3 +52,11 @@ test("a push that ran no checks is judged by the newest push that did", () => {
   });
   assert.deepEqual(buildAlarms([r], NOW).map((a) => a.key), ["ci:me/app:old"]);
 });
+
+test("a project that has never attached files is source-only, not an alarm", () => {
+  const sourceOnly = repo({ latestFiles: [], filesBefore: false });
+  assert.equal(filesState(sourceOnly, NOW), "source");
+  assert.deepEqual(buildAlarms([sourceOnly], NOW), []);
+  // An earlier release had files, so this empty one is a release cut without its build.
+  assert.equal(filesState(repo({ latestFiles: [], filesBefore: true }), NOW), "none");
+});

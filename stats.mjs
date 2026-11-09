@@ -249,6 +249,7 @@ async function collectProject(p) {
     // null when there is no release; an empty list is a release with nothing attached.
     // GitHub's own source-code archives are not assets and are never counted here.
     latestFiles: latestFiles && latestFiles.map((a) => a.name),
+    filesBefore: hadFilesBefore(releases, latest),
     releaseCount: releases.length,
     push,
   };
@@ -263,11 +264,18 @@ const checkedPush = (push) => push?.ci || push?.lastChecked || null;
 // it is "waiting for files". An hour is a guess at the slowest release build, not a measure.
 const RELEASE_GRACE = 60 * 60_000;
 
-// "none" (no files, past the grace), "pending" (no files yet, inside it), "ok", or null for
-// a repo with no release.
+// Did any release before the newest one have files attached? A project that never has is
+// source-only by design, as missingAssets above already treats it.
+const hadFilesBefore = (releases, latest) =>
+  releases.some((x) => x !== latest && Array.isArray(x.assets) && x.assets.length > 0);
+
+// "none" (no files, past the grace), "pending" (no files yet, inside it), "source" (no files,
+// and no earlier release had any either), "ok", or null for a repo with no release.
+// filesBefore is checked against false, so a record saved before it existed still alarms.
 export function filesState(r, now) {
   if (!r.latestFiles) return null;
   if (r.latestFiles.length) return "ok";
+  if (r.filesBefore === false) return "source";
   return r.latestAt && now - Date.parse(r.latestAt) < RELEASE_GRACE ? "pending" : "none";
 }
 
@@ -2420,6 +2428,8 @@ function buildsTable(rows, others, now) {
               ? '<span class="state state--bad">✗ No files</span>'
               : fstate === "pending"
                 ? '<span class="state state--warn">● Waiting for files</span>'
+              : fstate === "source"
+                ? '<span class="dim">Source only</span>'
               : `<span title="${esc(files.join("\n"))}">${num(files.length)}</span>`
         }</td></tr>`,
         alert: failed || noFiles,
@@ -3330,6 +3340,7 @@ export async function watchBuilds() {
       r.latestTag = latest?.tag_name || null;
       r.latestAt = latest?.published_at || null;
       r.latestFiles = latest ? (latest.assets || []).map((a) => a.name) : null;
+      r.filesBefore = hadFilesBefore(relRes.data.filter((x) => !x.draft), latest);
       r.releasesUrl = latest?.html_url || `https://github.com/${r.repo}/releases`;
     }
     if (JSON.stringify([r.push, r.latestTag, r.latestFiles]) !== before) changed++;
