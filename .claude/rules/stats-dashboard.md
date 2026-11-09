@@ -66,6 +66,12 @@ dashboard".
   Its `tools/roadmap-backup-lib.sh` owns that format. A missing record is a note, never
   an alarm. A failed job, or one with no success for over two days, is "Broken now".
 
+- **Builds reports the newest commit on each repo's default branch.** Its checks are the
+  GitHub Actions runs that push started. A push that ran none reports the newest push that
+  did, so a failure stays listed until a later push passes. A result that could not be read
+  shows as "could not be read", never as passed. A newest release with no files attached is
+  "Broken now", as is a failed build; GitHub's source-code archives are not counted as files.
+
 - **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
   `site.css`, not linked. Any new asset the page references gets copied in and added to
   `FILES` too, and its extension to `TYPES` if new. The body class is `admin`, **not** `stats`.

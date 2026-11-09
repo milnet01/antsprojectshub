@@ -17,6 +17,9 @@ so dated sections stand in for versions. Planned work lives in
 - **The private stats dashboard watches the daily roadmap backups**
   The Overview shows when the roadmaps were last backed up to claude-config and to the local disk. It lists a failure, or a backup more than two days old, under "Broken now".
 
+- **The private stats dashboard has a Builds tab**
+  It shows each repo's last push and whether its GitHub checks passed, and how many files its newest release has. A failed build, or a release with no files, is marked at the top of the table and listed under "Broken now". The 0 key opens the tenth tab.
+
 ### Changed
 
 - **Rolodex's page covers 2.0.0: themes and accent colours, CSV import and export, a stronger password scramble, narrow windows, and selecting several entries at once**

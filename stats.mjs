@@ -69,6 +69,7 @@ const NAV = [
   ["tr", "h-tr", "Repo traffic"],
   ["act", "h-act", "Audience"],
   ["rel", "h-rel", "Releases"],
+  ["ci", "h-ci", "Builds"],
   ["trend", "h-trend", "Trends"],
 ];
 
@@ -211,6 +212,10 @@ async function collectProject(p) {
   );
 
   const traffic = hasToken ? await collectTraffic(p.repo) : null;
+  // Skipped without a token for the same reason as traffic: two more calls per repo would
+  // spend an unauthenticated run's 60 calls before the downloads were read.
+  const push = hasToken && repo.default_branch ? await collectPush(p.repo, repo.default_branch) : null;
+  const latestFiles = latest ? (Array.isArray(latest.assets) ? latest.assets : []) : null;
 
   return {
     ...base,
@@ -235,8 +240,69 @@ async function collectProject(p) {
     archived: Boolean(repo.archived),
     latestTag: latest?.tag_name || null,
     latestAt: latest?.published_at || null,
+    // null when there is no release; an empty list is a release with nothing attached.
+    // GitHub's own source-code archives are not assets and are never counted here.
+    latestFiles: latestFiles && latestFiles.map((a) => a.name),
     releaseCount: releases.length,
+    push,
   };
+}
+
+// The newest push whose checks ran: the head commit's, or when that one ran none, the
+// newest before it. A failure stays a failure until a later push's checks pass.
+const checkedPush = (push) => push?.ci || push?.lastChecked || null;
+
+// GitHub Actions conclusions that mean the push's checks did not pass.
+const CI_FAILED = new Set(["failure", "timed_out", "startup_failure", "action_required"]);
+
+// The result of every workflow one commit ran: failed beats running beats cancelled beats
+// passed. A workflow re-run more than once counts by its newest run only.
+function ciResult(runs) {
+  const newest = new Map();
+  for (const r of runs) if (!newest.has(r.workflow_id)) newest.set(r.workflow_id, r);
+  const list = [...newest.values()];
+  const failed = list.filter((r) => r.status === "completed" && CI_FAILED.has(r.conclusion));
+  const state = failed.length
+    ? "failed"
+    : list.some((r) => r.status !== "completed")
+      ? "running"
+      : list.some((r) => r.conclusion === "cancelled")
+        ? "cancelled"
+        : "passed";
+  const first = failed[0] || list[0];
+  return {
+    state,
+    sha: first.head_sha,
+    at: first.head_commit?.timestamp || first.created_at,
+    message: (first.head_commit?.message || "").split("\n")[0],
+    url: first.html_url,
+    failed: failed.map((r) => ({ name: r.name, url: r.html_url })),
+  };
+}
+
+// The newest commit on the default branch, and what its push's checks said. A commit whose
+// push ran no checks (a docs-only change a workflow ignores) is "not checked", and the newest
+// push that was checked is reported beside it. Returns { error } when GitHub could not be
+// read, which renders as "could not be read" — never as passed.
+async function collectPush(repo, branch) {
+  const b = encodeURIComponent(branch);
+  const [headRes, runsRes] = await Promise.all([
+    ghRequest(`/repos/${repo}/commits/${b}`),
+    ghRequest(`/repos/${repo}/actions/runs?branch=${b}&event=push&per_page=50&exclude_pull_requests=true`),
+  ]);
+  if (!headRes.ok || !runsRes.ok) return { error: `HTTP ${headRes.ok ? runsRes.status : headRes.status}` };
+  const c = headRes.data;
+  const head = {
+    sha: c.sha,
+    at: c.commit?.committer?.date || c.commit?.author?.date || null,
+    message: (c.commit?.message || "").split("\n")[0],
+    url: c.html_url,
+  };
+  const runs = runsRes.data.workflow_runs || [];
+  if (!runs.length) return { branch, head, ci: null };
+  const mine = runs.filter((r) => r.head_sha === head.sha);
+  if (mine.length) return { branch, head, ci: ciResult(mine) };
+  return { branch, head, ci: null, lastChecked: ciResult(runs.filter((r) => r.head_sha === runs[0].head_sha)) };
 }
 
 async function collectTraffic(repo) {
@@ -1469,6 +1535,21 @@ function attentionItems(rows, health) {
          Fix: attach the ${osList(r.lostAssets)} build to ${link(r.releasesUrl, tag)}. ${since}`
     );
   }
+  // The newest release has no files at all, so every download button on its page falls back.
+  for (const r of rows.filter((x) => x.latestFiles && !x.latestFiles.length)) {
+    add(true, 1, 1, [`nofiles:${r.slug}`], (since) =>
+      `<strong>${esc(r.name)}</strong>: release ${link(r.releasesUrl, r.latestTag)} has no files
+       attached, so there is nothing to download from it. Fix: attach the builds to it. ${since}`);
+  }
+  // The newest push to a repo's default branch failed its checks. Nothing a visitor sees yet,
+  // but the next release would be cut from it.
+  for (const r of [...rows, ...(health.unreleased || [])].filter((x) => checkedPush(x.push)?.state === "failed")) {
+    const ci = checkedPush(r.push);
+    add(true, 2, 1, [`ci:${r.slug}`], (since) =>
+      `<strong>${esc(r.name)}</strong>: the last push to ${esc(r.push.branch)}
+       (“${esc(ci.message)}”) failed ${ci.failed.map((f) => link(f.url, f.name)).join(", ")}.
+       Fix: open the failed run, fix the cause, push again. ${since}`);
+  }
   // A live page failing the visitors least able to work around it. The build doesn't stop for
   // this: it substitutes "<project> screenshot", which describes nothing, so the image is
   // announced and still says nothing about what it shows.
@@ -1625,12 +1706,15 @@ function updateAttention(history, items, rows, now) {
   const prev = history.attention || {};
   const fetched = new Set(rows.filter((r) => r.ok).map((r) => r.slug));
   const searchFailed = new Set(rows.filter((r) => r.ok && r.upstreamPrs === null).map((r) => r.slug));
+  // A push result that could not be read (or was skipped, logged out) is not a fixed build.
+  const pushFailed = new Set(rows.filter((r) => !r.push || r.push.error).map((r) => r.slug));
   const next = {};
   for (const key of items.flatMap((i) => i.keys)) next[key] = prev[key] || new Date(now).toISOString();
   for (const [key, at] of Object.entries(prev)) {
     const [kind, slug] = key.split(":");
-    if (["dl-lost", "dl-never", "extra", "issue", "pr", "pr-up"].includes(kind) && !fetched.has(slug)) next[key] ??= at;
+    if (["dl-lost", "dl-never", "extra", "issue", "pr", "pr-up", "nofiles", "ci"].includes(kind) && !fetched.has(slug)) next[key] ??= at;
     if (kind === "pr-up" && searchFailed.has(slug)) next[key] ??= at;
+    if (kind === "ci" && pushFailed.has(slug)) next[key] ??= at;
   }
   history.attention = next;
 }
@@ -1831,6 +1915,9 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
     ${releasesTable(ok)}</section>
   </div>
 
+  <section class="sec" data-sec="ci" aria-labelledby="h-ci"><h2 id="h-ci">Builds and release files</h2>
+    ${buildsTable(ok, health.unreleased || [], now)}</section>
+
   <section class="sec" data-sec="trend" aria-labelledby="h-trend"><h2 id="h-trend">Trends</h2>
     <p class="note">Each figure day by day, from the history this dashboard keeps. Today is left
       out until it is over; a gap is a day with no figure, never a zero.</p>
@@ -1842,7 +1929,7 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
 <dialog id="help" class="help" aria-labelledby="help-h">
   <h2 id="help-h">Keyboard shortcuts</h2>
   <dl class="keys">
-    <dt><kbd>1</kbd> to <kbd>9</kbd></dt><dd>Open that tab, counting from the left</dd>
+    <dt><kbd>1</kbd> to <kbd>9</kbd>, <kbd>0</kbd></dt><dd>Open that tab, counting from the left; <kbd>0</kbd> is the tenth</dd>
     <dt><kbd>/</kbd></dt><dd>Find a project; <kbd>Esc</kbd> clears it</dd>
     <dt><kbd>+</kbd> <kbd>-</kbd></dt><dd>Larger or smaller text</dd>
     <dt><kbd>r</kbd></dt><dd>Refresh the figures</dd>
@@ -2222,6 +2309,92 @@ function releasesTable(rows) {
   );
 }
 
+// The Builds tab: did each repo's last push pass its checks, and does each newest release
+// have files to download? Every repo is listed, on the site or not, because a failed build
+// in a project not yet released is still a failed build. Rank orders the Checks column:
+// failures first, then whatever is still unsettled, then the quiet rows.
+const CI_STATE = {
+  failed: [0, '<span class="state state--bad">✗ Failed</span>'],
+  running: [1, '<span class="state state--warn">● Running</span>'],
+  cancelled: [2, '<span class="state state--warn">○ Cancelled</span>'],
+  passed: [4, '<span class="state state--ok">✓ Passed</span>'],
+};
+
+function buildsTable(rows, others, now) {
+  const link = (url, text) => `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)}</a>`;
+  const when = (iso) =>
+    iso ? `<time datetime="${esc(iso)}" title="${esc(new Date(iso).toLocaleString("en-GB"))}">${ago(daysSince(iso, now))}</time>` : "";
+  const checks = (push) => {
+    if (!push) return [6, '<span class="dim">needs a GitHub login</span>'];
+    if (push.error) return [6, `<span class="dim">could not be read (${esc(push.error)})</span>`];
+    if (push.ci) {
+      const [rank, html] = CI_STATE[push.ci.state];
+      const runs = push.ci.failed.length
+        ? `<span class="repo">${push.ci.failed.map((f) => link(f.url, f.name)).join(", ")}</span>`
+        : "";
+      return [rank, html + runs];
+    }
+    if (push.lastChecked) {
+      const [rank, html] = CI_STATE[push.lastChecked.state];
+      return [
+        Math.min(rank, 3),
+        `<span class="dim">This push ran no checks</span><span class="repo">Newest checked push,
+         ${when(push.lastChecked.at)}: ${html}</span>`,
+      ];
+    }
+    return [5, '<span class="dim">No checks run on push</span>'];
+  };
+  const body = [...rows, ...others]
+    .map((r) => {
+      const [rank, checkHtml] = checks(r.push);
+      const files = r.latestFiles;
+      const noFiles = files && !files.length;
+      const failed = checkedPush(r.push)?.state === "failed";
+      const head = r.push?.head;
+      // Repos unlistedRepos() found carry no projects.json status; listed ones not yet
+      // published do.
+      const listing = rows.includes(r) ? "" : r.project.status ? "not released on the site" : "not on the site";
+      const where = [r.push?.branch, listing].filter(Boolean).join(" · ");
+      return {
+        rank,
+        name: r.name,
+        html: `<tr${failed || noFiles ? ' class="row--alert"' : ""}>
+        <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}<span class="repo">${esc(where)}</span></th>
+        <td data-sort="${head?.at ? Date.parse(head.at) : 0}">${
+          head ? `${when(head.at)}<span class="repo">${link(head.url, head.message || head.sha.slice(0, 7))}</span>` : '<span class="dim">—</span>'
+        }</td>
+        <td data-sort="${rank}">${checkHtml}</td>
+        <td data-sort="${r.latestAt ? Date.parse(r.latestAt) : 0}">${
+          r.latestTag ? `${link(r.releasesUrl, r.latestTag)}<span class="repo">${when(r.latestAt)}</span>` : '<span class="dim">no releases</span>'
+        }</td>
+        <td data-sort="${files ? files.length : -1}">${
+          !files
+            ? '<span class="dim">—</span>'
+            : noFiles
+              ? '<span class="state state--bad">✗ No files</span>'
+              : `<span title="${esc(files.join("\n"))}">${num(files.length)}</span>`
+        }</td></tr>`,
+        alert: failed || noFiles,
+      };
+    })
+    // Problems first, then by the Checks rank, then by name.
+    .sort((a, b) => b.alert - a.alert || a.rank - b.rank || a.name.localeCompare(b.name))
+    .map((x) => x.html)
+    .join("");
+  return `<p class="note">The newest commit on each repo's main branch, and what GitHub's checks
+    said about it. A row is marked when its build failed or its newest release has no files
+    to download. Files count only what was attached; GitHub's automatic source-code archives
+    are not files. Hover a file count to read the names.</p>
+  ${scrollTable(
+    "Builds and release files",
+    `<table class="tbl tbl--builds sortable" data-table="builds"><caption>Last push and newest
+    release, per repo.</caption><thead><tr><th scope="col">Project</th>
+    <th scope="col">Last push</th><th scope="col">Checks</th>
+    <th scope="col">Newest release</th><th scope="col">Files</th></tr></thead>
+    <tbody>${body}</tbody></table>`
+  )}`;
+}
+
 // ---------------------------------------------------------------------- the JS
 
 // Click-to-sort, as progressive enhancement: every table already ships sorted by its most
@@ -2552,7 +2725,7 @@ const JS = `(function () {
     else if (k === "+" || k === "=") { applySize(1); }
     else if (k === "-") { applySize(-1); }
     else if (k === "r" && refresh && !refresh.hidden && !refresh.disabled) { refresh.click(); }
-    else if (k >= "1" && k <= "9" && links[Number(k) - 1]) { links[Number(k) - 1].click(); }
+    else if (k >= "0" && k <= "9" && links[(Number(k) + 9) % 10]) { links[(Number(k) + 9) % 10].click(); }
   });
 
   // Projects: the cards' order, remembered.
@@ -2709,6 +2882,7 @@ body.admin::after { display: none; }
 [data-sec="tr"]  { --accent: #7dd3fc; }
 [data-sec="act"] { --accent: #93c5fd; }
 [data-sec="rel"] { --accent: #a5b4fc; }
+[data-sec="ci"]  { --accent: #b4b5fd; }
 [data-sec="trend"] { --accent: #c4b5fd; }
 
 /* Sticky bar: glass over the page, its contents lined up with the centred column. */
@@ -2948,6 +3122,14 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .dim { color: var(--text-dim); }
 .country-flag { font-size: 1.25em; margin-right: .45em; vertical-align: -.1em; }
 .warn { color: var(--amber); }
+/* Builds: the word and its symbol carry the state; colour only repeats it. A marked row gets
+   a rose edge and a faint tint, with its text kept in text ink. */
+.state { font-weight: 700; white-space: nowrap; }
+.state--bad { color: var(--rose); }
+.state--warn { color: var(--amber); }
+.state--ok { color: var(--teal); }
+.tbl tr.row--alert > * { background: color-mix(in srgb, var(--rose) 8%, transparent); }
+.tbl tr.row--alert > th { box-shadow: inset .25rem 0 0 var(--rose); }
 .repo { display: block; font-weight: 400; font-size: .82rem; color: var(--text-dim); }
 
 .d { font-size: .82rem; white-space: nowrap; }
