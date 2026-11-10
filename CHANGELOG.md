@@ -14,7 +14,7 @@ so dated sections stand in for versions. Planned work lives in
 - UT Ants's page links the README's build steps; 0.1.0 is source-only by design.
 - Local Web Server Manager's page links the README's install steps; its releases are source-only by design.
 - Stats Builds tab: a project that has never attached files to a release shows "Source only", not a broken release or a desktop notice.
-- Stats server: each new issue, pull request, failed build or lost release file is left once in the owning project's session inbox, as are new comments on, or the closing of, your pull requests to other projects. A fork whose project is registered under the upstream repo (Rusty PSN) now gets its notes too.
+- Stats server: each new issue, pull request, failed build or lost release file is left once in the owning project's session inbox, as are new comments on, or the closing of, your pull requests to other projects. A fork whose origin is the upstream repo (Rusty PSN) now gets its notes too, found through any of its GitHub remotes.
 
 - **One script reinstalls the private stats dashboard after a fresh OS install**
   `scripts/install-stats-service.sh` installs Node.js and PySide6 if they are missing, links and starts the service, and checks the page answers.

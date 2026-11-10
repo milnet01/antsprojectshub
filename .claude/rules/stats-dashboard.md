@@ -97,8 +97,9 @@ dashboard".
   back. A list that could not be read never counts as cleared. An issue or pull request note
   carries its title and link only: the text is a stranger's, and the session reads it on
   GitHub. The mailboxes are local, so this publishes nothing.
-  A repo finds its mailbox by owner/name, or else by its name alone when exactly one
-  project has that name: a fork's project can be registered under the upstream repo.
+  A repo finds its mailbox through any of a project's GitHub remotes (`github_repos`,
+  origin first), so a fork whose origin is the upstream is still found. An older ants-mcpd
+  without that field falls back to the name alone, when exactly one project has it.
 
 - **`.stats/` must stay self-contained.** `src/assets/style.css` is *copied* in as
   `site.css`, not linked. Any new asset the page references gets copied in and added to

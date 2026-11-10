@@ -118,3 +118,14 @@ test("a fork registered under its upstream repo still gets its notes, by name, w
   assert.equal(mailbox("y/tool"), "b", "an exact match still wins over an ambiguous name");
   assert.equal(mailbox("me/unknown"), null);
 });
+
+test("a fork is found through any of its GitHub remotes, and a project's origin wins over another's second remote", () => {
+  const mailbox = mailboxFor([
+    { export_slug: "rusty-psn", github_repo: "RainbowCookie32/rusty-psn", github_repos: ["RainbowCookie32/rusty-psn", "milnet01/rusty-psn"] },
+    { export_slug: "fork", github_repo: "me/Fork", github_repos: ["me/Fork", "them/Lib"] },
+    { export_slug: "lib", github_repo: "them/Lib", github_repos: ["them/Lib"] },
+  ]);
+  assert.equal(mailbox("milnet01/rusty-psn"), "rusty-psn");
+  assert.equal(mailbox("them/Lib"), "lib");
+  assert.equal(mailbox("me/fork"), "fork");
+});
