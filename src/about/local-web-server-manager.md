@@ -70,8 +70,9 @@ your own tools. No tray icon and no start-on-login yet — both are planned afte
 version 1.0.0.
 
 **And no packaged download.** Its first release is the source code only — a
-packaged AppImage is planned for version 1.0.0 — so for now you run it from that
-source, which needs
+packaged AppImage is planned for version 1.0.0 — so for now you install it from
+source, as the README's [Install](https://github.com/milnet01/LocalWebServerManager#install)
+section explains. It needs
 Python 3.13 or newer and a tool called `uv` to fetch its dependencies. A script puts it in your application
 launcher afterwards, writing only inside your own home folder and needing no
 password.
