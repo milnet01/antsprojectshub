@@ -54,7 +54,16 @@ against a contrast standard, and screen readers are told when a project changes
 state — once, rather than once a second. When something fails, the message appears
 under the project it is about, not in a corner of the window.
 
-**The newest release makes ports dependable.** A start refused because the port
+**The newest release lets you read each server's output inside the app.** Press
+Ctrl+L, or choose View output, and a live panel opens under the list. A failed
+project gets a View output button, so you can see why it stopped without opening
+a terminal. Alt+E jumps to the last error, and Alt+O shows only errors. This
+release also fixes many smaller problems: opening the app again now brings its
+window to the front, Open goes to the port a server really uses, and quitting
+and reopening straight away works. It also improves keyboard and screen-reader
+use.
+
+**The release before it made ports dependable.** A start refused because the port
 is taken now names the program taking it. View → What's using a port... tells
 you what is listening on any port. You can change the port a project starts on,
 and the app suggests a free one. Quitting the app no longer stops the servers it
@@ -65,8 +74,7 @@ warning.
 
 ## What is not there yet
 
-No live output panel inside the app; the logs are on disk and you read them with
-your own tools. No tray icon and no start-on-login yet — both are planned after
+No tray icon and no start-on-login yet — both are planned after
 version 1.0.0.
 
 **And no packaged download.** Its first release is the source code only — a
