@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { inboxItems, planNotes } from "../lib/inbox.mjs";
+import { inboxItems, planNotes, mailboxFor } from "../lib/inbox.mjs";
 
 const NOW = Date.parse("2026-11-09T12:00:00Z");
 
@@ -102,4 +102,19 @@ test("a run with nothing sent yet sends what is open now, but no upstream commen
   );
   assert.equal(first.send.length, 1);
   assert.match(first.send[0].body, /Crash on start/);
+});
+
+test("a fork registered under its upstream repo still gets its notes, by name, when the name is unique", () => {
+  const mailbox = mailboxFor([
+    { export_slug: "rusty-psn", github_repo: "RainbowCookie32/rusty-psn" },
+    { export_slug: "retrodb", github_repo: "milnet01/RetroDB" },
+    { export_slug: "a", github_repo: "x/tool" },
+    { export_slug: "b", github_repo: "y/tool" },
+    { export_slug: "none" },
+  ]);
+  assert.equal(mailbox("milnet01/RetroDB"), "retrodb");
+  assert.equal(mailbox("milnet01/rusty-psn"), "rusty-psn");
+  assert.equal(mailbox("me/tool"), null, "two projects share the name, so neither is guessed");
+  assert.equal(mailbox("y/tool"), "b", "an exact match still wins over an ambiguous name");
+  assert.equal(mailbox("me/unknown"), null);
 });
