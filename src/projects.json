@@ -657,16 +657,20 @@
       "logo": "logos/oneup.svg",
       "screenshots": [
         {
-          "src": "shots/oneup-dark.png",
-          "alt": "The OneUp window in dark theme after a read-only check, with Settings and About buttons at the top. Five task cards each have a switch turned on, drawn with a bar to show it is on: System packages (12 available), Flatpak apps (3 available), Firmware (up to date), Leftover packages and Package cache. Below are a Run selected updates button and a Check for updates button, the message '15 update(s) available — turn on what you want and hit Run.', a log listing the counts per task, and the last run's date and result."
+          "src": "shots/oneup-2.0-rows.png",
+          "alt": "OneUp 2.0's Rows layout after a check, in its dark theme: five task cards, each with its switch on (System packages shows 14 available), then a list of the 14 package updates with tabs for All, System and Flatpak. Each row gives the package name, the source it comes from, its old and new version and its download size, such as kernel-default from 6.17.7 to 6.17.9, 173.6 MiB. Below are Run selected updates, Check for updates and Show technical log buttons."
         },
         {
-          "src": "shots/oneup-light.png",
-          "alt": "The same OneUp window and check result in light theme, showing it follows the desktop's light or dark setting: identical task cards with their switches on, buttons and log on a white background."
+          "src": "shots/oneup-2.0-rail.png",
+          "alt": "OneUp's Rail layout after the same check: the five task switches in a column on the left, and on the right All updates, 14 updates and 284.5 MiB to download, with one card per package giving its versions, size and source, each marked waiting. A bar above the cards shows each package as a block sized by its download, with a key for done, now and to go."
         },
         {
-          "src": "shots/oneup-settings-dark.png",
-          "alt": "OneUp's Settings window in dark theme, headed 'Background behaviours. Each is off until you turn it on.' Eight rows each explain an option beside its button: Weekly check (on), Passwordless (off), Automatic updates (off, and it needs the passwordless setting), Tray icon (off), Start at boot (off), Copy diagnostics, Text size (Normal) and High contrast (off)."
+          "src": "shots/oneup-2.0-spotlight.png",
+          "alt": "OneUp's Spotlight layout during an update: the five tasks in a row across the top, System marked Downloading 24% and the rest Waiting. A large panel reads Downloading kernel-default, 24%, with a progress bar and three boxes: Packages 3 of 14, Downloaded 138.6 MiB of 284.5 MiB, and Time left about 10 s. Below are an Up next list of packages and an empty Done list, and a Stop button."
+        },
+        {
+          "src": "shots/oneup-2.0-settings-appearance.png",
+          "alt": "OneUp's Settings on its Appearance tab, one of three tabs beside Automatic behaviour and This machine. Four rows each explain a setting beside its button: the colour theme (Follow system), the window layout (Rows), text size (Normal) and high contrast (off)."
         }
       ]
     },

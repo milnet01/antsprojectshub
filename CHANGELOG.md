@@ -11,6 +11,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- Pressless's page covers 0.14.0: bringing in a site from your GitHub account, a folder of web pages or a gh-pages build, the Look screen for sites with their own stylesheets, and JPEG XL photographs.
+- OneUp's page shows four 2.0 screenshots: the Rows, Rail and Spotlight layouts and the Appearance settings. They replace the three 1.x shots.
 - UT Ants's page links the README's build steps; 0.1.0 is source-only by design.
 - Local Web Server Manager's page links the README's install steps; its releases are source-only by design.
 - Local Web Server Manager's page covers the newest release: a live output panel inside the app, and fixes for keyboard and screen-reader use.

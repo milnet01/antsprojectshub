@@ -77,6 +77,18 @@ moves Pressless to a new computer. Every day, Pressless backs up each site by
 itself and keeps the last seven backups, beside the program or in a folder you
 choose.
 
+## Bring in a site you already have
+
+Setup lists the sites already in your GitHub account. Tick one to bring it in,
+instead of typing its name. A site whose build script publishes it to a branch
+such as gh-pages can switch to Pressless too, and its address stays.
+
+A folder of web pages comes in as it is: choose the folder itself on Import's
+folder step. A ZIP file of it still works.
+
+A site with its own stylesheets can use the Look screen. Keep them and add your
+own CSS on top, or switch to a Pressless design.
+
 ## Bring your WordPress site in
 
 When you set up a new, empty site, Pressless offers to bring a WordPress site
@@ -111,7 +123,10 @@ photograph does not stop the import.
 - **Open your site in one click.** View your site sits in the top bar, and
   appears again after you publish and at the end of setup.
 - **Add photographs** from the editor, including AVIF ones. Pressless keeps your original
-  untouched and puts the picture where you were typing.
+  untouched and puts the picture where you were typing. For JPEG XL
+  photographs, click Add JPEG XL support once: Pressless downloads the JPEG XL
+  project's own decoder (about 5 MB) and checks it every time. Visitors get a
+  WebP copy, which every browser shows.
 - **Remember your choices between visits**, such as the last page you
   opened. They stay on your computer.
 - **Show a page's code in colour**, in colours that stay readable in every
