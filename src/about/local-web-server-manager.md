@@ -54,7 +54,14 @@ against a contrast standard, and screen readers are told when a project changes
 state — once, rather than once a second. When something fails, the message appears
 under the project it is about, not in a corner of the window.
 
-**The newest release lets you read each server's output inside the app.** Press
+**The newest release is a download that needs nothing installed first.** Each
+release now carries an AppImage: one file that runs on 64-bit Linux without
+Python or Qt. Make it executable and double-click it. Every AppImage is started
+on a clean machine before it is attached to the release. The app also installs
+much smaller from source now. It uses a slimmer Qt package that leaves out a web
+browser engine and a PDF library it never used.
+
+**The release before it lets you read each server's output inside the app.** Press
 Ctrl+L, or choose View output, and a live panel opens under the list. A failed
 project gets a View output button, so you can see why it stopped without opening
 a terminal. Alt+E jumps to the last error, and Alt+O shows only errors. This
@@ -63,7 +70,7 @@ window to the front, Open goes to the port a server really uses, and quitting
 and reopening straight away works. It also improves keyboard and screen-reader
 use.
 
-**The release before it made ports dependable.** A start refused because the port
+**The release before that made ports dependable.** A start refused because the port
 is taken now names the program taking it. View → What's using a port... tells
 you what is listening on any port. You can change the port a project starts on,
 and the app suggests a free one. Quitting the app no longer stops the servers it
@@ -77,13 +84,18 @@ warning.
 No tray icon and no start-on-login yet — both are planned after
 version 1.0.0.
 
-**And no packaged download.** Its first release is the source code only — a
-packaged AppImage is planned for version 1.0.0 — so for now you install it from
-source, as the README's [Install](https://github.com/milnet01/LocalWebServerManager#install)
-section explains. It needs
-Python 3.13 or newer and a tool called `uv` to fetch its dependencies. A script puts it in your application
-launcher afterwards, writing only inside your own home folder and needing no
-password.
+## Installing it
+
+Download the AppImage from the
+[latest release](https://github.com/milnet01/LocalWebServerManager/releases/latest),
+make it executable, and run it. It needs a system at least as new as Debian 12
+(glibc 2.36).
+
+You can still install it from source instead, as the README's
+[Install](https://github.com/milnet01/LocalWebServerManager#install) section
+explains. That needs Python 3.13 or newer and a tool called `uv` to fetch its
+dependencies. A script puts it in your application launcher afterwards, writing
+only inside your own home folder and needing no password.
 
 ## Where it stands
 
