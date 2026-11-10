@@ -33,7 +33,7 @@ engine.
 After a run, the engine writes a plain text file: every frame, and how long
 each part of it took on the processor and on the graphics card. frameledger
 reads that file and answers in plain sentences first, before any table. It
-has six commands:
+has these commands:
 
 - **`report`** says where the frame time went: the costliest parts of the
   frame, whether the processor or the graphics card held it up, and which
@@ -45,6 +45,13 @@ has six commands:
   runs vary by themselves, so random wobble is not reported as a slowdown. It
   refuses to compare runs made under different settings, such as a different
   resolution, unless you say why it should.
+- **`compare --by-scene`** compares an old build with a new one map by map.
+  It says which maps got slower, what got slower, and where in the map it
+  changed most. Maps with too few runs to judge are listed rather than
+  stopping the comparison.
+- **`survey`** checks a pile of recorded runs against a frame rate you set.
+  It flags every run that misses it, names that run's slowest frame and the
+  work behind it, and ranks all the runs from worst to best.
 - **`bisect`** works with git, the tool that keeps a project's history, to
   find the exact change that made a frame slower.
 - **`budget`** says whether any part of the frame went over the time you set
@@ -56,11 +63,6 @@ has six commands:
 A report warns you when its numbers should not be trusted: a debug build, a
 software renderer, or a machine busy with other work.
 
-## Planned
-
-- **Checking many maps at once.** One command ranks a run per map by its
-  slowest frames, and names the costliest part of each one that is too slow.
-
 ## What it does not do
 
 It does not time anything inside an engine; each engine keeps its own timing.
@@ -70,7 +72,7 @@ charts yet; plain text comes first.
 
 ## Where it stands
 
-**The second release is out, and it compares builds.** It is a command-line tool: you type its
+**The third release is out, and it checks many runs at once.** It is a command-line tool: you type its
 commands in a terminal window, and it answers in text. So there are no
 screenshots. The download is one zip for Linux and Windows. It holds the tool,
 which needs Python 3.10 or newer and nothing else, and an optional small C
