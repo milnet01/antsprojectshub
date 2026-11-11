@@ -33,7 +33,7 @@ version, and only if you switch that on.
   and which characters to include.
 - **Themes and accent colours.** Preferences (`Ctrl+,`) offers Automatic, which
   follows your desktop's light or dark setting, plus Dark, Light and High
-  contrast, and seven accent colours.
+  contrast. It has seven accent colours, or it can use your desktop's own.
 - **Organised into categories** you can collapse, or show one at a time. Drag
   entries between them, and reorder fields and categories by mouse or keyboard.
   Select several entries at once to move or delete them together.

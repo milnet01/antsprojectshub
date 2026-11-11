@@ -9,6 +9,10 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Added
+
+- Rolodex's page shows seven 2.0 screenshots, including the light and high-contrast themes, Preferences and a phone-width window. They replace the three older shots, and the page says Rolodex can use your desktop's own accent colour.
+
 ### Changed
 
 - finbreak's page says updating from inside the app is now tested and works on Windows.

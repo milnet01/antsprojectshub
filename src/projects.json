@@ -555,15 +555,31 @@
       "screenshots": [
         {
           "src": "shots/rolodex-detail.png",
-          "alt": "Rolodex's main window, holding an invented vault. A sidebar groups entries under Email, Games, Shopping and Work. On the right, a Fastmail entry shows its email address, a hidden password, and a live six-digit two-factor code with a countdown ring."
+          "alt": "Rolodex in its dark theme, holding an invented vault. A sidebar groups entries under Email, Games, Shopping and Work. On the right, a Fastmail entry shows its email address, a hidden password and two-factor seed, a live six-digit two-factor code with a countdown ring, and a login web address."
         },
         {
           "src": "shots/rolodex-health.png",
-          "alt": "The Password Health check, which lists every stored password from weakest to strongest, marks those reused across accounts, and sums them up as 4 weak or fair and 2 reused."
+          "alt": "The Password Health window, which lists every stored password from weakest to strongest as weak, fair, good or strong, marks those used more than once, and sums them up as 4 weak or fair and 2 reused."
         },
         {
           "src": "shots/rolodex-edit.png",
-          "alt": "The Edit Entry window. Each field has a label, a value, a Hide switch for secrets, a button to generate a new password, and a drag handle for reordering."
+          "alt": "The Edit Entry window in the dark theme, with the entry's name, its category picker and its list of fields. Each field has a label, a value, a Hide switch for secrets and a drag handle for reordering. Password fields also have buttons to show the value and to generate a new one."
+        },
+        {
+          "src": "shots/rolodex-theme-light.png",
+          "alt": "The same Fastmail entry in Rolodex's light theme, with a teal accent."
+        },
+        {
+          "src": "shots/rolodex-theme-high-contrast.png",
+          "alt": "The same Fastmail entry in the high-contrast theme: a black background, white text and bold white outlines."
+        },
+        {
+          "src": "shots/rolodex-preferences.png",
+          "alt": "The Preferences window, where you pick a theme, here Dark, and an accent colour, here Blue. A note under Theme says Automatic follows your desktop's light or dark setting."
+        },
+        {
+          "src": "shots/rolodex-narrow.png",
+          "alt": "Rolodex in a phone-width window, showing the Fastmail entry on a page of its own, with a back arrow at the top left."
         }
       ],
       "video": {
