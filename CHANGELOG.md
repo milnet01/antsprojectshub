@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-11-11
+
 ### Added
 
 - Pressless's page covers 0.14.0: bringing in a site from your GitHub account, a folder of web pages or a gh-pages build, the Look screen for sites with their own stylesheets, and JPEG XL photographs.
