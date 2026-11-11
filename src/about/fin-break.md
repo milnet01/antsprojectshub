@@ -93,8 +93,10 @@ to versions with their security fixes.
 **Windows updates fixed** in an earlier release. On Windows, clicking *Update now* used to download
 the new version and then close finbreak without installing it. That is fixed.
 If you already use finbreak on Windows, download the newest release by hand once
-and put it in place of your old finbreak.exe, in the same folder. That release
-has the fixed update step. finbreak also now tidies away the leftover download
+and put it in place of your old finbreak.exe, in the same folder. From then on,
+*Update now* works. In a test on a real Windows 10 PC in November 2026, it
+downloaded the new version, replaced itself and reopened, and the vault still
+unlocked. finbreak also now tidies away the leftover download
 files those failed updates left in that folder. Separately, installing finbreak
 on Fedora no longer shows a false "Transaction failed" message.
 

@@ -94,8 +94,8 @@ it out, rather than sitting there for hours.
 
 **Automatic updates never fail silently.** Installed from the openSUSE
 repository, they need nothing switched on; the AppImage needs its Passwordless
-setting. If that setting stops working, weekly updates switch themselves off and
-tell you, rather than quietly doing nothing every week.
+setting. If the computer stops allowing updates without a password, weekly
+updates switch themselves off and tell you, rather than quietly doing nothing every week.
 
 ## Accessibility
 

@@ -9,6 +9,11 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Changed
+
+- finbreak's page says updating from inside the app is now tested and works on Windows.
+- OneUp's page says weekly automatic updates switch themselves off and tell you on any install, not only the AppImage, if the computer stops allowing updates without a password.
+
 ## 2026-11-11
 
 ### Added
