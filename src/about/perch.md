@@ -33,7 +33,7 @@ switches to your desk setup.
 
 Perch ships as a single AppImage file. There is nothing to install, no
 dependencies to chase and no Python to set up: download it, make it executable,
-run it. On openSUSE Tumbleweed and Fedora you can install it from a package
+run it. It also comes as a Flatpak, on the same download list. On openSUSE Tumbleweed and Fedora you can install it from a package
 repository instead, and it updates with the rest of your system.
 
 The first time it runs, a short setup guide explains that there is nothing you
@@ -59,6 +59,18 @@ it, and none needs changes to Perch's core.
 
 ## Where it stands
 
-Stable, and still being improved. Linux only for now; a Windows edition is on
+Stable, and still being improved. The latest release makes sure windows go
+back where you left them:
+
+- Menus and dialogs are left alone: tray menus no longer open far from the
+  click, and dialogs no longer open at title-bar size.
+- Quit always quits: Perch no longer keeps running invisibly after you quit or
+  log out.
+- A reopened window goes back where you left it, reliably, on Plasma Wayland.
+- Perch starts again after it crashes or is killed, and stays connected when
+  KWin reloads its settings.
+- A KDE runtime update no longer breaks the Flatpak.
+
+Linux only for now; a Windows edition is on
 the roadmap as a separate track. Flathub and AUR packages are planned. Free and
 open source under the GPL-3.0.

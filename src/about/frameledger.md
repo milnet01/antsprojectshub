@@ -44,7 +44,11 @@ has these commands:
   by measure, memory included. Each change is judged against how much the
   runs vary by themselves, so random wobble is not reported as a slowdown. It
   refuses to compare runs made under different settings, such as a different
-  resolution, unless you say why it should.
+  resolution, unless you say why it should. You can compare only the measures
+  you care about, and see each run's value side by side.
+- **`alternate`** runs the old and new builds in turn, several times each,
+  then compares them. So a machine that drifts during the test does not look
+  like a change.
 - **`compare --by-scene`** compares an old build with a new one map by map.
   It says which maps got slower, what got slower, and where in the map it
   changed most. Maps with too few runs to judge are listed rather than
@@ -61,7 +65,12 @@ has these commands:
 - **`check`** says whether a run file is written correctly.
 
 A report warns you when its numbers should not be trusted: a debug build, a
-software renderer, or a machine busy with other work.
+software renderer, or a machine busy with other work. A comparison names any
+run taken while the machine was busy, and gives no verdict rather than a wrong
+one.
+
+Every command can also print Markdown, ready to paste into a pull request or a
+note.
 
 ## What it does not do
 
@@ -72,9 +81,9 @@ charts yet; plain text comes first.
 
 ## Where it stands
 
-**The third release is out, and it checks many runs at once.** It is a command-line tool: you type its
+**The fourth release is out: before-and-after tests you can trust.** It is a command-line tool: you type its
 commands in a terminal window, and it answers in text. So there are no
 screenshots. The download is one zip for Linux and Windows. It holds the tool,
-which needs Python 3.10 or newer and nothing else, and an optional small C
-header. An engine can use the header to write run files without writing its
+which needs Python 3.10 or newer and nothing else, launchers so you can run it
+by name from any folder, and an optional small C header. An engine can use the header to write run files without writing its
 own code for it.
