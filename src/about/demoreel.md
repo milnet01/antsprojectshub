@@ -43,7 +43,11 @@ plain-text list of scenes:
 - Play a click or a whoosh at the exact moment it belongs, mixed with the
   music.
 - Script a drag, for moving an item or widening a pane, as well as clicks and
-  keys.
+  keys. Clicks can use the right or middle mouse button too.
+- Show videos side by side, or zoom in on a whole frame.
+- Place text anywhere on the picture.
+- Draw a ring where a click happens.
+- Pick one of five ready-made backgrounds.
 
 ## Why not just record the screen
 
@@ -84,7 +88,15 @@ The only thing it writes to standard output is the finished video's path, so you
 can capture it into a variable without the app's own chatter stirred in.
 
 Or ask for one picture instead: `demoreel shot` saves a single PNG of the app,
-taken on the same private display.
+taken on the same private display. A picture can cover just one part of the
+screen.
+
+From a finished recording, `demoreel thumbnail` makes a YouTube thumbnail, with
+a title if you want one. `demoreel sheet` puts several frames of a video in one
+picture, each marked with its time.
+
+A recording appears only once it is complete. If a retake fails, the last good
+take is kept.
 
 ## The refusals
 
@@ -120,7 +132,12 @@ thing.
 
 Live and in use, on Linux. It is a command-line tool with no window of its own,
 and it says plainly when something it needs is not installed rather than failing
-obscurely.
+obscurely. Every command in its guide has been tried end to end.
+
+It records apps built with winit, a common way for apps to open their windows:
+egui and Bevy apps, for example, and Alacritty. It also records Flatpak
+browsers built on Chromium, such as Brave. A plain `flatpak run` command works
+as it is.
 
 It installs like any other program. The buttons above download the package for
 Debian and Ubuntu, or for Fedora and openSUSE. Arch users will find a PKGBUILD in

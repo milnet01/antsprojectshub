@@ -15,6 +15,7 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- demoreel's page covers its 1.0.0 release: thumbnails, frame sheets, more trailer tools, right and middle clicks, part-screen pictures, winit apps and Chromium Flatpaks, and recordings that appear only when complete.
 - frameledger's page covers its fourth release: `alternate` for before-and-after runs, comparing only chosen measures, no verdict from a busy machine, Markdown output, and launchers to run it by name.
 - Perch's page lists its latest release's fixes, and says Perch also comes as a Flatpak download.
 - finbreak's page says updating from inside the app is now tested and works on Windows.
