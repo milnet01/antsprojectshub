@@ -94,6 +94,10 @@ screen.
 From a finished recording, `demoreel thumbnail` makes a YouTube thumbnail, with
 a title if you want one. `demoreel sheet` puts several frames of a video in one
 picture, each marked with its time.
+`demoreel motion` reads a video and says, in a few lines of text, when the
+picture changes and when it stands still. So you can find the moments worth
+keeping without watching the whole recording. It too can look at just one part
+of the picture.
 
 A recording appears only once it is complete. If a retake fails, the last good
 take is kept.
