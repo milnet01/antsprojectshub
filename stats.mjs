@@ -220,7 +220,10 @@ async function collectProject(p) {
   const traffic = hasToken ? await collectTraffic(p.repo) : null;
   // Skipped without a token for the same reason as traffic: two more calls per repo would
   // spend an unauthenticated run's 60 calls before the downloads were read.
-  const push = hasToken && repo.default_branch ? await collectPush(p.repo, repo.default_branch) : null;
+  // `pushBranch` names the branch to watch where the default one is not the project's own
+  // work, as on a fork whose default branch is a frozen copy of the upstream.
+  const branch = p.pushBranch || repo.default_branch;
+  const push = hasToken && branch ? await collectPush(p.repo, branch) : null;
   const latestFiles = latest ? (Array.isArray(latest.assets) ? latest.assets : []) : null;
 
   return {
@@ -2441,7 +2444,7 @@ function buildsTable(rows, others, now) {
     .sort((a, b) => b.alert - a.alert || a.rank - b.rank || a.name.localeCompare(b.name))
     .map((x) => x.html)
     .join("");
-  return `<p class="note">The newest commit on each repo's main branch, and what GitHub's checks
+  return `<p class="note">The newest commit on each repo's main branch, or the branch named for it, and what GitHub's checks
     said about it. A row is marked when its build failed or its newest release has no files
     to download; a release less than an hour old is "waiting for files" instead, since its
     build may still be attaching them. Files count only what was attached; GitHub's automatic

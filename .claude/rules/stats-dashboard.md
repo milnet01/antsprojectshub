@@ -66,7 +66,9 @@ dashboard".
   Its `tools/roadmap-backup-lib.sh` owns that format. A missing record is a note, never
   an alarm. A failed job, or one with no success for over two days, is "Broken now".
 
-- **Builds reports the newest commit on each repo's default branch.** Its checks are the
+- **Builds reports the newest commit on each repo's default branch.** A project's
+  `pushBranch` in `projects.json` names another branch instead, for a fork whose default
+  branch is not its own work (RetroArch, the user's choice of 2026-11-11). Its checks are the
   GitHub Actions runs that push started. A push that ran none reports the newest push that
   did, so a failure stays listed until a later push passes. A result that could not be read
   shows as "could not be read", never as passed. A newest release with no files attached is

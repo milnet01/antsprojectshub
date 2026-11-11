@@ -244,6 +244,7 @@
       "blurb": "RetroArch is the de-facto frontend for the libretro API, supporting 100+ emulator and game-engine cores across a huge range of platforms. This is my personal fork tracking the upstream libretro/RetroArch project with my own changes on top.",
       "status": "live",
       "repo": "milnet01/RetroArch",
+      "pushBranch": "local/fixes-2026-09",
       "platforms": [
         "linux"
       ],
