@@ -208,6 +208,8 @@
       "platforms": [
         "linux"
       ],
+      "assetMatch": ["\\.AppImage$", "\\.flatpak$"],
+      "altDownloads": "Also as a Flatpak:",
       "isFork": false,
       "upstream": null,
       "homepage": null,
