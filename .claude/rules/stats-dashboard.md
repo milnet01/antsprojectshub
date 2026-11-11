@@ -92,7 +92,10 @@ dashboard".
 
 - **Each new fault goes to its project's session inbox once** (the user's choice of
   2026-11-09). `lib/inbox.mjs` covers open issues and pull requests, a failed build, and a
-  release that lost files an earlier one had. It also covers the user's own upstream pull
+  release that lost files an earlier one had. A failed build includes a run started by hand,
+  by a timer or by a release (`otherFailures()`, the user's choice of 2026-11-11), since GitHub
+  emails about those too; each workflow counts by its newest run, so a later pass clears it.
+  It also covers the user's own upstream pull
   requests, but only when one gains comments or stops being open. It posts through Ants
   Terminal's `ants-mcpd --call session_message` with `dedupe`, and keeps what it sent in
   `.stats/inbox-sent.json`. A fault that clears is forgotten, so it is sent again if it comes

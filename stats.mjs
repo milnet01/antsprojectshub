@@ -341,14 +341,27 @@ function ciResult(runs) {
 // push ran no checks (a docs-only change a workflow ignores) is "not checked", and the newest
 // push that was checked is reported beside it. Returns { error } when GitHub could not be
 // read, which renders as "could not be read" — never as passed.
+// `others` lists the failed runs no push started (otherFailures), or is null when that list
+// could not be read.
 // `get` is ghRequest for a full run, and ghCached for the builds watch.
 async function collectPush(repo, branch, get = ghRequest) {
   const b = encodeURIComponent(branch);
-  const [headRes, runsRes] = await Promise.all([
+  // A page of runs is about 10 KB a run, so each kind is asked for by name, a few at a time,
+  // rather than as one long list of every run.
+  const [headRes, runsRes, ...otherRes] = await Promise.all([
     get(`/repos/${repo}/commits/${b}`),
     get(`/repos/${repo}/actions/runs?branch=${b}&event=push&per_page=50&exclude_pull_requests=true`),
+    ...[...OTHER_EVENTS].map((e) => get(`/repos/${repo}/actions/runs?event=${e}&per_page=10&exclude_pull_requests=true`)),
   ]);
   if (!headRes.ok || !runsRes.ok) return { error: `HTTP ${headRes.ok ? runsRes.status : headRes.status}` };
+  // The push runs go in too, so a later push that passes clears a workflow's failure.
+  const others = otherRes.every((res) => res.ok)
+    ? otherFailures(
+        [runsRes, ...otherRes]
+          .flatMap((res) => res.data.workflow_runs || [])
+          .sort((x, y) => Date.parse(y.created_at) - Date.parse(x.created_at))
+      )
+    : null;
   const c = headRes.data;
   const head = {
     sha: c.sha,
@@ -357,10 +370,33 @@ async function collectPush(repo, branch, get = ghRequest) {
     url: c.html_url,
   };
   const runs = runsRes.data.workflow_runs || [];
-  if (!runs.length) return { branch, head, ci: null };
+  if (!runs.length) return { branch, head, ci: null, others };
   const mine = runs.filter((r) => r.head_sha === head.sha);
-  if (mine.length) return { branch, head, ci: ciResult(mine) };
-  return { branch, head, ci: null, lastChecked: ciResult(runs.filter((r) => r.head_sha === runs[0].head_sha)) };
+  if (mine.length) return { branch, head, ci: ciResult(mine), others };
+  return { branch, head, ci: null, lastChecked: ciResult(runs.filter((r) => r.head_sha === runs[0].head_sha)), others };
+}
+
+// Runs started by hand, by a timer or by a release. GitHub emails the user when one fails,
+// just as for a push, so they are raised too.
+const OTHER_EVENTS = new Set(["workflow_dispatch", "schedule", "release"]);
+
+// The failed runs no push started, from a repo's runs, newest first. Each
+// workflow counts by its newest run of any kind, so a later run that passes, a push's
+// included, clears the failure.
+export function otherFailures(runs) {
+  const newest = new Map();
+  for (const r of runs) if (!newest.has(r.workflow_id)) newest.set(r.workflow_id, r);
+  return [...newest.values()]
+    .filter((r) => OTHER_EVENTS.has(r.event) && r.status === "completed" && CI_FAILED.has(r.conclusion))
+    .map((r) => ({
+      id: r.id,
+      name: r.name,
+      event: r.event,
+      branch: r.head_branch,
+      sha: r.head_sha,
+      message: (r.head_commit?.message || "").split("\n")[0],
+      url: r.html_url,
+    }));
 }
 
 async function collectTraffic(repo) {

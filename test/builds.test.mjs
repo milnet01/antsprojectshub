@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { filesState, buildAlarms } from "../stats.mjs";
+import { filesState, buildAlarms, otherFailures } from "../stats.mjs";
 
 const NOW = Date.parse("2026-11-09T12:00:00Z");
 const minutesAgo = (m) => new Date(NOW - m * 60_000).toISOString();
@@ -59,4 +59,31 @@ test("a project that has never attached files is source-only, not an alarm", () 
   assert.deepEqual(buildAlarms([sourceOnly], NOW), []);
   // An earlier release had files, so this empty one is a release cut without its build.
   assert.equal(filesState(repo({ latestFiles: [], filesBefore: true }), NOW), "none");
+});
+
+// A run no push started: GitHub emails the user when one fails, so it is a fault too.
+const run = (over) => ({
+  id: 1, workflow_id: 9, name: "Build binaries", event: "workflow_dispatch", status: "completed",
+  conclusion: "failure", head_branch: "main", head_sha: "abc1234def", html_url: "https://run/1",
+  head_commit: { message: "Release prep\n\nbody" }, ...over,
+});
+
+test("a failed run started by hand, by a timer or by a release is listed", () => {
+  for (const event of ["workflow_dispatch", "schedule", "release"]) {
+    const [f] = otherFailures([run({ event })]);
+    assert.equal(f.event, event);
+    assert.equal(f.message, "Release prep");
+  }
+  assert.deepEqual(otherFailures([run({ event: "push" })]), []);
+  assert.deepEqual(otherFailures([run({ event: "pull_request" })]), []);
+  assert.deepEqual(otherFailures([run({ status: "in_progress", conclusion: null })]), []);
+  assert.deepEqual(otherFailures([run({ conclusion: "cancelled" })]), []);
+});
+
+test("a workflow counts by its newest run, so a later pass of any kind clears it", () => {
+  assert.deepEqual(otherFailures([run({ id: 2, conclusion: "success" }), run({ id: 1 })]), []);
+  assert.deepEqual(otherFailures([run({ id: 2, event: "push", conclusion: "success" }), run({ id: 1 })]), []);
+  assert.deepEqual(otherFailures([run({ id: 2 }), run({ id: 1, conclusion: "success" })]).map((f) => f.id), [2]);
+  // Another workflow's newer run does not hide this one.
+  assert.equal(otherFailures([run({ id: 3, workflow_id: 8, conclusion: "success" }), run({ id: 1 })]).length, 1);
 });

@@ -115,3 +115,16 @@ test("a fork is found through any of its GitHub remotes, and a project's origin 
   assert.equal(mailbox("me/fork"), "fork");
   assert.equal(mailbox("me/unknown"), null);
 });
+
+test("a failed run no push started is sent once, and a list that could not be read forgets nothing", () => {
+  const other = { id: 42, name: "Build binaries", event: "workflow_dispatch", branch: "main", sha: "abc1234def", message: "prep", url: "https://run/42" };
+  const withRuns = (others) => repo({ push: { branch: "main", ci: { state: "passed", sha: "aaa", message: "m", failed: [] }, others } });
+  const first = plan([withRuns([other])]);
+  assert.equal(first.send.length, 1);
+  assert.match(first.send[0].body, /Build binaries failed on me\/app \(started by hand, main, commit abc1234 "prep"\): https:\/\/run\/42/);
+  assert.deepEqual(plan([withRuns([other])], first.next).send, []);
+  const unread = plan([withRuns(null)], first.next);
+  assert.deepEqual(plan([withRuns([other])], unread.next).send, []);
+  const cleared = plan([withRuns([])], first.next);
+  assert.equal(plan([withRuns([other])], cleared.next).send.length, 1);
+});

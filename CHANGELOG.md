@@ -18,6 +18,7 @@ so dated sections stand in for versions. Planned work lives in
 - finbreak's page says updating from inside the app is now tested and works on Windows.
 - OneUp's page says weekly automatic updates switch themselves off and tell you on any install, not only the AppImage, if the computer stops allowing updates without a password.
 - Stats server: a project can name the branch its Builds row watches (`pushBranch`). RetroArch's row now watches `local/fixes-2026-09`, its own work, instead of `master`, a frozen copy of libretro's.
+- Stats server: a failed build that was started by hand, by a timer or by a release now goes to its project's inbox too, not only one a push started. GitHub emails about all of these.
 
 ## 2026-11-11
 
