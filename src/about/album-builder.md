@@ -42,6 +42,11 @@ shuffle or repeat, and save playlists. Volume levelling keeps loud and quiet
 recordings at an even level. On Linux, you can play, pause and skip from your
 desktop's media controls, media keys or lock screen.
 
+It picks up where you left off. Close Album Builder and open it again, and your
+song, your place in it and the play queue are back, waiting for you to press
+play. Shuffle, repeat, the open tab and a maximised window are remembered too.
+Press Ctrl+F to jump straight to the search box.
+
 It reads MP3, FLAC, Ogg, Opus, WAV, AAC, M4A, AIFF and WMA files. Five colour
 themes are built in, and it speaks eight languages: English, Afrikaans, Arabic,
 Hebrew, Spanish, French, German and Portuguese. In Arabic and Hebrew the whole
@@ -74,7 +79,14 @@ language, and closing the app no longer waits on your desktop's media controls.
 Going back to an older copy of the app no longer wipes your settings, and on
 Windows the main tabs are readable again.
 
-New: adding music. Drag songs or whole folders onto the window, or use
+Newest: the player remembers where you were (see Just listening). Synced lyrics
+light up at the right moment more often, and lyrics are aligned one song at a
+time, so the app no longer uses huge amounts of memory. In the library, songs in
+the current album show a purple strip, and songs whose file is missing show an
+orange one. Moving, deleting or renaming things while the app is open no longer
+closes it, and a damaged settings file no longer stops it starting.
+
+Earlier: adding music. Drag songs or whole folders onto the window, or use
 *File → Add Music...*, and they are copied into your music folder and appear in
 the library straight away. Your original files stay exactly where they were. If a
 song has the same name as one you already have, both are kept: the new copy gets a
