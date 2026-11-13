@@ -940,7 +940,7 @@ function downloadsTable(rows, history, base) {
           // Sorts below every real figure; the blank reads as "not offered" aloud.
           return `<td class="n os os--${k}" data-sort="-1"><span class="sr-only">not offered for ${OS_LABEL[k]}</span></td>`;
         }
-        return `<td class="n os os--${k}" data-sort="${n}">${num(n)}${deltaLine(
+        return `<td class="n os os--${k}" data-sort="${n}">${quiet(n)}${deltaLine(
           n,
           b?.[k]
         )}</td>`;
@@ -955,7 +955,7 @@ function downloadsTable(rows, history, base) {
         r.repo
       )}</span></th>
         ${cells}
-        <td class="n strong databar" style="--w:${share(r.total, topTotal)}" data-sort="${r.total}">${num(r.total)}${deltaLine(
+        <td class="n strong databar" style="--w:${share(r.total, topTotal)}" data-sort="${r.total}">${quiet(r.total)}${deltaLine(
         r.total,
         b ? osTotal(b) : null
       )}</td>
@@ -1095,7 +1095,7 @@ function recentDownloads(rows, history, now) {
     // A counter can fall — an asset deleted or re-uploaded takes its downloads with it. Say so
     // rather than printing a negative download count and leaving the reader to guess.
     const fell = w.count < 0 ? `<br><span class="dim">an asset was removed</span>` : "";
-    const shown = w.count < 0 ? `−${num(-w.count)}` : num(w.count);
+    const shown = w.count < 0 ? `−${num(-w.count)}` : quiet(w.count);
     const bar = days === WINDOWS[0] && w.count > 0 ? ` databar" style="--w:${share(w.count, topWeek)}` : "";
     return `<td class="n${bar}" data-sort="${w.count}">${shown}${note}${fell}</td>`;
   };
@@ -1111,7 +1111,7 @@ function recentDownloads(rows, history, now) {
       }</th>
         ${wins.map((w, i) => cell(w, WINDOWS[i])).join("")}
         <td class="n strong" data-sort="${total ?? -1}">${
-        total == null ? `<span class="dim">no data</span>` : num(total)
+        total == null ? `<span class="dim">no data</span>` : quiet(total)
       }</td>
         <td class="n" data-sort="${first ? Date.parse(first.at) : -1}">${
         first ? dayLabel(dayKey(Date.parse(first.at))) : `<span class="dim">—</span>`
