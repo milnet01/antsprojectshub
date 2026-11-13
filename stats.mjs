@@ -85,6 +85,22 @@ const NAV = [
   ["trend", "h-trend", "Trends"],
 ];
 
+// One line icon per tab, drawn beside its heading. Decoration only: the heading names the tab.
+const icon = (paths) =>
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+const TAB_ICON = {
+  ov: icon('<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'),
+  proj: icon('<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'),
+  att: icon('<path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7 2.5 7h-17S6 15 6 9"/><path d="M10 20a2 2 0 0 0 4 0"/>'),
+  dl: icon('<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/>'),
+  ga: icon('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5a5 5 0 0 1 4.5 5.5"/>'),
+  tr: icon('<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/>'),
+  act: icon('<path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9l-5.4 2.9 1.1-6.1-4.5-4.3 6.1-.8z"/>'),
+  rel: icon('<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>'),
+  ci: icon('<circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/>'),
+  trend: icon('<path d="M3 17 9 11l4 4 8-8"/><path d="M15 7h6v6"/>'),
+};
+
 // Release files that legitimately aren't OS downloads, so listing them as "a missing
 // download button" would nag about files the site is right to exclude. Two groups: the
 // companion files the matcher itself skips (signatures, checksums, SBOMs — shared with
@@ -111,7 +127,9 @@ const flag = (code) =>
       )}</span>`
     : "";
 const isPublished = (p) => Boolean(p.repo) && p.status !== "soon";
-const daysSince = (iso, now) => (iso ? Math.floor((now - Date.parse(iso)) / DAY) : null);
+// Never negative: the builds watch reads a release newer than the full run's `now`, and that
+// release is "today", not "-1 days ago".
+const daysSince = (iso, now) => (iso ? Math.max(0, Math.floor((now - Date.parse(iso)) / DAY)) : null);
 const dayKey = (ts) => new Date(ts).toISOString().slice(0, 10);
 
 // ------------------------------------------------------------------ collection
@@ -1301,6 +1319,9 @@ function archiveTraffic(rows, history, now) {
   )}`;
 }
 
+// A count whose zero is the usual case: the zero is dimmed, so the eye lands on what is there.
+const quiet = (n) => (n ? num(n) : '<span class="dim">0</span>');
+
 function activityTable(rows, now) {
   // Ships pre-sorted by stars, highest first — the column this table is actually read for,
   // and the order it keeps when the script never runs. A reader's own choice is remembered
@@ -1317,11 +1338,11 @@ function activityTable(rows, now) {
         <th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}${
         r.archived ? ' <span class="flag">archived</span>' : ""
       }</th>
-        <td class="n" data-sort="${r.stars}">${num(r.stars)}</td>
-        <td class="n" data-sort="${r.forks}">${num(r.forks)}</td>
-        <td class="n" data-sort="${r.watchers}">${num(r.watchers)}</td>
-        <td class="n" data-sort="${r.issues}">${num(r.issues)}</td>
-        <td class="n" data-sort="${r.prs}">${num(r.prs)}</td>
+        <td class="n" data-sort="${r.stars}">${quiet(r.stars)}</td>
+        <td class="n" data-sort="${r.forks}">${quiet(r.forks)}</td>
+        <td class="n" data-sort="${r.watchers}">${quiet(r.watchers)}</td>
+        <td class="n" data-sort="${r.issues}">${quiet(r.issues)}</td>
+        <td class="n" data-sort="${r.prs}">${quiet(r.prs)}</td>
         <td class="n" data-sort="${esc(r.latestTag || "")}">${
         r.latestTag ? esc(r.latestTag) : '<span class="dim">none</span>'
       }</td>
@@ -1819,6 +1840,19 @@ function updateAttention(history, items, rows, now) {
   history.attention = next;
 }
 
+// An item's "Fix: …" sentence goes on a line of its own, so the fault reads first and the
+// remedy is found at a glance. It runs to the item's end, or to the age that closes it.
+export const fixLine = (html) =>
+  html.replace(
+    /\s*\bFix: ([\s\S]*?)\s*(<span class="age">[^<]*<\/span>)?\s*$/,
+    (_, fix, age = "") => `${age ? ` ${age}` : ""}<span class="fix"><strong>Fix</strong> ${fix}</span>`
+  );
+
+// A project's status as a pill: the word says it, the mark and the colour repeat it.
+const STATUS_MARK = { live: "●", beta: "◐", wip: "○", soon: "◌" };
+const statusPill = (st) =>
+  st ? `<span class="st st--${esc(st)}"><span aria-hidden="true">${STATUS_MARK[st] || "○"}</span> ${esc(st)}</span>` : "";
+
 function issuesSection(rows, health, seen = {}, now = Date.now()) {
   const items = attentionItems(rows, health);
 
@@ -1842,16 +1876,19 @@ function issuesSection(rows, health, seen = {}, now = Date.now()) {
     const n = list.reduce((t, i) => t + i.n, 0);
     return `<h3 class="issues-h${isNow ? " issues-h--now" : ""}">${label}
       <span class="count">(${n})</span></h3>
-      <ul class="issues">${list.map((i) => `<li>${i.html(since(i.keys), ageOf)}</li>`).join("")}</ul>`;
+      <ul class="issues issues--cards${isNow ? " issues--now" : ""}">${list
+        .map((i) => `<li>${fixLine(i.html(since(i.keys), ageOf))}</li>`)
+        .join("")}</ul>`;
   };
 
-  return (
+  // What needs doing on the left; the site's own state beside it, since nothing there asks
+  // for anything.
+  return `<div class="att"><div class="att__main">${
     (items.some((i) => i.now !== null) ? "" : `<p class="note ok">Nothing needs fixing. ✓</p>`) +
     group(true, "⚠ Broken now") +
     group(false, "Incomplete") +
-    group(null, "Open issues and pull requests") +
-    siteContent(health, now)
-  );
+    group(null, "Open issues and pull requests")
+  }</div><aside class="att__side" aria-label="Site content and scheduled jobs">${siteContent(health, now)}</aside></div>`;
 }
 
 // What used to be its own Content tab: every project by status, by name, so "3 wip" says
@@ -1865,12 +1902,13 @@ function siteContent(health, now) {
   const rows = statuses
     .map((st) => {
       const names = health.namesByStatus[st];
-      return `<li><strong>${esc(st)}</strong> (${names.length}): ${names.map(esc).join(", ")}</li>`;
+      return `<li>${statusPill(st)} <span class="count">(${names.length})</span> ${names.map(esc).join(", ")}</li>`;
     })
     .join("");
-  return `<h3>Site content</h3>
-    <ul class="issues">${rows}</ul>
+  return `<h3 class="issues-h">Site content</h3>
+    <ul class="statuses">${rows}</ul>
     <p class="chips">${tallyList(health.byCategory)}</p>
+    <h3 class="issues-h">Scheduled jobs</h3>
     ${
       health.noRepo.length
         ? `<p class="note">Unpublished (no repo yet): ${health.noRepo.map(esc).join(", ")}.</p>`
@@ -1937,11 +1975,12 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
   const stamp = `Last updated
       <span id="updated" data-at="${new Date(now).toISOString()}">${new Date(now).toLocaleString(
     "en-GB"
-  )}</span> · took ${elapsed}s ·
-      ${AUTH_LABEL[tokenSource]} ·
+  )}</span>`;
+  // How the run went: wanted rarely, so it sits in the footer rather than above every tab.
+  const meta = `The last full run took ${elapsed}s · ${AUTH_LABEL[tokenSource]} ·
       ${history.snapshots.length} snapshot(s) recorded${
         baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
-      }`;
+      }.`;
   const banners = `${gapBanner(history, now)}
   ${incompleteBanner(rows)}`;
   // Each tab's heading and body, rendered once so its live() fingerprint is of what is shown.
@@ -1967,7 +2006,8 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
     ${trendsSection(history, trends, now)}`,
   };
   const tab = (sec, title) => {
-    const inner = `<h2 id="h-${sec}">${title}</h2>
+    const inner = `<header class="sec__head"><span class="sec__icon" aria-hidden="true">${TAB_ICON[sec]}</span>
+      <h2 id="h-${sec}">${title}</h2></header>
     ${body[sec]}`;
     return `<section class="sec" data-sec="${sec}" aria-labelledby="h-${sec}" ${live(sec, inner)}>${inner}</section>`;
   };
@@ -2010,7 +2050,7 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
 
   <div ${live("banners", banners)}>${banners}</div>
 
-  <section aria-labelledby="h-sum"><h2 id="h-sum" class="sr-only">Summary</h2>
+  <section class="summary" aria-labelledby="h-sum"><h2 id="h-sum" class="sr-only">Summary</h2>
     <div class="tiles" ${live("tiles", tiles)}>${tiles}</div></section>
 
   ${tab("ov", "Overview")}
@@ -2035,8 +2075,8 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
 
   ${tab("trend", "Trends")}
 
-  <footer class="foot">Local file — never published. Regenerate with
-    <code>npm run stats</code>.</footer>
+  <footer class="foot"><span ${live("meta", meta)}>${meta}</span> Local file — never published.
+    Regenerate with <code>npm run stats</code>.</footer>
 </main>
 <dialog id="help" class="help" aria-labelledby="help-h">
   <h2 id="help-h">Keyboard shortcuts</h2>
@@ -2123,7 +2163,7 @@ function overviewSection({ rows, ok, history, base, baseAge, health, now, ga, ob
     `${
       broken.length
         ? `<p class="issues-h issues-h--now">⚠ Broken now</p><ul class="issues">${broken
-            .map((i) => `<li>${i.html("", () => "")}</li>`)
+            .map((i) => `<li>${fixLine(i.html("", () => ""))}</li>`)
             .join("")}</ul>`
         : '<p class="good">✓ Nothing is broken.</p>'
     }
@@ -2268,7 +2308,7 @@ function projectsSection(rows, history, obs, now) {
       return `<article class="pcard" data-name="${esc(r.name.toLowerCase())}" data-total="${r.total}" data-week="${w7?.count ?? -1}"
         data-stars="${r.stars}" data-rel="${r.latestAt ? Date.parse(r.latestAt) : 0}" data-commit="${r.pushedAt ? Date.parse(r.pushedAt) : 0}">
         <header class="pcard__head"><h3>${siteLink}</h3>
-          <span class="chip">${esc(r.project?.status || "")}</span>${r.archived ? '<span class="flag">archived</span>' : ""}
+          ${statusPill(r.project?.status)}${r.archived ? '<span class="flag">archived</span>' : ""}
           <span class="pcard__ver">${r.latestTag ? esc(r.latestTag) : '<span class="dim">no release</span>'}</span></header>
         <div class="pcard__nums">
           <div><strong>${num(r.total)}</strong><span>all time</span></div>
@@ -2282,8 +2322,12 @@ function projectsSection(rows, history, obs, now) {
           <div><dt>Last commit</dt><dd>${age(r.pushedAt)}</dd></div>
           <div><dt>Repo views, 14 days</dt><dd>${r.traffic ? num(r.traffic.views) : '<span class="dim">no data</span>'}</dd></div>
           ${o?.d30 != null ? `<div><dt>openSUSE, 30 days</dt><dd>${num(o.d30)}</dd></div>` : ""}
-          <div><dt>Stars · forks</dt><dd>${num(r.stars)} · ${num(r.forks)}</dd></div>
-          <div><dt>Issues · pull requests</dt><dd>${num(r.issueList.length)} · ${num(r.prList.length)}</dd></div>
+          ${r.stars || r.forks ? `<div><dt>Stars · forks</dt><dd>${num(r.stars)} · ${num(r.forks)}</dd></div>` : ""}
+          ${
+            r.issueList.length || r.prList.length
+              ? `<div><dt>Issues · pull requests</dt><dd>${num(r.issueList.length)} · ${num(r.prList.length)}</dd></div>`
+              : ""
+          }
         </dl>
         <p class="pcard__links">
           <a href="${esc(repo)}" target="_blank" rel="noopener">Repo</a>
@@ -2400,25 +2444,20 @@ function releasesTable(rows) {
         .slice(0, 5)
         .map(
           (x) =>
-            `<li>${esc(x.tag)}${x.prerelease ? ' <span class="flag">pre</span>' : ""}
+            `<li><span class="rels__tag">${esc(x.tag)}${x.prerelease ? ' <span class="flag">pre</span>' : ""}</span>
              <span class="dim">${x.at ? x.at.slice(0, 10) : "—"}</span>
-             <strong>${num(x.total)}</strong></li>`
+             <strong class="n">${quiet(x.total)}</strong></li>`
         )
         .join("");
-      return `<tr><th scope="row" data-sort="${esc(r.name)}">${esc(r.name)}<span class="repo">${num(
-        r.releaseCount
-      )} releases</span></th><td><ul class="rels">${recent}</ul></td></tr>`;
+      return `<article class="rcard"><h3>${esc(r.name)}</h3>
+        <p class="rcard__count">${num(r.releaseCount)} release${r.releaseCount === 1 ? "" : "s"}</p>
+        <ul class="rels">${recent}</ul></article>`;
     })
     .join("");
   if (!body) return `<p class="note">No releases published yet.</p>`;
-  // Sortable by project only — the second column is a per-project list, not a value.
-  return scrollTable(
-    "Recent releases",
-    `<table class="tbl tbl--rel sortable" data-table="releases"><caption>Downloads by version — the five most
-    recent releases of each project.</caption><thead><tr><th scope="col">Project</th>
-    <th scope="col" data-nosort>Version · date · downloads</th></tr></thead>
-    <tbody>${body}</tbody></table>`
-  );
+  // One card per project, several to a row: a list per project is not a table's worth of columns.
+  return `<p class="sec__lede">Each project's five newest releases: version, date, downloads.</p>
+    <div class="rcards">${body}</div>`;
 }
 
 // The Builds tab: did each repo's last push pass its checks, and does each newest release
@@ -2498,13 +2537,13 @@ function buildsTable(rows, others, now) {
     .sort((a, b) => b.alert - a.alert || a.rank - b.rank || a.name.localeCompare(b.name))
     .map((x) => x.html)
     .join("");
-  return `<p class="note">The newest commit on each repo's main branch, or the branch named for it, and what GitHub's checks
+  return `<details class="about about--block"><summary>About this tab</summary><p>The newest commit on each repo's main branch, or the branch named for it, and what GitHub's checks
     said about it. A row is marked when its build failed or its newest release has no files
     to download; a release less than an hour old is "waiting for files" instead, since its
     build may still be attaching them. Files count only what was attached; GitHub's automatic
     source-code archives are not files. Hover a file count to read the names. While the
     dashboard service runs it checks this every ${BUILDS_EVERY}, and an open page updates the
-    parts that changed by itself, without reloading.</p>
+    parts that changed by itself, without reloading.</p></details>
   ${scrollTable(
     "Builds and release files",
     `<table class="tbl tbl--builds sortable" data-table="builds"><caption>Last push and newest
@@ -2632,6 +2671,7 @@ const JS = `(function () {
   function enhance(root) {
     each(root, "table.sortable", sortable);
     each(root, "a[data-tab]", tabJump);
+    each(root, "table", about);
     each(root, "table.sortable[data-table]", csvButton);
     each(root, "svg.chart__svg[data-points]", chart);
     if (root.querySelector("#pcards")) cards();
@@ -2739,11 +2779,12 @@ const JS = `(function () {
   }
 
   // Tabs. Without this script the nav's links are ordinary anchors down one long page; with
-  // it each link shows its own section and hides the rest. The summary tiles and the banners
-  // sit outside every section, so they show above whichever tab is open. The open tab is
+  // it each link shows its own section and hides the rest. The banners sit outside every
+  // section, so they show above whichever tab is open; the summary tiles sit outside too, and
+  // the style sheet shows them on the first tab only. The open tab is
   // kept in the URL's # part, which "Refresh now" keeps across its reload, and in
   // localStorage for a fresh visit; the # part wins. A tab's # is "#tab-<key>", which names
-  // no element, so the browser has nothing to jump to and the tiles stay in view; the links
+  // no element, so the browser has nothing to jump to and the page stays at its top; the links
   // keep their heading targets until this script rewrites them. Any older # naming
   // something inside a section (a heading, from a visit without this script) opens that
   // section's tab and is swapped for the tab form.
@@ -2769,6 +2810,8 @@ const JS = `(function () {
         else a.removeAttribute("aria-current");
       });
       Object.keys(panes).forEach(function (p) { panes[p].hidden = p !== k; });
+      // The summary tiles show on the first tab only; the style sheet reads this.
+      document.body.setAttribute("data-open", k);
       findStatus();
       if (save) {
         try { localStorage.setItem(TAB_KEY, k); } catch (e) {}
@@ -2879,7 +2922,7 @@ const JS = `(function () {
   var tools = document.getElementById("tools");
   var find = document.getElementById("find");
   var findMsg = document.getElementById("find-msg");
-  var FINDABLE = ".sec table.sortable tbody tr, .pcard, .issues li, .filterable li";
+  var FINDABLE = ".sec table.sortable tbody tr, .pcard, .rcard, .issues li, .filterable li";
   function findStatus() {
     if (!find || !findMsg) return;
     if (!find.value.trim()) { findMsg.textContent = ""; return; }
@@ -2973,6 +3016,28 @@ const JS = `(function () {
     });
   }
   cards();
+
+  // A long caption folds behind "About these figures", so the table is not pushed down by
+  // prose read once. The table then takes its name from the scroll region around it, since
+  // its caption no longer opens with one. Runs before csvButton, whose link stays in view.
+  function about(table) {
+    var cap = table.caption;
+    if (!cap || cap.querySelector("details") || cap.textContent.trim().length < 120) return;
+    var fold = document.createElement("details");
+    fold.className = "about";
+    var summary = document.createElement("summary");
+    summary.textContent = "About these figures";
+    var text = document.createElement("span");
+    text.className = "about__text";
+    while (cap.firstChild) text.appendChild(cap.firstChild);
+    fold.appendChild(summary);
+    fold.appendChild(text);
+    cap.appendChild(fold);
+    var region = table.closest(".tbl-scroll");
+    var name = region && region.getAttribute("aria-label");
+    if (name) table.setAttribute("aria-label", name.split(", scrollable").join(""));
+  }
+  each(document, "table", about);
 
   // Each sortable table's caption gets a link that saves it for a spreadsheet: the same rows in
   // the same order, with the raw figure from data-sort rather than the formatted text.
@@ -3170,16 +3235,54 @@ body.admin::after { display: none; }
   .tile--link, .topnav__list a, .pcard { transition: none; }
 }
 h2 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 .8rem; color: var(--teal); letter-spacing: -.01em; }
-/* Section heading takes its accent, with a matching rule so the colour isn't the only cue. */
-.sec h2 { color: var(--accent); border-left: .2rem solid var(--accent); padding-left: .55rem; }
+/* Each tab opens with a band washed in its accent: an icon, then the heading in text ink.
+   The thick edge and the icon repeat the colour, so it is never the only cue. */
+.sec__head { display: flex; align-items: center; gap: .8rem; margin: 1.2rem 0 1rem;
+  padding: .7rem 1.1rem; border-radius: var(--r);
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  border-left: .35rem solid var(--accent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 24%, transparent),
+    color-mix(in srgb, var(--accent) 5%, transparent) 55%), var(--card);
+  box-shadow: var(--lift); }
+.sec__head h2 { margin: 0; font-size: 1.6rem; font-weight: 750; color: var(--text); }
+.sec__icon { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; flex: none;
+  color: var(--accent); border-radius: .7rem;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+.sec__icon svg { width: 1.4rem; height: 1.4rem; }
+.sec__lede { margin: 0 0 .8rem; color: var(--text-muted); font-size: .9rem; }
+/* The summary tiles belong to the first tab; every other tab starts at its own content. */
+.tabbed:not([data-open="ov"]) .summary { display: none; }
+
+/* Folded explanations: a caption's prose, or a tab's, behind one line that opens it. */
+.about { display: inline-block; vertical-align: top; }
+.about summary { cursor: pointer; color: var(--text-muted); font-weight: 600; }
+.about summary:hover { color: var(--text); }
+.about summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.about[open] { display: block; margin-bottom: .3rem; }
+.about__text, .about--block p { display: block; margin: .35rem 0 0; max-width: 62rem;
+  color: var(--text-muted); line-height: 1.5; }
+.about--block { display: block; margin: 0 0 .7rem; font-size: .88rem; }
+
+/* Status as a pill: a mark, the word, and a colour that only repeats them. */
+.st { display: inline-flex; align-items: center; gap: .35em; padding: .05rem .6rem;
+  border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap;
+  color: var(--pill, var(--text-muted));
+  border: 1px solid color-mix(in srgb, var(--pill, var(--text-muted)) 60%, transparent);
+  background: color-mix(in srgb, var(--pill, var(--text-muted)) 13%, transparent); }
+.st--live { --pill: var(--teal); }
+.st--beta { --pill: #93c5fd; }
+.st--wip { --pill: var(--violet); }
 
 /* Summary tiles */
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .75rem; }
 .tile { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: .1rem;
-  min-height: 5.6rem; padding: .75rem .95rem; color: var(--text); text-decoration: none;
-  background: var(--card); border: 1px solid var(--card-line); border-radius: var(--r);
-  box-shadow: var(--lift); }
-.tile::before { content: ""; position: absolute; inset: 0 0 auto; height: .17rem;
+  min-height: 6.4rem; padding: .85rem 1.05rem; color: var(--text); text-decoration: none;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--tile-accent, var(--teal)) 20%, transparent),
+    transparent 62%), var(--card);
+  border: 1px solid color-mix(in srgb, var(--tile-accent, var(--teal)) 30%, var(--card-line));
+  border-radius: var(--r); box-shadow: var(--lift); }
+.tile::before { content: ""; position: absolute; inset: 0 0 auto; height: .28rem;
   background: var(--tile-accent, var(--teal)); }
 .tile:nth-child(7n+1) { --tile-accent: #5eead4; }
 .tile:nth-child(7n+2) { --tile-accent: #67dde8; }
@@ -3192,10 +3295,10 @@ h2 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 .8rem; color: var(--t
 .tile--link:hover { transform: translateY(-2px); border-color: var(--tile-accent); }
 .tile--link:focus-visible { outline: 2px solid var(--tile-accent); outline-offset: 2px; }
 .tile__label { font-size: .8rem; font-weight: 600; color: var(--text-muted); letter-spacing: .01em; }
-.tile__value { font-size: 2rem; font-weight: 750; line-height: 1.15; letter-spacing: -.02em;
+.tile__value { font-size: 2.5rem; font-weight: 750; line-height: 1.1; letter-spacing: -.02em;
   font-variant-numeric: tabular-nums; }
 .tile__sub { font-size: .8rem; color: var(--text-muted); min-height: 1.2em; }
-.tile .spark { position: absolute; right: .9rem; top: 1.9rem; width: 40%; height: 1.9rem;
+.tile .spark { position: absolute; right: .9rem; top: 2.1rem; width: 40%; height: 2.2rem;
   color: var(--tile-accent); opacity: .9; }
 /* Trend row under the visitor tiles: end labels flank the sparkline so the line is read
    against real dates rather than floating unanchored. */
@@ -3210,7 +3313,11 @@ h2 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 .8rem; color: var(--t
 .stack .panel { flex: 1; }
 .panel { margin: 0; padding: .95rem 1.1rem; background: var(--card); border: 1px solid var(--card-line);
   border-radius: var(--r); box-shadow: var(--lift); min-width: 0; }
-.panel > h3, .sec .panel > h3 { margin: 0 0 .65rem; font-size: 1rem; font-weight: 700; color: var(--text); }
+.panel > h3, .sec .panel > h3 { margin: 0 0 .65rem; font-size: 1.05rem; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: .5rem; }
+/* A block of the tab's accent leads each panel title, so the panels read as one family. */
+.panel > h3::before { content: ""; flex: none; width: .3rem; height: 1.1em; border-radius: 999px;
+  background: var(--accent); }
 .good { margin: 0 0 .6rem; color: var(--teal); font-weight: 600; }
 .counts { margin: .7rem 0 .4rem; color: var(--text-muted); font-size: .88rem; }
 .counts strong { color: var(--text); }
@@ -3247,7 +3354,8 @@ h2 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 .8rem; color: var(--t
 .pcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(26rem, 1fr)); gap: .9rem; }
 .pcard { display: flex; flex-direction: column; gap: .55rem; padding: .95rem 1.1rem;
   background: var(--card); border: 1px solid var(--card-line); border-radius: var(--r);
-  box-shadow: var(--lift); transition: border-color .12s; }
+  box-shadow: var(--lift); transition: border-color .12s;
+  border-top: .22rem solid color-mix(in srgb, var(--accent) 70%, transparent); }
 .pcard:hover { border-color: var(--accent); }
 .pcard__head { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .55rem; }
 .sec .pcard h3 { margin: 0; font-size: 1.05rem; }
@@ -3286,7 +3394,7 @@ h2 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 .8rem; color: var(--t
 .note + .tbl-scroll { margin-top: .75rem; }
 .tbl-scroll:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 /* Few columns — nothing to crush, so no floor and nothing to scroll. */
-.tbl--rel, .tbl--plain { min-width: 0; }
+.tbl--plain { min-width: 0; }
 .tbl--plain { box-shadow: none; background: none; border: 0; border-radius: 0; font-size: .88rem; }
 .tbl--plain th, .tbl--plain td { padding: .36rem .3rem; }
 /* Every table gets a heading of its own: a dim caption is weak wayfinding, and this page is
@@ -3302,8 +3410,9 @@ h2 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 .8rem; color: var(--t
   padding: .35rem 0 .5rem .55rem;
   position: sticky; left: 0; max-width: var(--col); }
 .tbl th, .tbl td { padding: .55rem .75rem; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; }
-.tbl thead th { color: var(--text-muted); background: rgba(255,255,255,.045); font-size: .82rem;
-  font-weight: 600; letter-spacing: .01em; }
+.tbl thead th { color: var(--text); font-size: .84rem; font-weight: 700; letter-spacing: .01em;
+  background: color-mix(in srgb, var(--accent, #fff) 13%, rgba(255,255,255,.04));
+  border-bottom: 2px solid color-mix(in srgb, var(--accent, #fff) 45%, transparent); }
 /* The sort control fills the header cell so the whole header is the click target. */
 .tbl thead th:has(.sort-btn) { padding: 0; }
 .sort-btn { font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit;
@@ -3348,7 +3457,9 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .warn { color: var(--amber); }
 /* Builds: the word and its symbol carry the state; colour only repeats it. A marked row gets
    a rose edge and a faint tint, with its text kept in text ink. */
-.state { font-weight: 700; white-space: nowrap; }
+.state { display: inline-block; font-weight: 700; white-space: nowrap; padding: .04rem .6rem;
+  border-radius: 999px; border: 1px solid color-mix(in srgb, currentColor 55%, transparent);
+  background: color-mix(in srgb, currentColor 12%, transparent); }
 .state--bad { color: var(--rose); }
 .state--warn { color: var(--amber); }
 .state--ok { color: var(--teal); }
@@ -3402,6 +3513,34 @@ th[aria-sort="descending"] .sort-btn::after { content: " ▼"; }
 .issues li { color: var(--text-muted); font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
 .issues strong { color: var(--text); }
 .issues .age { color: var(--text-dim); white-space: nowrap; }
+/* The remedy on its own line, under the fault. */
+.fix { display: block; margin-top: .3rem; color: var(--text); }
+.fix strong { display: inline-block; margin-right: .35em; padding: 0 .45em; border-radius: .35rem;
+  font-size: .82em; color: var(--text); background: rgba(255,255,255,.1);
+  border: 1px solid var(--card-line); }
+/* Notifications: what needs doing as cards, the site's own state beside them. */
+.att { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 0 1.6rem; align-items: start; }
+.att__side { padding: 1rem 1.1rem; background: var(--card); border: 1px solid var(--card-line);
+  border-radius: var(--r); box-shadow: var(--lift); }
+.att__side .note { box-shadow: none; margin-top: .5rem; font-size: .86rem; }
+.issues--cards { list-style: none; padding: 0; gap: .6rem; }
+.issues--cards li { padding: .7rem 1rem; background: var(--card); border: 1px solid var(--card-line);
+  border-left: .3rem solid var(--text-dim); border-radius: .7rem; box-shadow: var(--lift); }
+.issues--now li { border-left-color: var(--amber); }
+.statuses { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem;
+  font-size: .88rem; line-height: 1.5; color: var(--text-muted); }
+.statuses .count { color: var(--text-dim); }
+/* Releases: a card per project. Each line is tag, date, downloads, in columns that line up. */
+.rcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr)); gap: .9rem; }
+.rcard { padding: .9rem 1.1rem; background: var(--card); border: 1px solid var(--card-line);
+  border-top: .22rem solid color-mix(in srgb, var(--accent) 70%, transparent);
+  border-radius: var(--r); box-shadow: var(--lift); }
+.sec .rcard h3 { margin: 0; font-size: 1.05rem; }
+.rcard__count { margin: 0 0 .55rem; color: var(--text-dim); font-size: .82rem; }
+.rcard .rels li { display: grid; grid-template-columns: minmax(0, 1fr) auto 3rem; gap: .8rem;
+  padding: .2rem 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+.rcard .rels li:last-child { border-bottom: 0; }
+.rels__tag { overflow-wrap: anywhere; }
 .note { background: var(--card); border: 1px solid var(--card-line);
   border-radius: var(--r); padding: .7rem .95rem; color: var(--text-muted); font-size: .9rem; margin: 0; }
 .note.ok { color: var(--teal); }

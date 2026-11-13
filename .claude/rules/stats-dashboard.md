@@ -86,7 +86,8 @@ dashboard".
   only the parts that changed, never while the reader is typing.
 
 - **A part the open page can swap carries `live()`.** `page()` in `stats.mjs` gives the tab
-  list, the "Last updated" line, the banners, the tiles and each tab a `data-live` name and a
+  list, the "Last updated" line, the banners, the tiles, each tab and the footer's line
+  about the last run a `data-live` name and a
   `data-rev` fingerprint of its HTML. `dashboard.js` replaces a part whose fingerprint
   differs, then runs `enhance()` on it. Anything the script adds to a part at load must be
   a function `enhance()` also calls, or a swapped-in part loses it. The tab links keep their
@@ -127,8 +128,10 @@ dashboard".
   are ordinary anchors: without JavaScript every section shows on one long page and a link
   jumps to its section. The first tab, Overview, must show whatever is broken now, so a fault
   is seen on opening; Projects holds one card per published project. `dashboard.js` turns them into tabs that show one section at a
-  time, marking the open tab's link with `aria-current`. The summary tiles and the banners
-  from `gapBanner()` and `incompleteBanner()` stay above every tab. The open tab is remembered in the URL's `#` part, so "Refresh now"
+  time, marking the open tab's link with `aria-current`. The banners
+  from `gapBanner()` and `incompleteBanner()` stay above every tab. The summary tiles show
+  on Overview only (the user's choice of 2026-11-13): `dashboard.js` writes the open tab to
+  `data-open` on `<body>`, and the style sheet hides `.summary` on the others. The open tab is remembered in the URL's `#` part, so "Refresh now"
   reopens it, and in `localStorage` under `aph-tab`, so a fresh visit does; the `#` part
   wins. A remembered tab that no longer exists opens the first. Every `localStorage`
   access is wrapped in `try`/`catch`.
@@ -151,6 +154,14 @@ dashboard".
 
 - **`site.css` comes first and shares class names.** It styles `.panel`, `.chip` and `.wrap`
   for the public site, so a dashboard rule on one of those must reset what it does not want.
+  The dashboard's status pill is `.st`, not `.pill`, because the site's `.pill` colours beta
+  amber, which here means "look at this".
+
+- **Explanations fold away; faults do not.** `about()` in `dashboard.js` folds a long table
+  caption behind "About these figures" and names the table from its scroll region instead.
+  The Builds tab's explanation is a `<details>` in the page itself. The Site visitors
+  "floor, not a total" note stays in view. A zero that is the usual case is dimmed with
+  `quiet()`; a notification's "Fix:" sentence goes on its own line through `fixLine()`.
 
 - **Sorting is progressive enhancement.** `dashboard.js` turns each `table.sortable` header
   into a `<button>` and toggles `aria-sort`; every table also ships pre-sorted by its most

@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { filesState, buildAlarms, otherFailures, dashboardScript } from "../stats.mjs";
+import { filesState, buildAlarms, otherFailures, dashboardScript, fixLine } from "../stats.mjs";
 
 const NOW = Date.parse("2026-11-09T12:00:00Z");
 const minutesAgo = (m) => new Date(NOW - m * 60_000).toISOString();
@@ -92,4 +92,19 @@ test("a workflow counts by its newest run, so a later pass of any kind clears it
 // or backtick breaks it without breaking stats.mjs itself.
 test("the dashboard's script parses", () => {
   assert.doesNotThrow(() => new Function(dashboardScript()));
+});
+
+// A notification's "Fix: …" sentence moves to a line of its own; the age that closed the
+// item stays with the fault, and an item with no fix is left as it was.
+test("fixLine puts the remedy on its own line and keeps the age with the fault", () => {
+  const age = '<span class="age">(first noticed today)</span>';
+  assert.equal(
+    fixLine(`<strong>A</strong> failed. Fix: open the run, push again. ${age}`),
+    `<strong>A</strong> failed. ${age}<span class="fix"><strong>Fix</strong> open the run, push again.</span>`
+  );
+  assert.equal(
+    fixLine(`No stills on B ${age}, C. Fix: ask each session.`),
+    `No stills on B ${age}, C.<span class="fix"><strong>Fix</strong> ask each session.</span>`
+  );
+  assert.equal(fixLine(`Three pull requests are open. ${age}`), `Three pull requests are open. ${age}`);
 });
