@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { esc, ORIGIN } from "./lib/templates.mjs";
 import { collectAnalytics, collectDownloadClicks, collectPostViews, gaError } from "./lib/ga.mjs";
 import { loadPosts } from "./lib/posts.mjs";
@@ -58,9 +59,14 @@ const DAY = 86400000;
 const BACKUP_STALE = 2 * DAY;
 // How often the stats server's builds watch runs (serve.mjs). Each pass asks GitHub "has this
 // changed?" of three paths per repo, and an unchanged answer is free, so the cost is the
-// changes, not the pace. Two and a half minutes is the user's choice (2026-11-09).
-export const BUILDS_SECONDS = Number(process.env.STATS_BUILDS_SECONDS) || 150;
+// changes, not the pace. Fifteen minutes is the user's choice (2026-11-13).
+export const BUILDS_SECONDS = Number(process.env.STATS_BUILDS_SECONDS) || 900;
 const BUILDS_EVERY = `${BUILDS_SECONDS / 60} minutes`;
+
+// A part of the page the open page can swap in place (dashboard.js, "Live update"): its name,
+// and a fingerprint of its HTML so the script can tell which parts a newer page changed.
+const fingerprint = (html) => createHash("sha1").update(html).digest("hex").slice(0, 12);
+const live = (name, html) => `data-live="${name}" data-rev="${fingerprint(html)}"`;
 
 // The sticky nav, whose links become tabs, and the accent each section wears. [key, heading
 // id, nav label] — the key ties a nav link to its section so CSS can give both the same
@@ -1922,6 +1928,49 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
     )
     .join("");
   const waiting = attentionItems(ok, health).reduce((t, i) => t + i.n, 0);
+  const navList = NAV.map(
+    ([sec, id, label]) =>
+      `<li><a href="#${id}" data-sec="${sec}">${label}${
+        sec === "att" && waiting ? ` <span class="badge"><span class="sr-only">, </span>${waiting}<span class="sr-only"> items</span></span>` : ""
+      }</a></li>`
+  ).join("");
+  const stamp = `Last updated
+      <span id="updated" data-at="${new Date(now).toISOString()}">${new Date(now).toLocaleString(
+    "en-GB"
+  )}</span> · took ${elapsed}s ·
+      ${AUTH_LABEL[tokenSource]} ·
+      ${history.snapshots.length} snapshot(s) recorded${
+        baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
+      }`;
+  const banners = `${gapBanner(history, now)}
+  ${incompleteBanner(rows)}`;
+  // Each tab's heading and body, rendered once so its live() fingerprint is of what is shown.
+  const body = {
+    ov: overviewSection({ rows, ok, history, base, baseAge, health, now, ga, obs, series }),
+    proj: projectsSection(rows, history, obs, now),
+    att: issuesSection(ok, health, history.attention, now),
+    dl: cols(
+      `<h3>All time, by operating system</h3>${downloadsTable(rows, history, base)}`,
+      `<h3>The last 7 and 30 days</h3>${recentDownloads(rows, history, now)}
+       <h3>openSUSE installs and updates</h3>${obsTable(obs)}`
+    ),
+    ga: analyticsSection(ga, propertyId, { posts, views: postViews, now, clicks, projects }),
+    tr: cols(
+      `<h3>Last 14 days, live from GitHub</h3>${trafficSection(ok)}`,
+      `<h3>The longer record, from your archive</h3>${archiveTraffic(rows, history, now)}`
+    ),
+    act: activityTable(ok, now),
+    rel: releasesTable(ok),
+    ci: buildsTable(ok, health.unreleased || [], Date.now()),
+    trend: `<p class="note">Each figure day by day, from the history this dashboard keeps. Today is left
+      out until it is over; a gap is a day with no figure, never a zero.</p>
+    ${trendsSection(history, trends, now)}`,
+  };
+  const tab = (sec, title) => {
+    const inner = `<h2 id="h-${sec}">${title}</h2>
+    ${body[sec]}`;
+    return `<section class="sec" data-sec="${sec}" aria-labelledby="h-${sec}" ${live(sec, inner)}>${inner}</section>`;
+  };
 
   return `<!doctype html>
 <html lang="en">
@@ -1933,17 +1982,13 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="dashboard.css">
+<meta name="aph-assets" content="${fingerprint(JS + CSS)}">
 <script src="dashboard.js" defer></script>
 </head>
 <body class="admin" id="top">
 <nav class="topnav" aria-label="Sections">
   <a class="topnav__brand" href="#top"><img src="favicon.svg" alt="" width="32" height="32">Private stats</a>
-  <ul class="topnav__list">${NAV.map(
-    ([sec, id, label]) =>
-      `<li><a href="#${id}" data-sec="${sec}">${label}${
-        sec === "att" && waiting ? ` <span class="badge"><span class="sr-only">, </span>${waiting}<span class="sr-only"> items</span></span>` : ""
-      }</a></li>`
-  ).join("")}</ul>
+  <ul class="topnav__list" ${live("nav", navList)}>${navList}</ul>
   <div class="tools" id="tools" hidden>
     <label class="find"><span class="sr-only">Find a project on this tab</span>
       <input type="search" id="find" placeholder="Find a project  ( / )" autocomplete="off"></label>
@@ -1960,62 +2005,35 @@ function page({ rows, history, trends, base, health, projects, now, elapsed, ga,
 <main class="wrap">
   <header class="head">
     <h1 class="sr-only">Private stats</h1>
-    <p class="sub">Last updated
-      <span id="updated" data-at="${new Date(now).toISOString()}">${new Date(now).toLocaleString(
-    "en-GB"
-  )}</span> · took ${elapsed}s ·
-      ${AUTH_LABEL[tokenSource]} ·
-      ${history.snapshots.length} snapshot(s) recorded${
-        baseAge ? ` · change shown vs ${baseAge}` : " · change appears from the second run"
-      }</p>
+    <p class="sub" ${live("stamp", stamp)}>${stamp}</p>
   </header>
 
-  ${gapBanner(history, now)}
-  ${incompleteBanner(rows)}
+  <div ${live("banners", banners)}>${banners}</div>
 
   <section aria-labelledby="h-sum"><h2 id="h-sum" class="sr-only">Summary</h2>
-    <div class="tiles">${tiles}</div></section>
+    <div class="tiles" ${live("tiles", tiles)}>${tiles}</div></section>
 
-  <section class="sec" data-sec="ov" aria-labelledby="h-ov"><h2 id="h-ov">Overview</h2>
-    ${overviewSection({ rows, ok, history, base, baseAge, health, now, ga, obs, series })}</section>
+  ${tab("ov", "Overview")}
 
-  <section class="sec" data-sec="proj" aria-labelledby="h-proj"><h2 id="h-proj">Projects</h2>
-    ${projectsSection(rows, history, obs, now)}</section>
+  ${tab("proj", "Projects")}
 
-  <section class="sec" data-sec="att" aria-labelledby="h-att"><h2 id="h-att">Notifications</h2>
-    ${issuesSection(ok, health, history.attention, now)}</section>
+  ${tab("att", "Notifications")}
 
-  <section class="sec" data-sec="dl" aria-labelledby="h-dl"><h2 id="h-dl">Downloads</h2>
-    ${cols(
-      `<h3>All time, by operating system</h3>${downloadsTable(rows, history, base)}`,
-      `<h3>The last 7 and 30 days</h3>${recentDownloads(rows, history, now)}
-       <h3>openSUSE installs and updates</h3>${obsTable(obs)}`
-    )}</section>
+  ${tab("dl", "Downloads")}
 
-  <section class="sec" data-sec="ga" aria-labelledby="h-ga"><h2 id="h-ga">Site visitors</h2>
-    ${analyticsSection(ga, propertyId, { posts, views: postViews, now, clicks, projects })}</section>
+  ${tab("ga", "Site visitors")}
 
-  <section class="sec" data-sec="tr" aria-labelledby="h-tr"><h2 id="h-tr">Repo traffic</h2>
-    ${cols(
-      `<h3>Last 14 days, live from GitHub</h3>${trafficSection(ok)}`,
-      `<h3>The longer record, from your archive</h3>${archiveTraffic(rows, history, now)}`
-    )}</section>
+  ${tab("tr", "Repo traffic")}
 
   <div class="cols cols--tail">
-  <section class="sec" data-sec="act" aria-labelledby="h-act"><h2 id="h-act">Audience &amp; activity</h2>
-    ${activityTable(ok, now)}</section>
+  ${tab("act", "Audience &amp; activity")}
 
-  <section class="sec" data-sec="rel" aria-labelledby="h-rel"><h2 id="h-rel">Recent releases</h2>
-    ${releasesTable(ok)}</section>
+  ${tab("rel", "Recent releases")}
   </div>
 
-  <section class="sec" data-sec="ci" aria-labelledby="h-ci"><h2 id="h-ci">Builds and release files</h2>
-    ${buildsTable(ok, health.unreleased || [], Date.now())}</section>
+  ${tab("ci", "Builds and release files")}
 
-  <section class="sec" data-sec="trend" aria-labelledby="h-trend"><h2 id="h-trend">Trends</h2>
-    <p class="note">Each figure day by day, from the history this dashboard keeps. Today is left
-      out until it is over; a gap is a day with no figure, never a zero.</p>
-    ${trendsSection(history, trends, now)}</section>
+  ${tab("trend", "Trends")}
 
   <footer class="foot">Local file — never published. Regenerate with
     <code>npm run stats</code>.</footer>
@@ -2485,8 +2503,8 @@ function buildsTable(rows, others, now) {
     to download; a release less than an hour old is "waiting for files" instead, since its
     build may still be attaching them. Files count only what was attached; GitHub's automatic
     source-code archives are not files. Hover a file count to read the names. While the
-    dashboard service runs it checks this every ${BUILDS_EVERY}, and an open page reloads by
-    itself when anything here changes.</p>
+    dashboard service runs it checks this every ${BUILDS_EVERY}, and an open page updates the
+    parts that changed by itself, without reloading.</p>
   ${scrollTable(
     "Builds and release files",
     `<table class="tbl tbl--builds sortable" data-table="builds"><caption>Last push and newest
@@ -2547,6 +2565,8 @@ const ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="
 `;
 
 const JS = `(function () {
+  function each(root, sel, fn) { Array.prototype.forEach.call(root.querySelectorAll(sel), fn); }
+
   // Numeric when the key parses as a number, otherwise a case-insensitive text compare.
   function key(cell) {
     var raw = cell && cell.dataset ? cell.dataset.sort : undefined;
@@ -2574,32 +2594,84 @@ const JS = `(function () {
   // "Last updated" as a live relative age, recomputed while the page sits open. A dashboard
   // left on a second monitor for two days must not keep implying its numbers are current;
   // past 36 hours it turns amber, which in practice means the background service has died.
-  var updated = document.getElementById("updated");
-  if (updated && updated.dataset.at) {
-    var at = new Date(updated.dataset.at).getTime();
-    var absolute = updated.textContent;
-    var plural = function (n, unit) { return n + " " + unit + (n === 1 ? "" : "s") + " ago"; };
-    var tick = function () {
-      var mins = Math.floor((Date.now() - at) / 60000);
-      var rel =
-        mins < 1 ? "just now"
-        : mins < 60 ? plural(mins, "minute")
-        : mins < 1440 ? plural(Math.floor(mins / 60), "hour")
-        : plural(Math.floor(mins / 1440), "day");
-      updated.textContent = absolute + " — " + rel;
-      updated.className = mins > 36 * 60 ? "stale" : "";
-    };
-    tick();
-    setInterval(tick, 30000);
-  }
+  // The element is looked up on every tick, and keeps its own absolute text in data-shown:
+  // a live update swaps in a new one.
+  var plural = function (n, unit) { return n + " " + unit + (n === 1 ? "" : "s") + " ago"; };
+  var tick = function () {
+    var updated = document.getElementById("updated");
+    if (!updated || !updated.dataset.at) return;
+    if (updated.dataset.shown === undefined) updated.dataset.shown = updated.textContent;
+    var mins = Math.floor((Date.now() - new Date(updated.dataset.at).getTime()) / 60000);
+    var rel =
+      mins < 1 ? "just now"
+      : mins < 60 ? plural(mins, "minute")
+      : mins < 1440 ? plural(Math.floor(mins / 60), "hour")
+      : plural(Math.floor(mins / 1440), "day");
+    updated.textContent = updated.dataset.shown + " — " + rel;
+    updated.className = mins > 36 * 60 ? "stale" : "";
+  };
+  tick();
+  setInterval(tick, 30000);
 
-  // Live reload. serve.mjs rewrites the page when the builds watch sees a change, and answers
+  // Live update. serve.mjs rewrites the page when the builds watch sees a change, and answers
   // GET /updated with the page's write time. The first answer is this page's; a later,
-  // different one means a newer page, so reload — the tab comes back from the # part. Not
-  // while the reader is typing, has the shortcut list open or a refresh is running: the
-  // next check reloads instead. A hidden tab is not checked. Served pages only, like the
-  // Refresh button: a page opened from disk has nothing to ask.
-  if (location.protocol !== "file:" && window.fetch) {
+  // different one means a newer page. The script then fetches it and swaps in only the parts
+  // whose fingerprint changed (the data-live blocks, see live() in stats.mjs), so the open
+  // tab, the scroll position, Find and every unchanged part stay as they are. Not while the
+  // reader is typing, has the shortcut list open or a refresh is running: the next check
+  // does it instead. A hidden tab is not checked. Served pages only, like the Refresh
+  // button: a page opened from disk has nothing to ask.
+  //
+  // A newer page with different scripts or styles, or a different set of parts, cannot be
+  // patched into this one, so the page reloads as it used to.
+  function assetsOf(doc) {
+    var m = doc.querySelector('meta[name="aph-assets"]');
+    return m ? m.getAttribute("content") : null;
+  }
+  // Everything the script adds to a part when the page loads, run again on a swapped-in one.
+  function enhance(root) {
+    each(root, "table.sortable", sortable);
+    each(root, "a[data-tab]", tabJump);
+    each(root, "table.sortable[data-table]", csvButton);
+    each(root, "svg.chart__svg[data-points]", chart);
+    if (root.querySelector("#pcards")) cards();
+  }
+  // Returns the number of parts swapped, or -1 when the new page cannot be patched in.
+  function patch(doc) {
+    var fresh = doc.querySelectorAll("[data-live]");
+    var mine = document.querySelectorAll("[data-live]");
+    if (!assetsOf(doc) || assetsOf(doc) !== assetsOf(document)) return -1;
+    if (!fresh.length || fresh.length !== mine.length) return -1;
+    var pairs = [];
+    for (var i = 0; i < fresh.length; i++) {
+      var cur = document.querySelector('[data-live="' + fresh[i].getAttribute("data-live") + '"]');
+      if (!cur) return -1;
+      if (cur.getAttribute("data-rev") !== fresh[i].getAttribute("data-rev")) pairs.push([cur, fresh[i]]);
+    }
+    pairs.forEach(function (pair) {
+      var cur = pair[0], next = pair[1];
+      if (cur.getAttribute("data-live") === "nav") {
+        // The tab links carry this script's listeners and state, so only their labels move.
+        each(cur, "a[data-sec]", function (a) {
+          var twin = next.querySelector('a[data-sec="' + a.getAttribute("data-sec") + '"]');
+          if (twin) a.innerHTML = twin.innerHTML;
+        });
+      } else {
+        cur.innerHTML = next.innerHTML;
+        enhance(cur);
+      }
+      cur.setAttribute("data-rev", next.getAttribute("data-rev"));
+    });
+    if (pairs.length) {
+      var button = document.getElementById("refresh");
+      var took = doc.getElementById("refresh");
+      if (button && took) button.dataset.took = took.dataset.took;
+      tick();
+      if (find) applyFind();
+    }
+    return pairs.length;
+  }
+  if (location.protocol !== "file:" && window.fetch && window.DOMParser) {
     var seenAt = null;
     var checkUpdated = function () {
       if (document.hidden) return;
@@ -2614,7 +2686,19 @@ const JS = `(function () {
           var dlg = document.getElementById("help");
           var busy = document.getElementById("refresh");
           if (typing || (dlg && dlg.open) || (busy && busy.disabled)) return;
-          location.reload();
+          return fetch("dashboard.html", { cache: "no-store" })
+            .then(function (r) { return r.ok ? r.text() : null; })
+            .then(function (html) {
+              if (html === null) return;
+              var n = patch(new DOMParser().parseFromString(html, "text/html"));
+              if (n < 0) { location.reload(); return; }
+              seenAt = d.at;
+              var note = document.getElementById("refresh-msg");
+              if (n && note) {
+                note.textContent = "Updated at " +
+                  new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+              }
+            });
         })
         .catch(function () {});
     };
@@ -2742,7 +2826,7 @@ const JS = `(function () {
     }
   }
 
-  Array.prototype.forEach.call(document.querySelectorAll("table.sortable"), function (table) {
+  function sortable(table) {
     var heads = Array.prototype.slice.call(table.tHead.rows[0].cells);
     var name = table.getAttribute("data-table");
 
@@ -2776,17 +2860,19 @@ const JS = `(function () {
     if (target && !target.hasAttribute("data-nosort")) {
       applySort(target, saved.index, saved.asc, false);
     }
-  });
+  }
+  each(document, "table.sortable", sortable);
 
   // Tiles and "All ..." links open a tab rather than jumping down a long page.
-  Array.prototype.forEach.call(document.querySelectorAll("a[data-tab]"), function (a) {
+  function tabJump(a) {
     a.addEventListener("click", function (e) {
       var tab = document.querySelector('.topnav__list a[data-sec="' + a.getAttribute("data-tab") + '"]');
       if (!tab || !document.body.classList.contains("tabbed")) return;
       e.preventDefault();
       tab.click();
     });
-  });
+  }
+  each(document, "a[data-tab]", tabJump);
 
   // Find a project: hides what does not match across every tab, and the totals rows with it,
   // since a total under a filtered list would be read as the total of what is left.
@@ -2860,10 +2946,11 @@ const JS = `(function () {
     else if (k >= "0" && k <= "9" && links[(Number(k) + 9) % 10]) { links[(Number(k) + 9) % 10].click(); }
   });
 
-  // Projects: the cards' order, remembered.
-  var pcards = document.getElementById("pcards");
-  var pcardsSort = document.getElementById("pcards-sort");
-  if (pcards && pcardsSort) {
+  // Projects: the cards' order, remembered. Run again when a live update swaps the tab in.
+  function cards() {
+    var pcards = document.getElementById("pcards");
+    var pcardsSort = document.getElementById("pcards-sort");
+    if (!pcards || !pcardsSort) return;
     document.getElementById("pcards-tools").hidden = false;
     var CARD_KEY = "aph-cards";
     var orderCards = function () {
@@ -2885,10 +2972,11 @@ const JS = `(function () {
       try { localStorage.setItem(CARD_KEY, pcardsSort.value); } catch (e) {}
     });
   }
+  cards();
 
   // Each sortable table's caption gets a link that saves it for a spreadsheet: the same rows in
   // the same order, with the raw figure from data-sort rather than the formatted text.
-  Array.prototype.forEach.call(document.querySelectorAll("table.sortable[data-table]"), function (table) {
+  function csvButton(table) {
     if (!table.caption) return;
     var save = document.createElement("button");
     save.type = "button";
@@ -2924,10 +3012,11 @@ const JS = `(function () {
       a.click();
       URL.revokeObjectURL(url);
     });
-  });
+  }
+  each(document, "table.sortable[data-table]", csvButton);
 
   // Charts: hover to read a day's figure. Every figure is also in the table under the chart.
-  Array.prototype.forEach.call(document.querySelectorAll("svg.chart__svg[data-points]"), function (svg) {
+  function chart(svg) {
     var pts = JSON.parse(svg.getAttribute("data-points"));
     var geo = svg.getAttribute("data-geo").split(",").map(Number);
     var NS = "http://www.w3.org/2000/svg";
@@ -2973,9 +3062,12 @@ const JS = `(function () {
       tip.style.left = Math.min(left, figure.width - tip.offsetWidth) + "px";
       tip.style.top = box.top - figure.top + 4 + "px";
     });
-  });
+  }
+  each(document, "svg.chart__svg[data-points]", chart);
 })();
 `;
+// For test/builds.test.mjs: the script must at least parse.
+export const dashboardScript = () => JS;
 
 // --------------------------------------------------------------------- the CSS
 

@@ -21,6 +21,7 @@ so dated sections stand in for versions. Planned work lives in
 - Perch's page lists its latest release's fixes, and says Perch also comes as a Flatpak download.
 - finbreak's page says updating from inside the app is now tested and works on Windows.
 - OneUp's page says weekly automatic updates switch themselves off and tell you on any install, not only the AppImage, if the computer stops allowing updates without a password.
+- Stats server: the check for new pushes, builds and releases now runs every 15 minutes, where it ran every 2½. When it finds a change, an open dashboard updates only the parts that changed, without reloading: the open tab, sort order, Find text and scroll position stay as they are, and a short "Updated at" note appears by the Refresh button.
 - Stats server: a project can name the branch its Builds row watches (`pushBranch`). RetroArch's row now watches `local/fixes-2026-09`, its own work, instead of `master`, a frozen copy of libretro's.
 - Stats server: a failed build that was started by hand, by a timer or by a release now goes to its project's inbox too, not only one a push started. GitHub emails about all of these.
 

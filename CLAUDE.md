@@ -87,8 +87,9 @@ green, that is a transient Pages backend hiccup — **re-run the deploy job**
 audience/activity, release health, and content checks — into `.stats/dashboard.html`.
 `serve.mjs` (systemd user unit in `systemd/`) serves it on `127.0.0.1:4321` and calls
 `generate()` on start, every 24 h, and on `POST /refresh` from the page's button. Every
-2½ minutes it re-reads only the Builds tab's pushes and releases, rewrites the page when one
-changed, and pops up a desktop notice for a new build failure or empty release.
+15 minutes it re-reads only the Builds tab's pushes and releases, rewrites the page when one
+changed, and pops up a desktop notice for a new build failure or empty release. An open
+page then swaps in only the parts that changed, without reloading.
 `tray/ants-stats-tray.py` is an optional PySide6 tray icon that drives the unit (open /
 refresh / start / stop / restart / quit). It refreshes via the same `POST /refresh`, never
 by calling `generate()` itself.

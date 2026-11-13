@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { filesState, buildAlarms, otherFailures } from "../stats.mjs";
+import { filesState, buildAlarms, otherFailures, dashboardScript } from "../stats.mjs";
 
 const NOW = Date.parse("2026-11-09T12:00:00Z");
 const minutesAgo = (m) => new Date(NOW - m * 60_000).toISOString();
@@ -86,4 +86,10 @@ test("a workflow counts by its newest run, so a later pass of any kind clears it
   assert.deepEqual(otherFailures([run({ id: 2 }), run({ id: 1, conclusion: "success" })]).map((f) => f.id), [2]);
   // Another workflow's newer run does not hide this one.
   assert.equal(otherFailures([run({ id: 3, workflow_id: 8, conclusion: "success" }), run({ id: 1 })]).length, 1);
+});
+
+// The page's script is written inside a template string in stats.mjs, where a stray backslash
+// or backtick breaks it without breaking stats.mjs itself.
+test("the dashboard's script parses", () => {
+  assert.doesNotThrow(() => new Function(dashboardScript()));
 });

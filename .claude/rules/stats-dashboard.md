@@ -78,12 +78,20 @@ dashboard".
   broken: it ships no builds by design until one does.
 
 - **The builds watch costs only what changed.** `serve.mjs` runs `watchBuilds()` every
-  `BUILDS_SECONDS` (150, the user's choice of 2026-11-09). It asks GitHub through
+  `BUILDS_SECONDS` (900, the user's choice of 2026-11-13). It asks GitHub through
   `ghCached`, whose unchanged (304) answers are not charged; keep the watch on it, never
   on `ghRequest`. It updates the last full run's repos in place, rewrites the page, and
   stores nothing. A failed read keeps the repo's previous figures. The open page polls
-  `GET /updated` and reloads when the page's write time changes, never while the reader
-  is typing.
+  `GET /updated`. When the page's write time changes it fetches the new page and swaps in
+  only the parts that changed, never while the reader is typing.
+
+- **A part the open page can swap carries `live()`.** `page()` in `stats.mjs` gives the tab
+  list, the "Last updated" line, the banners, the tiles and each tab a `data-live` name and a
+  `data-rev` fingerprint of its HTML. `dashboard.js` replaces a part whose fingerprint
+  differs, then runs `enhance()` on it. Anything the script adds to a part at load must be
+  a function `enhance()` also calls, or a swapped-in part loses it. The tab links keep their
+  listeners: only their labels are copied. A new page whose `aph-assets` fingerprint or set
+  of parts differs cannot be patched, so the page reloads. "Refresh now" still reloads.
 
 - **A desktop notice is for a new fault only.** `buildAlarms()` keys each by commit or
   tag; `serve.mjs` pops up a key that was not in the previous run's list, through
