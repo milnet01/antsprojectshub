@@ -100,6 +100,19 @@ draft. At the end, a report lists anything that did not come across.
 Lists, links and italics come across too, and one broken comment or missing
 photograph does not stop the import.
 
+## Let an AI app help
+
+An AI app on your computer can write and edit your site through Pressless.
+Claude Desktop and Claude Code are the two it gives steps for. You ask the app
+in your own words, and it makes the change in Pressless.
+
+It is off until you switch it on. Click AI helper, under the list of your
+writing, then Switch on. One button connects Claude Desktop, and the screen
+gives the steps for Claude Code.
+
+Nothing is published, undone or put in the bin until you click "Yes, do it" in
+Pressless. The app cannot reach your keys, your settings or any page's code.
+
 ## What it does today
 
 - **Edit a journal entry as it looks.** Click a paragraph on the page and
@@ -115,7 +128,7 @@ photograph does not stop the import.
   typing. A change to an entry that is already live waits in a separate copy
   until you publish it.
 - **Publish in one press.** If publishing fails, your files go back to how
-  they were and you are told what to do next. Pressless refuses to replace
+  they were and you are told what to do next. A new site that is refused a publish says what to do next. Pressless refuses to replace
   your site with an empty one. Before anything goes live, it shows which
   pages will change, with Publish now or Not yet. A large site publishes
   using far less memory than before.
@@ -157,6 +170,9 @@ photograph does not stop the import.
   Pressless's own screens up to twice as large.
 - **Say which version you have**, on an About page that also says
   Pressless is independent of GitHub, Google and WordPress.
+- **Open a manual from inside Pressless.** Help, in the bar at the top of every
+  screen, shows how to do each task, with pictures and short captioned videos.
+  A search box narrows the tasks as you type. It needs no internet.
 - **Explain every problem in plain words** — what happened, what it means for
   your site, and what to do about it.
 
@@ -180,7 +196,7 @@ Pressless can now start someone with no website at all. Setup walks you
 through GitHub step by step and signs you in with a short code, with no keys
 to copy. You pick one of three starter looks, and your site is live. A
 short finish-setting-up list then ticks itself off as you go. A second site
-reuses your GitHub sign-in. To use your own web address, a wizard shows only
+reuses your GitHub sign-in. On Windows, setup no longer starts over after a step when a virus scanner holds its progress file for a moment. To use your own web address, a wizard shows only
 the settings that address needs.
 
 If a console window (a plain text window) opens alongside the browser, leave
