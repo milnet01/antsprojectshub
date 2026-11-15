@@ -11,6 +11,7 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Added
 
+- DeFragR has a page: a visual disk defragmenter for Linux, still early, with no download yet. Its logo and icon are new.
 - Rolodex's page shows seven 2.0 screenshots, including the light and high-contrast themes, Preferences and a phone-width window. They replace the three older shots, and the page says Rolodex can use your desktop's own accent colour.
 
 ### Changed
