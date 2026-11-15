@@ -167,6 +167,9 @@ One more followed on 24 October 2026. Pressing Scan on the Playlists tab, or in
 the Ozone menu's sidebar, no longer freezes the menu when there is no other
 playlist to go to.
 
+One more was merged on 13 November 2026. A check in libretro-common's sample
+programs, which tests MPEG-2 video, works again with FFmpeg 9.
+
 ## Should you use it?
 
 **No — use the official RetroArch.** Upstream ships builds for every platform, gets

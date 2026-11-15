@@ -23,6 +23,7 @@ so dated sections stand in for versions. Planned work lives in
 - Album Builder's page covers its 1.1.0 release: the player picks up where you left off, Ctrl+F jumps to search, synced lyrics land on time more often and use far less memory, coloured strips mark current-album and missing songs, and moving or deleting files while the app is open no longer closes it.
 - Perch's page lists its latest release's fixes, and says Perch also comes as a Flatpak download.
 - finbreak's page says updating from inside the app is now tested and works on Windows.
+- RetroArch's page lists the fix merged upstream on 13 November 2026: a sample check of MPEG-2 video works again with FFmpeg 9.
 - OneUp's page says weekly automatic updates switch themselves off and tell you on any install, not only the AppImage, if the computer stops allowing updates without a password.
 - Stats server: the check for new pushes, builds and releases now runs every 15 minutes, where it ran every 2½. When it finds a change, an open dashboard updates only the parts that changed, without reloading: the open tab, sort order, Find text and scroll position stay as they are, and a short "Updated at" note appears by the Refresh button.
 - Stats server: a project can name the branch its Builds row watches (`pushBranch`). RetroArch's row now watches `local/fixes-2026-09`, its own work, instead of `master`, a frozen copy of libretro's.
