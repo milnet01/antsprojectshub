@@ -164,8 +164,9 @@ Pressless. The app cannot reach your keys, your settings or any page's code.
   date, worked out each time you publish.
 - **See who is reading.** Connect Pressless to your Google Analytics once,
   and the visitors screen shows who is reading. Open it for the last 7
-  days, 4 weeks or 12 months: how many people read your site, each day's readers, which countries they are in, how they found
-  you, and which pages they read most. If Google cannot be reached, it
+  days, 4 weeks or 12 months: how many people read your site, each day's
+  readers, which countries and provinces or states they are in, how they
+  found you, and which pages they read most. If Google cannot be reached, it
   shows the last numbers it had and says how old they are.
   If you look after more than one site in Google Analytics, you can switch
   which one Pressless shows from Settings, without signing in to Google
