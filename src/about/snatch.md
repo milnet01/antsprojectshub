@@ -81,6 +81,9 @@ sooner on Linux, and the bundled image library is updated to close published
 security advisories. Every Linux build is now tried on a current Linux system
 before release, so a break like that stops the release instead of reaching you.
 
+Snatch now finds a QuickJS installed on your system, so YouTube videos that need
+a JavaScript runtime work with it.
+
 A notice along the bottom of the window asks you to download only what you have
 the right to. It also says Snatch is not affiliated with YouTube, Google or yt-dlp.
 

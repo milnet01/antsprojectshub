@@ -9,6 +9,13 @@ Pressless is that free route with the technical part taken away. It runs on
 your own computer and opens in your normal browser. You write an entry, watch
 it take shape as you type, and press one button to put it on your site.
 
+## Your site, one part at a time
+
+Pressless opens on Your site. It has a tile for each part of your site: pages,
+journal, look, menu, files and visitors. Each part has its own screen, and
+Publish and Undo sit at the top. A line says how many of your changes are not
+on the site yet.
+
 ## Your writing stays yours
 
 Every entry is an ordinary text file in an ordinary folder on your own
@@ -54,6 +61,11 @@ Pages can also hold ready-made interactive pieces: a picture slideshow,
 questions that fold open, a picture that enlarges, a countdown.
 
 ## Your site's own look
+
+Choose from eight layouts: Sunrise, Meadow and Harbour, plus Studio for a
+portfolio, Market for a small business, Stage for a musician or band, Commons
+for a club or community, and Letter for a plain document. Any layout can wear
+any of eleven colour styles.
 
 A Look screen sets your site's colours, fonts, text size, page width and
 layout, with a live preview as you change them. Colours are set for light and
@@ -106,9 +118,9 @@ An AI app on your computer can write and edit your site through Pressless.
 Claude Desktop and Claude Code are the two it gives steps for. You ask the app
 in your own words, and it makes the change in Pressless.
 
-It is off until you switch it on. Click AI helper, under the list of your
-writing, then Switch on. One button connects Claude Desktop, and the screen
-gives the steps for Claude Code.
+It is off until you switch it on. Click AI helper on Your site, then Switch
+on. One button connects Claude Desktop, and the screen gives the steps for
+Claude Code.
 
 Nothing is published, undone or put in the bin until you click "Yes, do it" in
 Pressless. The app cannot reach your keys, your settings or any page's code.
@@ -151,9 +163,8 @@ Pressless. The app cannot reach your keys, your settings or any page's code.
 - **Show a number that keeps itself up to date**, such as the years since a
   date, worked out each time you publish.
 - **See who is reading.** Connect Pressless to your Google Analytics once,
-  and a "Who is reading" card appears at the top of your writing. Open it
-  for the last 7 days, 4 weeks or 12 months: how many people read your
-  site, each day's readers, which countries they are in, how they found
+  and the visitors screen shows who is reading. Open it for the last 7
+  days, 4 weeks or 12 months: how many people read your site, each day's readers, which countries they are in, how they found
   you, and which pages they read most. If Google cannot be reached, it
   shows the last numbers it had and says how old they are.
   If you look after more than one site in Google Analytics, you can switch
@@ -163,28 +174,26 @@ Pressless. The app cannot reach your keys, your settings or any page's code.
   from your computer, even when Google cannot be reached. A Privacy link on
   the visitor-numbers page and in Settings opens Pressless's privacy policy.
 - **Update itself.** It looks for a new version when it starts and installs
-  only a release signed by its maintainer.
+  only a release signed by its maintainer. From the next update on, the offer
+  lists what is new in every version since yours.
 - **Choose how Pressless looks** from a picker in its top bar: light,
   dark, two high-contrast looks, and playful looks inspired by games,
   films and TV. Your choice is remembered. A text-size setting makes
   Pressless's own screens up to twice as large.
 - **Say which version you have**, on an About page that also says
   Pressless is independent of GitHub, Google and WordPress.
+- **Keep Settings short.** Settings is a list of sections, each saved on its
+  own.
 - **Open a manual from inside Pressless.** Help, in the bar at the top of every
   screen, shows how to do each task, with pictures and short captioned videos.
   A search box narrows the tasks as you type. It needs no internet.
 - **Explain every problem in plain words** — what happened, what it means for
   your site, and what to do about it.
 
-## Still to come
-
-- **Offer to add Pressless to the Start Menu and the desktop** the first time
-  it opens.
-
 ## Where it stands
 
-**It is an early beta, for Linux and Windows.** On Linux, download the file and
-run it. On Windows, download the zip, extract it, and double-click
+**Pressless is ready for everyday use, on Linux and Windows.** On Linux,
+download the file and run it. On Windows, download the zip, extract it, and double-click
 `Start Pressless.bat`. There is nothing to install first — no Python, no
 compiler, no command line.
 
@@ -194,10 +203,11 @@ you first start it.
 
 Pressless can now start someone with no website at all. Setup walks you
 through GitHub step by step and signs you in with a short code, with no keys
-to copy. You pick one of three starter looks, and your site is live. A
+to copy. You pick one of eight layouts, and your site is live. A
 short finish-setting-up list then ticks itself off as you go. A second site
 reuses your GitHub sign-in. On Windows, setup no longer starts over after a step when a virus scanner holds its progress file for a moment. To use your own web address, a wizard shows only
-the settings that address needs.
+the settings that address needs. When setup is done, Pressless offers to put
+itself in the Start Menu (on Linux, your app menu) and on the desktop.
 
 If a console window (a plain text window) opens alongside the browser, leave
 it open while you work: closing it stops Pressless.
@@ -205,3 +215,7 @@ it open while you work: closing it stops Pressless.
 Google has approved Pressless, so setting up visitor numbers no longer warns
 that Google is still checking the app. And after you agree to replace an old
 site on GitHub, Pressless no longer shows the warning asking you to do it again.
+
+On Windows, the page beside the editor no longer goes blank now and then, and
+publishing no longer fails the same way. A new site with the journal turned on
+can publish its pages before it has any entries.

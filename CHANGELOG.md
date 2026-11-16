@@ -16,6 +16,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- Pressless is out of beta and marked live. Its page now covers the Your site screen, eight layouts with eleven colour styles, the count of changes not yet published, the shorter Settings and the Windows publishing fix. The "Still to come" list is gone: the Start Menu offer it named already ships.
+- Snatch's page says it now finds a QuickJS installed on your system, which some YouTube videos need.
 - demoreel's page covers its 1.0.0 release: thumbnails, frame sheets, more trailer tools, right and middle clicks, part-screen pictures, winit apps and Chromium Flatpaks, and recordings that appear only when complete.
 - frameledger's page covers its fourth release: `alternate` for before-and-after runs, comparing only chosen measures, no verdict from a busy machine, Markdown output, and launchers to run it by name.
 - frameledger's page covers its fifth release: a saved baseline to check every new build against, several named variants compared against one base, stopping an A/B run on Windows stops the whole program, and damaged run files get a plain sentence.
