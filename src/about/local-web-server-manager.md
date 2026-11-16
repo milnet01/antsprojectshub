@@ -54,14 +54,24 @@ against a contrast standard, and screen readers are told when a project changes
 state — once, rather than once a second. When something fails, the message appears
 under the project it is about, not in a corner of the window.
 
-**The newest release is a download that needs nothing installed first.** Each
+**The newest release, 0.6.0, updates itself.** Each time the AppImage starts, it
+checks GitHub for a newer version. A banner offers it, with what changed. Nothing
+downloads until you click Update now, and the app checks that the author signed
+the download before it replaces itself. Settings > Preferences turns the check
+off. The output panel no longer freezes when a server prints a flood of lines,
+and a script that compares a port, such as `if port == 8000`, is no longer
+mistaken for the port it uses. Exported profiles always end in `.json`, the port
+lookup writes numbers in your language's digits, and no message can forge a line
+in the app's log.
+
+**The release before it is a download that needs nothing installed first.** Each
 release now carries an AppImage: one file that runs on 64-bit Linux without
 Python or Qt. Make it executable and double-click it. Every AppImage is started
 on a clean machine before it is attached to the release. The app also installs
 much smaller from source now. It uses a slimmer Qt package that leaves out a web
 browser engine and a PDF library it never used.
 
-**The release before it lets you read each server's output inside the app.** Press
+**An earlier release lets you read each server's output inside the app.** Press
 Ctrl+L, or choose View output, and a live panel opens under the list. A failed
 project gets a View output button, so you can see why it stopped without opening
 a terminal. Alt+E jumps to the last error, and Alt+O shows only errors. This
@@ -70,7 +80,7 @@ window to the front, Open goes to the port a server really uses, and quitting
 and reopening straight away works. It also improves keyboard and screen-reader
 use.
 
-**The release before that made ports dependable.** A start refused because the port
+**Another made ports dependable.** A start refused because the port
 is taken now names the program taking it. View → What's using a port... tells
 you what is listening on any port. You can change the port a project starts on,
 and the app suggests a free one. Quitting the app no longer stops the servers it
@@ -90,6 +100,9 @@ Download the AppImage from the
 [latest release](https://github.com/milnet01/LocalWebServerManager/releases/latest),
 make it executable, and run it. It needs a system at least as new as Debian 12
 (glibc 2.36).
+
+A copy of 0.5.1 or earlier has no updater, so download 0.6.0 by hand once.
+After that, the app offers each new version itself.
 
 You can still install it from source instead, as the README's
 [Install](https://github.com/milnet01/LocalWebServerManager#install) section
