@@ -45,9 +45,19 @@ up extra space.
 
 ## Where it stands now
 
-DeFragR is not released yet, and nothing works for users. There is no
-download.
+The first version gives a report and changes nothing. It is tagged on
+GitHub but not released yet, and there is no download. To try it now,
+you build it from its source code.
 
-The plan is agreed, and building has started. The two halves of the
-program can already talk to each other, and tests check that they
-agree. The first useful version will show a report on a drive.
+What works in it:
+
+- **Your drives, listed.** Each one offers "View report" and "Defrag
+  now". A choice a drive cannot take is greyed out, with the reason in
+  plain words.
+- **A report that touches nothing.** It shows how fragmented the drive
+  is and lists every fragmented file, worst first.
+- **Progress you can see.** A percentage bar shows how far a report has
+  got.
+
+Defragging itself comes in a later version, and so does an installable
+package.

@@ -744,7 +744,7 @@
       "slug": "defragr",
       "name": "DeFragR",
       "tagline": "Shows you how scattered the files on your Linux drive are, and tidies them up while you watch.",
-      "blurb": "DeFragR is a defragmenter for Linux drives, with a window you can watch. It lists your drives and says which ones are worth defragging. Then it can show a report of how scattered the files are, or tidy them up while a map of the drive fills in block by block. It moves files only through the Linux kernel's own checked move, and it will never defrag an SSD. Nothing works for users yet. The design is done and building has started, but there is no download, and it is not released yet.",
+      "blurb": "DeFragR is a defragmenter for Linux drives, with a window you can watch. It lists your drives and says which ones are worth defragging. Then it can show a report of how scattered the files are, or tidy them up while a map of the drive fills in block by block. It moves files only through the Linux kernel's own checked move, and it will never defrag an SSD. The first version shows a read-only report of a drive; defragging comes later. It is not released yet, and there is no download.",
       "status": "wip",
       "repo": "milnet01/DeFragR",
       "platforms": [
