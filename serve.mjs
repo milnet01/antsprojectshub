@@ -101,7 +101,13 @@ function refresh(reason) {
     .catch(() => {})
     .then(() => generate())
     .then((r) => {
-      log(`done — ${r.ok}/${r.total} projects`);
+      // A full run briefly needs several times the memory the server keeps between runs, and
+      // Node is slow to hand the difference back. The unit starts Node with --expose-gc so this
+      // collection can return it straight away; run by hand without the flag, it is skipped.
+      globalThis.gc?.();
+      const mb = (n) => Math.round(n / 1048576);
+      const m = process.memoryUsage();
+      log(`done — ${r.ok}/${r.total} projects (memory: ${mb(m.heapUsed)} MB in use of ${mb(m.heapTotal)} MB heap, ${mb(m.rss)} MB total)`);
       announce(r.alarms);
       post(r.repos);
       return r;

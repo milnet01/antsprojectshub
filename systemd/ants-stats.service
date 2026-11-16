@@ -25,7 +25,8 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/mnt/Games/Scripts/Linux/Ants_Projects_Hub_Website
-ExecStart=/usr/bin/node serve.mjs
+# --expose-gc lets serve.mjs return a full run's spare memory to the system once it ends.
+ExecStart=/usr/bin/node --expose-gc serve.mjs
 # STATS_PORT is this repo's packaged default and is meant to stay here. An external process
 # manager moves the port by dropping a PORT variable in alongside it, without editing this
 # file:
@@ -39,6 +40,8 @@ ExecStart=/usr/bin/node serve.mjs
 # symlinked file, which the next `git pull` would undo.
 Environment=STATS_PORT=4321
 Environment=STATS_REFRESH_HOURS=24
+# Fewer memory pools for Node's worker threads: the server keeps less memory between runs.
+Environment=MALLOC_ARENA_MAX=2
 # A transient network or GitHub outage shouldn't leave the dashboard dead until next login.
 Restart=on-failure
 RestartSec=60

@@ -3151,11 +3151,13 @@ html { font-size: 150%; }
   --card-line: rgba(255,255,255,.13); --lift: 0 10px 34px rgba(0,0,0,.42);
   --r: 1rem; }
 [hidden] { display: none !important; }
-body.admin { color: var(--text); font-family: var(--font); background:
+/* The glow sits on its own fixed layer rather than a fixed body background, which the
+   browser repaints on every scroll frame; a fixed layer it only moves. */
+body.admin { color: var(--text); font-family: var(--font); background: var(--bg); }
+body.admin::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
     radial-gradient(70rem 40rem at 12% -6%, rgba(94,234,212,.09), transparent 70%),
-    radial-gradient(70rem 40rem at 90% -8%, rgba(196,181,253,.10), transparent 70%),
-    var(--bg);
-  background-attachment: fixed; }
+    radial-gradient(70rem 40rem at 90% -8%, rgba(196,181,253,.10), transparent 70%); }
 body.admin::after { display: none; }
 .wrap { width: var(--col); max-width: none; margin: 0 auto; padding: 1.1rem 0 3rem; }
 .head { margin: 0 0 .9rem; }
@@ -3174,13 +3176,13 @@ body.admin::after { display: none; }
 [data-sec="ci"]  { --accent: #b4b5fd; }
 [data-sec="trend"] { --accent: #c4b5fd; }
 
-/* Sticky bar: glass over the page, its contents lined up with the centred column. */
+/* Sticky bar, its contents lined up with the centred column. Near-solid with no blur: a
+   blurred bar is redrawn on every scroll frame, which at 4K keeps the graphics card busy. */
 .topnav { position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
   flex-wrap: wrap; gap: .5rem .9rem;
   padding: .55rem calc((100vw - var(--col)) / 2);
-  background: rgba(12,12,20,.82); border-bottom: 1px solid var(--card-line);
-  box-shadow: 0 6px 24px rgba(0,0,0,.35);
-  backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3); }
+  background: rgba(12,12,20,.97); border-bottom: 1px solid var(--card-line);
+  box-shadow: 0 6px 24px rgba(0,0,0,.35); }
 .topnav__brand { display: inline-flex; align-items: center; gap: .5rem; font-weight: 700;
   font-size: .95rem; color: var(--text); text-decoration: none; margin-right: .3rem; }
 .topnav__brand img { width: 1.5rem; height: 1.5rem; }
