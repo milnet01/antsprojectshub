@@ -16,6 +16,7 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- Pressless's page leads with five 1.0.0 screenshots: Your site, the entry editor, the publish preview, the Look screen with its eight layouts and eleven colour styles, and Settings. They replace seven shots of screens that changed or are gone.
 - Pressless is out of beta and marked live. Its page now covers the Your site screen, eight layouts with eleven colour styles, the count of changes not yet published, the shorter Settings and the Windows publishing fix. The "Still to come" list is gone: the Start Menu offer it named already ships.
 - Snatch's page says it now finds a QuickJS installed on your system, which some YouTube videos need.
 - demoreel's page covers its 1.0.0 release: thumbnails, frame sheets, more trailer tools, right and middle clicks, part-screen pictures, winit apps and Chromium Flatpaks, and recordings that appear only when complete.
