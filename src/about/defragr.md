@@ -45,9 +45,9 @@ up extra space.
 
 ## Where it stands now
 
-The first version gives a report and changes nothing. It is tagged on
-GitHub but not released yet, and there is no download. To try it now,
-you build it from its source code.
+The first version gives a report and changes nothing. It is released
+as source code only, with no installable package yet. To try it now,
+you build it from that source code.
 
 What works in it:
 

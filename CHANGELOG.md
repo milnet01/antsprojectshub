@@ -16,6 +16,7 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- DeFragR's first version is out as source code, so its page offers it as a source download. The page shows its first screenshot, the drive list.
 - DeFragR's page says what its first version does: it lists your drives and shows a report of how fragmented each is, changing nothing. Defragging and a download come later.
 - Pressless's page leads with five 1.0.0 screenshots: Your site, the entry editor, the publish preview, the Look screen with its eight layouts and eleven colour styles, and Settings. They replace seven shots of screens that changed or are gone. Four more 1.0.0 shots replace the rest: the dark look, the page editor, the visitors page and the GitHub sign-in. The page also says the visitors page shows readers' province or state.
 - Pressless is out of beta and marked live. Its page now covers the Your site screen, eight layouts with eleven colour styles, the count of changes not yet published, the shorter Settings and the Windows publishing fix. The "Still to come" list is gone: the Start Menu offer it named already ships.
