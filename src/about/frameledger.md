@@ -24,16 +24,20 @@ frameledger gives all three one shared way to record a test run, called a
 benchmark, and one tool that reads it. The goal behind it: every engine holds
 at least 60 frames per second.
 
-For now, frameledger is built to find the slow spots in these three engines.
-The plan is to make it a general tool later, for anyone to use with their own
+frameledger is built first to find the slow spots in these three engines.
+It can also measure games it was never built into. It turns a capture from
+PresentMon, a free and widely used frame-timing tool, into a run that every
+frameledger command reads, so a game needs no changes to be measured. The plan
+is still to make it a general tool later, for anyone to use with their own
 engine.
 
 ## How it works
 
 After a run, the engine writes a plain text file: every frame, and how long
 each part of it took on the processor and on the graphics card. frameledger
-reads that file and answers in plain sentences first, before any table. It
-has these commands:
+reads that file and answers in plain sentences first, before any table. A
+game that writes no such file can be measured with PresentMon instead, and
+**`import presentmon`** turns its capture into one. It has these commands:
 
 - **`report`** says where the frame time went: the costliest parts of the
   frame, whether the processor or the graphics card held it up, and which
@@ -47,7 +51,11 @@ has these commands:
   resolution, unless you say why it should. You can compare only the measures
   you care about, and see each run's value side by side. It can also judge
   several named variants of a build against one base in a single command, and
-  rank them by how much each saves.
+  rank them by how much each saves. It can judge the slowest 1% of frames for
+  a measure, such as the graphics card's time, not only the typical frame. When
+  one test run stands apart from the rest, it names that run, so you can take
+  it again instead of the whole set. It also warns when the two machines
+  differed in power, processor speed or temperature.
 - **`alternate`** runs the old and new builds in turn, several times each,
   then compares them. So a machine that drifts during the test does not look
   like a change. It takes named variants too. On Windows, stopping it stops
@@ -65,13 +73,23 @@ has these commands:
 - **`bisect`** works with git, the tool that keeps a project's history, to
   find the exact change that made a frame slower.
 - **`budget`** says whether any part of the frame went over the time you set
-  for it.
+  for it. A budget can also limit the whole frame's time on the processor or on
+  the graphics card.
 - **`floor`** says whether the run held a frame rate you set, such as 60
   frames per second, in every second of the run.
-- **`check`** says whether a run file is written correctly.
+- **`check`** says whether a run file is written correctly. It can also
+  compare a file with the one it should match, and warn about things that are
+  allowed but unwise.
+- **`kit`** writes a set of sample files. Anyone who writes the run file
+  format from its description can use them to prove their writer is right.
+
+Some graphics drivers add frames of their own between the ones the game draws,
+which is called frame generation. frameledger marks those frames and leaves
+them out of every verdict by default, so they cannot hide a slow game.
 
 A report warns you when its numbers should not be trusted: a debug build, a
-software renderer, or a machine busy with other work. A comparison names any
+software renderer, a machine busy with other work, a laptop on battery, or
+a machine that slowed itself down. A comparison names any
 run taken while the machine was busy, and gives no verdict rather than a wrong
 one. A damaged run file, such as one with an impossible date, gets a plain
 sentence saying what is wrong, not a crash.
@@ -88,9 +106,10 @@ charts yet; plain text comes first.
 
 ## Where it stands
 
-**The fifth release is out: saved baselines, and several variants compared at once.** It is a command-line tool: you type its
-commands in a terminal window, and it answers in text. So there are no
-screenshots. The download is one zip for Linux and Windows. It holds the tool,
+**The sixth release is out: it reads frame timings from games it was never
+built into.** It is a command-line tool: you type its commands in a terminal
+window, and it answers in text. So there are no screenshots. The download is
+one zip for Linux, Windows and macOS. It holds the tool,
 which needs Python 3.10 or newer and nothing else, launchers so you can run it
 by name from any folder, and an optional small C header. An engine can use the header to write run files without writing its
 own code for it. The header says which release it came from.
