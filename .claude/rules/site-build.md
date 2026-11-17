@@ -149,7 +149,10 @@ offline, the build still succeeds — each project falls back to static metadata
   lacks the first; with `altDownloads` set, the builds the buttons passed over are linked in
   a line under them, introduced by that text. A Linux release with both a `.deb` and an `.rpm` and no AppImage or Flatpak
   gets one button per distro family (`linuxPackages`). Companion files — signatures, checksum
-  manifests, SBOMs, updater metadata (`isCompanionFile`) — are skipped *before* OS matching.
+  manifests, SBOMs, updater metadata, licence notices (`isCompanionFile`) — are skipped
+  *before* OS matching. A release whose tag is not a version number is a side release, such
+  as a helper binary the app fetches; `appReleases` leaves it out of the download, the
+  changelog and the tally.
   Each matched button names its file's type, taken from the file name (AppImage, `.deb`,
   `.exe`), and its size, from the release asset's `size` field. The "How to install" fold-out
   under the buttons gives each matched button the note for its OS and file type. A type with

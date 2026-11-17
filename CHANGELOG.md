@@ -37,6 +37,10 @@ so dated sections stand in for versions. Planned work lives in
 - Stats server: a project can name the branch its Builds row watches (`pushBranch`). RetroArch's row now watches `local/fixes-2026-09`, its own work, instead of `master`, a frozen copy of libretro's.
 - Stats server: a failed build that was started by hand, by a timer or by a release now goes to its project's inbox too, not only one a push started. GitHub emails about all of these.
 
+### Fixed
+
+- The changelogs for Pressless, Snatch and MAME Curator no longer list side releases that are not versions of the app: Pressless's JPEG XL decoder, Snatch's video-player bundle and a MAME Curator milestone. Their files no longer count as app downloads, and licence files shipped beside a download are no longer flagged on the private stats dashboard.
+
 ## 2026-11-11
 
 ### Added

@@ -32,6 +32,7 @@ import {
   assetPlatform,
   pickAsset,
   pickLatestRelease,
+  appReleases,
   LINUX_PACKAGES,
   linuxPackages,
   hasToken,
@@ -335,7 +336,7 @@ async function fetchReleases(repo, assetMatch = null) {
     ghJson(`/repos/${repo}/releases?per_page=100`),
     fetchChangelogSections(repo, notesBase),
   ]);
-  const nonDraft = Array.isArray(list) ? list.filter((r) => !r.draft) : [];
+  const nonDraft = appReleases(list);
   // ghJson answers null for a failed request, never []. Without this flag a project
   // GitHub could not be asked about reads exactly like one that has cut no release.
   const listFailed = !Array.isArray(list);

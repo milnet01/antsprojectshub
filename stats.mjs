@@ -29,6 +29,7 @@ import {
   assetPlatform,
   pickAsset,
   pickLatestRelease,
+  appReleases,
   isCompanionFile,
   hasToken,
   tokenSource,
@@ -190,7 +191,7 @@ async function collectProject(p) {
   base.rateLimited = [repoRes, relRes].some((r) => r.status === 403 && r.remaining === 0);
 
   const repo = repoRes.data || {};
-  const releases = (Array.isArray(relRes.data) ? relRes.data : []).filter((r) => !r.draft);
+  const releases = appReleases(relRes.data);
   const latest = pickLatestRelease(releases);
   const pr = (x) => ({ n: x.number, title: x.title, url: x.html_url, comments: x.comments || 0 });
   const open = Array.isArray(openRes.data) ? openRes.data : [];
@@ -3610,11 +3611,11 @@ export async function watchBuilds() {
     if (push.error) console.warn(`! ${r.slug}: builds watch could not read the push (${push.error})`);
     else r.push = push;
     if (relRes.ok && Array.isArray(relRes.data)) {
-      const latest = pickLatestRelease(relRes.data.filter((x) => !x.draft));
+      const latest = pickLatestRelease(appReleases(relRes.data));
       r.latestTag = latest?.tag_name || null;
       r.latestAt = latest?.published_at || null;
       r.latestFiles = latest ? (latest.assets || []).map((a) => a.name) : null;
-      r.filesBefore = hadFilesBefore(relRes.data.filter((x) => !x.draft), latest);
+      r.filesBefore = hadFilesBefore(appReleases(relRes.data), latest);
       r.releasesUrl = latest?.html_url || `https://github.com/${r.repo}/releases`;
     }
     if (JSON.stringify([r.push, r.latestTag, r.latestFiles]) !== before) changed++;

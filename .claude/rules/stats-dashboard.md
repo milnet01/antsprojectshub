@@ -182,9 +182,9 @@ dashboard".
   `build.mjs` never imports it. It is the mirror
   of `src/assets/analytics.js`, the *write* half, and neither can switch the other on.
 
-`npm test` covers the *stats dashboard only* — the port contract in
+`npm test` covers the stats dashboard — the port contract in
 `.claude/rules/stats-dashboard.md`, the history store and its charts
 (`test/store.test.mjs`), and the Builds tab's file and alarm judgements
-(`test/builds.test.mjs`), and nothing else. It
-uses `node --test` and Python's `unittest`; the site build has no
-tests. It runs in the pre-push gate, **not in CI**.
+(`test/builds.test.mjs`), plus the release-file and side-release rules it shares with
+the site build (`test/releases.test.mjs`). It uses `node --test` and Python's `unittest`;
+the rest of the site build has no tests. It runs in the pre-push gate, **not in CI**.
