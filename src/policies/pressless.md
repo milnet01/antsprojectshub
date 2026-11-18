@@ -87,6 +87,15 @@ too. It uses the key to create your site's repository, switch the site
 on, and publish the pages you press. You can remove Pressless's access
 from your GitHub settings, under Applications.
 
+## YouTube figures
+
+Insights can show your YouTube channel's figures. For that you make your
+own YouTube key, and Pressless keeps it in your computer's password store,
+like the GitHub key. Pressless sends the key to Google's YouTube Data API,
+which reads your channel's public counts. Pressless keeps what YouTube
+returned for at most 30 days, as YouTube's policies require. Nothing is
+sent to the people who make Pressless.
+
 ## Usage reports
 
 Pressless can send anonymous usage reports. They are off unless you say
@@ -165,6 +174,15 @@ shows that website your internet address. It is encrypted (HTTPS) where
 the address in your export is. Nothing is sent to the people who make
 Pressless.
 
+## Bringing in a website by its address
+
+If you bring in a live website by typing its address, Pressless asks that
+website for its pages and files. As with a WordPress site, each request
+names the Pressless version and carries no password, cookie or sign-in,
+and it shows that website your internet address. Pressless never reaches
+an address inside your own network, such as your router or another
+computer at home. Nothing is sent to the people who make Pressless.
+
 ## Reporting a problem
 
 If you choose to report a problem, Pressless links to GitHub's own form,
@@ -179,6 +197,11 @@ pages carry Google's counting code, and Google's own privacy terms
 apply to your visitors. When you turn visitor counting on,
 Pressless adds a Privacy page to your site that says so, if it has
 none.
+
+If you turn on Like and Dislike buttons, they use your own Firebase
+project, a Google service. Your visitors' browsers talk to that project
+directly; Pressless itself never connects to it. Your site's Privacy page
+covers the buttons too.
 
 ## Questions
 

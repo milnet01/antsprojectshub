@@ -63,6 +63,12 @@ updates with the rest of your system. Add Album Builder's
 [repository on the openSUSE Build Service](https://download.opensuse.org/repositories/home:/milnet:/album-builder/),
 then install the `album-builder` package.
 
+The Linux AppImage keeps itself up to date. Once a day it checks for a newer
+version and asks you before installing anything, and it only installs a download
+it can prove came from this project. You can also check by hand from the Help
+menu, or switch the daily check off there. The Windows download does not update
+itself yet.
+
 Two things worth knowing. **Windows will show a SmartScreen warning** the first
 time, because the build is not signed; click *More info* → *Run anyway*. And the
 **lyric-syncing feature is in none of these** — the speech-recognition
@@ -84,7 +90,9 @@ language, and closing the app no longer waits on your desktop's media controls.
 Going back to an older copy of the app no longer wipes your settings, and on
 Windows the main tabs are readable again.
 
-Newest: the player remembers where you were (see Just listening). Synced lyrics
+Newest: the Linux AppImage updates itself (see Getting it).
+
+Before that: the player remembers where you were (see Just listening). Synced lyrics
 light up at the right moment more often, and lyrics are aligned one song at a
 time, so the app no longer uses huge amounts of memory. In the library, songs in
 the current album show a purple strip, and songs whose file is missing show an

@@ -15,6 +15,8 @@ so dated sections stand in for versions. Planned work lives in
 - LottoTracker's page offers its first download, a Linux AppImage, and says what it needs: a recent Linux, an Android phone and, for now, Standard Bank. It covers 0.2.0's new look, nightly results check and Bank's record tab, with four new screenshots.
 - Rolodex's page covers 2.1.0: a Flatpak download, updates from inside the app on Windows, and German, French and Spanish.
 - Rolodex's page covers 2.2.0: Simplified Chinese, Japanese, Hebrew and Arabic, with the window laid out right to left in Hebrew and Arabic.
+- Album Builder's page covers 1.2.0: the Linux AppImage updates itself.
+- Pressless's privacy policy covers YouTube figures, bringing in a website by its address, and Like and Dislike buttons.
 - Album Builder's page says it installs as a package on openSUSE Tumbleweed.
 
 ## 2026-11-18
