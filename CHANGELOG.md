@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-11-18
+
 ### Added
 
 - DeFragR has a page: a visual disk defragmenter for Linux, still early, with no download yet. Its logo and icon are new.
