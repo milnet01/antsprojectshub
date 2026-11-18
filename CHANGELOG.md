@@ -17,6 +17,7 @@ so dated sections stand in for versions. Planned work lives in
 - Rolodex's page covers 2.2.0: Simplified Chinese, Japanese, Hebrew and Arabic, with the window laid out right to left in Hebrew and Arabic.
 - Album Builder's page covers 1.2.0: the Linux AppImage updates itself.
 - Pressless's privacy policy covers YouTube figures, bringing in a website by its address, and Like and Dislike buttons.
+- Local Web Server Manager's page covers 0.6.1: a fixed message box at the foot of the window, and a safer release build.
 - Album Builder's page says it installs as a package on openSUSE Tumbleweed.
 
 ## 2026-11-18

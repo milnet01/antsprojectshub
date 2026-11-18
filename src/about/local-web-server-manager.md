@@ -54,8 +54,15 @@ against a contrast standard, and screen readers are told when a project changes
 state — once, rather than once a second. When something fails, the message appears
 under the project it is about, not in a corner of the window.
 
-**The newest release, 0.6.0, updates itself.** Each time the AppImage starts, it
-checks GitHub for a newer version. A banner offers it, with what changed. Nothing
+**The newest release, 0.6.1, keeps the window still.** Messages about the whole
+app, and the update offer, appear in a box at the foot of the window that is always there and never
+changes height, so the project list no longer moves when a message comes or goes.
+Empty, it says "No notifications." The AppImage is now built and tested with no
+permission to change a published release; a separate step, which runs none of
+the project's code, attaches it.
+
+**The release before it, 0.6.0, updates itself.** Each time the AppImage starts,
+it checks GitHub for a newer version, offers it, and says what changed. Nothing
 downloads until you click Update now, and the app checks that the author signed
 the download before it replaces itself. Settings > Preferences turns the check
 off. The output panel no longer freezes when a server prints a flood of lines,
@@ -101,7 +108,8 @@ Download the AppImage from the
 make it executable, and run it. It needs a system at least as new as Debian 12
 (glibc 2.36).
 
-A copy of 0.5.1 or earlier has no updater, so download 0.6.0 by hand once.
+A copy of 0.5.1 or earlier has no updater, so download the latest release by
+hand once.
 After that, the app offers each new version itself.
 
 You can still install it from source instead, as the README's
