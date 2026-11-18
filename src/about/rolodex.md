@@ -72,8 +72,10 @@ installs the new version and reopens it. It only installs an update that carries
 the project's own signature, and refuses anything else. On Windows, a copy older
 than 2.1.0 cannot do this, so download 2.1.0 by hand once.
 
-It follows your system's language in German, French and Spanish, and shows
-English otherwise.
+It follows your system's language in German, French, Spanish, Simplified
+Chinese, Japanese, Hebrew and Arabic, and shows English otherwise. In Hebrew and
+Arabic the window is laid out right to left: the sidebar moves to the right, and
+the colour bars on each field and the notes sit on the right-hand edge.
 
 Your vault is saved in your personal data folder, not next to the download, so
 moving or replacing the app never touches it.
