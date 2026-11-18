@@ -83,7 +83,8 @@ including the Limited Use requirements.
 
 Pressless publishes your website through GitHub. When you sign in with
 GitHub, Pressless keeps GitHub's key in your computer's password store
-too. It uses the key to create your site's repository, switch the site
+too. If your computer has none, Pressless keeps it in a file only your account
+can read, in its own Pressless-data folder, and tells you so. It uses the key to create your site's repository, switch the site
 on, and publish the pages you press. You can remove Pressless's access
 from your GitHub settings, under Applications.
 
@@ -91,7 +92,8 @@ from your GitHub settings, under Applications.
 
 Insights can show your YouTube channel's figures. For that you make your
 own YouTube key, and Pressless keeps it in your computer's password store,
-like the GitHub key. Pressless sends the key to Google's YouTube Data API,
+like the GitHub key. If your computer has none, Pressless keeps it in a file
+only your account can read, in its own Pressless-data folder, and tells you so. Pressless sends the key to Google's YouTube Data API,
 which reads your channel's public counts. Pressless keeps what YouTube
 returned for at most 30 days, as YouTube's policies require. Nothing is
 sent to the people who make Pressless.
