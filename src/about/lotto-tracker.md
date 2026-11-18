@@ -19,7 +19,12 @@ own public feed. And the SMS wording is Standard Bank's, in both the version use
 before the June 2026 operator handover and the version used after it.
 
 If you bank elsewhere, everything except the message parser works unchanged, and
-teaching it your bank's wording is the only work.
+teaching it your bank's wording is the only work. You can send in sample messages
+through the "Add my bank" form on the project's
+[issue tracker](https://github.com/milnet01/LottoTracker/issues/new/choose).
+
+**It needs an Android phone.** iPhones are not supported: the app collects the
+messages by USB or KDE Connect, and iOS lets no other app read messages.
 
 ## What it does
 
@@ -73,12 +78,21 @@ results pages.
 
 ## Where it stands
 
-In beta, on Linux, with no account, no API key and nothing paid. The first release has no
-download file: you run it from a copy of the source, which needs Python 3.9 or newer and a
-couple of standard tools from your distribution to talk to the phone; the
-repository's Setup section lists them. A packaged Linux version is planned. The
-tray icon needs one extra library — and it is the only thing that does, so
-everything works without it.
+In beta, with no account, no API key and nothing paid. It now comes as one Linux
+file you download and run, an AppImage.
+
+That file needs a recent Linux: version 2.44 or newer of the GNU C library, which
+`ldd --version` shows. It will not start on many older systems yet; a build that
+runs on more of them is planned. It is Linux only for now. A Windows version is
+planned, not started.
+
+The newest version gives the page a new look. It opens on when to buy next, with
+every running ticket drawn as a lottery slip. The tray checks for new results by
+itself at 22:00 each evening and tells you only when you have won. A Bank's record
+tab shows where the bank's payments differ from what the app worked out, and why.
+The Every entry table can be filtered by year and by whether an entry was checked.
+Daily Lotto Plus tickets are checked too. And the app tells you when no lottery SMS
+has arrived for 14 days, in case your phone has stopped reaching the computer.
 
 LottoTracker is an independent app. It is not affiliated with or endorsed by the
 South African National Lottery, its operator, or Standard Bank. Always check results

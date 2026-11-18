@@ -551,6 +551,8 @@
         "mac",
         "linux"
       ],
+      "assetMatch": ["^rolodex-(linux-x86_64|macos-arm64|windows-x86_64\\.exe)$", "\\.flatpak$"],
+      "altDownloads": "Also as a Flatpak:",
       "isFork": false,
       "upstream": null,
       "homepage": null,
@@ -745,7 +747,7 @@
       "slug": "defragr",
       "name": "DeFragR",
       "tagline": "Shows you how scattered the files on your Linux drive are, and tidies them up while you watch.",
-      "blurb": "DeFragR is a defragmenter for Linux drives, with a window you can watch. It lists your drives and says which ones are worth defragging. Then it can show a report of how scattered the files are, or tidy them up while a map of the drive fills in block by block. It moves files only through the Linux kernel's own checked move, and it will never defrag an SSD. The first version shows a read-only report of a drive; defragging comes later. It is released as source code only, so for now you build it yourself.",
+      "blurb": "DeFragR is a defragmenter for Linux drives, with a window you can watch. It lists your drives and says which ones are worth defragging. Then it can show a report of how scattered the files are, or tidy them up while a map of the drive fills in block by block. It moves files only through the Linux kernel's own checked move, and it will never defrag an SSD. So far it gives a read-only report on a drive, with a map of it; defragging comes later. It is released as source code only, so for now you build it yourself.",
       "status": "wip",
       "repo": "milnet01/DeFragR",
       "platforms": [
@@ -760,6 +762,10 @@
         {
           "src": "shots/defragr-drive-list.png",
           "alt": "DeFragR's drive list, headed Pick a drive, then choose what to do with it. A table gives each drive's size, file system, type and what DeFragR can do with it. The root drive (btrfs) and /boot/efi (vfat) are SSDs and say Report only. /mnt/Games and /mnt/Emulators are ext4 spinning drives and say Report and defrag. /mnt/Games is selected, and the line under the table says DeFragR can report on this drive or defrag it. Below are Refresh drives, View report and Defrag now buttons"
+        },
+        {
+          "src": "shots/defragr-drive-list-hebrew.png",
+          "alt": "The same drive list with DeFragR in Hebrew. The whole window is mirrored right to left: the drive names are in the right-hand column, the Refresh drives button sits at the bottom right, and the report and defrag buttons at the bottom left. The headings, the drive types and what each drive can do are in Hebrew; drive names, sizes and file systems stay in Latin letters."
         }
       ]
     },
@@ -781,15 +787,19 @@
       "screenshots": [
         {
           "src": "shots/lotto-tracker-top.png",
-          "alt": "Lotto Tracker's dark page, using invented tickets. Below a notice that one of seven entries cannot be checked, a Not yet paid section lists one win: the ticket's numbers beside the numbers drawn as coloured balls, Division 9, R15.00, marked unpaid, and the date it expires, 345 days away. Below that, Still outstanding lists the tickets with draws to come and the one entry that cannot be checked, because no results source publishes its pool."
+          "alt": "LottoTracker's Overview tab in its dark look, using invented tickets. A large headline says: Buy PowerBall soon. Last draw today. Below it, each running ticket is drawn as a lottery slip with one ball per draw, dark for the draws already used: PowerBall has 1 draw left of 10 and is marked Buy soon, Daily Lotto has 6 left and Lotto 4. Two cards sum up the rest: 1 win waiting on the bank, with the first claim deadline on 5 Sep 2027, and for draws checked in 2026, R80.00 spent and R65.00 won."
+        },
+        {
+          "src": "shots/lotto-tracker-wins.png",
+          "alt": "The Wins tab. Under Not yet paid is a PowerBall win: the ticket's numbers 7, 14, 22, 35, 41 and PowerBall 12 beside the numbers drawn, with the matching 14 and 12 filled in. It is Division 9, worth R15.00, unpaid, and expires on 5 Sep 2027, 345 days away. Below, Paid by the bank shows a Lotto win the same way."
         },
         {
           "src": "shots/lotto-tracker-entries.png",
-          "alt": "A table of every ticket entry with its cost, how many draws were checked and what it won, followed by money spent against money won for the year."
+          "alt": "The Every entry tab, with filters for the game, the exact game, the year bought and whether an entry was checked. Below them, each entry shows its ticket, purchase date, game, cost, draws checked and winnings. A Daily Lotto Plus entry is marked not checkable, because it predates all draw data for its pool."
         },
         {
           "src": "shots/lotto-tracker-settings.png",
-          "alt": "Totals comparing what was spent with what was won, then the settings: a colour theme choice, switches for starting the tray at login and opening this page when the tray starts, and a Refresh results button."
+          "alt": "The Settings tab: thirteen colour themes, each shown as a small preview, with Dark chosen, then switches for starting the tray when you log in and for opening this page when the tray starts."
         }
       ],
       "video": {

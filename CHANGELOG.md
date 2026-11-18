@@ -9,6 +9,13 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+### Changed
+
+- DeFragR's page covers 0.2.0: a map of the drive in each report, a Refresh drives button, safer reports, and a window in thirteen more languages. It adds a Hebrew screenshot.
+- LottoTracker's page offers its first download, a Linux AppImage, and says what it needs: a recent Linux, an Android phone and, for now, Standard Bank. It covers 0.2.0's new look, nightly results check and Bank's record tab, with four new screenshots.
+- Rolodex's page covers 2.1.0: a Flatpak download, updates from inside the app on Windows, and German, French and Spanish.
+- Album Builder's page says it installs as a package on openSUSE Tumbleweed.
+
 ## 2026-11-18
 
 ### Added

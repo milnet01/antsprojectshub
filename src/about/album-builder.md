@@ -58,9 +58,14 @@ On Linux it is a single AppImage — download, make it executable, run. On Windo
 it is a zip: unpack it and double-click `AlbumBuilder.exe`. Both bundle everything
 they need, including the PDF machinery. There is no Python to install.
 
+On openSUSE Tumbleweed you can install it as a normal package instead, and it
+updates with the rest of your system. Add Album Builder's
+[repository on the openSUSE Build Service](https://download.opensuse.org/repositories/home:/milnet:/album-builder/),
+then install the `album-builder` package.
+
 Two things worth knowing. **Windows will show a SmartScreen warning** the first
 time, because the build is not signed; click *More info* → *Run anyway*. And the
-**lyric-syncing feature is not in either download** — the speech-recognition
+**lyric-syncing feature is in none of these** — the speech-recognition
 libraries behind it run to hundreds of megabytes, so it stays an optional extra
 you add when installing from source. Everything else works out of the box.
 

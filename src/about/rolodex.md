@@ -62,9 +62,18 @@ Apple Silicon macOS. Nothing else to install. Neither the Windows nor the macOS
 build is signed yet, so each will query it the first time — *More info → Run
 anyway* on Windows, right-click → *Open* on a Mac.
 
-On Linux and macOS, Rolodex can update itself. It only installs an update that
-carries the project's own signature, and refuses anything else. On Windows,
-download the new version by hand for now.
+On Linux there is also a Flatpak, which installs on any distribution with
+`flatpak install --user rolodex.flatpak`. It is not on Flathub. It carries a
+description and screenshots, so GNOME Software and KDE Discover show Rolodex
+properly.
+
+Rolodex can update itself on Linux, macOS and 64-bit Windows: "Update Now"
+installs the new version and reopens it. It only installs an update that carries
+the project's own signature, and refuses anything else. On Windows, a copy older
+than 2.1.0 cannot do this, so download 2.1.0 by hand once.
+
+It follows your system's language in German, French and Spanish, and shows
+English otherwise.
 
 Your vault is saved in your personal data folder, not next to the download, so
 moving or replacing the app never touches it.

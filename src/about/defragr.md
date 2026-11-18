@@ -45,19 +45,31 @@ up extra space.
 
 ## Where it stands now
 
-The first version gives a report and changes nothing. It is released
-as source code only, with no installable package yet. To try it now,
-you build it from that source code.
+So far DeFragR gives a report and changes nothing. It is released as
+source code only, with no installable package yet. To try it now, you
+build it from that source code.
 
 What works in it:
 
 - **Your drives, listed.** Each one offers "View report" and "Defrag
   now". A choice a drive cannot take is greyed out, with the reason in
-  plain words.
+  plain words. A "Refresh drives" button lists them again.
 - **A report that touches nothing.** It shows how fragmented the drive
   is and lists every fragmented file, worst first.
+- **A map of the drive.** The report draws the drive as a grid of
+  squares: whole files solid, fragmented files striped, folders and the
+  filesystem dotted, and free space as an outline. A key sits above it.
 - **Progress you can see.** A percentage bar shows how far a report has
   got.
+- **Safe reports.** A report refuses a folder that is not a real drive.
+  It never opens a device or wakes a network drive, and another user on
+  the same computer cannot stall it.
+- **Your language.** The window follows your desktop's language in
+  Hebrew, German, Italian, Greek, Spanish, Portuguese, Chinese,
+  Japanese, Russian, Polish, French and Ukrainian, and shows English
+  otherwise. These translations are AI drafts not yet checked by
+  native speakers, and corrections are welcome. A few of the newest
+  messages still show in English.
 
 Defragging itself comes in a later version, and so does an installable
 package.
