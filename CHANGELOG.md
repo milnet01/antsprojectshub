@@ -16,6 +16,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ### Changed
 
+- Pressless's page covers 1.0.2: undo takes a newly added page off the site, imports that keep going past bad dates and long Windows paths, a setup list that ticks only finished steps, and Linux updates that come back in the same terminal.
+- Pressless's privacy page matches 1.0.2's policy: the opt-in usage reports in full, what Google keeps and for how long, and visitor figures by province or state as well as country.
 - DeFragR's first version is out as source code, so its page offers it as a source download. The page shows its first screenshot, the drive list.
 - DeFragR's page says what its first version does: it lists your drives and shows a report of how fragmented each is, changing nothing. Defragging and a download come later.
 - Pressless's page leads with five 1.0.0 screenshots: Your site, the entry editor, the publish preview, the Look screen with its eight layouts and eleven colour styles, and Settings. They replace seven shots of screens that changed or are gone. Four more 1.0.0 shots replace the rest: the dark look, the page editor, the visitors page and the GitHub sign-in. The page also says the visitors page shows readers' province or state.

@@ -1,15 +1,6 @@
-Pressless is an app you run on your own computer to write and publish
-your website. This page says what it does with your information.
-
-## The short version
-
-- Pressless has no server. Nothing you write, and nothing it reads from
-  Google or GitHub, is sent to the people who make Pressless.
-- Your information stays on your computer, apart from what you publish
-  to your own website, what Pressless sends to GitHub and Google to do
-  the jobs you ask of it, the requests it makes to your old website if
-  you bring a WordPress site in, and anonymous usage reports, which it sends
-  only if you say yes (see Usage reports below).
+Pressless is a program that runs on your own computer. It has no server.
+It sends the people who make Pressless nothing, unless you say yes to
+usage reports (see Usage reports below).
 
 ## Google user data
 
@@ -30,8 +21,9 @@ With that permission it reads:
 - the web data streams of the property you choose, to find the
   measurement id your site's counting code needs;
 - your site's visitor figures: how many people visited, from which
-  countries, on which days (or months, for spans longer than 90 days),
-  which pages they read and for how long, and
+  countries and which provinces or states, on which days (or months,
+  for spans longer than 90 days), which pages they read and for how
+  long, and
   how they found your site (for example, a search engine or a link).
 
 These are totals. Google Analytics does not give Pressless the names,
@@ -47,8 +39,9 @@ it to train any AI or machine-learning model.
 ### Who it is shared with
 
 No one. Pressless has no server, and its makers never receive any of
-your Google user data. Pressless talks to Google only to ask for the figures above,
-and it does not send Google user data to anyone else.
+your Google user data. Usage reports carry none of it. Pressless talks
+to Google only to ask for the figures above, and it does not send Google
+user data to anyone else.
 
 ### How it is protected
 
@@ -96,48 +89,61 @@ from your GitHub settings, under Applications.
 
 ## Usage reports
 
-Pressless asks whether it may send anonymous usage reports: during
-setup, or once, if you set it up before reports existed. They are off
-unless you say yes.
+Pressless can send anonymous usage reports. They are off unless you say
+yes. Setup asks, with the box unticked. If you set Pressless up before
+reports existed, it asks once, on Your site, and leaving the question
+unanswered counts as no. A copy of Pressless built without the reports'
+key never asks and never sends.
 
 ### What a report holds
 
-Which Pressless screen was opened; which setup step was reached or
-finished; whether a publish or an undo worked; and, when something goes
-wrong, the kind of error, the screen, and whether it happened while
-publishing. Each report also carries Pressless's version, your system's
-name (such as "Windows 11"), a random number made when you said yes, and
-a random number made each time Pressless starts.
+Each report says one of these things happened:
+
+- a Pressless screen was opened, and its address inside Pressless, such
+  as `/usage`;
+- a step of a guided task, such as setup, was shown, and the task's and
+  the step's names;
+- a guided task was finished, and its name;
+- a publish or an undo ended, and whether it worked;
+- something went wrong, and the kind of error, the screen, and whether
+  it happened while publishing.
+
+Each report also carries Pressless's version, your operating system's
+name (with its version, where the system gives one), a random code
+made when you said yes, and a random number made each time Pressless
+starts.
 
 A report never holds your writing, your pages' names, your site's
-address, your files, your name or your email address.
+address, your files or your settings.
 
-### Where it goes, and who receives it
+### Where it goes
 
 Straight from your computer to a Google Analytics property kept for
-Pressless alone, never your website's, over an encrypted connection
-(HTTPS). Pressless's makers read the reports there as totals, to find
-what gets in people's way. Like any request, it shows Google your
-internet address; Google uses it to tell which country a report came
-from, and Google Analytics does not store the address itself. The
-reports are not used for advertising and are not sold.
+Pressless alone, never your website's. It goes to Google's European
+address, `region1.google-analytics.com`, over an encrypted connection
+(HTTPS). Pressless's makers read the reports there. Like any request,
+it shows Google your computer's internet address.
+
+The property's settings, as checked on 2026-11-17:
+
+- Google works out your country and region, such as a province, from
+  that address. It does not record your city.
+- Google keeps each report's details for two months. After that, only
+  totals remain, such as how often a screen was opened.
+- The reports cannot be used for advertising, and Google signals is
+  off, so they are not linked to any Google account.
 
 ### Seeing them
 
-The Usage reports link at the top of every Pressless screen lists the
-last 50 reports sent, word for word.
+The **Usage reports** link at the top of every Pressless screen opens a
+screen listing the latest reports sent, word for word, newest first.
 
 ### Turning them off
 
-Open Usage reports and choose **Turn usage reports off**. Pressless
-stops sending, forgets its random number, and deletes its list of sent
-reports from your computer. Reports already sent stay with Google until
-they expire. If you turn reports on again, Pressless makes a new random
-number, so new reports cannot be linked to old ones.
-
-### How long they are kept
-
-Google Analytics deletes the reports after two months.
+On the Usage reports screen, choose **Turn usage reports off**.
+Pressless stops sending, forgets its random code, and deletes its list
+of sent reports from your computer. Reports already sent stay with
+Google. If you turn reports on again, Pressless makes a new random code.
 
 ## Checking for updates
 
