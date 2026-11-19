@@ -77,7 +77,22 @@ Stable, with more still planned. This is finbreak's first stable release. Your
 vault, your backups and your saved import settings will keep working with every
 update in this series.
 
-**Faster reports and transfers.** In the newest release, a PDF report of one
+**In your language.** Alongside English, finbreak now comes in Arabic, Chinese
+(Simplified), French, Hindi and Spanish. It opens in your computer's language
+when it has it. Change it any time in Settings and every screen switches at
+once. Arabic reads right to left. These five translations were made by AI and
+are marked "machine-translated" until a native speaker has checked them. If you
+can check one, get in touch through
+[GitHub issues](https://github.com/milnet01/finbreak/issues).
+
+The same release warns you before you import the same statement file twice,
+saying when and into which account. Each account has a Bank box, and Standard
+Bank imports check the account's bank too. The add-a-transaction form has
+hints, and large PDF statements import without freezing the window. Standard
+Bank home-loan repayments now show as money in, and a failed Windows update no
+longer removes finbreak.
+
+**Faster reports and transfers.** In an earlier release, a PDF report of one
 period is quicker to make, most of all on a vault with many years of history. The
 Transfers tab, and deleting a statement, stay fast as transfers build up. Your
 vault upgrades itself the first time the new version opens it. And locking

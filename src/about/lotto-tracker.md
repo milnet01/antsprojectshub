@@ -78,16 +78,27 @@ results pages.
 
 ## Where it stands
 
-In beta, with no account, no API key and nothing paid. It now comes as one Linux
-file you download and run, an AppImage.
+Finished and stable, with no account, no API key and nothing paid. It comes as
+one Linux file you download and run, an AppImage.
 
 That file needs a recent Linux: version 2.44 or newer of the GNU C library, which
 `ldd --version` shows. It will not start on many older systems yet; a build that
 runs on more of them is planned. It is Linux only for now. A Windows version is
 planned, not started.
 
-The newest version gives the page a new look. It opens on when to buy next, with
-every running ticket drawn as a lottery slip. The tray checks for new results by
+The newest version gives the page a finished look. Every win and entry is a small
+lottery slip in its game's colour, with a win's amount printed on the slip.
+Payment shows as a rubber stamp: Paid, Unpaid or Accepted. "Not checkable" has a
+dashed outline, so it can never pass for R0.00. Every section on every tab folds
+away from the ball beside its title, and stays folded next time. The warnings at
+the top and the Overview's buy reminder never fold.
+
+You can now accept a win the bank has not fully paid. Press Accept and it moves
+to "Accepted by you" and stops counting as waiting; Undo moves it back. The
+bank's record and every total stay as they were.
+
+An earlier version opened the page on when to buy next, with every running
+ticket drawn as a lottery slip. The tray checks for new results by
 itself at 22:00 each evening and tells you only when you have won. A Bank's record
 tab shows where the bank's payments differ from what the app worked out, and why.
 The Every entry table can be filtered by year and by whether an entry was checked.

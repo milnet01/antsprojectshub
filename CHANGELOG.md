@@ -19,6 +19,9 @@ so dated sections stand in for versions. Planned work lives in
 - Pressless's privacy policy covers YouTube figures, bringing in a website by its address, and Like and Dislike buttons.
 - Local Web Server Manager's page covers 0.6.1: a fixed message box at the foot of the window, and a safer release build.
 - Album Builder's page says it installs as a package on openSUSE Tumbleweed.
+- finbreak's page covers 1.1.0: Arabic, Simplified Chinese, French, Hindi and Spanish, a warning before importing the same statement twice, a Bank box on each account, and smoother large PDF imports.
+- DeFragR's page says it installs from its own package repository on openSUSE, Fedora, Debian 13, Ubuntu 24.04 or later, and Arch, with the openSUSE Tumbleweed commands.
+- LottoTracker is marked live and its page covers 1.0.0: wins and entries as lottery slips with payment stamps, sections that fold away, and accepting a win the bank has not fully paid. All seven tabs have fresh screenshots, including the first of Bank's record, Still outstanding and Spending.
 
 ## 2026-11-18
 

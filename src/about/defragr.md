@@ -45,9 +45,20 @@ up extra space.
 
 ## Where it stands now
 
-So far DeFragR gives a report and changes nothing. It is released as
-source code only, with no installable package yet. To try it now, you
-build it from that source code.
+So far DeFragR gives a report and changes nothing.
+
+Install DeFragR from its package repository on openSUSE, Fedora,
+Debian 13, Ubuntu 24.04 or later, or Arch, or build it from source.
+The packages are for 64-bit PCs only, and there is none for Debian 12.
+It installs with a menu entry and an icon. On openSUSE Tumbleweed:
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/milnet:/DeFragR/openSUSE_Tumbleweed/home:milnet:DeFragR.repo
+sudo zypper install defragr
+```
+
+For another system, pick its folder in the
+[repository on the openSUSE Build Service](https://download.opensuse.org/repositories/home:/milnet:/DeFragR/).
 
 What works in it:
 
@@ -71,5 +82,4 @@ What works in it:
   native speakers, and corrections are welcome. A few of the newest
   messages still show in English.
 
-Defragging itself comes in a later version, and so does an installable
-package.
+Defragging itself comes in a later version.

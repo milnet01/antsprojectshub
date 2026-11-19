@@ -747,7 +747,7 @@
       "slug": "defragr",
       "name": "DeFragR",
       "tagline": "Shows you how scattered the files on your Linux drive are, and tidies them up while you watch.",
-      "blurb": "DeFragR is a defragmenter for Linux drives, with a window you can watch. It lists your drives and says which ones are worth defragging. Then it can show a report of how scattered the files are, or tidy them up while a map of the drive fills in block by block. It moves files only through the Linux kernel's own checked move, and it will never defrag an SSD. So far it gives a read-only report on a drive, with a map of it; defragging comes later. It is released as source code only, so for now you build it yourself.",
+      "blurb": "DeFragR is a defragmenter for Linux drives, with a window you can watch. It lists your drives and says which ones are worth defragging. Then it can show a report of how scattered the files are, or tidy them up while a map of the drive fills in block by block. It moves files only through the Linux kernel's own checked move, and it will never defrag an SSD. So far it gives a read-only report on a drive, with a map of it; defragging comes later. It installs from its own package repository on openSUSE, Fedora, Debian 13, Ubuntu 24.04 or later, and Arch, or you can build it from source.",
       "status": "wip",
       "repo": "milnet01/DeFragR",
       "platforms": [
@@ -774,7 +774,7 @@
       "name": "LottoTracker",
       "tagline": "Catches the lottery win sitting unnoticed in your inbox.",
       "blurb": "Reads the lottery ticket confirmations your bank sends by SMS, remembers every ticket, and checks them against the real draw results — so a small win doesn't sit unnoticed until it expires. It works out every draw you paid to enter, scores each line, prices the wins, and flags what is still claimable and when it runs out. Everything stays on your own machine: no account, no API key, nothing paid. Specific to the South African National Lottery and, for now, Standard Bank's SMS wording.",
-      "status": "beta",
+      "status": "live",
       "repo": "milnet01/LottoTracker",
       "platforms": [
         "linux"
@@ -787,15 +787,27 @@
       "screenshots": [
         {
           "src": "shots/lotto-tracker-top.png",
-          "alt": "LottoTracker's Overview tab in its dark look, using invented tickets. A large headline says: Buy PowerBall soon. Last draw today. Below it, each running ticket is drawn as a lottery slip with one ball per draw, dark for the draws already used: PowerBall has 1 draw left of 10 and is marked Buy soon, Daily Lotto has 6 left and Lotto 4. Two cards sum up the rest: 1 win waiting on the bank, with the first claim deadline on 5 Sep 2027, and for draws checked in 2026, R80.00 spent and R65.00 won."
+          "alt": "LottoTracker's Overview tab in its dark look, using invented tickets. A large headline says: Buy PowerBall soon. Last draw today. Below it, each running ticket is a lottery slip in its game's colour, with one ball per draw, dark for the draws already used: PowerBall, in blue, has 1 draw left of 10 and is marked Buy soon; Daily Lotto, in green, has 6 left; Lotto, in red, has 4. Two cards below, each with a fold button beside its title, sum up the rest: Prizes says 1 win is waiting on the bank, with the first claim deadline on 5 Sep 2027, and Money says that for draws checked in 2026, R80.00 was spent and R77.00 won."
         },
         {
           "src": "shots/lotto-tracker-wins.png",
-          "alt": "The Wins tab. Under Not yet paid is a PowerBall win: the ticket's numbers 7, 14, 22, 35, 41 and PowerBall 12 beside the numbers drawn, with the matching 14 and 12 filled in. It is Division 9, worth R15.00, unpaid, and expires on 5 Sep 2027, 345 days away. Below, Paid by the bank shows a Lotto win the same way."
+          "alt": "The Wins tab, in three sections that each fold from a ball beside the title. Each win is a slip in its game's colour, with the amount printed on the slip's coloured end. Under Not yet paid is a blue PowerBall slip for R15.00: the ticket's numbers 7, 14, 22, 35, 41 and PowerBall 12 beside the numbers drawn, with the matching 14 and 12 filled in. It is Division 9, expires on 5 Sep 2027, 345 days away, carries an Unpaid rubber stamp and has an Accept button. Under Paid by the bank is a red Lotto slip for R50.00, Division 7, stamped Paid. Under Accepted by you is a blue PowerBall XTRA slip for R12.00, stamped Accepted, with the word unpaid under the stamp and an Undo button."
+        },
+        {
+          "src": "shots/lotto-tracker-bank.png",
+          "alt": "The Bank's record tab. A line says the bank and this app agree on 1 ticket, 2 tickets differ, and that both figures are shown and neither replaces the other. Two slips follow, each with the first win, what the bank paid, what the app worked out and what this means. demo-powerball: first win 1 Sep 2026, no payment in your messages, the app worked out R27.00, so the app computed a win the bank has no record of paying. demo-daily: no winning line, the bank paid R10.00, the app worked out R0.00, so it was paid, but an entry nothing can score may be why."
+        },
+        {
+          "src": "shots/lotto-tracker-outstanding.png",
+          "alt": "The Still outstanding tab: 3 entries with draws to come and 1 not checkable. Under Draws still to come, slips list Daily Lotto with 2 draws remaining, and PowerBall and PowerBall XTRA with 4 each, with each ticket's numbers as coloured balls and the date bought. Under Not checkable, a Daily Lotto Plus slip gives the reason in yellow: it predates all draw data for this pool. A line says draws remaining is unknown for these, and they are not losses."
         },
         {
           "src": "shots/lotto-tracker-entries.png",
-          "alt": "The Every entry tab, with filters for the game, the exact game, the year bought and whether an entry was checked. Below them, each entry shows its ticket, purchase date, game, cost, draws checked and winnings. A Daily Lotto Plus entry is marked not checkable, because it predates all draw data for its pool."
+          "alt": "The Every entry tab, with filters for the game, the exact game, the year bought and whether an entry was checked. Below them, each entry is a slip in its game's colour, giving its ticket, purchase date, cost, draws checked and winnings, with wins in yellow. The Daily Lotto Plus entry's winnings and draws checked are in dashed yellow outlines reading not checkable, so they cannot be mistaken for R0.00, with the reason beside them."
+        },
+        {
+          "src": "shots/lotto-tracker-spending.png",
+          "alt": "The Spending tab. Spend against winnings by period shows 2026: R80.00 spent and R77.00 won, with two bars side by side. Spend against winnings lists R80.00 spent on entries that could be scored and R77.00 won on those same entries, then a lifetime spend on every entry of R87.50, marked as a separate figure that is never subtracted from the line above."
         },
         {
           "src": "shots/lotto-tracker-settings.png",
