@@ -22,6 +22,8 @@ so dated sections stand in for versions. Planned work lives in
 - finbreak's page covers 1.1.0: Arabic, Simplified Chinese, French, Hindi and Spanish, a warning before importing the same statement twice, a Bank box on each account, and smoother large PDF imports.
 - DeFragR's page says it installs from its own package repository on openSUSE, Fedora, Debian 13, Ubuntu 24.04 or later, and Arch, with the openSUSE Tumbleweed commands.
 - LottoTracker is marked live and its page covers 1.0.0: wins and entries as lottery slips with payment stamps, sections that fold away, and accepting a win the bank has not fully paid. All seven tabs have fresh screenshots, including the first of Bank's record, Still outstanding and Spending.
+- frameledger's page covers 0.7.0: `report` can draw a run as a graph on a web page that opens from disk.
+- The build uses marked 18.2.1 and sanitize-html 2.18.2.
 
 ## 2026-11-18
 

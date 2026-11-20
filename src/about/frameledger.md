@@ -43,7 +43,13 @@ game that writes no such file can be measured with PresentMon instead, and
   frame, whether the processor or the graphics card held it up, and which
   frames were worst. It also shows frame pacing: how much the frame time
   jumps from one frame to the next. So a game that holds its frame rate but
-  still stutters shows it.
+  still stutters shows it. It can also draw the run as a graph on a web page:
+  frame time across the run, each part of the run as a patterned band, the
+  worst frames as numbered markers, and a frame-rate line if you set one. The
+  page is a single file that runs and fetches nothing, so it opens straight
+  from disk. Its text follows the browser's own size, a switch makes text and
+  lines larger, and the parts of the run are also listed as text for screen
+  readers.
 - **`compare`** says whether a new build got slower than an old one, measure
   by measure, memory included. Each change is judged against how much the
   runs vary by themselves, so random wobble is not reported as a slowdown. It
@@ -101,14 +107,15 @@ note.
 
 It does not time anything inside an engine; each engine keeps its own timing.
 It does not replace a profiler such as RenderDoc or Tracy: frameledger says
-which part and which frames to look at, and a profiler says why. There are no
-charts yet; plain text comes first.
+which part and which frames to look at, and a profiler says why. Its graph
+shows a run after it ends, not while the game plays.
 
 ## Where it stands
 
-**The sixth release is out: it reads frame timings from games it was never
-built into.** It is a command-line tool: you type its commands in a terminal
-window, and it answers in text. So there are no screenshots. The download is
+**The seventh release is out: `report` can draw a run as a graph on a web
+page.** It is a command-line tool: you type its commands in a terminal
+window, and it answers in text or with that page. There are no screenshots
+yet. The download is
 one zip for Linux, Windows and macOS. It holds the tool,
 which needs Python 3.10 or newer and nothing else, launchers so you can run it
 by name from any folder, and an optional small C header. An engine can use the header to write run files without writing its
