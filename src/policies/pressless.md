@@ -38,8 +38,11 @@ it to train any AI or machine-learning model.
 
 ### Who it is shared with
 
-No one. Pressless's makers never receive any of
-your Google user data. Usage reports carry none of it. Pressless talks
+No one. Its makers never receive your visitor figures or any other
+Google user data, with one exception you control: if Google refused a
+request, the log keeps Google's own short error message, which can name
+your Analytics property or YouTube channel. That message reaches the
+developer only if you press Send my log. Usage reports carry none of it. Pressless talks
 to Google only to ask for the figures above, and it does not send Google
 user data to anyone else.
 
@@ -203,7 +206,9 @@ Nothing is sent unless you press **Send** in that box.
 the name of your system (for example "Windows 11"). The log records what
 Pressless did and what went wrong. It names your site, its pages and its
 files. Pressless writes it to leave out keys, passwords, account names and
-full paths.
+full paths. If Google refused a request, the log also holds Google's short
+error message, which can name your Analytics property or YouTube channel.
+It never holds your visitor figures.
 
 **Where it goes:** over an encrypted connection to a small relay the
 developer runs on Cloudflare Workers. The relay files the log in a private
