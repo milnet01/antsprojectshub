@@ -206,6 +206,14 @@ download the file and run it. On Windows, download the zip, extract it, and doub
 `Start Pressless.bat`. There is nothing to install first — no Python, no
 compiler, no command line.
 
+Pressless speaks English, Spanish, Afrikaans, French and German. It follows
+your computer's language, and you can choose another under More, Language.
+Each site can have its own language for its dates and words.
+
+While it runs, a Pressless icon sits by the clock (the notification area on
+Windows, the system tray on Linux). Click it to open Pressless again after
+closing the browser; right-click it to restart or stop Pressless.
+
 Pressless keeps everything in a folder called `Pressless-data`, right beside
 the program. So put the program where you want your writing to live before
 you first start it.

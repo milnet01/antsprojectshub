@@ -59,13 +59,16 @@ it, and none needs changes to Perch's core.
 
 ## Where it stands
 
-Stable, and still being improved. The latest release makes sure windows go
+Stable, and still being improved. Recent releases make sure windows go
 back where you left them:
 
 - Menus and dialogs are left alone: tray menus no longer open far from the
   click, and dialogs no longer open at title-bar size.
-- Quit always quits: Perch no longer keeps running invisibly after you quit or
-  log out.
+- Quit always quits: Perch no longer keeps running invisibly, or hangs, after
+  you quit or log out.
+- A password window no longer shrinks its app. Some apps lock by hiding their
+  main window behind a small password window, and used to reopen tiny
+  afterwards. Perch now leaves windows that cannot be resized alone.
 - A reopened window goes back where you left it, reliably, on Plasma Wayland.
 - Perch starts again after it crashes or is killed, and stays connected when
   KWin reloads its settings.

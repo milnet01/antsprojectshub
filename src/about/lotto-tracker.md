@@ -81,9 +81,9 @@ results pages.
 Finished and stable, with no account, no API key and nothing paid. It comes as
 one Linux file you download and run, an AppImage.
 
-That file needs a recent Linux: version 2.44 or newer of the GNU C library, which
-`ldd --version` shows. It will not start on many older systems yet; a build that
-runs on more of them is planned. It is Linux only for now. A Windows version is
+That file runs on Ubuntu 22.04, Linux Mint 21, Debian 12 or anything newer:
+it needs version 2.35 or newer of the GNU C library, which `ldd --version`
+shows. It is Linux only for now. A Windows version is
 planned, not started.
 
 The newest version gives the page a finished look. Every win and entry is a small
@@ -95,7 +95,9 @@ the top and the Overview's buy reminder never fold.
 
 You can now accept a win the bank has not fully paid. Press Accept and it moves
 to "Accepted by you" and stops counting as waiting; Undo moves it back. The
-bank's record and every total stay as they were.
+bank's record and every total stay as they were. And if the lottery stops
+listing a prize, the page warns you, names the game and the prize, and says
+those wins are not losses.
 
 An earlier version opened the page on when to buy next, with every running
 ticket drawn as a lottery slip. The tray checks for new results by

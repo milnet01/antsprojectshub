@@ -112,8 +112,16 @@ shows a run after it ends, not while the game plays.
 
 ## Where it stands
 
-**The seventh release is out: `report` can draw a run as a graph on a web
-page.** It is a command-line tool: you type its commands in a terminal
+**The eighth release makes promises a game engine can build on.** A run file
+this release reads will be read the same way by every later release. Every
+command's machine-readable (`--json`) output has a published schema, shipped
+in the download, so a script written against it keeps working. A support
+policy says what gets fixed and how anything is retired. And `compare` now
+warns when one of the runs was itself noisy, for example because the desktop
+was busy, and suggests running it again. The release before added a graph of
+a run on a web page.
+
+It is a command-line tool: you type its commands in a terminal
 window, and it answers in text or with that page. There are no screenshots
 yet. The download is
 one zip for Linux, Windows and macOS. It holds the tool,
