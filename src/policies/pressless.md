@@ -1,6 +1,6 @@
-Pressless is a program that runs on your own computer. It has no server.
-It sends the people who make Pressless nothing, unless you say yes to
-usage reports (see Usage reports below).
+Pressless is a program that runs on your own computer. It sends the
+people who make Pressless nothing, unless you say yes to usage reports or
+press Send my log (see Usage reports and Send my log below).
 
 ## Google user data
 
@@ -38,7 +38,7 @@ it to train any AI or machine-learning model.
 
 ### Who it is shared with
 
-No one. Pressless has no server, and its makers never receive any of
+No one. Pressless's makers never receive any of
 your Google user data. Usage reports carry none of it. Pressless talks
 to Google only to ask for the figures above, and it does not send Google
 user data to anyone else.
@@ -191,6 +191,32 @@ If you choose to report a problem, Pressless links to GitHub's own form,
 filled in with your Pressless version and your system's name (such as
 "Windows 11"). You can read and change it before you send it, and
 nothing is sent unless you send it. Reports there are public.
+
+## Send my log
+
+From Pressless 1.1.1. Pressless never sends its log by itself. When
+something goes wrong, a failure page and the Report a problem page offer a
+**Send my log** button. It opens a box saying what will be sent and where.
+Nothing is sent unless you press **Send** in that box.
+
+**What is sent:** Pressless's two log files, your Pressless version, and
+the name of your system (for example "Windows 11"). The log records what
+Pressless did and what went wrong. It names your site, its pages and its
+files. Pressless writes it to leave out keys, passwords, account names and
+full paths.
+
+**Where it goes:** over an encrypted connection to a small relay the
+developer runs on Cloudflare Workers. The relay files the log in a private
+GitHub repository that only the developer can read, and shows you a short
+reference.
+
+**Your internet address:** Cloudflare uses it to limit sends to about one a
+minute from each address. The relay does not store it, and it is not part
+of the stored log.
+
+**How long it is kept:** until the developer deletes it. Nothing deletes
+logs automatically yet. To have a log deleted, contact the developer and
+quote its reference.
 
 ## Your website's own visitors
 

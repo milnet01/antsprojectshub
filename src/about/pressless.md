@@ -26,7 +26,8 @@ nothing to export from.
 
 There is no Pressless account to make and no Pressless password to lose.
 Pressless asks before sending anonymous usage reports, which never include
-your writing or your site's address.
+your writing or your site's address. It sends its log only when you press
+Send my log after something goes wrong.
 What it does with your information, including what it reads from Google and
 GitHub, is in [Pressless's privacy policy](/p/pressless/privacy.html).
 
@@ -213,6 +214,17 @@ Each site can have its own language for its dates and words.
 While it runs, a Pressless icon sits by the clock (the notification area on
 Windows, the system tray on Linux). Click it to open Pressless again after
 closing the browser; right-click it to restart or stop Pressless.
+
+Long jobs show how far they have got. While Pressless downloads your site,
+sends it to GitHub, builds your pages or packs and unpacks a site file, a bar
+and a running count show progress (for example "120 of 480 files, 3.2 MB of
+14.0 MB"). Every button that does something says so at once, and turns off
+until it is done.
+
+When something goes wrong, the failure page and Report a problem carry a
+Send my log button. It says what goes and where, and sends nothing until you
+press Send. Pressless's log then goes privately to the developer, and you get
+a short reference to quote.
 
 Pressless keeps everything in a folder called `Pressless-data`, right beside
 the program. So put the program where you want your writing to live before

@@ -29,6 +29,7 @@ so dated sections stand in for versions. Planned work lives in
 - frameledger's page covers 0.8.0: run files and `--json` output that later releases keep reading the same way, a support policy, and a warning when a compared run was noisy.
 - LottoTracker's page covers 1.1.0 and 1.1.1: a warning when the lottery stops listing a prize, and a Linux download that runs on Ubuntu 22.04, Linux Mint 21, Debian 12 or newer.
 - Perch's page covers 2.0.2: quitting no longer hangs, and a password window no longer shrinks its app.
+- Pressless's page covers 1.1.1: Send my log, progress bars on long jobs, and buttons that say at once they are working. Its privacy policy gains a Send my log section.
 
 ## 2026-11-18
 
