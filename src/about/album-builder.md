@@ -52,6 +52,14 @@ themes are built in, and it speaks eight languages: English, Afrikaans, Arabic,
 Hebrew, Spanish, French, German and Portuguese. In Arabic and Hebrew the whole
 window mirrors right to left.
 
+**Do you speak one of those languages?** Every translation except English was
+drafted by an AI, and no native speaker has checked it yet. If a word or sentence
+reads wrongly, say so on
+[GitHub issues](https://github.com/milnet01/album-builder/issues): name the
+language, what the app shows and what it should say. A screenshot helps.
+[Checking a translation](https://github.com/milnet01/album-builder/blob/main/CONTRIBUTING.md#checking-a-translation)
+has the details.
+
 ## Getting it
 
 On Linux it is a single AppImage — download, make it executable, run. On Windows
