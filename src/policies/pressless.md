@@ -124,8 +124,8 @@ Each report says one of these things happened:
 
 Each report also carries Pressless's version, your operating system's
 name (with its version, where the system gives one), a random code
-made when you said yes, and a random number made each time Pressless
-starts.
+made when you said yes, a random number made each time Pressless
+starts, and a fixed number, always 1, that Google needs to count a report.
 
 A report never holds your writing, your pages' names, your site's
 address, your files or your settings.
@@ -161,8 +161,8 @@ Google. If you turn reports on again, Pressless makes a new random code.
 
 ## Checking for updates
 
-Pressless asks GitHub whether a newer version of Pressless has been
-released. That request carries nothing about you or your site; like any
+Each time it starts, Pressless asks GitHub whether a newer version of
+Pressless has been released. That request carries nothing about you or your site; like any
 visit to a web page, it shows GitHub your internet address.
 
 ## Bringing in a WordPress site
@@ -206,13 +206,14 @@ Nothing is sent unless you press **Send** in that box.
 the name of your system (for example "Windows 11"). The log records what
 Pressless did and what went wrong. It names your site, its pages and its
 files. Pressless writes it to leave out keys, passwords, account names and
-full paths. If Google refused a request, the log also holds Google's short
+full paths, and before sending, Pressless also removes the known shapes
+of keys and tokens. If Google refused a request, the log also holds Google's short
 error message, which can name your Analytics property or YouTube channel.
 It never holds your visitor figures.
 
 **Where it goes:** over an encrypted connection to a small relay the
-developer runs on Cloudflare Workers. The relay files the log in a private
-GitHub repository that only the developer can read, and shows you a short
+developer runs on Cloudflare Workers. The relay files the log, and an issue
+quoting the log's last lines, in a private GitHub repository that only the developer can read, and shows you a short
 reference.
 
 **Your internet address:** Cloudflare uses it to limit sends to about one a
