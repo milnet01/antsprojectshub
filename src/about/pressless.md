@@ -71,7 +71,8 @@ any of eleven colour styles.
 A Look screen sets your site's colours, fonts, text size, page width and
 layout, with a live preview as you change them. Colours are set for light and
 dark, and a text colour that is hard to read is warned about. Anyone who knows
-CSS can add their own, to one page or to every page.
+CSS can add their own, to one page or to every page. A saved look waits until
+you publish it from the Look screen, which shows what will change first.
 
 New sites made from the Sunrise, Meadow or Harbour starter looks turn dark for
 visitors whose computer is set to dark. You can also choose your site's icon,
@@ -217,11 +218,19 @@ While it runs, a Pressless icon sits by the clock (the notification area on
 Windows, the system tray on Linux). Click it to open Pressless again after
 closing the browser; right-click it to restart or stop Pressless.
 
-Long jobs show how far they have got. While Pressless downloads your site,
+Every long job shows how far it has got. While Pressless downloads your site,
 sends it to GitHub, builds your pages or packs and unpacks a site file, a bar
 and a running count show progress (for example "120 of 480 files, 3.2 MB of
 14.0 MB"). Every button that does something says so at once, and turns off
 until it is done.
+
+Pressless 1.2.2 makes everyday work much faster and steadier. Publishing
+many photographs is about four times faster, and Pressless uses less memory
+on a small laptop. Talking to GitHub is several times faster: setup's reads
+went from about 27 s to 4 s, and taking in a site downloads it once, not
+twice. When a publish is too big for GitHub's hourly allowance, Pressless
+waits it out with a countdown instead of failing. Embedded YouTube videos
+have a title in your site's language, for screen readers.
 
 When something goes wrong, the failure page and Report a problem carry a
 Send my log button. It says what goes and where, and sends nothing until you

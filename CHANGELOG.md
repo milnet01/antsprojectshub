@@ -34,6 +34,7 @@ so dated sections stand in for versions. Planned work lives in
 - OneUp's page covers 2.1.0: the AppImage updates itself, and two fixes to updates and the password-free setting.
 - Pressless's page covers 1.2.0: open tabs keep working after a restart or update, a choice of port, and the Send my log warning about Google's error text.
 - Snatch's page gives the openSUSE Tumbleweed install commands, and says the package offers once to fetch its own yt-dlp.
+- Pressless's page covers 1.2.2: faster publishing and GitHub, a countdown instead of a failure at GitHub's hourly limit, looks that wait to be published, and video titles for screen readers.
 
 ## 2026-11-18
 
