@@ -26,7 +26,10 @@ the terminal is connected.
   own colour, the same as the dot on its tab, so you can tell what every
   session is doing at a glance.
 - **See what it changed before you keep it.** A Review Changes button opens a
-  file-by-file view of every edit.
+  file-by-file view of every edit, and names the work the way its commit will
+  be named.
+- **See what a session cost.** Claude can estimate a session's cost in
+  dollars, its helpers included.
 - **Browse and resume past sessions** without leaving the terminal.
 - **Set permissions visually**, rather than hand-editing a settings file.
 - **Paste a screenshot** and the file lands in the prompt ready to send.
@@ -53,8 +56,10 @@ All of this happens on your own machine. None of it sends your work anywhere.
 With Claude out of the picture entirely, it is still a capable terminal: tabs
 that can be split into side-by-side panes, given a colour each so you can tell
 them apart, and come back after a restart, a shutdown or a log-out. A side
-panel lists every open tab by its full name; sort it four ways, or jump to any
-tab with Go to Tab. There are 11 colour themes that can follow your desktop's light or dark setting, search,
+panel lists every open tab by its full name, on the left or the right; sort it
+four ways, or jump to any tab with Go to Tab. You can size the window in
+columns and rows of text. A tab's history uses less than half the memory it
+once did, and re-wraps faster when you resize the window. There are 11 colour themes that can follow your desktop's light or dark setting, search,
 clickable links and file paths, pictures shown right in the window, a library of
 saved commands, a roomy pop-out editor for long ones, and small add-on plugins
 that are fenced off so they cannot freeze the window. Full-screen programs such
@@ -77,8 +82,9 @@ quickly and stays light.
 
 On openSUSE, Fedora or Mageia, add the repository once and install it like any
 other program — you then get updates automatically. On anything else, the
-AppImage is a single file: download it, make it executable, run it. Both routes
-are on the download buttons above.
+AppImage is a single file: download it, make it executable, run it. Running it
+adds Ants Terminal to your app menu, and your taskbar shows its icon. Both
+routes are on the download buttons above.
 
 The AppImage keeps itself up to date. When a new version is out it tells you on
 the menu bar; one click downloads it, checks that it really came from this
