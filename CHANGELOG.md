@@ -30,6 +30,10 @@ so dated sections stand in for versions. Planned work lives in
 - LottoTracker's page covers 1.1.0 and 1.1.1: a warning when the lottery stops listing a prize, and a Linux download that runs on Ubuntu 22.04, Linux Mint 21, Debian 12 or newer.
 - Perch's page covers 2.0.2: quitting no longer hangs, and a password window no longer shrinks its app.
 - Pressless's page covers 1.1.1: Send my log, progress bars on long jobs, and buttons that say at once they are working. Its privacy policy gains a Send my log section.
+- frameledger's page covers 0.9.0: install from PyPI with pipx, a user guide, and a `report --html` that cannot overwrite a recording.
+- OneUp's page covers 2.1.0: the AppImage updates itself, and two fixes to updates and the password-free setting.
+- Pressless's page covers 1.2.0: open tabs keep working after a restart or update, a choice of port, and the Send my log warning about Google's error text.
+- Snatch's page gives the openSUSE Tumbleweed install commands, and says the package offers once to fetch its own yt-dlp.
 
 ## 2026-11-18
 

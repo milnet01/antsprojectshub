@@ -51,6 +51,22 @@ cannot be verified — right-click the app and choose *Open*, then *Open* again.
 Neither is a virus warning; both mean the same thing, which is that signing an
 app costs a yearly fee this project has not paid.
 
+On openSUSE Tumbleweed you can install Snatch from its own repository
+instead. Run these three commands in a terminal:
+
+```
+sudo zypper ar -f https://download.opensuse.org/repositories/home:/milnet:/snatch/openSUSE_Tumbleweed/home:milnet:snatch.repo
+sudo zypper ref home_milnet_snatch
+sudo zypper in snatch
+```
+
+The second command asks whether to trust the repository's signing key. Type
+`a` (trust always). Then start Snatch from the applications menu.
+
+This package uses your system's copy of yt-dlp, which is often too old to
+play YouTube. So the first time it starts, Snatch asks once whether to fetch
+its own up-to-date copy.
+
 Your downloads go wherever you point them. Snatch keeps its own settings and
 history alongside the app on Windows, and in the usual per-user folder on macOS
 and Linux. Nothing is uploaded anywhere.

@@ -112,19 +112,23 @@ shows a run after it ends, not while the game plays.
 
 ## Where it stands
 
-**The eighth release makes promises a game engine can build on.** A run file
-this release reads will be read the same way by every later release. Every
-command's machine-readable (`--json`) output has a published schema, shipped
-in the download, so a script written against it keeps working. A support
-policy says what gets fixed and how anything is retired. And `compare` now
-warns when one of the runs was itself noisy, for example because the desktop
-was busy, and suggests running it again. The release before added a graph of
-a run on a web page.
+**The ninth release is ready for people outside this site.** frameledger is
+now on PyPI, the main store for Python tools, so `pipx install frameledger`
+gives you a `frameledger` command. A new user guide goes from installing it
+to a first report, with worked examples in C and C++. And `report --html` no
+longer overwrites a file that is not an earlier frameledger page, so a typo
+cannot wipe out a recording.
+
+The release before made promises a game engine can build on. A run file it
+reads will be read the same way by every later release. Every command's
+machine-readable (`--json`) output has a published schema, so a script written
+against it keeps working. A support policy says what gets fixed and how
+anything is retired.
 
 It is a command-line tool: you type its commands in a terminal
 window, and it answers in text or with that page. There are no screenshots
-yet. The download is
-one zip for Linux, Windows and macOS. It holds the tool,
-which needs Python 3.10 or newer and nothing else, launchers so you can run it
-by name from any folder, and an optional small C header. An engine can use the header to write run files without writing its
-own code for it. The header says which release it came from.
+yet. It needs Python 3.10 or newer and nothing else. Install it with pipx, or
+take the download: one zip for Linux, Windows and macOS. The zip holds the
+tool, launchers so you can run it by name from any folder, and an optional
+small C header. An engine can use the header to write run files without
+writing its own code for it. The header says which release it came from.

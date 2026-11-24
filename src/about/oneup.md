@@ -44,6 +44,8 @@ It can also:
 - **Skip the password prompt**, in the AppImage, if you turn it on. It stores
   no password: the system remembers the decision for OneUp's update commands
   only, and switching it off takes it back at once.
+- **Update itself**, in the AppImage. It downloads the new version, checks
+  it, and reopens as the new version.
 - **Show each package's details.** After a check, each system package shows
   its old and new version, its download size and where it comes from, such as
   Packman. Click one to see what it is and, once downloaded, what changed in
@@ -127,6 +129,11 @@ layouts, the eight themes and the package details described above. It also
 scrolls instead of squeezing on a small screen, and deletes its own old logs
 after 30 days. It is ready to be translated, including into right-to-left
 languages such as Hebrew and Arabic, though it still ships in English.
+
+**Version 2.1** lets the AppImage update itself. Two fixes come with it. An
+update that includes 32-bit system packages no longer stops part-way when the
+system service runs it. And switching off the password-free setting now asks
+for the password again on every desktop.
 
 OneUp's openSUSE package has a new address: its own project on the openSUSE
 Build Service,

@@ -185,7 +185,9 @@ its own screens. On Windows, the AI helper's key file can be read only by you.
   only a release signed by its maintainer. From the next update on, the offer
   lists what is new in every version since yours. On Linux, Pressless comes
   back in the same terminal window after an update, so Ctrl+C and closing
-  the window still stop it.
+  the window still stop it. After Restart or Update now, your open Pressless
+  tabs keep working, and the tab you pressed it in goes back to Your site by
+  itself. A new tab opens only if none comes back.
 - **Choose how Pressless looks** from a picker in its top bar: light,
   dark, two high-contrast looks, and playful looks inspired by games,
   films and TV. Your choice is remembered. A text-size setting makes
@@ -223,7 +225,8 @@ until it is done.
 
 When something goes wrong, the failure page and Report a problem carry a
 Send my log button. It says what goes and where, and sends nothing until you
-press Send. Pressless's log then goes privately to the developer, and you get
+press Send. It also warns that a log can hold Google's own short error
+message, which can name your Analytics property or YouTube channel. Pressless's log then goes privately to the developer, and you get
 a short reference to quote.
 
 Pressless keeps everything in a folder called `Pressless-data`, right beside
@@ -241,6 +244,10 @@ itself in the Start Menu (on Linux, your app menu) and on the desktop.
 
 If a console window (a plain text window) opens alongside the browser, leave
 it open while you work: closing it stops Pressless.
+
+Pressless can start on a port you choose (the number at the end of its
+address in your browser), by setting `PRESSLESS_PORT`. If
+another program already holds that port, Pressless says so plainly.
 
 Google has approved Pressless, so setting up visitor numbers no longer warns
 that Google is still checking the app. And after you agree to replace an old
