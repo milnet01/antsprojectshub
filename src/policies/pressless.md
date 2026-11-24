@@ -161,9 +161,14 @@ Google. If you turn reports on again, Pressless makes a new random code.
 
 ## Checking for updates
 
-Each time it starts, Pressless asks GitHub whether a newer version of
-Pressless has been released. That request carries nothing about you or your site; like any
-visit to a web page, it shows GitHub your internet address.
+Each time the downloaded Pressless starts, it asks GitHub, over HTTPS,
+which version of Pressless is newest. The request names Pressless and
+nothing about you or your site; GitHub sees your internet address, as it
+does for any web request. Nothing goes to Pressless's makers.
+
+The check is on until you turn it off: in Settings, press **Stop
+looking**. Pressless then asks GitHub nothing until you press **Look when
+Pressless starts**.
 
 ## Bringing in a WordPress site
 
