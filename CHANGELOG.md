@@ -9,6 +9,8 @@ so dated sections stand in for versions. Planned work lives in
 
 ## [Unreleased]
 
+## 2026-11-25
+
 ### Changed
 
 - DeFragR's page covers 0.2.0: a map of the drive in each report, a Refresh drives button, safer reports, and a window in thirteen more languages. It adds a Hebrew screenshot.
