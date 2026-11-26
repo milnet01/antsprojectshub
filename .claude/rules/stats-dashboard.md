@@ -20,6 +20,14 @@ Why a rule says what it says is in
 [`docs/history/claude-md.md`](../../docs/history/claude-md.md), under "Private stats
 dashboard".
 
+`serve.mjs` (systemd user unit in `systemd/`) serves it on `127.0.0.1:4321` and calls
+`generate()` on start, every 24 h, and on `POST /refresh` from the page's button. Every
+15 minutes it re-reads only the Builds tab's pushes and releases, rewrites the page when one
+changed, and pops up a desktop notice for a new build failure or empty release. An open
+page then swaps in only the parts that changed, without reloading.
+`tray/ants-stats-tray.py` is an optional PySide6 tray icon that drives the unit (open /
+refresh / start / stop / restart / quit). It refreshes via the same `POST /refresh`, never
+by calling `generate()` itself.
 
 - **The port is `PORT` → `STATS_PORT` → 4321, resolved in `lib/port.mjs`.** `STATS_PORT` is
   the packaged default in the unit file; `PORT` is how an external process manager overrides
